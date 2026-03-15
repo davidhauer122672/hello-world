@@ -32,23 +32,27 @@
 4. Scope: Bucket `coastal-key-assets`
 5. Save the **Access Key ID** and **Secret Access Key**
 
-### 4. Environment Variables
+### 4. Live Endpoints
+
+| Endpoint            | URL                                                     |
+|---------------------|---------------------------------------------------------|
+| **Public Bucket**   | `https://pub-[yours].r2.dev`                            |
+| **Worker Proxy**    | `https://image-ingestion-proxy.[yours].workers.dev`     |
+| **S3 Endpoint**     | `https://<ACCOUNT_ID>.r2.cloudflarestorage.com`         |
+
+### 5. Environment Variables
 
 ```env
+R2_PUBLIC_URL=https://pub-[yours].r2.dev
+WORKER_URL=https://image-ingestion-proxy.[yours].workers.dev
+UPLOAD_API_KEY=[your-32-char-string]
 CLOUDFLARE_ACCOUNT_ID=<your-account-id>
 R2_ACCESS_KEY_ID=<your-access-key>
 R2_SECRET_ACCESS_KEY=<your-secret-key>
 R2_BUCKET_NAME=coastal-key-assets
-R2_PUBLIC_URL=https://pub-<id>.r2.dev
 ```
 
-## S3-Compatible Endpoint
-
-R2 uses the S3 API. Your endpoint:
-
-```
-https://<ACCOUNT_ID>.r2.cloudflarestorage.com
-```
+> See `.env.example` for the full template.
 
 ## CORS Configuration (if needed)
 

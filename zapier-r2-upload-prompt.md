@@ -115,7 +115,45 @@ Body: {{file_content}}
 
 ---
 
-## Cloudflare Worker Proxy (Optional)
+## Live Endpoints
+
+| Endpoint            | URL                                                     |
+|---------------------|---------------------------------------------------------|
+| **Public Bucket**   | `https://pub-[yours].r2.dev`                            |
+| **Worker Proxy**    | `https://image-ingestion-proxy.[yours].workers.dev`     |
+| **UPLOAD_API_KEY**  | `[your-32-char-string]`                                 |
+
+---
+
+## Zapier Worker Proxy Upload (Recommended)
+
+Use the Worker proxy instead of S3 auth for simpler Zapier integration.
+
+| Setting              | Value                                                    |
+|----------------------|----------------------------------------------------------|
+| **App**              | Webhooks by Zapier                                       |
+| **Action Event**     | Custom Request                                           |
+| **Method**           | `PUT`                                                    |
+| **URL**              | `https://image-ingestion-proxy.[yours].workers.dev/uploads/{{zap_meta_human_now}}/{{file_name}}` |
+| **Headers**          | `Authorization: Bearer [your-32-char-UPLOAD_API_KEY]`    |
+|                      | `Content-Type: application/octet-stream`                 |
+| **Body**             | `{{trigger_file_url}}` (binary)                          |
+
+The Worker returns JSON with the public URL:
+
+```json
+{
+  "success": true,
+  "key": "uploads/2026-03-15/photo.jpg",
+  "url": "https://pub-[yours].r2.dev/uploads/2026-03-15/photo.jpg"
+}
+```
+
+Use `{{response.url}}` from the Worker response to populate the Airtable R2 Public URL field.
+
+---
+
+## Cloudflare Worker Proxy Code
 
 For simplified uploads without S3 auth complexity:
 
@@ -161,8 +199,8 @@ binding = "R2_BUCKET"
 bucket_name = "coastal-key-assets"
 
 [vars]
-R2_PUBLIC_URL = "https://pub-<id>.r2.dev"
-UPLOAD_SECRET = "" # set via wrangler secret
+R2_PUBLIC_URL = "https://pub-[yours].r2.dev"
+UPLOAD_SECRET = "" # set via: wrangler secret put UPLOAD_SECRET
 ```
 
 ---
