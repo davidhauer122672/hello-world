@@ -45,7 +45,8 @@
 ```env
 R2_PUBLIC_URL=https://pub-[yours].r2.dev
 WORKER_URL=https://image-ingestion-proxy.[yours].workers.dev
-UPLOAD_API_KEY=[your-32-char-string]
+API_KEY=[your-32-char-string]
+API_TOKEN=[your-api-token]
 CLOUDFLARE_ACCOUNT_ID=<your-account-id>
 R2_ACCESS_KEY_ID=<your-access-key>
 R2_SECRET_ACCESS_KEY=<your-secret-key>

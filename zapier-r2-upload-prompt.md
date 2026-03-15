@@ -135,7 +135,7 @@ Use the Worker proxy instead of S3 auth for simpler Zapier integration.
 | **Action Event**     | Custom Request                                           |
 | **Method**           | `PUT`                                                    |
 | **URL**              | `https://image-ingestion-proxy.[yours].workers.dev/uploads/{{zap_meta_human_now}}/{{file_name}}` |
-| **Headers**          | `Authorization: Bearer [your-32-char-UPLOAD_API_KEY]`    |
+| **Headers**          | `Authorization: Bearer [your-32-char-API_KEY]`    |
 |                      | `Content-Type: application/octet-stream`                 |
 | **Body**             | `{{trigger_file_url}}` (binary)                          |
 
@@ -168,7 +168,7 @@ export default {
     const key = url.pathname.slice(1);
 
     const authHeader = request.headers.get('Authorization');
-    if (authHeader !== `Bearer ${env.UPLOAD_SECRET}`) {
+    if (authHeader !== `Bearer ${env.API_KEY}`) {
       return new Response('Unauthorized', { status: 401 });
     }
 
@@ -182,6 +182,7 @@ export default {
       success: true,
       key,
       url: `${env.R2_PUBLIC_URL}/${key}`,
+      token: env.API_TOKEN,
     });
   },
 };
@@ -190,7 +191,7 @@ export default {
 ### Worker wrangler.toml
 
 ```toml
-name = "coastal-key-upload-proxy"
+name = "image-ingestion-proxy"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
@@ -200,7 +201,10 @@ bucket_name = "coastal-key-assets"
 
 [vars]
 R2_PUBLIC_URL = "https://pub-[yours].r2.dev"
-UPLOAD_SECRET = "" # set via: wrangler secret put UPLOAD_SECRET
+
+# Set secrets via CLI (never commit these):
+#   wrangler secret put API_KEY
+#   wrangler secret put API_TOKEN
 ```
 
 ---

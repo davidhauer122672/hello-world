@@ -84,7 +84,7 @@
   <tr><td>Action Event</td><td>Custom Request</td></tr>
   <tr><td>Method</td><td><code>PUT</code></td></tr>
   <tr><td>URL</td><td><code>https://image-ingestion-proxy.[yours].workers.dev/uploads/{{date}}/{{file_name}}</code></td></tr>
-  <tr><td>Authorization</td><td><code>Bearer [your-32-char-UPLOAD_API_KEY]</code></td></tr>
+  <tr><td>Authorization</td><td><code>Bearer [your-32-char-API_KEY]</code></td></tr>
   <tr><td>Content-Type</td><td><code>application/octet-stream</code></td></tr>
   <tr><td>Body</td><td><code>{{trigger_file_url}}</code> (binary)</td></tr>
 </table>
@@ -128,7 +128,8 @@
   <tr><th>Variable</th><th>Description</th><th>Value</th></tr>
   <tr><td><code>R2_PUBLIC_URL</code></td><td>Public bucket URL</td><td><code>https://pub-[yours].r2.dev</code></td></tr>
   <tr><td><code>WORKER_URL</code></td><td>Worker upload proxy</td><td><code>https://image-ingestion-proxy.[yours].workers.dev</code></td></tr>
-  <tr><td><code>UPLOAD_API_KEY</code></td><td>32-char Worker auth key</td><td><code>[your-32-char-string]</code></td></tr>
+  <tr><td><code>API_KEY</code></td><td>32-char Worker auth key</td><td><code>[your-32-char-string]</code></td></tr>
+  <tr><td><code>API_TOKEN</code></td><td>Worker API token</td><td><code>[your-api-token]</code></td></tr>
   <tr><td><code>CLOUDFLARE_ACCOUNT_ID</code></td><td>Cloudflare account ID</td><td><em>Your account</em></td></tr>
   <tr><td><code>R2_ACCESS_KEY_ID</code></td><td>R2 S3 access key</td><td><em>From API token</em></td></tr>
   <tr><td><code>R2_SECRET_ACCESS_KEY</code></td><td>R2 S3 secret key</td><td><em>From API token</em></td></tr>
