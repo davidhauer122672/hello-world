@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key Assets - R2 Bucket &amp; Zapier Upload Guide</title>
+<style>
+  @page { size: letter; margin: 0.75in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; color: #1a1a1a; line-height: 1.5; max-width: 8.5in; margin: 0 auto; padding: 40px; }
+  h1 { font-size: 22px; color: #0f172a; border-bottom: 3px solid #f97316; padding-bottom: 8px; margin-bottom: 20px; }
+  h2 { font-size: 16px; color: #1e40af; margin: 24px 0 10px 0; border-left: 4px solid #f97316; padding-left: 10px; }
+  h3 { font-size: 14px; color: #374151; margin: 16px 0 6px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; font-size: 13px; }
+  th, td { border: 1px solid #d1d5db; padding: 6px 10px; text-align: left; }
+  th { background: #1e40af; color: #fff; font-weight: 600; }
+  tr:nth-child(even) { background: #f9fafb; }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: 'Courier New', monospace; }
+  .badge { display: inline-block; background: #f97316; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
+  .section { page-break-inside: avoid; margin-bottom: 16px; }
+  .note { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 8px 12px; font-size: 12px; margin: 10px 0; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { padding: 4px 0 4px 22px; position: relative; font-size: 13px; }
+  .checklist li::before { content: "\2610"; position: absolute; left: 0; font-size: 16px; }
+  .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .header-bar .meta { font-size: 11px; color: #6b7280; }
+  .flow { background: #f1f5f9; border-radius: 6px; padding: 12px; text-align: center; font-size: 13px; margin: 10px 0; }
+  .flow .arrow { color: #f97316; font-weight: bold; margin: 0 6px; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 20px 0; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+  <h1>Coastal Key Assets - R2 &amp; Zapier Integration</h1>
+  <div class="meta">Version 1.0 | 2026-03-15</div>
+</div>
+
+<div class="section">
+<h2>1. Bucket Configuration</h2>
+<table>
+  <tr><th>Parameter</th><th>Value</th></tr>
+  <tr><td>Bucket Name</td><td><code>coastal-key-assets</code></td></tr>
+  <tr><td>Provider</td><td>Cloudflare R2 Object Storage</td></tr>
+  <tr><td>Location</td><td>Automatic</td></tr>
+  <tr><td>Public Access</td><td>Enabled</td></tr>
+  <tr><td>Public URL</td><td><code>https://pub-&lt;id&gt;.r2.dev</code></td></tr>
+  <tr><td>S3 Endpoint</td><td><code>https://&lt;ACCOUNT_ID&gt;.r2.cloudflarestorage.com</code></td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>2. R2 Bucket Creation Steps</h2>
+<ul class="checklist">
+  <li>Navigate to <strong>dash.cloudflare.com</strong></li>
+  <li>Click <strong>R2 Object Storage</strong> in left sidebar</li>
+  <li>Click <strong>Create Bucket</strong></li>
+  <li>Name: <code>coastal-key-assets</code> | Location: Automatic</li>
+  <li>Go to <strong>Settings</strong> tab &rarr; Public Access &rarr; <strong>Allow Access</strong></li>
+  <li>Copy the Public Bucket URL</li>
+  <li>Create R2 API Token (Object Read &amp; Write)</li>
+  <li>Save Access Key ID and Secret Access Key</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>3. Zapier Zap Architecture</h2>
+<div class="flow">
+  <span class="badge">TRIGGER</span> Airtable / Form / Webhook
+  <span class="arrow">&rarr;</span>
+  <span class="badge">ACTION 1</span> Upload to R2 (S3 API)
+  <span class="arrow">&rarr;</span>
+  <span class="badge">ACTION 2</span> Log to Airtable
+</div>
+</div>
+
+<div class="section">
+<h2>4. Zapier S3 Upload Configuration</h2>
+<table>
+  <tr><th>Setting</th><th>Value</th></tr>
+  <tr><td>App</td><td>Amazon S3 (S3-compatible)</td></tr>
+  <tr><td>Action Event</td><td>Upload File</td></tr>
+  <tr><td>S3 Endpoint</td><td><code>https://&lt;ACCOUNT_ID&gt;.r2.cloudflarestorage.com</code></td></tr>
+  <tr><td>Access Key ID</td><td><em>From R2 API Token</em></td></tr>
+  <tr><td>Secret Access Key</td><td><em>From R2 API Token</em></td></tr>
+  <tr><td>Bucket</td><td><code>coastal-key-assets</code></td></tr>
+  <tr><td>Key (path)</td><td><code>uploads/{{date}}/{{file_name}}</code></td></tr>
+  <tr><td>ACL</td><td><code>public-read</code></td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>5. Airtable Schema - Asset Registry</h2>
+<table>
+  <tr><th>Field Name</th><th>Type</th><th>Zapier Mapping</th></tr>
+  <tr><td>Asset Name</td><td>Single Line Text</td><td><code>{{trigger_file_name}}</code></td></tr>
+  <tr><td>Upload Date</td><td>Date</td><td><code>{{zap_meta_human_now}}</code></td></tr>
+  <tr><td>R2 Public URL</td><td>URL</td><td><code>{{r2_public_url}}/uploads/{{date}}/{{file_name}}</code></td></tr>
+  <tr><td>File Size</td><td>Number</td><td><code>{{trigger_file_size}}</code></td></tr>
+  <tr><td>Asset Type</td><td>Single Select</td><td><code>{{trigger_asset_type}}</code></td></tr>
+  <tr><td>Status</td><td>Single Select</td><td><code>Uploaded</code></td></tr>
+  <tr><td>Source</td><td>Single Select</td><td><code>Zapier Automation</code></td></tr>
+  <tr><td>Tags</td><td>Multi Select</td><td><em>Custom taxonomy</em></td></tr>
+  <tr><td>Notes</td><td>Long Text</td><td><em>Optional</em></td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>6. Environment Variables</h2>
+<table>
+  <tr><th>Variable</th><th>Description</th></tr>
+  <tr><td><code>CLOUDFLARE_ACCOUNT_ID</code></td><td>Cloudflare account identifier</td></tr>
+  <tr><td><code>R2_ACCESS_KEY_ID</code></td><td>R2 API token access key</td></tr>
+  <tr><td><code>R2_SECRET_ACCESS_KEY</code></td><td>R2 API token secret</td></tr>
+  <tr><td><code>R2_BUCKET_NAME</code></td><td><code>coastal-key-assets</code></td></tr>
+  <tr><td><code>R2_PUBLIC_URL</code></td><td><code>https://pub-&lt;id&gt;.r2.dev</code></td></tr>
+</table>
+</div>
+
+<hr>
+
+<div class="section">
+<h2>7. Verification Checklist</h2>
+<ul class="checklist">
+  <li>R2 bucket <code>coastal-key-assets</code> created</li>
+  <li>Public access enabled and URL copied</li>
+  <li>API token generated with Read/Write scope</li>
+  <li>Zapier trigger configured and tested</li>
+  <li>S3 upload action connects to R2 endpoint</li>
+  <li>File uploads to correct path in bucket</li>
+  <li>Public URL returns uploaded file</li>
+  <li>Airtable record created with all fields</li>
+  <li>Error notifications configured in Zapier</li>
+</ul>
+</div>
+
+<div class="note">
+  <strong>Tip:</strong> To generate a PDF, open this file in any browser and use
+  <strong>File &rarr; Print &rarr; Save as PDF</strong>. The page is pre-formatted for US Letter size.
+</div>
+
+</body>
+</html>
