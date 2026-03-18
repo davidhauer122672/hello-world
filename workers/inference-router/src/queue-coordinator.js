@@ -22,7 +22,7 @@
 const MODULE_PRIORITY = { MODULE_A: 0, MODULE_B: 1, MODULE_C: 2 };
 
 // Backoff parameters (mirrored from the original implementation)
-const MAX_RETRIES   = 5;
+const MAX_RETRIES   = 3;   // Capped at 3 to keep worst-case ~30s within DO fetch timeout
 const BASE_DELAY_MS = 1000;
 const MAX_DELAY_MS  = 16000;
 const JITTER_MAX_MS = 500;
@@ -59,7 +59,7 @@ export class FallbackQueueCoordinator {
         return Response.json({ error: "Invalid JSON" }, { status: 400 });
       }
 
-      const { module, anthropic_api_key, model, system, messages, max_tokens } = body;
+      const { module, model, system, messages, max_tokens } = body;
 
       // Wrap in a promise that resolves when this request's turn comes
       const resultPromise = new Promise((resolve, reject) => {
@@ -108,7 +108,7 @@ export class FallbackQueueCoordinator {
       const entry = this.queue.shift();
 
       try {
-        const result = await this.callAnthropicWithBackoff(entry.payload);
+        const result = await this.callAnthropicWithBackoff(entry.payload, this.env);
         entry.resolve(result);
       } catch (err) {
         entry.reject(err);
@@ -124,14 +124,14 @@ export class FallbackQueueCoordinator {
    * queue correctly — no other module's request can proceed until this
    * one completes or exhausts retries.
    */
-  async callAnthropicWithBackoff({ anthropic_api_key, model, system, messages, max_tokens }) {
+  async callAnthropicWithBackoff({ model, system, messages, max_tokens }, env) {
     let attempt = 0;
 
     while (attempt <= MAX_RETRIES) {
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
-          "x-api-key": anthropic_api_key,
+          "x-api-key": env.ANTHROPIC_API_KEY,
           "anthropic-version": "2023-06-01",
           "content-type": "application/json",
         },
@@ -152,6 +152,7 @@ export class FallbackQueueCoordinator {
           model,
           content: data.content,
           usage: data.usage,
+          retries_attempted: attempt,
         };
       }
 

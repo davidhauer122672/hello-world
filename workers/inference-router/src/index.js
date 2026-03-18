@@ -203,7 +203,6 @@ export default {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               module,
-              anthropic_api_key: env.ANTHROPIC_API_KEY,
               model,
               system,
               messages,
