@@ -65,7 +65,7 @@ export class FallbackQueueCoordinator {
       const resultPromise = new Promise((resolve, reject) => {
         this.queue.push({
           module,
-          payload: { anthropic_api_key, model, system, messages, max_tokens },
+          payload: { model, system, messages, max_tokens },
           resolve,
           reject,
         });
