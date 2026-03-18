@@ -7,8 +7,17 @@
  *
  * Pre-authorization additions (March 2026):
  *   - Tier confirmation gate (Anthropic Tier 3+ required)
- *   - Per-module request queue with priority (Module A first)
+ *   - Durable Object queue coordinator (cross-isolate serialization)
  *   - Exponential backoff with retry-after on 429 responses
+ *
+ * Architecture note: The fallback queue lives in a Durable Object
+ * (FallbackQueueCoordinator), not in the Worker isolate. Cloudflare
+ * Workers create a new isolate per request, so module-level state
+ * cannot serialize across concurrent requests. The Durable Object is
+ * a singleton that persists across all isolates and enforces:
+ *   - One fallback request at a time
+ *   - Module A (Sentinel) priority over B and C
+ *   - Backoff delays that block the queue correctly
  *
  * Model note: The fallback model string is claude-sonnet-4-6 (current
  * production Sonnet). The earlier document referenced claude-sonnet-4-20250514
@@ -16,165 +25,16 @@
  * claude-sonnet-4-6 is the supported production version.
  */
 
-// ---------------------------------------------------------------------------
-// 1. MODULE PRIORITY QUEUE (Semaphore)
-// ---------------------------------------------------------------------------
-// Prevents all three modules from firing fallback calls in parallel.
-// Module A (Sentinel) gets priority because it is revenue-generating.
-//
-// Priority order: MODULE_A > MODULE_B > MODULE_C
-// Only one module's fallback request proceeds at a time. Others wait.
-// ---------------------------------------------------------------------------
-
-const MODULE_PRIORITY = { MODULE_A: 0, MODULE_B: 1, MODULE_C: 2 };
-
-class ModuleQueue {
-  constructor() {
-    this.running = false;
-    this.queue = [];           // Array of { module, resolve }
-  }
-
-  /** Enqueue a module request. Returns a promise that resolves when it is
-   *  this request's turn to execute. */
-  acquire(module) {
-    return new Promise((resolve) => {
-      if (!this.running) {
-        this.running = true;
-        resolve();
-      } else {
-        this.queue.push({ module, resolve });
-        // Re-sort so highest-priority (lowest number) is first
-        this.queue.sort(
-          (a, b) =>
-            (MODULE_PRIORITY[a.module] ?? 99) -
-            (MODULE_PRIORITY[b.module] ?? 99)
-        );
-      }
-    });
-  }
-
-  /** Release the semaphore and let the next queued request proceed. */
-  release() {
-    if (this.queue.length > 0) {
-      const next = this.queue.shift();
-      next.resolve();
-    } else {
-      this.running = false;
-    }
-  }
-}
-
-// Single global queue instance (lives for the Worker isolate lifetime).
-const fallbackQueue = new ModuleQueue();
+// Re-export the Durable Object class so the runtime can instantiate it.
+export { FallbackQueueCoordinator } from "./queue-coordinator.js";
 
 
 // ---------------------------------------------------------------------------
-// 2. EXPONENTIAL BACKOFF WITH retry-after HANDLING
-// ---------------------------------------------------------------------------
-// On a 429 response from Anthropic, the Worker:
-//   a) Reads the retry-after header (seconds) if present.
-//   b) Falls back to exponential backoff: 1s, 2s, 4s, 8s, 16s.
-//   c) Adds jitter (0-500ms) to avoid thundering herd.
-//   d) Retries up to MAX_RETRIES times before returning an error.
-// ---------------------------------------------------------------------------
-
-const MAX_RETRIES    = 5;
-const BASE_DELAY_MS  = 1000;
-const MAX_DELAY_MS   = 16000;
-const JITTER_MAX_MS  = 500;
-
-/**
- * Call the Anthropic Messages API with automatic retry on 429.
- *
- * @param {string} apiKey      - Anthropic API key
- * @param {string} model       - Model string (e.g. claude-sonnet-4-6)
- * @param {string} system      - System prompt
- * @param {Array}  messages    - Conversation messages array
- * @param {number} maxTokens   - Max tokens for completion
- * @returns {Promise<object>}  - Parsed JSON response body
- */
-async function callAnthropicWithBackoff(apiKey, model, system, messages, maxTokens) {
-  let attempt = 0;
-
-  while (attempt <= MAX_RETRIES) {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: maxTokens,
-        system,
-        messages,
-      }),
-    });
-
-    // Success — return immediately
-    if (response.ok) {
-      return await response.json();
-    }
-
-    // Rate limited — apply backoff
-    if (response.status === 429) {
-      attempt++;
-      if (attempt > MAX_RETRIES) {
-        return {
-          error: true,
-          status: 429,
-          message: `Anthropic rate limit: exhausted ${MAX_RETRIES} retries`,
-          hint: "Verify Anthropic account is Tier 3+. See console.anthropic.com/settings/limits",
-        };
-      }
-
-      // Prefer retry-after header; fall back to exponential calculation
-      const retryAfterHeader = response.headers.get("retry-after");
-      let delayMs;
-
-      if (retryAfterHeader) {
-        const retryAfterSec = parseFloat(retryAfterHeader);
-        delayMs = isNaN(retryAfterSec)
-          ? Math.min(BASE_DELAY_MS * Math.pow(2, attempt - 1), MAX_DELAY_MS)
-          : retryAfterSec * 1000;
-      } else {
-        delayMs = Math.min(BASE_DELAY_MS * Math.pow(2, attempt - 1), MAX_DELAY_MS);
-      }
-
-      // Add jitter
-      delayMs += Math.floor(Math.random() * JITTER_MAX_MS);
-
-      await new Promise((r) => setTimeout(r, delayMs));
-      continue;
-    }
-
-    // Non-429 error — return immediately, do not retry
-    const errorBody = await response.text().catch(() => "");
-    return {
-      error: true,
-      status: response.status,
-      message: `Anthropic API error: ${response.status}`,
-      body: errorBody,
-    };
-  }
-}
-
-
-// ---------------------------------------------------------------------------
-// 3. TIER CONFIRMATION GATE
-// ---------------------------------------------------------------------------
-// Exposed as a /tier-check diagnostic endpoint. Also logged on every
-// fallback invocation so the audit trail records whether the tier was
-// verified before the Worker went live.
+// TIER CONFIRMATION
 // ---------------------------------------------------------------------------
 
 const TIER_CONFIRMED_HEADER = "X-Anthropic-Tier-Confirmed";
 
-/**
- * Returns a diagnostic object for the tier check endpoint.
- * This does NOT call Anthropic — it reads the deploy-time env flag.
- */
 function tierCheckResponse(env) {
   const confirmed = env.ANTHROPIC_TIER_CONFIRMED === "true";
   return {
@@ -184,14 +44,14 @@ function tierCheckResponse(env) {
     fallback_model: env.FALLBACK_MODEL || "claude-sonnet-4-6",
     note: confirmed
       ? "Tier 3+ confirmed at deploy time. Fallback is cleared for production load."
-      : "WARNING: Tier not confirmed. Fallback will hit rate limits under load. "
-        + "Set ANTHROPIC_TIER_CONFIRMED=true after verifying Tier 3+ in the Anthropic Console.",
+      : "WARNING: Tier not confirmed. Set ANTHROPIC_TIER_CONFIRMED=true via "
+        + "'wrangler secret put' after verifying Tier 3+ in the Anthropic Console.",
   };
 }
 
 
 // ---------------------------------------------------------------------------
-// 4. AIRTABLE LOGGING
+// AIRTABLE LOGGING
 // ---------------------------------------------------------------------------
 
 async function logToAirtable(env, record) {
@@ -223,7 +83,22 @@ async function logToAirtable(env, record) {
 
 
 // ---------------------------------------------------------------------------
-// 5. MAIN WORKER ENTRY POINT
+// DURABLE OBJECT STUB HELPER
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns a stub to the singleton FallbackQueueCoordinator Durable Object.
+ * All fallback traffic routes through a single instance (keyed by a fixed
+ * name) so the queue serializes across every concurrent isolate.
+ */
+function getQueueStub(env) {
+  const id = env.FALLBACK_QUEUE.idFromName("global-fallback-queue");
+  return env.FALLBACK_QUEUE.get(id);
+}
+
+
+// ---------------------------------------------------------------------------
+// MAIN WORKER ENTRY POINT
 // ---------------------------------------------------------------------------
 
 export default {
@@ -237,6 +112,7 @@ export default {
         primary_model: env.PRIMARY_MODEL,
         fallback_model: env.FALLBACK_MODEL,
         environment: env.ENVIRONMENT,
+        queue_backend: "durable-object",
       });
     }
 
@@ -245,13 +121,21 @@ export default {
       return Response.json(tierCheckResponse(env));
     }
 
-    // ---- Queue status endpoint ----
+    // ---- Queue status (proxied to Durable Object) ----
     if (url.pathname === "/queue-status") {
-      return Response.json({
-        queue_depth: fallbackQueue.queue.length,
-        running: fallbackQueue.running,
-        pending_modules: fallbackQueue.queue.map((q) => q.module),
-      });
+      try {
+        const stub = getQueueStub(env);
+        const doResponse = await stub.fetch(
+          new Request("https://do-internal/status")
+        );
+        const data = await doResponse.json();
+        return Response.json(data);
+      } catch (err) {
+        return Response.json(
+          { error: "Could not reach queue coordinator", detail: err.message },
+          { status: 503 }
+        );
+      }
     }
 
     // ---- Inference endpoint ----
@@ -307,38 +191,42 @@ export default {
 
       result = aiResponse.response || aiResponse;
     } catch (primaryError) {
-      // ---- Primary failed — fall back to Anthropic via queued path ----
+      // ---- Primary failed — route fallback through Durable Object ----
       provider = "anthropic";
       model = env.FALLBACK_MODEL || "claude-sonnet-4-6";
 
-      // Acquire queue slot (Module A gets priority)
-      await fallbackQueue.acquire(module);
-
       try {
-        const anthropicResult = await callAnthropicWithBackoff(
-          env.ANTHROPIC_API_KEY,
-          model,
-          system,
-          messages,
-          max_tokens
+        const stub = getQueueStub(env);
+        const doResponse = await stub.fetch(
+          new Request("https://do-internal/enqueue", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              module,
+              anthropic_api_key: env.ANTHROPIC_API_KEY,
+              model,
+              system,
+              messages,
+              max_tokens,
+            }),
+          })
         );
 
-        if (anthropicResult.error) {
+        const doResult = await doResponse.json();
+
+        if (doResult.error) {
           status = "error";
-          retryCount = MAX_RETRIES;
-          result = JSON.stringify(anthropicResult);
+          retryCount = doResult.retries_attempted || 0;
+          result = JSON.stringify(doResult);
         } else {
           // Extract text from Anthropic response format
           result =
-            anthropicResult.content?.[0]?.text ||
-            JSON.stringify(anthropicResult);
+            doResult.content?.[0]?.text ||
+            JSON.stringify(doResult);
         }
       } catch (fallbackError) {
         status = "error";
         result = `Fallback failed: ${fallbackError.message}`;
-      } finally {
-        // Always release the queue slot
-        fallbackQueue.release();
       }
     }
 

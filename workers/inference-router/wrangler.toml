@@ -1,6 +1,6 @@
 name = "ckpm-inference-router"
 main = "src/index.js"
-compatibility_date = "2024-01-01"
+compatibility_date = "2025-09-01"
 
 # ---------------------------------------------------------------------------
 # Cloudflare Workers AI binding (Nemotron primary model)
@@ -9,20 +9,45 @@ compatibility_date = "2024-01-01"
 binding = "AI"
 
 # ---------------------------------------------------------------------------
+# Durable Object: FallbackQueueCoordinator
+# ---------------------------------------------------------------------------
+# Serializes Anthropic API fallback requests across concurrent isolates.
+# A single global instance ensures only one module's fallback executes
+# at a time, with Module A (Sentinel) taking priority.
+# ---------------------------------------------------------------------------
+[durable_objects]
+bindings = [
+  { name = "FALLBACK_QUEUE", class_name = "FallbackQueueCoordinator" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["FallbackQueueCoordinator"]
+
+# ---------------------------------------------------------------------------
 # Environment variables (non-secret)
 # ---------------------------------------------------------------------------
 [vars]
 PRIMARY_MODEL   = "@cf/nvidia/nemotron-3-120b-a12b"
-FALLBACK_MODEL  = "claude-sonnet-4-6"          # Updated from claude-sonnet-4-20250514
+FALLBACK_MODEL  = "claude-sonnet-4-6"          # Corrected from claude-sonnet-4-20250514
 AIRTABLE_BASE   = "appXXXXXXXXXXXXXX"         # Replace with live base ID
 AIRTABLE_TABLE  = "AI Log"
 ENVIRONMENT     = "staging"                     # Set to "production" after AUTHORIZE
 
 # ---------------------------------------------------------------------------
 # Secrets — set via CLI, never commit:
+#
 #   wrangler secret put ANTHROPIC_API_KEY
 #   wrangler secret put AIRTABLE_API_KEY
 #   wrangler secret put WORKER_AUTH_TOKEN
+#   wrangler secret put ANTHROPIC_TIER_CONFIRMED    # value: "true" after Tier 3 verification
+#
+# ANTHROPIC_TIER_CONFIRMED:
+#   Read by the Worker to gate fallback behavior and stamp Airtable logs.
+#   Must be set to the string "true" after verifying Tier 3+ at:
+#   https://console.anthropic.com/settings/limits
+#   If unset or any other value, the Worker treats tier as unconfirmed
+#   and the /tier-check endpoint will report a warning.
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------

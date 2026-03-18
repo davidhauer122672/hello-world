@@ -2,12 +2,13 @@
 # ---------------------------------------------------------------------------
 # CKPM Inference Router — Deploy Gate
 # ---------------------------------------------------------------------------
-# This script enforces three pre-deployment checks before pushing the
-# inference routing Worker to production:
+# This script enforces pre-deployment checks before pushing the inference
+# routing Worker to production:
 #
 #   1. Anthropic Tier Confirmation (Tier 3 minimum)
 #   2. Model string verification (claude-sonnet-4-6)
-#   3. Required secrets are set in Wrangler
+#   3. Required secrets (including ANTHROPIC_TIER_CONFIRMED)
+#   4. Durable Object migration awareness
 #
 # Usage:
 #   ./scripts/deploy.sh [staging|production]
@@ -31,7 +32,7 @@ echo ""
 # ---------------------------------------------------------------------------
 # CHECK 1: Anthropic Tier Confirmation
 # ---------------------------------------------------------------------------
-echo -e "${YELLOW}[CHECK 1/3] Anthropic API Tier Confirmation${NC}"
+echo -e "${YELLOW}[CHECK 1/4] Anthropic API Tier Confirmation${NC}"
 echo ""
 echo "  The fallback path routes to the Anthropic API (claude-sonnet-4-6)."
 echo "  Under any meaningful load, accounts below Tier 3 will hit rate limits."
@@ -55,7 +56,7 @@ echo ""
 # ---------------------------------------------------------------------------
 # CHECK 2: Model String Verification
 # ---------------------------------------------------------------------------
-echo -e "${YELLOW}[CHECK 2/3] Fallback Model String${NC}"
+echo -e "${YELLOW}[CHECK 2/4] Fallback Model String${NC}"
 echo ""
 
 MODEL_IN_CONFIG=$(grep 'FALLBACK_MODEL' ../wrangler.toml | head -1 | sed 's/.*= *"//' | sed 's/".*//')
@@ -84,16 +85,19 @@ echo ""
 # ---------------------------------------------------------------------------
 # CHECK 3: Required Secrets
 # ---------------------------------------------------------------------------
-echo -e "${YELLOW}[CHECK 3/3] Required Wrangler Secrets${NC}"
+echo -e "${YELLOW}[CHECK 3/4] Required Wrangler Secrets${NC}"
 echo ""
 echo "  The following secrets must be set before deploy:"
-echo "    - ANTHROPIC_API_KEY"
-echo "    - AIRTABLE_API_KEY"
-echo "    - WORKER_AUTH_TOKEN"
-echo "    - ANTHROPIC_TIER_CONFIRMED (set to 'true' after tier verification)"
+echo ""
+echo "    ANTHROPIC_API_KEY           — Anthropic API key"
+echo "    AIRTABLE_API_KEY            — Airtable personal access token"
+echo "    WORKER_AUTH_TOKEN            — Bearer token for /inference endpoint"
+echo "    ANTHROPIC_TIER_CONFIRMED     — Set to 'true' after Tier 3 verification"
+echo ""
+echo "  Set each via:  wrangler secret put <SECRET_NAME>"
 echo ""
 
-read -p "  Have all secrets been set via 'wrangler secret put'? [y/N] " secrets_answer
+read -p "  Have all four secrets been set via 'wrangler secret put'? [y/N] " secrets_answer
 if [[ "${secrets_answer}" != "y" && "${secrets_answer}" != "Y" ]]; then
   echo -e "  ${RED}BLOCKED: Set all required secrets before deploying.${NC}"
   echo ""
@@ -105,6 +109,29 @@ if [[ "${secrets_answer}" != "y" && "${secrets_answer}" != "Y" ]]; then
   exit 1
 fi
 echo -e "  ${GREEN}PASS: Secrets confirmed by operator.${NC}"
+echo ""
+
+# ---------------------------------------------------------------------------
+# CHECK 4: Durable Object Migration
+# ---------------------------------------------------------------------------
+echo -e "${YELLOW}[CHECK 4/4] Durable Object Migration${NC}"
+echo ""
+echo "  This Worker uses a Durable Object (FallbackQueueCoordinator) to"
+echo "  serialize fallback requests across concurrent isolates."
+echo ""
+echo "  On first deploy, Wrangler will run the migration tagged 'v1' to"
+echo "  create the FallbackQueueCoordinator class. This is automatic."
+echo ""
+echo "  If you are redeploying after a class rename or structural change,"
+echo "  you may need to add a new migration tag in wrangler.toml."
+echo ""
+
+read -p "  Acknowledged? [y/N] " do_answer
+if [[ "${do_answer}" != "y" && "${do_answer}" != "Y" ]]; then
+  echo -e "  ${RED}BLOCKED: Acknowledge Durable Object migration before deploying.${NC}"
+  exit 1
+fi
+echo -e "  ${GREEN}PASS: Durable Object migration acknowledged.${NC}"
 echo ""
 
 # ---------------------------------------------------------------------------
@@ -123,6 +150,6 @@ fi
 
 echo ""
 echo -e "${GREEN}Deploy complete.${NC}"
-echo "  Health check:  curl https://ckpm-inference-router.<your-subdomain>.workers.dev/health"
-echo "  Tier check:    curl https://ckpm-inference-router.<your-subdomain>.workers.dev/tier-check"
-echo "  Queue status:  curl https://ckpm-inference-router.<your-subdomain>.workers.dev/queue-status"
+echo "  Health check:   curl https://ckpm-inference-router.<subdomain>.workers.dev/health"
+echo "  Tier check:     curl https://ckpm-inference-router.<subdomain>.workers.dev/tier-check"
+echo "  Queue status:   curl https://ckpm-inference-router.<subdomain>.workers.dev/queue-status"
