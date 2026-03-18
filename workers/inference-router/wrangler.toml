@@ -1,0 +1,43 @@
+name = "ckpm-inference-router"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+# ---------------------------------------------------------------------------
+# Cloudflare Workers AI binding (Nemotron primary model)
+# ---------------------------------------------------------------------------
+[ai]
+binding = "AI"
+
+# ---------------------------------------------------------------------------
+# Environment variables (non-secret)
+# ---------------------------------------------------------------------------
+[vars]
+PRIMARY_MODEL   = "@cf/nvidia/nemotron-3-120b-a12b"
+FALLBACK_MODEL  = "claude-sonnet-4-6"          # Updated from claude-sonnet-4-20250514
+AIRTABLE_BASE   = "appXXXXXXXXXXXXXX"         # Replace with live base ID
+AIRTABLE_TABLE  = "AI Log"
+ENVIRONMENT     = "staging"                     # Set to "production" after AUTHORIZE
+
+# ---------------------------------------------------------------------------
+# Secrets — set via CLI, never commit:
+#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler secret put AIRTABLE_API_KEY
+#   wrangler secret put WORKER_AUTH_TOKEN
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# TIER CONFIRMATION (documentation-only, enforced at deploy gate)
+# ---------------------------------------------------------------------------
+# REQUIRED: Anthropic API account must be Tier 3 or above.
+# Verify at https://console.anthropic.com/settings/limits
+#
+# Tier 3 provides:
+#   - 4,000 requests/min for claude-sonnet-4-6
+#   - Sufficient headroom for 3-module fallback under load
+#
+# Below Tier 3, any meaningful fallback traffic will hit 429 rate limits
+# and the exponential backoff logic will exhaust retries without completing.
+#
+# The deploy script (scripts/deploy.sh) will prompt for tier confirmation
+# before pushing to production.
+# ---------------------------------------------------------------------------
