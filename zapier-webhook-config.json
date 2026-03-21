@@ -1,7 +1,10 @@
 {
   "zap_name": "Banana Pro AI Webhook → Content Calendar → Slack",
-  "version": "1.0",
+  "version": "1.1",
   "created": "2026-03-21",
+  "orchestrator_ref": "coastalkey-orchestrator.json",
+  "related_workflows": ["WF-2 (Social Approval to Buffer)", "WF-4 (Buffer Published to Airtable)"],
+  "stack_components": ["Banana Pro AI (content_creation)", "Airtable (crm)", "Zapier (orchestration)", "Slack (communications)", "Buffer (social_publishing)"],
 
   "airtable": {
     "base_id": "appUSnNgpDkcEOzhN",

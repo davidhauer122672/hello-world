@@ -1,5 +1,9 @@
 # Zapier Webhook Setup: Banana Pro AI → Content Calendar → Slack
 
+> Part of the Coastal Key AI Operations Platform (Module B: Social Automation)
+> Related workflows: **WF-2** (Social Approval to Buffer), **WF-4** (Buffer Published to Airtable)
+> Orchestrator config: `coastalkey-orchestrator.json`
+
 ## Quick Reference
 
 | Component | ID / Value |
@@ -7,6 +11,9 @@
 | Airtable Base | `appUSnNgpDkcEOzhN` (Untitled Base) |
 | Content Calendar Table | `tblEPr4f2lMz6ruxF` |
 | Status "Published" Choice | `selwTWAaVX1wLSqnM` |
+| Slack Channel | `#content-calendar` |
+| Content Pillars | Brand, CEO Journey |
+| Brand Voice | Institutional, authoritative, concise, risk-first |
 
 ---
 
@@ -115,3 +122,25 @@ Once the Instagram Zap is tested, duplicate it for each platform. Change only th
 | 5 | Threads | ✅ Ready |
 | 6 | Mighty | ❌ **Add to Airtable first** |
 | 7 | Alignable | ✅ Ready |
+
+---
+
+## How This Fits the Full Stack
+
+This webhook Zap handles **direct publish from Banana Pro AI**. It sits alongside these orchestrator workflows:
+
+| Workflow | Trigger | What It Does |
+|----------|---------|-------------|
+| **This Zap** | Banana Pro AI webhook (Post Published) | Creates Airtable record + Slack alert |
+| **WF-2** | Content Calendar Status = Approved | Pushes to Buffer + Slack confirm + Status → Scheduled |
+| **WF-4** | Buffer publish confirmation | Status → Published |
+
+The full content flow per the orchestrator:
+1. CEO submits brief to Nanobanana
+2. Nemotron drafts caption per platform
+3. Draft record created in Content Calendar (Status = Draft)
+4. Slack alert to `#ai-drafts` for CEO review
+5. CEO attaches Banana Pro AI asset, sets Status = Approved
+6. **WF-2** fires: Buffer post + Slack confirm + Status → Scheduled
+7. Buffer publishes → **WF-4** fires: Status → Published
+8. **This Zap** (alternative path): Banana Pro AI direct publish bypasses draft/approval

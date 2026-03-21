@@ -1,0 +1,124 @@
+{
+  "$schema": "coastalkey-orchestrator/v2.0",
+  "$meta": {
+    "purpose": "Single source of truth for Coastal Key AI operations platform. Load into Claude Code as project context.",
+    "version": "2.0.0",
+    "date": "2026-03-11",
+    "status": "PENDING_CEO_AUTHORIZATION",
+    "owner": "David Hauer",
+    "classification": "CONFIDENTIAL_CEO_ONLY",
+    "authorization_commands": {
+      "master": "AUTHORIZE MASTER ORCHESTRATOR",
+      "sentinel_only": "AUTHORIZE SENTINEL LAUNCH"
+    }
+  },
+  "entity": {
+    "legal_name": "Coastal Key Property Management LLC",
+    "dba": "Coastal Key Treasure Coast Asset Management",
+    "address": "1407 SE Legacy Cove Circle, Ste 100, Stuart, FL 34997",
+    "phone": "(772) 262-8341",
+    "email": "david@coastalkey-pm.com",
+    "web": "www.coastalkey-pm.com",
+    "founder_ceo": "David Hauer"
+  },
+  "stack": {
+    "ai_engine": {
+      "primary": {
+        "model_id": "@cf/nvidia/nemotron-3-120b-a12b",
+        "provider": "Cloudflare Workers AI",
+        "architecture": "Nvidia Nemotron-3 120B, 12B active params (MoE)",
+        "routing": "Cloudflare Worker with module tagging + Airtable logging"
+      },
+      "fallback": {
+        "model_id": "claude-sonnet-4-20250514",
+        "provider": "Anthropic API"
+      }
+    },
+    "ai_interface": "Nanobanana",
+    "crm": "Airtable",
+    "orchestration": "Zapier",
+    "outbound_dialer": "Atlas",
+    "call_execution": "Retell AI Phone System",
+    "content_creation": "Banana Pro AI",
+    "social_publishing": "Buffer",
+    "communications": "Slack",
+    "email": "Gmail via Zapier",
+    "long_tail_nurture": "Constant Contact"
+  },
+  "service_zones": [
+    "Vero Beach", "Sebastian", "Fort Pierce", "Port Saint Lucie",
+    "Jensen Beach", "Palm City", "Stuart", "Hobe Sound",
+    "Jupiter", "North Palm Beach"
+  ],
+  "pricing": {
+    "weekly_home_watch": { "amount": 395, "unit": "month" },
+    "biweekly_home_watch": { "amount": 295, "unit": "month" },
+    "monthly_home_watch": { "amount": 195, "unit": "month" },
+    "property_mgmt_oversight": { "amount": 95, "unit": "month", "qualifier": "from" },
+    "str_oversight": { "amount": 10, "unit": "percent_gross_rental" },
+    "maintenance_oversight": { "amount": 20, "unit": "percent_approved_cost" },
+    "keyholder": { "amount": 95, "unit": "visit" },
+    "concierge": { "amount": 95, "unit": "hour" },
+    "pre_storm": { "amount": 295, "unit": "event" },
+    "post_storm": { "amount": 500, "unit": "event" },
+    "first_inspection": { "amount": 0, "unit": "complimentary", "note": "Use as close tool" }
+  },
+  "brand_voice": {
+    "tone": "institutional, authoritative, concise, risk-first",
+    "reading_level": "9th grade max",
+    "rules": [
+      "Never use exclamation points",
+      "Never use em dashes",
+      "Never use filler: 'It is important to note', 'In conclusion', 'Furthermore'",
+      "First sentence delivers the point",
+      "Close every piece with risk frame or consequence statement"
+    ]
+  },
+  "workflows": {
+    "WF-1": {
+      "name": "New Lead Nurture",
+      "trigger": "Airtable Leads new record",
+      "actions": ["Run SCAA-1 Battle Plan (Zapier AI Actions)", "Slack #sales-alerts", "DM assigned agent", "Gmail CEO welcome email + launch video"]
+    },
+    "WF-2": {
+      "name": "Social Approval to Buffer",
+      "trigger": "Airtable Content Calendar Status = Approved",
+      "actions": ["Buffer post creation", "Slack #content-calendar confirmation", "Airtable Status → Scheduled"]
+    },
+    "WF-3": {
+      "name": "Investor Escalation",
+      "trigger": "Airtable Leads INVESTOR tag",
+      "actions": ["Slack #sales-alerts-high-value", "Gmail CEO investor email + presentation link", "Airtable follow-up task due 4 hours"]
+    },
+    "WF-4": {
+      "name": "Buffer Published to Airtable",
+      "trigger": "Buffer publish confirmation",
+      "actions": ["Airtable Status → Published"]
+    },
+    "WF-5": {
+      "name": "Video Brief to Production",
+      "trigger": "Airtable Video Production Status = Approved",
+      "actions": ["Assemble production brief", "Banana Pro AI thumbnail dispatch"]
+    },
+    "WF-6": {
+      "name": "Podcast Publish",
+      "trigger": "Airtable Podcast Production Status = Approved",
+      "actions": ["Buffer show notes push", "Slack #content-production"]
+    },
+    "WF-7": {
+      "name": "AI Log Write",
+      "trigger": "Every Nemotron inference call",
+      "actions": ["Airtable AI Log: module tag, input brief, output text"]
+    }
+  },
+  "slack_channels": [
+    "#sales-alerts",
+    "#sales-alerts-high-value",
+    "#content-calendar",
+    "#content-production",
+    "#ai-drafts"
+  ],
+  "airtable_tables": [
+    "Leads", "Content Calendar", "Video Production", "Podcast Production", "AI Log"
+  ]
+}
