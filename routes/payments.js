@@ -3,6 +3,7 @@ const router = express.Router();
 const stripe = require('../lib/stripe');
 const db = require('../lib/db');
 const { sendConfirmation } = require('../lib/mailer');
+const sheets = require('../lib/sheets');
 
 const PRICES = {
   consultation: { amount: 5000, label: 'Consultation (1 hour)' },
@@ -95,6 +96,7 @@ async function webhookHandler(req, res) {
       if (appointment) {
         console.log(`Payment confirmed for appointment ${appointmentId}`);
         await sendConfirmation(appointment);
+        sheets.updatePaymentStatus(appointmentId).catch(() => {});
       }
     }
   }

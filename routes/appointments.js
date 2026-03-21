@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/db');
+const sheets = require('../lib/sheets');
 
 // Get booked slots for a date
 router.get('/', (req, res) => {
@@ -25,6 +26,9 @@ router.post('/', (req, res) => {
 
   const result = db.createAppointment({ name, email, date, timeSlot, service });
   if (result.error) return res.status(409).json(result);
+
+  // Sync to Google Sheets (non-blocking)
+  sheets.appendAppointment(result).catch(() => {});
 
   res.status(201).json(result);
 });
