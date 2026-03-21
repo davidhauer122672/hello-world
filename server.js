@@ -4,8 +4,14 @@ const path = require('path');
 const { router: paymentsRouter, webhookHandler } = require('./routes/payments');
 const appointmentsRouter = require('./routes/appointments');
 const emailRouter = require('./routes/email');
+const socialRouter = require('./routes/social');
+const visualsRouter = require('./routes/visuals');
+const dripRouter = require('./routes/drip');
+const objectionsRouter = require('./routes/objections');
 const { startDailyReport, buildReport } = require('./lib/daily-report');
 const { sendSMS } = require('./lib/sms');
+const { startDripScheduler } = require('./lib/drip-engine');
+const { startPublishTracker } = require('./lib/social-publisher');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +33,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/payments', paymentsRouter);
 app.use('/api/appointments', appointmentsRouter);
 app.use('/api/email', emailRouter);
+app.use('/api/social', socialRouter);
+app.use('/api/visuals', visualsRouter);
+app.use('/api/drip', dripRouter);
+app.use('/api/objections', objectionsRouter);
 
 // Manual report trigger
 app.post('/api/report/send', async (req, res) => {
@@ -44,4 +54,6 @@ app.get('/api/report/preview', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   startDailyReport();
+  startDripScheduler();
+  startPublishTracker();
 });
