@@ -1,0 +1,96 @@
+{
+  "zap_name": "Banana Pro AI Webhook → Content Calendar → Slack",
+  "version": "1.0",
+  "created": "2026-03-21",
+
+  "airtable": {
+    "base_id": "appUSnNgpDkcEOzhN",
+    "base_name": "Untitled Base",
+    "table_id": "tblEPr4f2lMz6ruxF",
+    "table_name": "Content Calendar",
+    "field_mappings": {
+      "Post Title": {
+        "field_id": "fldDO8WWya6iMm5Gh",
+        "type": "singleLineText",
+        "zapier_source": "{{step1__title}}"
+      },
+      "Platform": {
+        "field_id": "fldDnzP4666RLB3Cq",
+        "type": "multipleSelects",
+        "zapier_source": "{{step1__platform}}",
+        "available_choices": [
+          { "id": "selfeKMmuI20eWTeV", "name": "Instagram" },
+          { "id": "selW6hedp8MxjWRAr", "name": "Facebook" },
+          { "id": "sel2TlxM5BwSgxtck", "name": "Alignable" },
+          { "id": "selyFw3VnIQMnbeUC", "name": "LinkedIn" },
+          { "id": "selniQVnECC9VYJ6w", "name": "Buffer" },
+          { "id": "selKPDhuxFALEQwAZ", "name": "Threads" }
+        ],
+        "missing_choices_to_add": ["Twitter", "Mighty"]
+      },
+      "Caption": {
+        "field_id": "fldgJXI5IAaWcyw89",
+        "type": "multilineText",
+        "zapier_source": "{{step1__caption}}"
+      },
+      "Asset": {
+        "field_id": "fldlbwkaiT9JBV18E",
+        "type": "multipleAttachments",
+        "zapier_source": "{{step1__imageurl}}"
+      },
+      "Post Date": {
+        "field_id": "fldFESTOO3wxMT4u2",
+        "type": "date",
+        "zapier_source": "{{step1__postdate}}"
+      },
+      "Content Pillar": {
+        "field_id": "fldHBUt4r7rBADkYJ",
+        "type": "singleSelect",
+        "zapier_source": "{{step1__contentpillar}}",
+        "available_choices": [
+          { "id": "sellHEA1MdE9T7jpr", "name": "CEO Journey" },
+          { "id": "selWN3R9Qn07L8SC5", "name": "Brand" }
+        ]
+      },
+      "Status": {
+        "field_id": "fldD2rgOO9z1MTs9U",
+        "type": "singleSelect",
+        "hardcoded_value": "Published",
+        "choice_id": "selwTWAaVX1wLSqnM"
+      },
+      "Notes": {
+        "field_id": "fld0hiWEXsL70GFpS",
+        "type": "multilineText",
+        "hardcoded_value": "Auto-published from Banana Pro AI"
+      }
+    }
+  },
+
+  "slack": {
+    "channel": "#content-calendar",
+    "bot_name": "Coastal Key Content",
+    "message_template": "📋 NEW POST PUBLISHED FROM BANANA PRO AI\nPlatform: {{step1__platform}}\nContent Pillar: {{step1__contentpillar}}\nPublished: {{step1__postdate}}\nCaption: {{step1__caption}}\n🔗 <https://airtable.com/appUSnNgpDkcEOzhN/tblEPr4f2lMz6ruxF/rec{{step2__id}}|View in Airtable>"
+  },
+
+  "webhook": {
+    "trigger": "Webhooks by Zapier → Catch Raw Hook",
+    "expected_payload": {
+      "title": "string — Post title",
+      "platform": "string — One of: Instagram, Facebook, LinkedIn, Twitter, Threads, Mighty, Alignable",
+      "caption": "string — Post caption/body text",
+      "imageurl": "string (URL) — Asset/image URL",
+      "postdate": "string (date) — Post date in YYYY-MM-DD format",
+      "contentpillar": "string — One of: CEO Journey, Brand"
+    }
+  },
+
+  "platform_zap_duplicates": [
+    { "platform": "Instagram", "status": "template" },
+    { "platform": "Facebook", "status": "pending" },
+    { "platform": "LinkedIn", "status": "pending" },
+    { "platform": "Twitter", "status": "pending", "note": "Add 'Twitter' choice to Platform field in Airtable first" },
+    { "platform": "Threads", "status": "pending" },
+    { "platform": "Mighty", "status": "pending", "note": "Add 'Mighty' choice to Platform field in Airtable first" },
+    { "platform": "Alignable", "status": "pending" }
+  ]
+}
