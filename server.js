@@ -4,6 +4,8 @@ const path = require('path');
 const { router: paymentsRouter, webhookHandler } = require('./routes/payments');
 const appointmentsRouter = require('./routes/appointments');
 const emailRouter = require('./routes/email');
+const { startDailyReport, buildReport } = require('./lib/daily-report');
+const { sendSMS } = require('./lib/sms');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +28,20 @@ app.use('/api/payments', paymentsRouter);
 app.use('/api/appointments', appointmentsRouter);
 app.use('/api/email', emailRouter);
 
+// Manual report trigger
+app.post('/api/report/send', async (req, res) => {
+  const report = buildReport();
+  await sendSMS(report);
+  res.json({ success: true, report });
+});
+
+// Preview report without sending
+app.get('/api/report/preview', (req, res) => {
+  const report = buildReport();
+  res.json({ report });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  startDailyReport();
 });

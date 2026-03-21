@@ -21,7 +21,9 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "googleapis": "^171.4.0",
+    "node-cron": "^4.2.1",
     "nodemailer": "^8.0.3",
-    "stripe": "^20.4.1"
+    "stripe": "^20.4.1",
+    "twilio": "^5.13.0"
   }
 }
