@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmed - CKPM Enterprise</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">CKPM Enterprise</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/book.html">Book Now</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="success-page">
+    <div class="check-icon">&#10003;</div>
+    <h1>Booking Confirmed!</h1>
+    <p>Your payment was successful. A confirmation email has been sent to your inbox.</p>
+
+    <div class="success-details" id="successDetails" style="display: none;">
+      <div class="detail-row">
+        <span class="detail-label">Service</span>
+        <span id="detailService">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Date</span>
+        <span id="detailDate">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Time</span>
+        <span id="detailTime">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Email</span>
+        <span id="detailEmail">-</span>
+      </div>
+    </div>
+
+    <a href="/" class="btn btn-primary">Back to Home</a>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 CKPM Enterprise. All rights reserved.</p>
+  </footer>
+
+  <script>
+    (async function () {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+      if (!sessionId) return;
+
+      try {
+        const res = await fetch(`/api/payments/session-status?session_id=${encodeURIComponent(sessionId)}`);
+        const data = await res.json();
+
+        if (data.appointment) {
+          const a = data.appointment;
+          const serviceLabels = {
+            consultation: 'Consultation (1 hour)',
+            followup: 'Follow-up (30 min)',
+            premium: 'Premium Session (2 hours)',
+          };
+          document.getElementById('detailService').textContent = serviceLabels[a.service] || a.service;
+          document.getElementById('detailDate').textContent = a.date;
+          document.getElementById('detailTime').textContent = a.timeSlot;
+          document.getElementById('detailEmail').textContent = data.customerEmail || a.email;
+          document.getElementById('successDetails').style.display = 'block';
+        }
+      } catch (err) {
+        console.error('Failed to load session details:', err);
+      }
+    })();
+  </script>
+</body>
+</html>
