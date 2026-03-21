@@ -17,15 +17,10 @@
 
 ---
 
-## BEFORE YOU START: Add Missing Platform Choices
+## Platform Choices (All Registered)
 
-The Content Calendar **Platform** field is missing two choices needed for the 6-platform duplication:
-
-1. Go to Airtable → Content Calendar → Platform column
-2. Add **Twitter** as a new choice
-3. Add **Mighty** as a new choice
-
-Current choices: Instagram, Facebook, Alignable, LinkedIn, Buffer, Threads
+All 8 platform choices are live in the Content Calendar Platform field:
+Instagram, Facebook, Alignable, LinkedIn, Buffer, Threads, **Twitter**, **Mighty**
 
 ---
 
@@ -118,9 +113,9 @@ Once the Instagram Zap is tested, duplicate it for each platform. Change only th
 | 1 | Instagram | ✅ Template Zap |
 | 2 | Facebook | ✅ Ready |
 | 3 | LinkedIn | ✅ Ready |
-| 4 | Twitter | ❌ **Add to Airtable first** |
+| 4 | Twitter | ✅ Ready |
 | 5 | Threads | ✅ Ready |
-| 6 | Mighty | ❌ **Add to Airtable first** |
+| 6 | Mighty | ✅ Ready |
 | 7 | Alignable | ✅ Ready |
 
 ---

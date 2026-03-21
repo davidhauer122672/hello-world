@@ -27,9 +27,10 @@
           { "id": "sel2TlxM5BwSgxtck", "name": "Alignable" },
           { "id": "selyFw3VnIQMnbeUC", "name": "LinkedIn" },
           { "id": "selniQVnECC9VYJ6w", "name": "Buffer" },
-          { "id": "selKPDhuxFALEQwAZ", "name": "Threads" }
-        ],
-        "missing_choices_to_add": ["Twitter", "Mighty"]
+          { "id": "selKPDhuxFALEQwAZ", "name": "Threads" },
+          { "id": "sel6CV0qUQDMaRKA1", "name": "Twitter" },
+          { "id": "sel2VCKxCx9Q6bEww", "name": "Mighty" }
+        ]
       },
       "Caption": {
         "field_id": "fldgJXI5IAaWcyw89",
@@ -91,9 +92,9 @@
     { "platform": "Instagram", "status": "template" },
     { "platform": "Facebook", "status": "pending" },
     { "platform": "LinkedIn", "status": "pending" },
-    { "platform": "Twitter", "status": "pending", "note": "Add 'Twitter' choice to Platform field in Airtable first" },
+    { "platform": "Twitter", "status": "pending" },
     { "platform": "Threads", "status": "pending" },
-    { "platform": "Mighty", "status": "pending", "note": "Add 'Mighty' choice to Platform field in Airtable first" },
+    { "platform": "Mighty", "status": "pending" },
     { "platform": "Alignable", "status": "pending" }
   ]
 }
