@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 });
 
 // Create a new appointment
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { name, email, date, timeSlot, service } = req.body;
 
   if (!name || !email || !date || !timeSlot || !service) {
@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
     return res.status(400).json({ error: 'Invalid email address' });
   }
 
-  const result = db.createAppointment({ name, email, date, timeSlot, service });
+  const result = await db.createAppointment({ name, email, date, timeSlot, service });
   if (result.error) return res.status(409).json(result);
 
   // Sync to Google Sheets (non-blocking)

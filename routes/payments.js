@@ -92,7 +92,7 @@ async function webhookHandler(req, res) {
     const appointmentId = session.metadata.appointmentId;
 
     if (appointmentId) {
-      const appointment = db.updateAppointment(appointmentId, { paid: true });
+      const appointment = await db.updateAppointment(appointmentId, { paid: true });
       if (appointment) {
         console.log(`Payment confirmed for appointment ${appointmentId}`);
         await sendConfirmation(appointment);

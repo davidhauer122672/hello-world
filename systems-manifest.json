@@ -1,0 +1,313 @@
+{
+  "manifest": {
+    "version": "2.0.0",
+    "generated": "2026-03-23",
+    "organization": "Coastal Key Treasure Coast Asset Management",
+    "platform": "Unified Operations Platform",
+    "classification": "Enterprise Home Watch & Asset Management"
+  },
+  "architecture": {
+    "runtime": "Node.js + Express 5",
+    "pattern": "Monolithic API with scheduled workers",
+    "persistence": "JSON flat-file with mutex locking",
+    "deployment": "Single-process with graceful shutdown",
+    "security_layers": ["rate_limiting", "security_headers", "cors", "input_size_limits", "centralized_error_handling"]
+  },
+  "systems": {
+    "core_operations": {
+      "appointment_engine": {
+        "status": "operational",
+        "files": ["lib/db.js", "routes/appointments.js"],
+        "capabilities": ["create", "read", "update", "double_booking_prevention", "mutex_protected_writes"],
+        "endpoints": [
+          "GET /api/appointments?date=YYYY-MM-DD",
+          "POST /api/appointments",
+          "GET /api/appointments/:id"
+        ],
+        "data_store": "data/appointments.json",
+        "integrations": ["stripe_payments", "google_sheets_sync", "email_confirmation"]
+      },
+      "payment_processing": {
+        "status": "operational",
+        "files": ["lib/stripe.js", "routes/payments.js"],
+        "provider": "Stripe",
+        "capabilities": ["checkout_session_creation", "webhook_verification", "payment_status_tracking"],
+        "endpoints": [
+          "POST /api/payments/create-checkout-session",
+          "GET /api/payments/session-status",
+          "POST /api/payments/webhook"
+        ],
+        "security": ["webhook_signature_verification", "raw_body_parsing"]
+      },
+      "daily_reporting": {
+        "status": "operational",
+        "files": ["lib/daily-report.js", "lib/sms.js"],
+        "schedule": "0 9 * * * (daily 9AM)",
+        "channels": ["sms_via_twilio"],
+        "capabilities": ["revenue_tracking", "schedule_summary", "manual_trigger"],
+        "endpoints": [
+          "POST /api/report/send",
+          "GET /api/report/preview"
+        ]
+      }
+    },
+    "marketing_automation": {
+      "drip_nurture_engine": {
+        "status": "operational",
+        "files": ["lib/drip-engine.js", "routes/drip.js"],
+        "replaces": "Constant Contact",
+        "sequence": {
+          "duration_days": 90,
+          "emails": 7,
+          "touchpoints": [1, 7, 14, 30, 45, 60, 90],
+          "purposes": ["risk_awareness", "case_study", "service_overview", "seasonal_urgency", "social_proof", "pricing_transparency", "ceo_invitation"]
+        },
+        "segments": ["absentee_homeowners", "luxury_1m_plus", "investor_family_office", "seasonal_snowbirds", "str_vacation_rental"],
+        "schedule": "0 * * * * (hourly processing)",
+        "capabilities": ["enrollment", "unsubscribe", "status_tracking", "segment_routing", "re_enrollment"],
+        "endpoints": [
+          "POST /api/drip/enroll",
+          "POST /api/drip/unsubscribe",
+          "GET /api/drip/status/:email",
+          "POST /api/drip/process"
+        ],
+        "data_store": "data/drip-sequences.json",
+        "brand_voice": {
+          "tone": "institutional",
+          "framing": "risk_first",
+          "reading_level": "9th_grade",
+          "prohibited": ["exclamation_points", "em_dashes", "filler_phrases"],
+          "closing_pattern": "consequence_statement"
+        }
+      },
+      "social_publishing": {
+        "status": "operational",
+        "files": ["lib/social-publisher.js", "routes/social.js"],
+        "platforms": ["instagram", "facebook", "linkedin", "alignable"],
+        "content_pillars": ["brand", "ceo_journey"],
+        "modes": ["buffer_api_automated", "manual_copy_paste_fallback"],
+        "capabilities": ["draft_creation", "approval_workflow", "buffer_push", "publish_tracking", "calendar_view"],
+        "schedule": "*/30 * * * * (publish status polling)",
+        "endpoints": [
+          "POST /api/social/draft",
+          "POST /api/social/approve/:id",
+          "GET /api/social/calendar",
+          "POST /api/social/publish/:id",
+          "GET /api/social/pending"
+        ],
+        "data_store": "data/content-calendar.json"
+      },
+      "visual_asset_generation": {
+        "status": "operational",
+        "files": ["lib/visual-generator.js", "routes/visuals.js"],
+        "asset_types": ["social_graphic", "thumbnail", "carousel_slide"],
+        "platform_dimensions": {
+          "instagram": "1080x1080",
+          "facebook": "1200x630",
+          "linkedin": "1200x627",
+          "youtube": "1280x720"
+        },
+        "capabilities": ["social_brief_generation", "thumbnail_brief_generation", "carousel_brief_generation", "segment_art_direction", "brand_palette_enforcement"],
+        "brand_palette": {
+          "navy": "#1B2A4A",
+          "white": "#FFFFFF",
+          "sand": "#D2C4A0",
+          "ocean_blue": "#2E86AB",
+          "seafoam": "#48BF84"
+        },
+        "endpoints": [
+          "POST /api/visuals/social-brief",
+          "POST /api/visuals/thumbnail-brief",
+          "POST /api/visuals/carousel-brief",
+          "GET /api/visuals/pending",
+          "POST /api/visuals/mark-generated/:id",
+          "GET /api/visuals/by-post/:postId"
+        ],
+        "data_store": "data/visual-briefs.json"
+      }
+    },
+    "sales_enablement": {
+      "objection_handler": {
+        "status": "operational",
+        "files": ["lib/objection-handler.js", "routes/objections.js"],
+        "ai_provider": "Anthropic Claude Sonnet",
+        "classification_methods": ["keyword_fast_path", "claude_api_fallback"],
+        "objection_types": ["competition_neighbor", "price", "urgency_absence", "delay_think", "delay_next_season", "competition_pm_company"],
+        "capabilities": ["real_time_classification", "scripted_reframes", "ai_generated_reframes", "retell_webhook_integration", "call_logging"],
+        "integrations": ["retell_ai_voice"],
+        "endpoints": [
+          "POST /api/objections/classify",
+          "POST /api/objections/reframe",
+          "POST /api/objections/retell-webhook",
+          "GET /api/objections/call-log"
+        ],
+        "data_store": "data/call-logs.json"
+      }
+    },
+    "infrastructure": {
+      "security": {
+        "status": "operational",
+        "files": ["middleware/security.js"],
+        "capabilities": {
+          "rate_limiting": "100 req/15min per IP, sliding window",
+          "security_headers": ["X-Content-Type-Options", "X-Frame-Options", "X-XSS-Protection", "HSTS", "Referrer-Policy", "Permissions-Policy"],
+          "cors": "configurable via CORS_ORIGIN env var",
+          "body_limit": "1MB JSON payload max"
+        }
+      },
+      "error_handling": {
+        "status": "operational",
+        "files": ["middleware/error-handler.js"],
+        "capabilities": ["centralized_error_middleware", "404_catch_all", "async_route_wrapper", "environment_aware_detail_exposure", "structured_error_logging"]
+      },
+      "data_integrity": {
+        "status": "operational",
+        "files": ["lib/mutex.js"],
+        "capabilities": ["promise_based_file_locking", "per_resource_serialization", "race_condition_prevention", "automatic_lock_cleanup"]
+      },
+      "backup_recovery": {
+        "status": "operational",
+        "files": ["lib/backup.js"],
+        "schedule": "0 2 * * * (daily 2AM)",
+        "retention": "7 days",
+        "capabilities": ["daily_json_snapshots", "automatic_pruning", "manual_trigger"],
+        "endpoint": "POST /api/backup/run",
+        "storage": "data/backups/YYYY-MM-DD/"
+      },
+      "health_monitoring": {
+        "status": "operational",
+        "files": ["routes/health.js"],
+        "checks": ["uptime", "memory_usage", "data_directory_writability", "data_file_integrity", "environment_validation", "runtime_info"],
+        "endpoint": "GET /api/health",
+        "statuses": ["healthy", "degraded", "unhealthy"]
+      },
+      "graceful_shutdown": {
+        "status": "operational",
+        "signals": ["SIGTERM", "SIGINT"],
+        "timeout_ms": 10000
+      }
+    },
+    "client_frontend": {
+      "status": "operational",
+      "files": ["public/index.html", "public/book.html", "public/success.html", "public/css/style.css", "public/js/calendar.js", "public/js/booking.js"],
+      "pages": {
+        "landing": "Service overview with Coastal Key branding",
+        "booking": "Interactive calendar with real-time slot availability",
+        "success": "Payment confirmation with appointment details"
+      },
+      "features": ["responsive_design", "interactive_calendar", "real_time_slot_checking", "stripe_checkout_redirect"]
+    },
+    "integrations": {
+      "status": "operational",
+      "files": ["lib/sheets.js", "lib/mailer.js"],
+      "google_sheets": {
+        "purpose": "Appointment data sync",
+        "direction": "write_only",
+        "capabilities": ["auto_header_creation", "row_append", "payment_status_update"]
+      },
+      "email_smtp": {
+        "purpose": "Transactional and drip emails",
+        "capabilities": ["appointment_confirmation", "90_day_drip_sequence"]
+      },
+      "twilio_sms": {
+        "purpose": "Owner daily reports",
+        "capabilities": ["daily_report_delivery", "manual_trigger"]
+      },
+      "stripe": {
+        "purpose": "Payment processing",
+        "capabilities": ["checkout_sessions", "webhook_verification"]
+      },
+      "buffer": {
+        "purpose": "Social media scheduling",
+        "capabilities": ["post_creation", "publish_status_polling"],
+        "fallback": "manual_mode"
+      },
+      "anthropic_claude": {
+        "purpose": "Sales objection AI",
+        "model": "claude-sonnet-4-20250514",
+        "capabilities": ["objection_classification", "reframe_generation"]
+      },
+      "retell_ai": {
+        "purpose": "Voice call integration",
+        "capabilities": ["call_lifecycle_webhooks", "transcript_processing"]
+      }
+    }
+  },
+  "data_stores": {
+    "appointments.json": {"purpose": "Booking records", "protection": "mutex_locked"},
+    "content-calendar.json": {"purpose": "Social media posts", "protection": "file_serialized"},
+    "drip-sequences.json": {"purpose": "Email nurture subscribers", "protection": "file_serialized"},
+    "visual-briefs.json": {"purpose": "AI visual generation briefs", "protection": "file_serialized"},
+    "call-logs.json": {"purpose": "Sales call transcripts and objections", "protection": "file_serialized"},
+    "backups/": {"purpose": "Daily snapshots", "retention": "7_days"}
+  },
+  "api_surface": {
+    "total_endpoints": 24,
+    "categories": {
+      "appointments": 3,
+      "payments": 3,
+      "email": 1,
+      "social": 5,
+      "visuals": 6,
+      "drip": 4,
+      "objections": 4,
+      "reports": 2,
+      "health": 1,
+      "backup": 1
+    }
+  },
+  "cron_schedules": {
+    "daily_report": "0 9 * * * — Owner SMS at 9 AM",
+    "drip_processing": "0 * * * * — Hourly email sends",
+    "publish_tracker": "*/30 * * * * — Buffer status polling",
+    "data_backup": "0 2 * * * — Daily snapshot at 2 AM"
+  },
+  "tech_stack": {
+    "runtime": "Node.js",
+    "framework": "Express 5.2",
+    "dependencies": {
+      "@anthropic-ai/sdk": "AI classification and reframes",
+      "dotenv": "Environment configuration",
+      "express": "HTTP server framework",
+      "googleapis": "Google Sheets integration",
+      "node-cron": "Scheduled task execution",
+      "nodemailer": "SMTP email delivery",
+      "stripe": "Payment processing",
+      "twilio": "SMS delivery"
+    },
+    "zero_dependency_additions": ["mutex", "rate_limiter", "security_headers", "cors", "error_handler", "health_check", "backup_system", "graceful_shutdown"]
+  },
+  "environment_variables": {
+    "required": ["PORT", "STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_WEBHOOK_SECRET", "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER", "OWNER_PHONE_NUMBER", "GOOGLE_SERVICE_ACCOUNT_KEY", "GOOGLE_SHEET_ID", "SITE_URL", "BUSINESS_NAME", "ANTHROPIC_API_KEY"],
+    "optional": ["GOOGLE_SHEET_NAME", "BUFFER_ACCESS_TOKEN", "BUFFER_PROFILE_INSTAGRAM", "BUFFER_PROFILE_FACEBOOK", "BUFFER_PROFILE_LINKEDIN", "BUFFER_PROFILE_ALIGNABLE", "CORS_ORIGIN", "NODE_ENV"]
+  },
+  "compliance": {
+    "security": {
+      "rate_limiting": true,
+      "security_headers": true,
+      "cors_policy": true,
+      "input_validation": true,
+      "payload_size_limits": true,
+      "webhook_signature_verification": true,
+      "graceful_shutdown": true,
+      "no_secrets_in_responses": true
+    },
+    "data_protection": {
+      "mutex_locking": true,
+      "daily_backups": true,
+      "backup_retention": "7_days",
+      "race_condition_prevention": true,
+      "centralized_error_handling": true,
+      "structured_error_logging": true
+    },
+    "operational": {
+      "health_endpoint": true,
+      "uptime_monitoring": true,
+      "memory_monitoring": true,
+      "data_integrity_checks": true,
+      "environment_validation": true,
+      "manual_backup_trigger": true,
+      "manual_report_trigger": true
+    }
+  }
+}
