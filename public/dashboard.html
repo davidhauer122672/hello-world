@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEO Dashboard — Coastal Key</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-brand">Coastal Key</div>
+      <span class="topbar-divider"></span>
+      <span class="topbar-label">Executive Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-date" id="topbar-date"></span>
+      <span class="health-dot" id="health-dot" title="System status"></span>
+      <button class="refresh-btn" id="refresh-btn" title="Refresh now">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.65 2.35A7.96 7.96 0 008 0C3.58 0 .01 3.58.01 8S3.58 16 8 16c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 018 14 6 6 0 012 8a6 6 0 016-6c1.66 0 3.14.69 4.22 1.78L9 7h7V0l-2.35 2.35z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="dashboard">
+
+    <!-- KPI Strip -->
+    <section class="kpi-strip">
+      <div class="kpi-card" id="kpi-today-rev">
+        <div class="kpi-label">Today</div>
+        <div class="kpi-value" id="kpi-today-val">--</div>
+        <div class="kpi-sub" id="kpi-today-sub"></div>
+      </div>
+      <div class="kpi-card" id="kpi-week-rev">
+        <div class="kpi-label">This Week</div>
+        <div class="kpi-value" id="kpi-week-val">--</div>
+        <div class="kpi-sub" id="kpi-week-sub"></div>
+      </div>
+      <div class="kpi-card" id="kpi-month-rev">
+        <div class="kpi-label">This Month</div>
+        <div class="kpi-value" id="kpi-month-val">--</div>
+        <div class="kpi-sub" id="kpi-month-sub"></div>
+      </div>
+      <div class="kpi-card" id="kpi-alltime-rev">
+        <div class="kpi-label">All-Time</div>
+        <div class="kpi-value" id="kpi-alltime-val">--</div>
+        <div class="kpi-sub" id="kpi-alltime-sub"></div>
+      </div>
+      <div class="kpi-card kpi-accent" id="kpi-drip">
+        <div class="kpi-label">Active Drip</div>
+        <div class="kpi-value" id="kpi-drip-val">--</div>
+        <div class="kpi-sub" id="kpi-drip-sub"></div>
+      </div>
+      <div class="kpi-card kpi-accent" id="kpi-briefs">
+        <div class="kpi-label">Pending Briefs</div>
+        <div class="kpi-value" id="kpi-briefs-val">--</div>
+        <div class="kpi-sub" id="kpi-briefs-sub"></div>
+      </div>
+    </section>
+
+    <!-- Row: Schedule + Revenue Breakdown -->
+    <section class="grid-row grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>Today's Schedule</h2>
+          <span class="card-badge" id="schedule-count">0</span>
+        </div>
+        <div class="card-body" id="schedule-body">
+          <div class="empty-state">No appointments today</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Revenue by Service</h2>
+        </div>
+        <div class="card-body" id="revenue-body">
+          <div class="empty-state">No revenue data</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Row: Social Calendar + Drip Campaign -->
+    <section class="grid-row grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>Social Calendar</h2>
+          <span class="card-badge" id="social-count">0</span>
+        </div>
+        <div class="card-body scrollable" id="social-body">
+          <div class="empty-state">No posts scheduled</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Drip Campaigns</h2>
+        </div>
+        <div class="card-body" id="drip-body">
+          <div class="empty-state">No subscribers</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Row: Call Logs + Briefs + Health -->
+    <section class="grid-row grid-3">
+      <div class="card">
+        <div class="card-header">
+          <h2>Recent Calls</h2>
+          <span class="card-badge" id="calls-count">0</span>
+        </div>
+        <div class="card-body scrollable" id="calls-body">
+          <div class="empty-state">No call logs</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Pending Briefs</h2>
+        </div>
+        <div class="card-body scrollable" id="briefs-body">
+          <div class="empty-state">No pending briefs</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>System Health</h2>
+          <span class="health-label" id="health-label">--</span>
+        </div>
+        <div class="card-body" id="health-body">
+          <div class="empty-state">Loading...</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="dashboard-footer">
+    <span>Coastal Key Treasure Coast Asset Management</span>
+    <span class="footer-sep">|</span>
+    <span id="last-updated">--</span>
+    <span class="footer-sep">|</span>
+    <span>Auto-refresh 60s</span>
+  </footer>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

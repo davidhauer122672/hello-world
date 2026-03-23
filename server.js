@@ -15,6 +15,7 @@ const visualsRouter = require('./routes/visuals');
 const dripRouter = require('./routes/drip');
 const objectionsRouter = require('./routes/objections');
 const healthRouter = require('./routes/health');
+const dashboardRouter = require('./routes/dashboard');
 
 // Services
 const { startDailyReport, buildReport } = require('./lib/daily-report');
@@ -48,6 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/health', healthRouter);
 
 // API routes
+app.use('/api/dashboard', dashboardRouter);
 app.use('/api/payments', paymentsRouter);
 app.use('/api/appointments', appointmentsRouter);
 app.use('/api/email', emailRouter);
