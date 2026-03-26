@@ -3,6 +3,9 @@
   "version": "2.0.0",
   "description": "Coastal Key Treasure Coast Asset Management - Unified Operations Platform",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "directories": {
     "lib": "lib"
   },
