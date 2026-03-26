@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>David Hauer, Founder &amp; CEO | Coastal Key Property Management</title>
+  <meta name="description" content="David Hauer is the Founder and CEO of Coastal Key Property Management, an institutional-grade asset management and home watch firm on Florida's Treasure Coast.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B1D3A;
+      --navy-deep: #061325;
+      --gold-gradient: linear-gradient(135deg, #E2C56D, #C9A84C, #A68523, #C9A84C, #E2C56D);
+      --gold-solid: #C9A84C;
+      --off-white: #F7F5F0;
+      --white: #FFFFFF;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: var(--white);
+      background: var(--navy-deep);
+      overflow-x: hidden;
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(6, 19, 37, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo img {
+      height: 36px;
+      width: auto;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-family: system-ui, -apple-system, sans-serif;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover { color: var(--gold-solid); }
+
+    /* ===== HERO: LION BACKGROUND ===== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0a1628 0%, #0d2847 30%, #0B1D3A 60%, #071a33 100%);
+      z-index: 1;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/img/lion-spirit.png');
+      background-size: cover;
+      background-position: center 20%;
+      background-repeat: no-repeat;
+      z-index: 2;
+      mix-blend-mode: luminosity;
+      opacity: 0.65;
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: linear-gradient(
+        180deg,
+        rgba(6, 19, 37, 0.1) 0%,
+        rgba(6, 19, 37, 0.15) 30%,
+        rgba(6, 19, 37, 0.6) 65%,
+        rgba(6, 19, 37, 0.95) 100%
+      );
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(6,19,37,0.5) 100%);
+    }
+
+    .hero-light {
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 60%;
+      height: 60%;
+      z-index: 5;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      padding: 0 60px 80px;
+      max-width: 720px;
+    }
+
+    .hero-overline {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .hero-name {
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-weight: 400;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+      margin-bottom: 32px;
+      font-style: italic;
+    }
+
+    .hero-line {
+      width: 80px;
+      height: 3px;
+      background: var(--gold-gradient);
+      border: none;
+      margin-bottom: 28px;
+    }
+
+    .hero-statement {
+      font-size: 17px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.75);
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 560px;
+    }
+
+    /* ===== BODY SECTIONS ===== */
+    .section {
+      padding: 100px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-dark {
+      background: var(--navy-deep);
+    }
+
+    .section-navy {
+      background: var(--navy);
+    }
+
+    .section-overline {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .section-heading {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 40px;
+      color: var(--white);
+    }
+
+    .section-body {
+      font-size: 16px;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.75);
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 680px;
+    }
+
+    .section-body + .section-body {
+      margin-top: 24px;
+    }
+
+    /* ===== CREDENTIALS GRID ===== */
+    .cred-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .cred-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 12px;
+      padding: 32px 28px;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .cred-card:hover {
+      border-color: rgba(201,168,76,0.3);
+      transform: translateY(-2px);
+    }
+
+    .cred-label {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .cred-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1.4;
+    }
+
+    .cred-detail {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      font-family: system-ui, -apple-system, sans-serif;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    /* ===== PHILOSOPHY SECTION ===== */
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      margin-top: 48px;
+    }
+
+    .philosophy-item {
+      position: relative;
+      padding-left: 24px;
+    }
+
+    .philosophy-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 3px;
+      height: 40px;
+      background: var(--gold-gradient);
+      border-radius: 2px;
+    }
+
+    .philosophy-item h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+
+    .philosophy-item p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.65);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* ===== GOVERNANCE METRICS ===== */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 32px;
+      margin-top: 48px;
+      text-align: center;
+    }
+
+    .metric-number {
+      font-size: 48px;
+      font-weight: 700;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .metric-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* ===== CTA ===== */
+    .cta-section {
+      text-align: center;
+      padding: 100px 40px;
+      background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 100%);
+    }
+
+    .cta-heading {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .cta-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,0.6);
+      font-family: system-ui, -apple-system, sans-serif;
+      margin-bottom: 40px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 16px 48px;
+      background: var(--gold-gradient);
+      color: var(--navy);
+      text-decoration: none;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201, 168, 76, 0.3);
+    }
+
+    .cta-phone {
+      margin-top: 24px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .cta-phone a {
+      color: var(--gold-solid);
+      text-decoration: none;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--navy-deep);
+      padding: 40px;
+      text-align: center;
+      border-top: 1px solid rgba(201,168,76,0.08);
+    }
+
+    .footer-trademark {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .hero-content { padding: 0 24px 60px; }
+      .section { padding: 60px 24px; }
+      .cta-section { padding: 60px 24px; }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-content > * {
+      animation: fadeUp 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    .hero-overline { animation-delay: 0.2s; }
+    .hero-name { animation-delay: 0.4s; }
+    .hero-title { animation-delay: 0.55s; }
+    .hero-line { animation-delay: 0.65s; }
+    .hero-statement { animation-delay: 0.75s; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/img/coastal-key-full-lockup-white.png"
+           srcset="assets/img/coastal-key-full-lockup-white_2x.png 2x"
+           alt="Coastal Key Property Management">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="unified-return.html">Unified Return</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><a href="team.html">Team Portal</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO: LION BACKGROUND -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-gradient"></div>
+      <div class="hero-vignette"></div>
+      <div class="hero-light"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-overline">Founder &amp; Chief Executive Officer</div>
+      <h1 class="hero-name">David Hauer</h1>
+      <p class="hero-title">Coastal Key Treasure Coast Asset Management</p>
+      <hr class="hero-line">
+      <p class="hero-statement">
+        Institutional discipline applied to residential property. Every asset under Coastal Key governance is treated as a fiduciary obligation. Risk is identified before it compounds. Standards are enforced, not suggested.
+      </p>
+    </div>
+  </section>
+
+  <!-- CREDENTIALS -->
+  <div class="section-dark">
+    <div class="section">
+      <div class="section-overline">Credentials</div>
+      <h2 class="section-heading">Licensed. Bonded. Accountable.</h2>
+      <p class="section-body">
+        Every license, certification, and accreditation Coastal Key holds exists for one reason: to eliminate ambiguity in the chain of custody between you and your property. Credentials are not marketing. They are proof of qualification.
+      </p>
+
+      <div class="cred-grid">
+        <div class="cred-card">
+          <div class="cred-label">Real Estate License</div>
+          <div class="cred-value">FL DBPR #SL3575566</div>
+          <div class="cred-detail">Florida Department of Business and Professional Regulation</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-label">CAM License</div>
+          <div class="cred-value">FL DBPR #CAM65337</div>
+          <div class="cred-detail">Community Association Manager, State of Florida</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-label">NHWA Accreditation</div>
+          <div class="cred-value">Member #5294</div>
+          <div class="cred-detail">National Home Watch Association, Accredited Member</div>
+        </div>
+        <div class="cred-card">
+          <div class="cred-label">Service Territory</div>
+          <div class="cred-value">10 Zones, Treasure Coast</div>
+          <div class="cred-detail">Vero Beach to North Palm Beach. $1M+ residential and commercial.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHILOSOPHY -->
+  <div class="section-navy">
+    <div class="section">
+      <div class="section-overline">Operating Philosophy</div>
+      <h2 class="section-heading">Risk Control. Cash Flow Stability. Controlled Growth.</h2>
+
+      <div class="philosophy-grid">
+        <div class="philosophy-item">
+          <h3>Fiduciary Standard</h3>
+          <p>Every property is treated as a fiduciary asset. Inspections are documented. Anomalies are escalated within 24 hours. There are no exceptions.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3>Governance First</h3>
+          <p>Margin discipline governs growth. Capital allocation requires written approval. All operations are audit-ready at all times. Board oversight is active and recorded.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3>Risk Before Revenue</h3>
+          <p>Every decision is evaluated through the lens of its impact on EBITDA and brand equity. If a decision increases revenue but increases uncontrolled risk, the answer is no.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3>AI-Augmented Operations</h3>
+          <p>AI flags risk. Humans approve material action. Automated monitoring detects anomalies between inspections. Technology reduces response time, not accountability.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOVERNANCE METRICS -->
+  <div class="section-dark">
+    <div class="section">
+      <div class="section-overline">Governance Standards</div>
+      <h2 class="section-heading">Operating by the Numbers</h2>
+      <p class="section-body">
+        These are not aspirational targets. They are enforced thresholds. If any metric falls outside its boundary, operations adjust until compliance is restored.
+      </p>
+
+      <div class="metrics-row">
+        <div>
+          <div class="metric-number">30%+</div>
+          <div class="metric-label">EBITDA Margin</div>
+        </div>
+        <div>
+          <div class="metric-number">70%+</div>
+          <div class="metric-label">Recurring Revenue</div>
+        </div>
+        <div>
+          <div class="metric-number">15%</div>
+          <div class="metric-label">Client Concentration Cap</div>
+        </div>
+        <div>
+          <div class="metric-number">95%+</div>
+          <div class="metric-label">Client Retention</div>
+        </div>
+        <div>
+          <div class="metric-number">7yr</div>
+          <div class="metric-label">Audit Trail Retention</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2 class="cta-heading">Request a Complimentary First Inspection</h2>
+    <p class="cta-sub">
+      The first step is a property walk. No cost. No obligation. You will receive a documented condition report within 48 hours.
+    </p>
+    <a href="index.html#contact" class="cta-btn">Schedule Inspection</a>
+    <div class="cta-phone">Or call directly: <a href="tel:+17722470982">(772) 247-0982</a></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-trademark">
+      www.coastalkey-pm.com is a trademarked brand, patented under Copyright protection, and owned and operated by Coastal Key Property Management LLC dba "Coastal Key".
+    </div>
+  </footer>
+
+  <link rel="stylesheet" href="assets/css/overlay-audit.css">
+  <script src="assets/js/site-enhancements.js"></script>
+</body>
+</html>
