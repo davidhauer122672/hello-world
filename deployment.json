@@ -1,0 +1,32 @@
+{
+  "project": "coastalkey-pm",
+  "deployment": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "Navigate to project directory",
+        "command": "cd ~/Downloads/coastalkey-pm"
+      },
+      {
+        "step": 2,
+        "action": "Run audit fix script",
+        "command": "python3 ck-audit-fix.py"
+      },
+      {
+        "step": 3,
+        "action": "Deploy to Cloudflare Pages",
+        "command": "wrangler pages deploy . --project-name=coastalkey-pm"
+      },
+      {
+        "step": 4,
+        "action": "Purge Cloudflare cache",
+        "command": "Purge cache via Cloudflare dashboard or API"
+      }
+    ],
+    "notes": [
+      "Ensure the ck-audit-fix.py script is copied to the site directory before running",
+      "Wrangler must be installed and authenticated",
+      "Purge Cloudflare cache after deployment completes"
+    ]
+  }
+}
