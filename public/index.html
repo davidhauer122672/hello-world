@@ -57,7 +57,11 @@
         </a>
       </div>
 
-      <a href="/book.html" class="nav-cta">Request Assessment</a>
+      <div class="nav-actions">
+        <a href="tel:+17722470982" class="nav-phone" aria-label="Call us">(772) 247-0982</a>
+        <a href="/team.html" class="nav-team-btn">Team Portal</a>
+        <a href="/book.html" class="nav-cta">Request Assessment</a>
+      </div>
 
       <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">
         <span></span><span></span><span></span>
@@ -102,31 +106,116 @@
     </div>
   </section>
 
-  <!-- ============ SERVICES ============ -->
+  <!-- ============ SERVICES — 4-Tab Layout ============ -->
   <section class="section section-services" id="services">
     <div class="section-inner">
       <span class="section-label">Services</span>
       <h2 class="section-heading">Structured Oversight.<br>Documented Accountability.</h2>
-      <div class="services-grid">
-        <div class="service-item">
-          <div class="service-number">01</div>
-          <h3>Baseline Property Assessment</h3>
-          <p>Comprehensive interior and exterior inspection with timestamped photography and a written condition report. Establishes your property's documented baseline.</p>
-          <div class="service-price">$50</div>
-        </div>
-        <div class="service-item">
-          <div class="service-number">02</div>
-          <h3>Recurring Oversight Program</h3>
-          <p>Scheduled inspections at the cadence you choose. Each visit generates a standardized report tracking condition changes against your baseline.</p>
-          <div class="service-price">$30 <span>/visit</span></div>
-        </div>
-        <div class="service-item">
-          <div class="service-number">03</div>
-          <h3>Premium Systems Audit</h3>
-          <p>Deep-dive covering HVAC, plumbing, electrical, roofing, and structural systems with insurance-grade documentation and vendor coordination.</p>
-          <div class="service-price">$100</div>
+
+      <!-- Service Category Tabs -->
+      <div class="service-tabs" role="tablist">
+        <button class="service-tab active" role="tab" data-tab="single-family" aria-selected="true">Single-Family</button>
+        <button class="service-tab" role="tab" data-tab="hoa" aria-selected="false">HOA</button>
+        <button class="service-tab" role="tab" data-tab="portfolios" aria-selected="false">Portfolios</button>
+        <button class="service-tab" role="tab" data-tab="investors-tab" aria-selected="false">Investors</button>
+      </div>
+
+      <!-- Single-Family Panel -->
+      <div class="service-panel active" id="panel-single-family" role="tabpanel">
+        <div class="services-grid">
+          <div class="service-item">
+            <div class="service-number">01</div>
+            <h3>Baseline Property Assessment</h3>
+            <p>Comprehensive interior and exterior inspection with timestamped photography and a written condition report. Establishes your property's documented baseline.</p>
+            <div class="service-price">$50</div>
+          </div>
+          <div class="service-item">
+            <div class="service-number">02</div>
+            <h3>Recurring Oversight Program</h3>
+            <p>Scheduled inspections at the cadence you choose. Each visit generates a standardized report tracking condition changes against your baseline.</p>
+            <div class="service-price">$30 <span>/visit</span></div>
+          </div>
+          <div class="service-item">
+            <div class="service-number">03</div>
+            <h3>Premium Systems Audit</h3>
+            <p>Deep-dive covering HVAC, plumbing, electrical, roofing, and structural systems with insurance-grade documentation and vendor coordination.</p>
+            <div class="service-price">$100</div>
+          </div>
         </div>
       </div>
+
+      <!-- HOA Panel -->
+      <div class="service-panel" id="panel-hoa" role="tabpanel">
+        <div class="services-grid">
+          <div class="service-item">
+            <div class="service-number">01</div>
+            <h3>Common Area Inspections</h3>
+            <p>Systematic walkthroughs of pools, clubhouses, parking structures, and shared amenities with photographic evidence and Board-ready reports.</p>
+            <div class="service-price">Custom</div>
+          </div>
+          <div class="service-item">
+            <div class="service-number">02</div>
+            <h3>Vendor Compliance Monitoring</h3>
+            <p>Verification that landscape, janitorial, and maintenance vendors are meeting contractual obligations. COI tracking and performance scoring included.</p>
+            <div class="service-price">Custom</div>
+          </div>
+          <div class="service-item">
+            <div class="service-number">03</div>
+            <h3>Storm Protocol Management</h3>
+            <p>Pre-storm securing, post-storm damage assessment, and FEMA documentation coordination for community-wide assets and infrastructure.</p>
+            <div class="service-price">Custom</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portfolios Panel -->
+      <div class="service-panel" id="panel-portfolios" role="tabpanel">
+        <div class="services-grid">
+          <div class="service-item">
+            <div class="service-number">01</div>
+            <h3>Multi-Property Oversight</h3>
+            <p>Centralized inspection scheduling, unified reporting dashboard, and cross-property risk scoring for portfolios of 5+ residential assets.</p>
+            <div class="service-price">Custom</div>
+          </div>
+          <div class="service-item">
+            <div class="service-number">02</div>
+            <h3>Vacancy Risk Management</h3>
+            <p>Proactive monitoring of unoccupied units with insurance-compliant check-in cadence, utility verification, and occupancy documentation.</p>
+            <div class="service-price">Custom</div>
+          </div>
+          <div class="service-item">
+            <div class="service-number">03</div>
+            <h3>Institutional Reporting</h3>
+            <p>Audit-ready condition reports, capital expenditure tracking, and risk assessment summaries formatted for LP and Board presentations.</p>
+            <div class="service-price">Custom</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Investors Panel -->
+      <div class="service-panel" id="panel-investors-tab" role="tabpanel">
+        <div class="services-grid">
+          <div class="service-item">
+            <div class="service-number">01</div>
+            <h3>Franchise Opportunity</h3>
+            <p>Replicate the Coastal Key operating model in your market. Full playbook, technology stack, and training protocol included.</p>
+            <div class="service-price">Inquire</div>
+          </div>
+          <div class="service-item">
+            <div class="service-number">02</div>
+            <h3>Capital Partnership</h3>
+            <p>Strategic investment in Coastal Key's expansion across Florida and beyond. Institutional-grade operations with documented unit economics.</p>
+            <div class="service-price">Inquire</div>
+          </div>
+          <div class="service-item">
+            <div class="service-number">03</div>
+            <h3>White-Label Platform</h3>
+            <p>License the Coastal Key technology and process framework for deployment under your existing property management brand.</p>
+            <div class="service-price">Inquire</div>
+          </div>
+        </div>
+      </div>
+
       <div class="services-cta-row">
         <a href="/book.html" class="btn-outline">Schedule an Inspection</a>
       </div>
@@ -187,6 +276,8 @@
       </div>
       <div class="footer-legal">
         <p>&copy; 2026 Coastal Key Treasure Coast Asset Management. All rights reserved.</p>
+        <p class="footer-license">Florida Licensed Property Management | Treasure Coast, FL</p>
+        <p class="footer-contact-line"><a href="tel:+17722470982">(772) 247-0982</a></p>
       </div>
     </div>
   </footer>
@@ -215,6 +306,17 @@
           nav.classList.remove('nav-open');
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+      });
+    });
+
+    /* Service tabs */
+    document.querySelectorAll('.service-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.service-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        document.querySelectorAll('.service-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
       });
     });
 
