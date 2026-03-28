@@ -1,0 +1,105 @@
+name: 'Download file'
+description: |
+  Downloads a file from the specified URL to the given directory.
+  Supports bearer authentication, as well as custom headers.
+author: 'JetBrains'
+
+inputs:
+  url:
+    description: 'The URL of a file to download.'
+    required: true
+  output_dir:
+    description: |
+      The absolute (/var/log/, C:\logs\) or relative to the agent working directory (./logs/) path where the file should be saved.
+      Creates the required directory if no such path exists.
+      Use '.' to save file to the working dir.
+    required: true
+  filename:
+    description: 'The name of the saved file. Leave this property empty to retain the original file name.'
+    required: false
+    default: ''
+  bearer_token:
+    description: 'The optional Bearer Token value.'
+    required: false
+    default: ''
+  headers:
+    description: "The newline-delimited list of headers in the 'Header-Name: Header-Value' format."
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Download File
+      shell: bash
+      env:
+        INPUT_URL: ${{ inputs.url }}
+        INPUT_OUTPUT_DIR: ${{ inputs.output_dir }}
+        INPUT_FILENAME: ${{ inputs.filename }}
+        INPUT_BEARER_TOKEN: ${{ inputs.bearer_token }}
+        INPUT_HEADERS: ${{ inputs.headers }}
+      run: |
+        set -euo pipefail
+
+        URL="${INPUT_URL}"
+        OUTPUT_DIR="${INPUT_OUTPUT_DIR}"
+        FILENAME="${INPUT_FILENAME}"
+        BEARER_TOKEN="${INPUT_BEARER_TOKEN}"
+        HEADERS="${INPUT_HEADERS}"
+
+        if [ -z "$URL" ]; then
+          echo "::error::Input 'url' is required but not set."
+          exit 1
+        fi
+
+        if [ -z "$OUTPUT_DIR" ]; then
+          echo "::error::Input 'output_dir' is required but not set."
+          exit 1
+        fi
+
+        # Create output directory if it doesn't exist
+        if [ -e "$OUTPUT_DIR" ] && [ ! -d "$OUTPUT_DIR" ]; then
+          echo "::error::Destination already exists and is not a directory: $OUTPUT_DIR"
+          exit 1
+        fi
+        mkdir -p "$OUTPUT_DIR"
+
+        # Determine file name
+        if [ -z "$FILENAME" ]; then
+          FILENAME="${URL##*/}"
+          # Strip query string and fragment from filename
+          FILENAME="${FILENAME%%\?*}"
+          FILENAME="${FILENAME%%#*}"
+          if [ -z "$FILENAME" ]; then
+            FILENAME="downloaded_file"
+          fi
+        fi
+
+        TARGET_FILE="${OUTPUT_DIR%/}/${FILENAME}"
+
+        # Build curl command
+        CURL_ARGS=(-fSL --retry 3 -o "$TARGET_FILE")
+
+        if [ -n "$BEARER_TOKEN" ]; then
+          CURL_ARGS+=(-H "Authorization: Bearer ${BEARER_TOKEN}")
+        fi
+
+        # Parse additional headers
+        if [ -n "$HEADERS" ]; then
+          while IFS= read -r header; do
+            header="$(echo "$header" | xargs)"
+            if [ -z "$header" ]; then
+              continue
+            fi
+            if [[ "$header" != *":"* ]]; then
+              echo "::error::Invalid header format: '$header'. Expected format: 'Header-Name: Value'"
+              exit 1
+            fi
+            CURL_ARGS+=(-H "$header")
+          done <<< "$HEADERS"
+        fi
+
+        echo "Downloading file from: ${URL}"
+        curl "${CURL_ARGS[@]}" "$URL"
+
+        echo "File downloaded to: $(realpath "$TARGET_FILE")"
