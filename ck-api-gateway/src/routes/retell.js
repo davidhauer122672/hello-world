@@ -2,13 +2,29 @@
  * Retell Webhook Route — POST /v1/webhook/retell
  *
  * Receives Retell call events, filters for call_analyzed,
- * creates a Lead record, sends Slack notification.
- * This is the gateway-integrated version of the standalone sentinel-webhook.
+ * then splits routing:
+ *   - Engaged calls (user_hangup, agent_hangup) → Leads table + Slack
+ *   - Failed calls (inactivity_timeout, machine_hangup, error) → Missed/Failed Calls table (QA dashboard)
+ *
+ * The QA path feeds directly into Sentinel prompt tuning.
  */
 
 import { createRecord, TABLES } from '../services/airtable.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse } from '../utils/response.js';
+
+// ── Missed/Failed Calls table (QA dashboard for prompt tuning) ──
+const MISSED_CALLS_TABLE = 'tblWW25r6GmsQe3mQ';
+
+// ── Disconnection reasons that indicate failed engagement ──
+const FAILED_REASONS = new Set(['inactivity_timeout', 'machine_hangup', 'error']);
+
+// ── Failed reason → Airtable Failure Reason dropdown ──
+const FAILURE_REASON_MAP = {
+  'inactivity_timeout': 'Inactivity Timeout',
+  'machine_hangup':     'Machine Hangup',
+  'error':              'Error',
+};
 
 // ── Retell disconnection_reason → Airtable Call Disposition ──
 const DISPOSITION_MAP = {
@@ -101,7 +117,64 @@ export async function handleRetellWebhook(request, env, ctx) {
   const zoneKey = (metadata.region || metadata.service_zone || dynVars.service_zone || '').toLowerCase();
   if (ZONE_MAP[zoneKey]) fields['Service Zone'] = { name: ZONE_MAP[zoneKey] };
 
-  // ── Create lead ──
+  // ── SPLIT ROUTING: Failed calls → QA table, Engaged calls → Leads ──
+  const isFailed = FAILED_REASONS.has(call.disconnection_reason);
+
+  if (isFailed) {
+    // ── Route to Missed/Failed Calls table (QA dashboard) ──
+    const failedFields = {
+      'Call Reference': call.call_id || `sentinel-${Date.now()}`,
+      'Failure Reason': { name: FAILURE_REASON_MAP[call.disconnection_reason] || 'No Answer' },
+      'Call Duration (seconds)': durationSec,
+      'QA Status': { name: 'Pending Review' },
+    };
+
+    if (phone) failedFields['Phone Number'] = phone;
+    if (transcript) failedFields['Transcript'] = transcript.slice(0, 100000);
+    if (call.direction) failedFields['Call Direction'] = { name: call.direction === 'inbound' ? 'Inbound' : 'Outbound' };
+    if (call.start_timestamp) failedFields['Call Timestamp'] = new Date(call.start_timestamp).toISOString();
+    if (SEGMENT_MAP[segmentKey]) failedFields['Sentinel Segment'] = { name: SEGMENT_MAP[segmentKey] };
+    if (ZONE_MAP[zoneKey]) failedFields['Service Zone'] = { name: ZONE_MAP[zoneKey] };
+
+    const failedRecord = await createRecord(env, MISSED_CALLS_TABLE, failedFields);
+
+    // Also create a lead record (for pipeline completeness) and link it
+    const leadRecord = await createRecord(env, TABLES.LEADS, fields);
+
+    // Link the failed call record to the lead (fire-and-forget)
+    ctx.waitUntil(
+      fetch(`https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/${MISSED_CALLS_TABLE}`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${env.AIRTABLE_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ records: [{ id: failedRecord.id, fields: { 'Related Lead': [leadRecord.id] } }] }),
+      }).catch(err => console.error('Failed to link records:', err))
+    );
+
+    // Slack alert for failed calls (different format)
+    if (env.SLACK_WEBHOOK_URL) {
+      ctx.waitUntil(sendSlackFailedAlert(env, call.call_id, phone, call.disconnection_reason, durationSec, transcript, failedRecord.id));
+    }
+
+    writeAudit(env, ctx, {
+      route: '/v1/webhook/retell',
+      path: 'missed_failed',
+      callId: call.call_id,
+      failedRecordId: failedRecord.id,
+      leadRecordId: leadRecord.id,
+      reason: call.disconnection_reason,
+      durationSec,
+    });
+
+    return jsonResponse({
+      success: true,
+      routed_to: 'missed_failed_calls',
+      missed_call_record_id: failedRecord.id,
+      lead_record_id: leadRecord.id,
+      failure_reason: call.disconnection_reason,
+    });
+  }
+
+  // ── Engaged call → Leads table (standard path) ──
   const record = await createRecord(env, TABLES.LEADS, fields);
 
   // ── Slack notification (fire-and-forget) ──
@@ -111,6 +184,7 @@ export async function handleRetellWebhook(request, env, ctx) {
 
   writeAudit(env, ctx, {
     route: '/v1/webhook/retell',
+    path: 'lead_created',
     callId: call.call_id,
     recordId: record.id,
     leadName,
@@ -120,6 +194,7 @@ export async function handleRetellWebhook(request, env, ctx) {
 
   return jsonResponse({
     success: true,
+    routed_to: 'leads',
     airtable_record_id: record.id,
     lead_name: leadName,
   });
@@ -134,6 +209,39 @@ function normalizeTranscript(transcript) {
       .join('\n');
   }
   return JSON.stringify(transcript);
+}
+
+async function sendSlackFailedAlert(env, callId, phone, reason, duration, transcript, recordId) {
+  const excerpt = transcript ? transcript.slice(0, 500) + (transcript.length > 500 ? '...' : '') : 'No transcript available';
+  const airtableLink = `https://airtable.com/${env.AIRTABLE_BASE_ID}/${MISSED_CALLS_TABLE}/${recordId}`;
+
+  const message = {
+    blocks: [
+      { type: 'header', text: { type: 'plain_text', text: `Failed Sentinel Call — QA Review Needed` } },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*Call ID:*\n\`${callId || 'N/A'}\`` },
+          { type: 'mrkdwn', text: `*Phone:*\n${phone || 'N/A'}` },
+          { type: 'mrkdwn', text: `*Failure:*\n${FAILURE_REASON_MAP[reason] || reason}` },
+          { type: 'mrkdwn', text: `*Duration:*\n${duration}s` },
+        ],
+      },
+      { type: 'section', text: { type: 'mrkdwn', text: `*Transcript:*\n\`\`\`${excerpt}\`\`\`` } },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: `This call has been routed to the *Missed/Failed Calls* QA dashboard for prompt tuning review.` }] },
+      { type: 'actions', elements: [{ type: 'button', text: { type: 'plain_text', text: 'Review in Airtable' }, url: airtableLink, style: 'danger' }] },
+    ],
+  };
+
+  try {
+    await fetch(env.SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(message),
+    });
+  } catch (err) {
+    console.error('Slack failed call notification failed:', err);
+  }
 }
 
 async function sendSlackAlert(env, leadName, phone, disposition, segment, duration, transcript, recordId) {

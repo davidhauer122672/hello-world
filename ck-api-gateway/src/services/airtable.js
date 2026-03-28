@@ -31,6 +31,7 @@ export const TABLES = {
   DEPLOYMENT_TRACKER:   'tblGkLHXDiUkKttXq',
   NOTEBOOKLM_IMPORTS:   'tblmk7HdK3nn7RBaH',
   INCOMPLETE_LEADS:     'tblYh4Rg4NxkRstJl',
+  MISSED_FAILED_CALLS:  'tblWW25r6GmsQe3mQ',
 };
 
 /**

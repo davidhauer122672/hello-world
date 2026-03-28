@@ -1,6 +1,9 @@
 /**
- * Slack — Posts Sentinel lead notification to the sales channel.
+ * Slack — Posts Sentinel notifications to the sales channel.
+ * Two paths: engaged leads (green) and failed calls (red/QA review).
  */
+
+const MISSED_CALLS_TABLE_ID = 'tblWW25r6GmsQe3mQ';
 
 /**
  * Send a formatted Slack notification for a new Sentinel lead.
@@ -72,5 +75,50 @@ export async function sendSlackNotification(env, fields, record, call) {
 
   if (!response.ok) {
     console.error(`Slack notification failed (${response.status}): ${await response.text()}`);
+  }
+}
+
+/**
+ * Send a Slack notification for a failed/missed Sentinel call (QA path).
+ * @param {object} env
+ * @param {object} call — Raw Retell call object
+ * @param {object} failedRecord — Created Missed/Failed Calls Airtable record
+ */
+export async function sendSlackFailedCallNotification(env, call, failedRecord) {
+  const webhookUrl = env.SLACK_WEBHOOK_URL;
+  if (!webhookUrl) return;
+
+  const transcript = call.transcript
+    ? (typeof call.transcript === 'string' ? call.transcript : JSON.stringify(call.transcript))
+    : '';
+  const excerpt = transcript.slice(0, 500) + (transcript.length > 500 ? '...' : '') || 'No transcript available';
+  const airtableLink = `https://airtable.com/${env.AIRTABLE_BASE_ID}/${MISSED_CALLS_TABLE_ID}/${failedRecord.id}`;
+  const phone = call.direction === 'inbound' ? (call.from_number || '') : (call.to_number || '');
+  const durationSec = call.duration_ms ? Math.round(call.duration_ms / 1000) : 0;
+
+  const reasonMap = { inactivity_timeout: 'Inactivity Timeout', machine_hangup: 'Machine Hangup', error: 'Error' };
+
+  const message = {
+    blocks: [
+      { type: 'header', text: { type: 'plain_text', text: 'Failed Sentinel Call — QA Review Needed' } },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*Call ID:*\n\`${call.call_id || 'N/A'}\`` },
+          { type: 'mrkdwn', text: `*Phone:*\n${phone || 'N/A'}` },
+          { type: 'mrkdwn', text: `*Failure:*\n${reasonMap[call.disconnection_reason] || call.disconnection_reason}` },
+          { type: 'mrkdwn', text: `*Duration:*\n${durationSec}s` },
+        ],
+      },
+      { type: 'section', text: { type: 'mrkdwn', text: `*Transcript:*\n\`\`\`${excerpt}\`\`\`` } },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: 'Routed to *Missed/Failed Calls* QA dashboard for prompt tuning review.' }] },
+      { type: 'actions', elements: [{ type: 'button', text: { type: 'plain_text', text: 'Review in Airtable' }, url: airtableLink, style: 'danger' }] },
+    ],
+  };
+
+  try {
+    await fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(message) });
+  } catch (err) {
+    console.error('Slack failed call notification error:', err);
   }
 }

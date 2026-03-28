@@ -7,8 +7,11 @@
  */
 
 import { transformRetellToAirtable } from './transform.js';
-import { createAirtableRecord } from './airtable.js';
-import { sendSlackNotification } from './slack.js';
+import { createAirtableRecord, createMissedCallRecord } from './airtable.js';
+import { sendSlackNotification, sendSlackFailedCallNotification } from './slack.js';
+
+// ── Disconnection reasons that indicate failed engagement ──
+const FAILED_REASONS = new Set(['inactivity_timeout', 'machine_hangup', 'error']);
 
 export default {
   async fetch(request, env) {
@@ -44,7 +47,27 @@ export default {
       // ── Step 2: Transform Retell payload → Airtable fields ──
       const fields = transformRetellToAirtable(call);
 
-      // ── Step 3: Create Airtable record ──
+      // ── Step 3: Split routing — failed calls go to QA table ──
+      const isFailed = FAILED_REASONS.has(call.disconnection_reason);
+
+      if (isFailed) {
+        // Route to Missed/Failed Calls QA dashboard
+        const failedRecord = await createMissedCallRecord(env, call, fields);
+        // Also create lead for pipeline completeness
+        const leadRecord = await createAirtableRecord(env, fields);
+        // Slack alert for QA
+        await sendSlackFailedCallNotification(env, call, failedRecord);
+
+        return json({
+          success: true,
+          routed_to: 'missed_failed_calls',
+          missed_call_record_id: failedRecord.id,
+          lead_record_id: leadRecord.id,
+          failure_reason: call.disconnection_reason,
+        });
+      }
+
+      // ── Standard path: engaged calls → Leads ──
       const record = await createAirtableRecord(env, fields);
 
       // ── Step 4: Slack notification ──
@@ -52,6 +75,7 @@ export default {
 
       return json({
         success: true,
+        routed_to: 'leads',
         airtable_record_id: record.id,
         lead_name: fields['Lead Name'],
       });

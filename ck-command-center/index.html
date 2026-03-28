@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key — Agent Command Center</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;--bg4:#22223a;
+  --text:#e8e8f0;--text2:#9898b0;--text3:#5858708;
+  --accent:#4f8fff;--accent2:#7c5cfc;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;
+  --border:#2a2a3e;--radius:10px;--shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+
+/* ── Layout ── */
+.app{display:grid;grid-template-columns:260px 1fr;grid-template-rows:64px 1fr;min-height:100vh}
+.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:10}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto}
+.main{padding:24px;overflow-y:auto;background:var(--bg)}
+
+/* ── Topbar ── */
+.logo{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;letter-spacing:-0.5px}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.health-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600}
+.health-badge.healthy{background:rgba(34,197,94,0.15);color:var(--green)}
+.health-badge.degraded{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.health-badge.critical{background:rgba(239,68,68,0.15);color:var(--red)}
+.health-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
+.health-badge.healthy .health-dot{background:var(--green)}
+.health-badge.degraded .health-dot{background:var(--yellow)}
+.health-badge.critical .health-dot{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.config-bar{display:flex;gap:8px;align-items:center}
+.config-bar input{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:13px;width:280px}
+.config-bar button{background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-weight:600}
+.config-bar button:hover{opacity:.9}
+
+/* ── Sidebar ── */
+.sidebar-section{padding:4px 16px;margin-bottom:8px}
+.sidebar-section h3{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:14px;color:var(--text2);transition:all .15s;border-left:3px solid transparent}
+.nav-item:hover,.nav-item.active{background:var(--bg3);color:var(--text);border-left-color:var(--accent)}
+.nav-item .count{margin-left:auto;background:var(--bg4);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.div-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* ── Stats Grid ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:transform .15s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:4px}
+.stat-value{font-size:32px;font-weight:700;letter-spacing:-1px}
+.stat-value.green{color:var(--green)}.stat-value.yellow{color:var(--yellow)}.stat-value.red{color:var(--red)}.stat-value.blue{color:var(--accent)}
+
+/* ── Search / Filter Bar ── */
+.filter-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.filter-bar input,.filter-bar select{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-size:13px}
+.filter-bar input{flex:1;min-width:200px}
+.filter-bar select{min-width:140px}
+
+/* ── Agent Grid ── */
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.agent-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.agent-card:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.agent-card .agent-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.agent-id{font-size:11px;font-family:monospace;color:var(--text2);background:var(--bg);padding:2px 6px;border-radius:4px}
+.agent-name{font-size:15px;font-weight:600;margin-bottom:4px}
+.agent-role{font-size:12px;color:var(--text2);margin-bottom:8px}
+.agent-desc{font-size:12px;color:var(--text2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.status-badge.active{background:rgba(34,197,94,0.15);color:var(--green)}
+.status-badge.standby{background:rgba(79,143,255,0.15);color:var(--accent)}
+.status-badge.training{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.status-badge.maintenance{background:rgba(239,68,68,0.15);color:var(--red)}
+.agent-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.tier-badge{font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:4px;background:var(--bg);color:var(--text2)}
+.agent-actions{display:flex;gap:4px}
+.agent-actions button{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer;transition:all .1s}
+.agent-actions button:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── Detail Panel ── */
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;align-items:center;justify-content:center}
+.detail-overlay.open{display:flex}
+.detail-panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:90%;max-width:640px;max-height:80vh;overflow-y:auto;padding:32px;position:relative}
+.detail-close{position:absolute;top:16px;right:16px;background:var(--bg3);border:none;color:var(--text);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.detail-close:hover{background:var(--red);color:#fff}
+.detail-section{margin-bottom:20px}
+.detail-section h4{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:8px}
+.detail-list{list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.detail-list li{background:var(--bg);padding:4px 10px;border-radius:6px;font-size:12px;color:var(--text2)}
+
+/* ── Division View ── */
+.division-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:20px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border)}
+.division-header .div-color{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}
+.division-header h2{font-size:22px;font-weight:700}
+.division-header p{font-size:13px;color:var(--text2)}
+
+/* ── Loading ── */
+.loading{display:flex;align-items:center;justify-content:center;padding:60px;color:var(--text2)}
+.spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-right:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Empty ── */
+.empty{text-align:center;padding:60px 20px;color:var(--text2)}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.3}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .app{grid-template-columns:1fr;grid-template-rows:64px auto 1fr}
+  .sidebar{border-right:none;border-bottom:1px solid var(--border);max-height:200px}
+  .agent-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ── Topbar ── -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-icon">CK</div>
+      <span>Agent Command Center</span>
+    </div>
+    <div class="topbar-right">
+      <div class="config-bar">
+        <input type="text" id="apiUrl" placeholder="Gateway URL (e.g. https://ck-api-gateway.you.workers.dev)" />
+        <input type="password" id="apiToken" placeholder="Bearer Token" />
+        <button onclick="connectGateway()">Connect</button>
+      </div>
+      <div id="healthBadge" class="health-badge" style="display:none">
+        <span class="health-dot"></span>
+        <span id="healthText">—</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <h3>Overview</h3>
+      <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item" data-view="all-agents" onclick="switchView('all-agents')">
+        <span>All Agents</span>
+        <span class="count" id="totalCount">—</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <h3>Divisions</h3>
+      <div id="divisionNav"></div>
+    </div>
+  </nav>
+
+  <!-- ── Main Content ── -->
+  <main class="main" id="mainContent">
+    <div class="loading"><div class="spinner"></div> Connect to your gateway to load agents...</div>
+  </main>
+</div>
+
+<!-- ── Agent Detail Overlay ── -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<script>
+// ── State ──
+let API_URL = '';
+let API_TOKEN = '';
+let allAgents = [];
+let allDivisions = [];
+let currentView = 'dashboard';
+let dashboardData = null;
+
+// ── Division colors from registry ──
+const DIV_COLORS = {
+  EXC:'#1a1a2e', SEN:'#e94560', OPS:'#0f3460', INT:'#16213e',
+  MKT:'#533483', FIN:'#c9485b', VEN:'#e07c24', TEC:'#2d6a4f'
+};
+const DIV_ICONS = {
+  EXC:'E', SEN:'S', OPS:'O', INT:'I', MKT:'M', FIN:'F', VEN:'V', TEC:'T'
+};
+
+// ── Persist config ──
+function loadConfig() {
+  const saved = localStorage.getItem('ck_command_config');
+  if (saved) {
+    const c = JSON.parse(saved);
+    document.getElementById('apiUrl').value = c.url || '';
+    document.getElementById('apiToken').value = c.token || '';
+    if (c.url && c.token) {
+      API_URL = c.url.replace(/\/+$/, '');
+      API_TOKEN = c.token;
+      fetchAll();
+    }
+  }
+}
+
+function connectGateway() {
+  API_URL = document.getElementById('apiUrl').value.replace(/\/+$/, '');
+  API_TOKEN = document.getElementById('apiToken').value;
+  if (!API_URL || !API_TOKEN) return alert('Enter both Gateway URL and Bearer Token.');
+  localStorage.setItem('ck_command_config', JSON.stringify({ url: API_URL, token: API_TOKEN }));
+  fetchAll();
+}
+
+// ── API ──
+async function api(path) {
+  const res = await fetch(`${API_URL}${path}`, {
+    headers: { 'Authorization': `Bearer ${API_TOKEN}`, 'Content-Type': 'application/json' }
+  });
+  if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+
+async function apiPost(path, body) {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${API_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+
+// ── Data Fetch ──
+async function fetchAll() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div> Loading agent fleet...</div>';
+
+  try {
+    const [agentsData, metricsData, dashData] = await Promise.all([
+      api('/v1/agents'),
+      api('/v1/agents/metrics'),
+      api('/v1/dashboard'),
+    ]);
+
+    allAgents = agentsData.agents;
+    allDivisions = agentsData.divisions;
+    dashboardData = { ...dashData, metrics: metricsData };
+
+    document.getElementById('totalCount').textContent = allAgents.length;
+
+    // Health badge
+    const hb = document.getElementById('healthBadge');
+    const hs = dashData.systemHealth?.status || 'healthy';
+    hb.className = `health-badge ${hs}`;
+    hb.style.display = 'flex';
+    document.getElementById('healthText').textContent = `System ${hs.charAt(0).toUpperCase() + hs.slice(1)}`;
+
+    renderDivisionNav();
+    switchView(currentView);
+  } catch (err) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">&#9888;</div><p>Connection failed: ${err.message}</p><p style="margin-top:8px;font-size:13px">Check your Gateway URL and Bearer Token</p></div>`;
+  }
+}
+
+// ── Sidebar Division Nav ──
+function renderDivisionNav() {
+  const el = document.getElementById('divisionNav');
+  el.innerHTML = allDivisions.map(d => {
+    const count = allAgents.filter(a => a.division === d.id).length;
+    return `<div class="nav-item" data-view="div-${d.id}" onclick="switchView('div-${d.id}')">
+      <div class="div-dot" style="background:${DIV_COLORS[d.id] || '#666'}"></div>
+      <span>${d.name}</span>
+      <span class="count">${count}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── View Switching ──
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.view === view));
+
+  if (view === 'dashboard') renderDashboard();
+  else if (view === 'all-agents') renderAllAgents();
+  else if (view.startsWith('div-')) renderDivisionView(view.replace('div-', ''));
+}
+
+// ── Dashboard View ──
+function renderDashboard() {
+  if (!dashboardData) return;
+  const d = dashboardData;
+  const m = d.metrics;
+  const main = document.getElementById('mainContent');
+
+  main.innerHTML = `
+    <h1 style="font-size:28px;font-weight:700;margin-bottom:20px;letter-spacing:-0.5px">Command Center</h1>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Agents</div><div class="stat-value blue">${m.totalAgents}</div></div>
+      <div class="stat-card"><div class="stat-label">Active</div><div class="stat-value green">${m.byStatus.active}</div></div>
+      <div class="stat-card"><div class="stat-label">Standby</div><div class="stat-value blue">${m.byStatus.standby}</div></div>
+      <div class="stat-card"><div class="stat-label">Training</div><div class="stat-value yellow">${m.byStatus.training}</div></div>
+      <div class="stat-card"><div class="stat-label">Maintenance</div><div class="stat-value red">${m.byStatus.maintenance}</div></div>
+      <div class="stat-card"><div class="stat-label">System Health</div><div class="stat-value ${d.systemHealth?.status === 'healthy' ? 'green' : d.systemHealth?.status === 'degraded' ? 'yellow' : 'red'}">${Math.round((d.systemHealth?.activeRatio || 0) * 100)}%</div></div>
+    </div>
+
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Divisions</h2>
+    <div class="agent-grid" style="margin-bottom:24px">
+      ${(d.divisions || []).map(div => `
+        <div class="agent-card" onclick="switchView('div-${div.id}')" style="cursor:pointer">
+          <div class="agent-card::before" style="background:${DIV_COLORS[div.id] || '#666'}"></div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+            <div style="width:40px;height:40px;border-radius:10px;background:${DIV_COLORS[div.id] || '#666'};display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:16px">${DIV_ICONS[div.id] || '?'}</div>
+            <div>
+              <div style="font-weight:600;font-size:15px">${div.name}</div>
+              <div style="font-size:12px;color:var(--text2)">${div.agentCount} agents</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:1;background:var(--bg);border-radius:6px;padding:8px 12px;text-align:center">
+              <div style="font-size:11px;color:var(--text2)">Active</div>
+              <div style="font-size:20px;font-weight:700;color:var(--green)">${div.activeCount}</div>
+            </div>
+            <div style="flex:1;background:var(--bg);border-radius:6px;padding:8px 12px;text-align:center">
+              <div style="font-size:11px;color:var(--text2)">Other</div>
+              <div style="font-size:20px;font-weight:700;color:var(--text2)">${div.agentCount - div.activeCount}</div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    ${d.recentAudit && d.recentAudit.length > 0 ? `
+      <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Recent Activity</h2>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+        ${d.recentAudit.slice(0, 10).map(a => `
+          <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;display:flex;justify-content:space-between">
+            <span><strong>${a.route || '—'}</strong> ${a.action || a.agentName || ''}</span>
+            <span style="color:var(--text2)">${a.timestamp ? new Date(a.timestamp).toLocaleString() : '—'}</span>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+  `;
+}
+
+// ── All Agents View ──
+function renderAllAgents(filterDivision, filterStatus, filterTier, search) {
+  const main = document.getElementById('mainContent');
+  let agents = [...allAgents];
+
+  if (filterDivision) agents = agents.filter(a => a.division === filterDivision);
+  if (filterStatus) agents = agents.filter(a => a.status === filterStatus);
+  if (filterTier) agents = agents.filter(a => a.tier === filterTier);
+  if (search) {
+    const q = search.toLowerCase();
+    agents = agents.filter(a => (a.name || '').toLowerCase().includes(q) || (a.description || '').toLowerCase().includes(q) || (a.id || '').toLowerCase().includes(q));
+  }
+
+  main.innerHTML = `
+    <h1 style="font-size:28px;font-weight:700;margin-bottom:20px;letter-spacing:-0.5px">${filterDivision ? (allDivisions.find(d => d.id === filterDivision)?.name || 'Division') : 'All Agents'} <span style="font-weight:400;font-size:18px;color:var(--text2)">(${agents.length})</span></h1>
+    <div class="filter-bar">
+      <input type="text" placeholder="Search agents..." id="searchInput" value="${search || ''}" oninput="applyFilters()">
+      <select id="filterStatus" onchange="applyFilters()">
+        <option value="">All Statuses</option>
+        <option value="active" ${filterStatus==='active'?'selected':''}>Active</option>
+        <option value="standby" ${filterStatus==='standby'?'selected':''}>Standby</option>
+        <option value="training" ${filterStatus==='training'?'selected':''}>Training</option>
+        <option value="maintenance" ${filterStatus==='maintenance'?'selected':''}>Maintenance</option>
+      </select>
+      <select id="filterTier" onchange="applyFilters()">
+        <option value="">All Tiers</option>
+        <option value="fast" ${filterTier==='fast'?'selected':''}>Fast</option>
+        <option value="standard" ${filterTier==='standard'?'selected':''}>Standard</option>
+        <option value="advanced" ${filterTier==='advanced'?'selected':''}>Advanced</option>
+      </select>
+      ${!filterDivision ? `<select id="filterDiv" onchange="applyFilters()">
+        <option value="">All Divisions</option>
+        ${allDivisions.map(d => `<option value="${d.id}">${d.name}</option>`).join('')}
+      </select>` : ''}
+    </div>
+    <div class="agent-grid">
+      ${agents.length === 0 ? '<div class="empty"><div class="empty-icon">&#128269;</div><p>No agents match your filters.</p></div>' :
+        agents.map(a => agentCardHTML(a)).join('')}
+    </div>
+  `;
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchInput')?.value || '';
+  const status = document.getElementById('filterStatus')?.value || '';
+  const tier = document.getElementById('filterTier')?.value || '';
+  const div = document.getElementById('filterDiv')?.value || '';
+
+  if (currentView.startsWith('div-')) {
+    const divId = currentView.replace('div-', '');
+    renderDivisionAgents(divId, status, tier, search);
+  } else {
+    renderAllAgents(div, status, tier, search);
+  }
+}
+
+// ── Division View ──
+function renderDivisionView(divId) {
+  renderAllAgents(divId);
+}
+
+function renderDivisionAgents(divId, status, tier, search) {
+  renderAllAgents(divId, status, tier, search);
+}
+
+// ── Agent Card HTML ──
+function agentCardHTML(a) {
+  const divColor = DIV_COLORS[a.division] || '#666';
+  return `<div class="agent-card" onclick="openDetail('${a.id}')" style="border-top:3px solid ${divColor}">
+    <div class="agent-header">
+      <span class="agent-id">${a.id}</span>
+      <span class="status-badge ${a.status}">${a.status}</span>
+    </div>
+    <div class="agent-name">${a.name}</div>
+    <div class="agent-role">${a.role || ''}</div>
+    <div class="agent-desc">${a.description || ''}</div>
+    <div class="agent-footer">
+      <span class="tier-badge">${a.tier || 'standard'}</span>
+      <div class="agent-actions" onclick="event.stopPropagation()">
+        ${a.status !== 'active' ? `<button onclick="agentAction('${a.id}','activate')">Activate</button>` : ''}
+        ${a.status === 'active' ? `<button onclick="agentAction('${a.id}','pause')">Pause</button>` : ''}
+        <button onclick="agentAction('${a.id}','restart')">Restart</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Detail Panel ──
+function openDetail(agentId) {
+  const agent = allAgents.find(a => a.id === agentId);
+  if (!agent) return;
+  const divColor = DIV_COLORS[agent.division] || '#666';
+  const divName = allDivisions.find(d => d.id === agent.division)?.name || agent.division;
+
+  document.getElementById('detailPanel').innerHTML = `
+    <button class="detail-close" onclick="closeDetail()">&times;</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <div style="width:48px;height:48px;border-radius:12px;background:${divColor};display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:18px">${DIV_ICONS[agent.division] || '?'}</div>
+      <div>
+        <div style="font-size:20px;font-weight:700">${agent.name}</div>
+        <div style="font-size:13px;color:var(--text2)">${agent.id} &middot; ${divName}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <span class="status-badge ${agent.status}">${agent.status}</span>
+      <span class="tier-badge">${agent.tier}</span>
+      ${agent.airtableTable ? `<span class="tier-badge" style="color:var(--accent)">Airtable: ${agent.airtableTable}</span>` : ''}
+    </div>
+    <div class="detail-section">
+      <h4>Role</h4>
+      <p style="font-size:14px;color:var(--text)">${agent.role || '—'}</p>
+    </div>
+    <div class="detail-section">
+      <h4>Description</h4>
+      <p style="font-size:14px;color:var(--text);line-height:1.7">${agent.description || '—'}</p>
+    </div>
+    ${agent.triggers?.length ? `<div class="detail-section"><h4>Triggers</h4><ul class="detail-list">${agent.triggers.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}
+    ${agent.outputs?.length ? `<div class="detail-section"><h4>Outputs</h4><ul class="detail-list">${agent.outputs.map(o => `<li>${o}</li>`).join('')}</ul></div>` : ''}
+    ${agent.kpis?.length ? `<div class="detail-section"><h4>KPIs</h4><ul class="detail-list">${agent.kpis.map(k => `<li>${k}</li>`).join('')}</ul></div>` : ''}
+    <div style="display:flex;gap:8px;margin-top:24px">
+      <button onclick="agentAction('${agent.id}','activate');closeDetail()" style="background:var(--green);color:#fff;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:600">Activate</button>
+      <button onclick="agentAction('${agent.id}','pause');closeDetail()" style="background:var(--accent);color:#fff;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:600">Pause</button>
+      <button onclick="agentAction('${agent.id}','train');closeDetail()" style="background:var(--yellow);color:#000;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:600">Train</button>
+      <button onclick="agentAction('${agent.id}','restart');closeDetail()" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:8px 20px;border-radius:8px;cursor:pointer;font-weight:600">Restart</button>
+    </div>
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('open');
+}
+
+// ── Agent Action ──
+async function agentAction(agentId, action) {
+  try {
+    const result = await apiPost(`/v1/agents/${agentId}/action`, { action });
+    // Update local state
+    const idx = allAgents.findIndex(a => a.id === agentId);
+    if (idx >= 0) allAgents[idx] = { ...allAgents[idx], status: result.newStatus };
+    // Re-render current view
+    switchView(currentView);
+  } catch (err) {
+    alert(`Action failed: ${err.message}`);
+  }
+}
+
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDetail();
+  if (e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    document.getElementById('searchInput')?.focus();
+  }
+});
+
+// ── Auto-refresh every 30s ──
+setInterval(() => { if (API_URL && API_TOKEN) fetchAll(); }, 30000);
+
+// ── Init ──
+loadConfig();
+</script>
+</body>
+</html>
