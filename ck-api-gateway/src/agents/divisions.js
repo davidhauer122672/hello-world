@@ -62,4 +62,11 @@ export const DIVISIONS = [
     icon: 'code',
     description: 'Platform ops, API integrations, monitoring, CI/CD, and infrastructure.',
   },
+  {
+    id: 'WEB',
+    name: 'Website Development',
+    color: '#0ea5e9',
+    icon: 'globe',
+    description: 'Website architecture, frontend development, deployment, and domain consolidation for coastalkey-pm.com.',
+  },
 ];

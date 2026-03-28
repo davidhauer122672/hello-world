@@ -109,8 +109,8 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 250,
-        divisions: 8,
+        agents: 290,
+        divisions: 9,
         checks,
         timestamp: new Date().toISOString(),
       });
