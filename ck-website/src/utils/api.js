@@ -43,6 +43,11 @@ export const runWf4 = (data) =>
 export const runInference = (data) =>
   apiCall('/v1/inference', { method: 'POST', body: JSON.stringify(data) });
 
+// ── Pricing ─────────────────────────────────────────────────────────────────
+export const getPricingRecommendation = (data) =>
+  apiCall('/v1/pricing/recommend', { method: 'POST', body: JSON.stringify(data) });
+export const getPricingZones = () => apiCall('/v1/pricing/zones');
+
 // ── Audit ────────────────────────────────────────────────────────────────────
 export const fetchAuditLog = (limit = 50) =>
   apiCall(`/v1/audit?limit=${limit}`);

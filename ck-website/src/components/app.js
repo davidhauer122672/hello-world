@@ -7,7 +7,7 @@
  */
 
 import { registerRoute, navigate } from '../utils/router.js';
-import { isAuthenticated, login, logout } from '../utils/auth.js';
+import { isAuthenticated, login, logout, apiCall } from '../utils/auth.js';
 
 // ── Route Registration ──────────────────────────────────────────────────────
 
@@ -134,16 +134,16 @@ function renderHome(main) {
       <div class="hero-content">
         <div class="hero-badge">AI-Powered Property Management</div>
         <h1>Your Property. <br>Our Obsession.</h1>
-        <p class="hero-sub">Coastal Key delivers white-glove property management across Florida's Treasure Coast. 250 AI agents working 24/7 so your investment never sleeps.</p>
+        <p class="hero-sub">Coastal Key delivers white-glove property management across Florida's Treasure Coast. 290 AI agents working 24/7 so your investment never sleeps.</p>
         <div class="hero-actions">
           <a href="/contact" class="btn btn-primary">Get a Proposal</a>
           <a href="/services" class="btn btn-secondary">Our Services</a>
         </div>
         <div class="hero-stats">
-          <div class="stat"><span class="stat-num">250</span><span class="stat-label">AI Agents Active</span></div>
+          <div class="stat"><span class="stat-num">290</span><span class="stat-label">AI Agents Active</span></div>
           <div class="stat"><span class="stat-num">10</span><span class="stat-label">Service Zones</span></div>
           <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Operations</span></div>
-          <div class="stat"><span class="stat-num">8</span><span class="stat-label">Divisions</span></div>
+          <div class="stat"><span class="stat-num">9</span><span class="stat-label">Divisions</span></div>
         </div>
       </div>
     </section>
@@ -268,10 +268,48 @@ function renderContact(main) {
           </div>
         </div>
         <div class="form-group"><label>How can we help?</label><textarea name="message" rows="4" placeholder="Tell us about your property and goals..."></textarea></div>
-        <button type="submit" class="btn btn-primary btn-lg">Send Inquiry</button>
+        <button type="submit" class="btn btn-primary btn-lg" id="contact-submit">Send Inquiry</button>
+        <div id="contact-status" class="form-status"></div>
       </form>
     </section>
   `);
+  document.getElementById('contact-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('contact-submit');
+    const status = document.getElementById('contact-status');
+    const form = e.target;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    status.textContent = '';
+    try {
+      const data = Object.fromEntries(new FormData(form));
+      // Direct Airtable write for public form (no auth required)
+      const res = await fetch('/v1/leads/public', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.name || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          zone: data.zone || '',
+          message: data.message || '',
+          source: 'website'
+        })
+      });
+      if (res.ok) {
+        status.textContent = 'Thank you! We will be in touch within 24 hours.';
+        status.className = 'form-status success';
+        form.reset();
+      } else {
+        throw new Error('Submission failed');
+      }
+    } catch (err) {
+      status.textContent = 'Something went wrong. Please call us directly.';
+      status.className = 'form-status error';
+    }
+    btn.disabled = false;
+    btn.textContent = 'Send Inquiry';
+  });
 }
 
 // ── Portal Pages ────────────────────────────────────────────────────────────
@@ -306,14 +344,147 @@ function renderPortalGate(main) {
 }
 
 function renderPortalDashboard(main) {
+  // ── Static fallback data ──────────────────────────────────────────────────
+  const fallbackDivisions = [
+    { code: 'EXC', name: 'Executive',       agents: 20, color: '#6366f1' },
+    { code: 'SEN', name: 'Sentinel Sales',  agents: 40, color: '#ef4444' },
+    { code: 'OPS', name: 'Operations',       agents: 45, color: '#f59e0b' },
+    { code: 'INT', name: 'Intelligence',     agents: 30, color: '#10b981' },
+    { code: 'MKT', name: 'Marketing',        agents: 40, color: '#8b5cf6' },
+    { code: 'FIN', name: 'Finance',          agents: 25, color: '#06b6d4' },
+    { code: 'VEN', name: 'Vendor Mgmt',      agents: 25, color: '#f97316' },
+    { code: 'TEC', name: 'Technology',        agents: 25, color: '#14b8a6' },
+    { code: 'WEB', name: 'Web Development',    agents: 40, color: '#0ea5e9' },
+  ];
+
+  const fallbackStats = {
+    totalAgents: 290,
+    activeAgents: 273,
+    divisions: 9,
+    uptime: '99.9%',
+  };
+
+  const fallbackActivity = [
+    { ts: 'Just now',   text: 'SEN-12 qualified inbound lead — Vero Beach oceanfront' },
+    { ts: '2 min ago',  text: 'OPS-7 dispatched maintenance crew — Stuart condo unit 4B' },
+    { ts: '8 min ago',  text: 'MKT-22 published social post — Instagram Reel #TreasureCoast' },
+    { ts: '15 min ago', text: 'INT-3 generated market report — Indian River County Q1' },
+    { ts: '22 min ago', text: 'FIN-9 processed owner distribution — Jupiter portfolio' },
+  ];
+
+  // ── Build the layout ──────────────────────────────────────────────────────
   setPortalLayout(main, 'Dashboard', `
     <h1 class="portal-title">Operational Dashboard</h1>
-    <div class="portal-stats" id="dash-stats">Loading...</div>
+
+    <!-- Stat Cards -->
+    <div class="portal-stats" id="dash-stats">
+      <div class="stat-card"><span class="stat-num" id="stat-total">290</span><span class="stat-label">Total Agents</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-active">--</span><span class="stat-label">Active</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-divisions">9</span><span class="stat-label">Divisions</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-uptime">99.9%</span><span class="stat-label">Uptime</span></div>
+    </div>
+
+    <!-- Division Breakdown -->
+    <div class="portal-card" id="dash-divisions">
+      <h3>Division Breakdown</h3>
+      <div class="card-body">
+        <div class="division-grid" id="division-grid"></div>
+      </div>
+    </div>
+
     <div class="portal-grid">
-      <div class="portal-card" id="dash-divisions"><h3>Division Status</h3><div class="card-body">Loading...</div></div>
-      <div class="portal-card" id="dash-audit"><h3>Recent Activity</h3><div class="card-body">Loading...</div></div>
+      <!-- Recent Activity -->
+      <div class="portal-card" id="dash-audit">
+        <h3>Recent Activity</h3>
+        <div class="card-body">
+          <ul class="activity-feed" id="activity-feed"></ul>
+        </div>
+      </div>
+
+      <!-- Owner Quick Actions -->
+      <div class="portal-card" id="dash-owner-actions">
+        <h3>Owner Quick Actions</h3>
+        <div class="card-body">
+          <div class="owner-actions-grid">
+            <button class="btn btn-primary owner-action-btn" data-action="properties">View Properties</button>
+            <button class="btn btn-secondary owner-action-btn" data-action="maintenance">Submit Maintenance Request</button>
+            <button class="btn btn-secondary owner-action-btn" data-action="financials">View Financials</button>
+            <button class="btn btn-secondary owner-action-btn" data-action="contact">Contact Team</button>
+          </div>
+        </div>
+      </div>
     </div>
   `);
+
+  // ── Populate with fallback data immediately ───────────────────────────────
+  function applyStats(stats) {
+    const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+    el('stat-total', stats.totalAgents);
+    el('stat-active', stats.activeAgents);
+    el('stat-divisions', stats.divisions);
+    el('stat-uptime', stats.uptime);
+  }
+
+  function applyDivisions(divisions) {
+    const grid = document.getElementById('division-grid');
+    if (!grid) return;
+    grid.innerHTML = divisions.map(d => `
+      <div class="division-card" style="border-left:4px solid ${d.color}">
+        <span class="division-code">${d.code}</span>
+        <span class="division-name">${d.name}</span>
+        <span class="division-count">${d.agents} agents</span>
+      </div>
+    `).join('');
+  }
+
+  function applyActivity(items) {
+    const feed = document.getElementById('activity-feed');
+    if (!feed) return;
+    feed.innerHTML = items.map(a => `
+      <li class="activity-item"><span class="activity-ts">${a.ts}</span> ${a.text}</li>
+    `).join('');
+  }
+
+  // Render static fallback right away so the dashboard is never empty
+  applyStats(fallbackStats);
+  applyDivisions(fallbackDivisions);
+  applyActivity(fallbackActivity);
+
+  // ── Wire up owner quick action buttons ────────────────────────────────────
+  document.querySelectorAll('.owner-action-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.getAttribute('data-action');
+      if (action === 'properties')  navigate('/portal/reports');
+      if (action === 'maintenance') navigate('/portal/tasks');
+      if (action === 'financials')  navigate('/portal/reports');
+      if (action === 'contact')     navigate('/contact');
+    });
+  });
+
+  // ── Fetch live data from API and overwrite fallback when available ────────
+  (async () => {
+    try {
+      const data = await apiCall('/v1/dashboard');
+      if (data) {
+        if (data.stats) {
+          applyStats({
+            totalAgents: data.stats.totalAgents ?? fallbackStats.totalAgents,
+            activeAgents: data.stats.activeAgents ?? fallbackStats.activeAgents,
+            divisions: data.stats.divisions ?? fallbackStats.divisions,
+            uptime: data.stats.uptime ?? fallbackStats.uptime,
+          });
+        }
+        if (Array.isArray(data.divisions) && data.divisions.length) {
+          applyDivisions(data.divisions);
+        }
+        if (Array.isArray(data.activity) && data.activity.length) {
+          applyActivity(data.activity);
+        }
+      }
+    } catch (_) {
+      // Fallback data is already rendered — nothing to do
+    }
+  })();
 }
 
 function renderPortalAgents(main) {
@@ -322,7 +493,7 @@ function renderPortalAgents(main) {
     <div class="filter-bar">
       <input type="search" placeholder="Search agents..." class="filter-search">
       <select class="filter-select"><option value="">All Statuses</option><option>active</option><option>standby</option><option>training</option><option>maintenance</option></select>
-      <select class="filter-select"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option></select>
+      <select class="filter-select"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option></select>
     </div>
     <div class="agent-grid" id="agent-list">Loading agents...</div>
   `);

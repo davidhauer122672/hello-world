@@ -4,6 +4,7 @@
  * Routes:
  *   POST /v1/inference          — Claude inference with KV caching + audit logging
  *   POST /v1/leads              — Create lead in Airtable Leads table
+ *   POST /v1/leads/public       — Public website contact form → Lead (no auth)
  *   POST /v1/leads/enrich       — AI-enrich an existing lead (battle plan, segment analysis)
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
@@ -16,6 +17,8 @@
  *   POST /v1/workflows/scaa1   — SCAA-1 Battle Plan Pipeline
  *   POST /v1/workflows/wf3     — WF-3 Investor Escalation
  *   POST /v1/workflows/wf4     — WF-4 Long-Tail Nurture
+ *   POST /v1/pricing/recommend   — Dynamic pricing recommendation
+ *   GET  /v1/pricing/zones      — Zone-level pricing benchmarks
  *   GET  /v1/health             — Health check
  *   GET  /v1/audit              — Retrieve recent audit log entries
  *
@@ -25,12 +28,13 @@
 import { authenticate } from './middleware/auth.js';
 import { rateLimit } from './middleware/rate-limit.js';
 import { handleInference } from './routes/inference.js';
-import { handleCreateLead, handleGetLead, handleEnrichLead } from './routes/leads.js';
+import { handleCreateLead, handleGetLead, handleEnrichLead, handlePublicLead } from './routes/leads.js';
 import { handleRetellWebhook } from './routes/retell.js';
 import { handleContentGenerate } from './routes/content.js';
 import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
+import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -116,6 +120,11 @@ export default {
       });
     }
 
+    // ── Public routes (no auth) ──
+    if (path === '/v1/leads/public' && method === 'POST') {
+      return await handlePublicLead(request, env, ctx);
+    }
+
     // ── Auth gate ──
     const authError = authenticate(request, env);
     if (authError) return authError;
@@ -183,6 +192,15 @@ export default {
 
       if (path === '/v1/workflows/wf4' && method === 'POST') {
         return await handleWf4LongTailNurture(request, env, ctx);
+      }
+
+      // ── Pricing Engine ──
+      if (path === '/v1/pricing/recommend' && method === 'POST') {
+        return await handlePricingRecommend(request, env, ctx);
+      }
+
+      if (path === '/v1/pricing/zones' && method === 'GET') {
+        return handlePricingZones();
       }
 
       if (path === '/v1/audit' && method === 'GET') {
