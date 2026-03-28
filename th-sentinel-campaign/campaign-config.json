@@ -1,0 +1,166 @@
+{
+  "campaign": {
+    "name": "Tracey Hunter AI Sentinel Sales Campaign",
+    "version": "1.0.0",
+    "status": "ACTIVE",
+    "launch_date": "2026-03-28",
+    "end_date": "2026-09-28",
+    "duration_months": 6,
+    "owner": "Tracey Merritt Hunter",
+    "company": "Tracey Hunter Group — RE/MAX of Stuart",
+    "office_address": "1407 SE Legacy Cove Circle, Stuart, FL",
+    "transfer_number": "772-763-8900",
+    "website": "www.traceyhuntergroup.com",
+    "email": "tracey@traceyhuntergroup.com"
+  },
+  "schedule": {
+    "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "start_time": "10:00",
+    "end_time": "15:00",
+    "timezone": "America/New_York",
+    "hours_per_day": 5,
+    "days_per_week": 6,
+    "total_campaign_weeks": 26,
+    "blackout_dates": [],
+    "holiday_observance": true
+  },
+  "agents": {
+    "total_count": 40,
+    "platform": "Retell AI",
+    "naming_convention": "TH-SENTINEL-{001-040}",
+    "concurrent_max": 40,
+    "voice_profile": "professional_female_warm",
+    "language": "en-US",
+    "agent_roster": [
+      {"id": "TH-SENTINEL-001", "name": "Sarah", "status": "active"},
+      {"id": "TH-SENTINEL-002", "name": "Emily", "status": "active"},
+      {"id": "TH-SENTINEL-003", "name": "Rachel", "status": "active"},
+      {"id": "TH-SENTINEL-004", "name": "Jessica", "status": "active"},
+      {"id": "TH-SENTINEL-005", "name": "Amanda", "status": "active"},
+      {"id": "TH-SENTINEL-006", "name": "Lauren", "status": "active"},
+      {"id": "TH-SENTINEL-007", "name": "Michelle", "status": "active"},
+      {"id": "TH-SENTINEL-008", "name": "Nicole", "status": "active"},
+      {"id": "TH-SENTINEL-009", "name": "Stephanie", "status": "active"},
+      {"id": "TH-SENTINEL-010", "name": "Ashley", "status": "active"},
+      {"id": "TH-SENTINEL-011", "name": "Megan", "status": "active"},
+      {"id": "TH-SENTINEL-012", "name": "Christina", "status": "active"},
+      {"id": "TH-SENTINEL-013", "name": "Samantha", "status": "active"},
+      {"id": "TH-SENTINEL-014", "name": "Brittany", "status": "active"},
+      {"id": "TH-SENTINEL-015", "name": "Jennifer", "status": "active"},
+      {"id": "TH-SENTINEL-016", "name": "Katherine", "status": "active"},
+      {"id": "TH-SENTINEL-017", "name": "Elizabeth", "status": "active"},
+      {"id": "TH-SENTINEL-018", "name": "Victoria", "status": "active"},
+      {"id": "TH-SENTINEL-019", "name": "Allison", "status": "active"},
+      {"id": "TH-SENTINEL-020", "name": "Rebecca", "status": "active"},
+      {"id": "TH-SENTINEL-021", "name": "Danielle", "status": "active"},
+      {"id": "TH-SENTINEL-022", "name": "Natalie", "status": "active"},
+      {"id": "TH-SENTINEL-023", "name": "Olivia", "status": "active"},
+      {"id": "TH-SENTINEL-024", "name": "Emma", "status": "active"},
+      {"id": "TH-SENTINEL-025", "name": "Sophia", "status": "active"},
+      {"id": "TH-SENTINEL-026", "name": "Isabella", "status": "active"},
+      {"id": "TH-SENTINEL-027", "name": "Madison", "status": "active"},
+      {"id": "TH-SENTINEL-028", "name": "Abigail", "status": "active"},
+      {"id": "TH-SENTINEL-029", "name": "Hannah", "status": "active"},
+      {"id": "TH-SENTINEL-030", "name": "Grace", "status": "active"},
+      {"id": "TH-SENTINEL-031", "name": "Chloe", "status": "active"},
+      {"id": "TH-SENTINEL-032", "name": "Lily", "status": "active"},
+      {"id": "TH-SENTINEL-033", "name": "Avery", "status": "active"},
+      {"id": "TH-SENTINEL-034", "name": "Ella", "status": "active"},
+      {"id": "TH-SENTINEL-035", "name": "Zoe", "status": "active"},
+      {"id": "TH-SENTINEL-036", "name": "Aubrey", "status": "active"},
+      {"id": "TH-SENTINEL-037", "name": "Aria", "status": "active"},
+      {"id": "TH-SENTINEL-038", "name": "Scarlett", "status": "active"},
+      {"id": "TH-SENTINEL-039", "name": "Penelope", "status": "active"},
+      {"id": "TH-SENTINEL-040", "name": "Riley", "status": "active"}
+    ]
+  },
+  "call_settings": {
+    "max_call_duration_seconds": 180,
+    "ring_timeout_seconds": 30,
+    "voicemail_detection": true,
+    "voicemail_action": "leave_message",
+    "max_retries_per_lead": 3,
+    "retry_interval_hours": 48,
+    "calls_per_agent_per_hour": 12,
+    "estimated_daily_calls_per_agent": 60,
+    "estimated_total_daily_calls": 2400,
+    "dnc_compliance": true,
+    "tcpa_compliant": true,
+    "caller_id_display": "772-763-8900"
+  },
+  "target_markets": {
+    "primary": [
+      "Stuart, FL",
+      "Palm City, FL",
+      "Jensen Beach, FL",
+      "Hobe Sound, FL",
+      "Port St. Lucie, FL",
+      "Hutchinson Island, FL"
+    ],
+    "secondary": [
+      "Jupiter, FL",
+      "Tequesta, FL",
+      "Palm Beach Gardens, FL",
+      "Vero Beach, FL",
+      "Fort Pierce, FL",
+      "Sebastian, FL"
+    ],
+    "property_value_minimum": 200000,
+    "property_types": ["Single Family", "Condo", "Townhouse", "Waterfront", "Luxury"]
+  },
+  "lead_sources": [
+    "Public property records",
+    "Expired listings (MLS)",
+    "FSBO listings",
+    "Pre-foreclosure filings",
+    "Absentee owners",
+    "Long-term owners (10+ years)",
+    "Recent inheritance / probate",
+    "Divorce filings (public record)",
+    "Circle prospecting (recent sales nearby)",
+    "Farm area domination lists"
+  ],
+  "kpi_targets": {
+    "daily": {
+      "total_calls": 2400,
+      "connections": 480,
+      "qualified_leads": 24,
+      "transfers_to_tracey": 8,
+      "appointments_set": 4
+    },
+    "weekly": {
+      "total_calls": 14400,
+      "connections": 2880,
+      "qualified_leads": 144,
+      "transfers_to_tracey": 48,
+      "appointments_set": 24
+    },
+    "monthly": {
+      "total_calls": 57600,
+      "connections": 11520,
+      "qualified_leads": 576,
+      "transfers_to_tracey": 192,
+      "appointments_set": 96
+    },
+    "campaign_total_6_months": {
+      "total_calls": 345600,
+      "connections": 69120,
+      "qualified_leads": 3456,
+      "transfers_to_tracey": 1152,
+      "appointments_set": 576
+    }
+  },
+  "integrations": {
+    "crm": "Airtable",
+    "airtable_base_id": "appUSnNgpDkcEOzhN",
+    "airtable_tables": {
+      "lead_contacts": "TH Sentinel - Lead Contacts",
+      "call_log": "TH Sentinel - Call Log",
+      "agent_performance": "TH Sentinel - Agent Performance",
+      "campaign_analytics": "TH Sentinel - Campaign Analytics"
+    },
+    "dialer": "Retell AI",
+    "webhook_endpoint": "/api/retell/webhook",
+    "transfer_endpoint": "tel:+17727638900"
+  }
+}
