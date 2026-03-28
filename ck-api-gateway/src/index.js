@@ -46,10 +46,72 @@ export default {
 
     // ── Health (no auth) ──
     if (path === '/v1/health' && method === 'GET') {
+      const deep = url.searchParams.get('deep') === 'true';
+
+      if (!deep) {
+        return jsonResponse({
+          status: 'operational',
+          service: 'ck-api-gateway',
+          version: '2.0.0',
+          agents: 250,
+          divisions: 8,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      // Deep health check — verify external dependencies
+      const checks = {};
+
+      // Airtable connectivity
+      try {
+        const atRes = await fetch(
+          `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/Leads?maxRecords=1&fields%5B%5D=Name`,
+          { headers: { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` } },
+        );
+        checks.airtable = { status: atRes.ok ? 'ok' : 'error', code: atRes.status };
+      } catch (err) {
+        checks.airtable = { status: 'error', message: err.message };
+      }
+
+      // Anthropic connectivity
+      try {
+        const anRes = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': env.ANTHROPIC_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 5,
+            messages: [{ role: 'user', content: 'ping' }],
+          }),
+        });
+        checks.anthropic = { status: anRes.ok ? 'ok' : 'error', code: anRes.status };
+      } catch (err) {
+        checks.anthropic = { status: 'error', message: err.message };
+      }
+
+      // KV stores
+      checks.kv = {
+        cache: env.CACHE ? 'available' : 'missing',
+        sessions: env.SESSIONS ? 'available' : 'missing',
+        rateLimits: env.RATE_LIMITS ? 'available' : 'missing',
+        auditLog: env.AUDIT_LOG ? 'available' : 'missing',
+      };
+
+      const allOk = checks.airtable?.status === 'ok' &&
+                     checks.anthropic?.status === 'ok' &&
+                     checks.kv.cache === 'available';
+
       return jsonResponse({
-        status: 'operational',
+        status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
-        version: '1.0.0',
+        version: '2.0.0',
+        agents: 250,
+        divisions: 8,
+        checks,
         timestamp: new Date().toISOString(),
       });
     }
