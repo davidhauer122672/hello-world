@@ -13,6 +13,9 @@
  *   GET  /v1/agents/:id         — Get single agent details
  *   POST /v1/agents/:id/action  — Execute agent action (activate/pause/restart/train)
  *   GET  /v1/dashboard          — Combined dashboard data
+ *   POST /v1/workflows/scaa1   — SCAA-1 Battle Plan Pipeline
+ *   POST /v1/workflows/wf3     — WF-3 Investor Escalation
+ *   POST /v1/workflows/wf4     — WF-4 Long-Tail Nurture
  *   GET  /v1/health             — Health check
  *   GET  /v1/audit              — Retrieve recent audit log entries
  *
@@ -27,6 +30,7 @@ import { handleRetellWebhook } from './routes/retell.js';
 import { handleContentGenerate } from './routes/content.js';
 import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
+import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -104,6 +108,19 @@ export default {
       if (path.match(/^\/v1\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/agents/')[1];
         return handleGetAgent(agentId, env);
+      }
+
+      // ── Workflow Pipelines ──
+      if (path === '/v1/workflows/scaa1' && method === 'POST') {
+        return await handleScaa1BattlePlan(request, env, ctx);
+      }
+
+      if (path === '/v1/workflows/wf3' && method === 'POST') {
+        return await handleWf3InvestorEscalation(request, env, ctx);
+      }
+
+      if (path === '/v1/workflows/wf4' && method === 'POST') {
+        return await handleWf4LongTailNurture(request, env, ctx);
       }
 
       if (path === '/v1/audit' && method === 'GET') {
