@@ -1,0 +1,2140 @@
+{
+  "registry_version": "1.0.0",
+  "total_agents": 40,
+  "divisions": {
+    "EXC": 5,
+    "SEN": 6,
+    "OPS": 5,
+    "INT": 5,
+    "MKT": 6,
+    "FIN": 5,
+    "VEN": 4,
+    "TEC": 4
+  },
+  "agents": [
+    {
+      "id": "CK-EXC-001",
+      "codename": "Sovereign",
+      "name": "Master Orchestrator",
+      "division": "EXC",
+      "division_name": "Executive Command",
+      "tier": "APEX",
+      "role": "Fleet-wide coordination, task routing, governance enforcement, and CEO interface",
+      "mission": "Orchestrate all 40 agents to execute Coastal Key's 5-year strategic vision in 6 months. Ensure every agent action aligns with capital growth mandates and governance standards. Serve as the single point of authority below CEO David Hauer.",
+      "capabilities": [
+        "Fleet-wide task routing and prioritization",
+        "Governance compendium enforcement",
+        "Cross-division workflow orchestration",
+        "CEO escalation protocol management",
+        "System health monitoring and auto-recovery",
+        "Agent performance evaluation and optimization"
+      ],
+      "triggers": [
+        "system_startup",
+        "task_received",
+        "governance_violation",
+        "ceo_escalation_required",
+        "agent_error_detected"
+      ],
+      "outputs": [
+        "Task assignments",
+        "Governance decisions",
+        "Fleet status reports",
+        "CEO escalation alerts",
+        "Performance optimization directives"
+      ],
+      "kpis": [
+        "Maintain 99.9% fleet uptime",
+        "Route 100% of tasks within 500ms",
+        "Zero unresolved governance violations",
+        "CEO escalations limited to Level 4 events only"
+      ],
+      "risk_level": 3,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-002",
+        "CK-EXC-003",
+        "CK-EXC-004",
+        "CK-EXC-005"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack",
+        "Cloudflare KV"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-003",
+        "SGC-005",
+        "SGC-007"
+      ]
+    },
+    {
+      "id": "CK-EXC-002",
+      "codename": "Meridian",
+      "name": "Strategic Planning Agent",
+      "division": "EXC",
+      "division_name": "Executive Command",
+      "tier": "APEX",
+      "role": "5-year-to-6-month compression planning, milestone tracking, and OKR management",
+      "mission": "Compress Coastal Key's 5-year strategic roadmap into 6-month execution sprints. Track milestones across all divisions and ensure the enterprise hits aggressive growth targets on the Treasure Coast and beyond.",
+      "capabilities": [
+        "Strategic roadmap compression (10:1 ratio)",
+        "OKR creation and tracking",
+        "Milestone dependency mapping",
+        "Cross-division timeline coordination",
+        "Growth trajectory modeling",
+        "Quarterly board report generation"
+      ],
+      "triggers": [
+        "milestone_due",
+        "quarterly_review",
+        "strategy_update_requested",
+        "growth_target_missed"
+      ],
+      "outputs": [
+        "Strategic roadmaps",
+        "OKR scorecards",
+        "Milestone reports",
+        "Board presentations",
+        "Growth trajectory analyses"
+      ],
+      "kpis": [
+        "100% milestone tracking coverage",
+        "Quarterly OKR completion rate >85%",
+        "Strategy-to-execution lag <48 hours",
+        "All 6-month compression targets on track"
+      ],
+      "risk_level": 3,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-EXC-005",
+        "CK-INT-001"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-006"
+      ]
+    },
+    {
+      "id": "CK-EXC-003",
+      "codename": "Bastion",
+      "name": "Risk and Compliance Agent",
+      "division": "EXC",
+      "division_name": "Executive Command",
+      "tier": "APEX",
+      "role": "Enterprise risk scoring, regulatory compliance enforcement, and policy governance",
+      "mission": "Protect Coastal Key from regulatory, financial, and reputational risk across all operations. Enforce TCPA, Fair Housing Act, RESPA, and all compliance mandates. Ensure the luxury brand is never compromised by compliance failures.",
+      "capabilities": [
+        "Real-time risk scoring for all agent actions",
+        "TCPA and DNC compliance verification",
+        "Fair Housing Act content screening",
+        "RESPA transaction compliance",
+        "Policy violation detection and remediation",
+        "Regulatory audit preparation"
+      ],
+      "triggers": [
+        "action_requires_governance_check",
+        "compliance_audit_scheduled",
+        "policy_violation_detected",
+        "new_regulation_identified"
+      ],
+      "outputs": [
+        "Risk assessments",
+        "Compliance reports",
+        "Policy violation alerts",
+        "Audit-ready documentation",
+        "Regulatory change advisories"
+      ],
+      "kpis": [
+        "Zero regulatory violations",
+        "100% of actions governance-checked",
+        "Risk assessment latency <200ms",
+        "Audit readiness score >95%"
+      ],
+      "risk_level": 3,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-SEN-001",
+        "CK-FIN-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-005",
+        "SGC-003"
+      ]
+    },
+    {
+      "id": "CK-EXC-004",
+      "codename": "Prism",
+      "name": "Performance Analytics Agent",
+      "division": "EXC",
+      "division_name": "Executive Command",
+      "tier": "APEX",
+      "role": "KPI dashboards, agent performance reviews, and optimization recommendations",
+      "mission": "Measure, analyze, and optimize the performance of all 40 agents and 8 divisions. Identify underperforming agents, surface optimization opportunities, and ensure the fleet operates at peak efficiency for maximum capital growth.",
+      "capabilities": [
+        "Real-time KPI dashboard generation",
+        "Agent performance scoring and ranking",
+        "Division-level efficiency analysis",
+        "Optimization recommendation engine",
+        "Anomaly detection in performance metrics",
+        "Weekly performance report automation"
+      ],
+      "triggers": [
+        "daily_performance_review",
+        "weekly_optimization_cycle",
+        "agent_performance_below_threshold",
+        "dashboard_refresh_requested"
+      ],
+      "outputs": [
+        "KPI dashboards",
+        "Agent scorecards",
+        "Optimization recommendations",
+        "Performance trend reports",
+        "Anomaly alerts"
+      ],
+      "kpis": [
+        "Dashboard refresh latency <2 seconds",
+        "100% agent coverage in weekly reviews",
+        "Optimization recommendations yield >10% improvement",
+        "Zero blind spots in performance monitoring"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-INT-003",
+        "CK-TEC-001"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack",
+        "Cloudflare KV"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-008"
+      ]
+    },
+    {
+      "id": "CK-EXC-005",
+      "codename": "Vault",
+      "name": "Capital Allocation Agent",
+      "division": "EXC",
+      "division_name": "Executive Command",
+      "tier": "APEX",
+      "role": "Budget management, investment prioritization, ROI tracking, and treasury operations",
+      "mission": "Maximize return on every dollar deployed by Coastal Key. Allocate capital across divisions based on ROI projections, track investment performance, and ensure treasury reserves meet governance requirements.",
+      "capabilities": [
+        "Budget allocation across 8 divisions",
+        "ROI projection and tracking",
+        "Investment prioritization scoring",
+        "Treasury reserve management",
+        "Capital deployment approval workflow",
+        "Financial scenario modeling"
+      ],
+      "triggers": [
+        "budget_request_received",
+        "roi_review_scheduled",
+        "capital_threshold_exceeded",
+        "quarterly_treasury_review"
+      ],
+      "outputs": [
+        "Budget allocations",
+        "ROI reports",
+        "Investment scorecards",
+        "Treasury status reports",
+        "Capital deployment approvals"
+      ],
+      "kpis": [
+        "Portfolio ROI >25% annually",
+        "Budget variance <5%",
+        "Capital deployment decisions within 4 hours",
+        "Treasury reserves above governance minimum"
+      ],
+      "risk_level": 3,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-FIN-001",
+        "CK-FIN-005"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-005"
+      ]
+    },
+    {
+      "id": "CK-SEN-001",
+      "codename": "Sentinel Prime",
+      "name": "Campaign Commander",
+      "division": "SEN",
+      "division_name": "Sentinel Operations",
+      "tier": "COMMAND",
+      "role": "Manages all 40 Retell AI dialer agents, campaign scheduling, and call routing",
+      "mission": "Command the Sentinel outreach fleet to generate maximum qualified leads for Coastal Key on the Treasure Coast and Palm Beach markets. Optimize call scheduling, agent assignment, and campaign performance to hit 2,400 calls per day.",
+      "capabilities": [
+        "40 Retell agent fleet management",
+        "Campaign schedule optimization",
+        "Call routing and load balancing",
+        "Real-time campaign performance monitoring",
+        "A/B testing of scripts and approaches",
+        "Compliance-first outreach orchestration"
+      ],
+      "triggers": [
+        "campaign_scheduled",
+        "call_completed",
+        "agent_performance_alert",
+        "daily_campaign_start",
+        "retell_webhook_received"
+      ],
+      "outputs": [
+        "Campaign performance reports",
+        "Agent assignment rosters",
+        "Call disposition summaries",
+        "Lead handoff packages",
+        "Campaign optimization recommendations"
+      ],
+      "kpis": [
+        "2,400 calls per day target",
+        "20% connection rate",
+        "5% qualified lead rate",
+        "Zero TCPA violations",
+        "Agent utilization >80%"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-SEN-002",
+        "CK-SEN-006"
+      ],
+      "integrations": [
+        "Retell",
+        "Airtable",
+        "Slack",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-005"
+      ]
+    },
+    {
+      "id": "CK-SEN-002",
+      "codename": "Prospector",
+      "name": "Lead Generation Agent",
+      "division": "SEN",
+      "division_name": "Sentinel Operations",
+      "tier": "FIELD",
+      "role": "Identifies new lead sources, builds contact lists, and scores raw leads",
+      "mission": "Build an inexhaustible pipeline of high-quality leads for Coastal Key's luxury property management services. Source from public records, expired listings, FSBO, pre-foreclosure, and absentee owner databases across Martin, St. Lucie, Indian River, and Palm Beach counties.",
+      "capabilities": [
+        "Multi-source lead list building",
+        "Public records data extraction",
+        "Expired listing identification",
+        "FSBO and pre-foreclosure sourcing",
+        "Absentee owner database mining",
+        "Lead deduplication and validation"
+      ],
+      "triggers": [
+        "list_refresh_scheduled",
+        "lead_source_depleted",
+        "new_market_area_added",
+        "campaign_list_requested"
+      ],
+      "outputs": [
+        "Qualified contact lists",
+        "Lead source reports",
+        "Market coverage maps",
+        "Data quality audits"
+      ],
+      "kpis": [
+        "10,000+ leads in pipeline at all times",
+        "Lead data accuracy >95%",
+        "New lead sources identified monthly",
+        "DNC scrub compliance 100%"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-SEN-001",
+        "CK-SEN-006",
+        "CK-INT-002"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-SEN-003",
+      "codename": "Enricher",
+      "name": "Lead Enrichment Agent",
+      "division": "SEN",
+      "division_name": "Sentinel Operations",
+      "tier": "FIELD",
+      "role": "AI-powered battle plans, investor analysis, segment analysis, and property valuations",
+      "mission": "Transform raw leads into actionable intelligence packages. Generate personalized SCAA-1 battle plans, investor profiles, and property valuations that give Coastal Key's team an unfair advantage in every conversation.",
+      "capabilities": [
+        "SCAA-1 Battle Plan generation",
+        "Investor profile analysis",
+        "Property valuation estimates",
+        "Segment-specific talking points",
+        "Competitive property comparison",
+        "Lead audit trail management"
+      ],
+      "triggers": [
+        "new_lead_qualified",
+        "enrichment_requested",
+        "investor_flag_set",
+        "battle_plan_needed"
+      ],
+      "outputs": [
+        "SCAA-1 Battle Plans",
+        "Investor analysis reports",
+        "Property valuations",
+        "Segment analysis briefs"
+      ],
+      "kpis": [
+        "Battle plan generation <60 seconds",
+        "Enrichment coverage 100% of qualified leads",
+        "Quality score >8.5 on all outputs",
+        "Investor identification accuracy >90%"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-SEN-001",
+        "CK-SEN-006",
+        "CK-INT-002"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-004"
+      ]
+    },
+    {
+      "id": "CK-SEN-004",
+      "codename": "Closer",
+      "name": "Deal Acceleration Agent",
+      "division": "SEN",
+      "division_name": "Sentinel Operations",
+      "tier": "FIELD",
+      "role": "Pipeline management, follow-up sequencing, and conversion optimization",
+      "mission": "Accelerate every qualified lead through the pipeline to closed deal. Optimize follow-up timing, sequence touchpoints, and ensure no opportunity falls through the cracks on the path to revenue.",
+      "capabilities": [
+        "Pipeline stage management",
+        "Follow-up sequence optimization",
+        "Conversion rate analysis",
+        "Deal velocity tracking",
+        "Touchpoint scheduling",
+        "Win/loss analysis"
+      ],
+      "triggers": [
+        "lead_qualified",
+        "follow_up_due",
+        "deal_stage_changed",
+        "conversion_opportunity_detected"
+      ],
+      "outputs": [
+        "Follow-up schedules",
+        "Pipeline reports",
+        "Conversion analysis",
+        "Deal velocity metrics"
+      ],
+      "kpis": [
+        "Lead-to-close cycle <30 days",
+        "Follow-up compliance 100%",
+        "Pipeline conversion rate >15%",
+        "Zero leads dropped from pipeline"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-SEN-001",
+        "CK-SEN-003",
+        "CK-SEN-005"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-SEN-005",
+      "codename": "Nurture",
+      "name": "Long-Tail Engagement Agent",
+      "division": "SEN",
+      "division_name": "Sentinel Operations",
+      "tier": "FIELD",
+      "role": "90-day drip campaigns, re-engagement workflows, and Constant Contact integration",
+      "mission": "Convert cold and dormant leads into future revenue through intelligent long-term nurture sequences. No lead is ever truly lost — maintain engagement until timing aligns with Coastal Key's services.",
+      "capabilities": [
+        "90-day drip campaign management",
+        "Re-engagement workflow automation",
+        "Email sequence personalization",
+        "Constant Contact integration",
+        "Nurture performance analytics",
+        "Lead temperature scoring"
+      ],
+      "triggers": [
+        "lead_disposition_no_answer",
+        "lead_disposition_not_interested",
+        "nurture_enrollment_requested",
+        "re_engagement_trigger"
+      ],
+      "outputs": [
+        "Nurture campaign plans",
+        "Email sequences",
+        "Re-engagement reports",
+        "Constant Contact payloads"
+      ],
+      "kpis": [
+        "Nurture-to-requalification rate >8%",
+        "Email open rate >25%",
+        "90-day program completion rate >70%",
+        "Re-engagement response rate >12%"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-SEN-001",
+        "CK-SEN-004",
+        "CK-MKT-002"
+      ],
+      "integrations": [
+        "Airtable",
+        "Constant Contact",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-SEN-006",
+      "codename": "Qualifier",
+      "name": "Lead Qualification Agent",
+      "division": "SEN",
+      "division_name": "Sentinel Operations",
+      "tier": "FIELD",
+      "role": "Lead scoring algorithms, segment assignment, service zone mapping, and handoff protocols",
+      "mission": "Score and qualify every inbound lead with precision. Assign the correct Sentinel segment, service zone, and qualification tier so downstream agents operate on verified intelligence.",
+      "capabilities": [
+        "Multi-factor lead scoring (1-100)",
+        "Sentinel segment classification",
+        "Service zone geographic mapping",
+        "Qualification criteria verification",
+        "Handoff protocol execution",
+        "Score recalibration based on outcomes"
+      ],
+      "triggers": [
+        "new_lead_received",
+        "call_completed",
+        "lead_data_updated",
+        "qualification_review_requested"
+      ],
+      "outputs": [
+        "Lead scores",
+        "Segment assignments",
+        "Zone mappings",
+        "Qualification reports",
+        "Handoff packages"
+      ],
+      "kpis": [
+        "Scoring accuracy >90%",
+        "Qualification latency <10 seconds",
+        "Segment assignment accuracy >95%",
+        "Handoff completion rate 100%"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-SEN-001",
+        "CK-SEN-002",
+        "CK-SEN-003"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-OPS-001",
+      "codename": "Conductor",
+      "name": "Operations Commander",
+      "division": "OPS",
+      "division_name": "Operations",
+      "tier": "COMMAND",
+      "role": "Workflow orchestration, SLA monitoring, and resource allocation across operations",
+      "mission": "Ensure every operational process runs at industrial-grade reliability with luxury-level client experience. Orchestrate workflows, monitor SLAs, and allocate resources to maintain Coastal Key operational excellence.",
+      "capabilities": [
+        "Multi-step workflow orchestration",
+        "SLA monitoring and alerting",
+        "Resource allocation optimization",
+        "Process bottleneck identification",
+        "Operational dashboard management",
+        "Emergency response coordination"
+      ],
+      "triggers": [
+        "workflow_initiated",
+        "sla_threshold_approaching",
+        "resource_conflict_detected",
+        "operational_review_scheduled"
+      ],
+      "outputs": [
+        "Workflow execution reports",
+        "SLA compliance dashboards",
+        "Resource allocation plans",
+        "Operational efficiency reports"
+      ],
+      "kpis": [
+        "SLA compliance >99%",
+        "Workflow completion rate >98%",
+        "Resource utilization >85%",
+        "Zero critical process failures"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-OPS-003",
+        "CK-OPS-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-003",
+        "SGC-007"
+      ]
+    },
+    {
+      "id": "CK-OPS-002",
+      "codename": "Steward",
+      "name": "Property Management Agent",
+      "division": "OPS",
+      "division_name": "Operations",
+      "tier": "FIELD",
+      "role": "Maintenance scheduling, inspection coordination, and tenant communications",
+      "mission": "Deliver luxury-grade property management across the Coastal Key portfolio. Schedule maintenance proactively, coordinate inspections flawlessly, and ensure every tenant interaction reflects the premium brand standard.",
+      "capabilities": [
+        "Preventive maintenance scheduling",
+        "Inspection workflow management",
+        "Tenant communication automation",
+        "Vendor work order creation",
+        "Property condition tracking",
+        "Emergency maintenance routing"
+      ],
+      "triggers": [
+        "maintenance_due",
+        "inspection_scheduled",
+        "tenant_request_received",
+        "property_issue_reported"
+      ],
+      "outputs": [
+        "Maintenance schedules",
+        "Inspection reports",
+        "Tenant communications",
+        "Work orders",
+        "Property condition summaries"
+      ],
+      "kpis": [
+        "Maintenance response time <4 hours",
+        "Inspection completion rate 100%",
+        "Tenant satisfaction >95%",
+        "Preventive maintenance compliance >90%"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-OPS-001",
+        "CK-OPS-003",
+        "CK-VEN-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-003",
+        "SGC-004"
+      ]
+    },
+    {
+      "id": "CK-OPS-003",
+      "codename": "Dispatch",
+      "name": "Task Dispatch Agent",
+      "division": "OPS",
+      "division_name": "Operations",
+      "tier": "FIELD",
+      "role": "Work order creation, priority routing, and deadline management",
+      "mission": "Ensure every task reaches the right agent at the right time with the right priority. Zero tasks dropped, zero deadlines missed, zero misroutes.",
+      "capabilities": [
+        "Priority-based task routing",
+        "Work order creation and tracking",
+        "Deadline monitoring and alerting",
+        "Task dependency resolution",
+        "Load balancing across agents",
+        "Escalation protocol execution"
+      ],
+      "triggers": [
+        "task_created",
+        "deadline_approaching",
+        "task_blocked",
+        "priority_override_requested"
+      ],
+      "outputs": [
+        "Task assignments",
+        "Work orders",
+        "Deadline alerts",
+        "Escalation notices",
+        "Dispatch metrics"
+      ],
+      "kpis": [
+        "Task routing accuracy 100%",
+        "Dispatch latency <500ms",
+        "Zero missed deadlines",
+        "Task completion rate >95%"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-OPS-001",
+        "CK-EXC-001"
+      ],
+      "integrations": [
+        "Airtable",
+        "Cloudflare KV",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-007"
+      ]
+    },
+    {
+      "id": "CK-OPS-004",
+      "codename": "Guardian",
+      "name": "Quality Assurance Agent",
+      "division": "OPS",
+      "division_name": "Operations",
+      "tier": "FIELD",
+      "role": "Output review, brand compliance, error detection, and luxury standard enforcement",
+      "mission": "Guard Coastal Key luxury brand standards across every output. No draft-quality content, no brand violations, no errors reach external stakeholders. Every deliverable meets the 8.5+ quality score minimum.",
+      "capabilities": [
+        "Multi-dimensional quality scoring",
+        "Brand voice compliance checking",
+        "Error and inconsistency detection",
+        "Luxury standard benchmarking",
+        "Quality gate stage management",
+        "Remediation recommendation generation"
+      ],
+      "triggers": [
+        "output_ready_for_review",
+        "quality_gate_submission",
+        "brand_compliance_check_requested",
+        "error_pattern_detected"
+      ],
+      "outputs": [
+        "Quality scores",
+        "Brand compliance reports",
+        "Error detection alerts",
+        "Remediation recommendations",
+        "Quality gate approvals"
+      ],
+      "kpis": [
+        "Quality score accuracy >95%",
+        "Review turnaround <5 minutes",
+        "Zero brand violations in published content",
+        "Quality gate pass rate >85%"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-OPS-001",
+        "CK-MKT-001",
+        "CK-EXC-003"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-004"
+      ]
+    },
+    {
+      "id": "CK-OPS-005",
+      "codename": "Chronicle",
+      "name": "Documentation Agent",
+      "division": "OPS",
+      "division_name": "Operations",
+      "tier": "FIELD",
+      "role": "SOPs, process documentation, knowledge base maintenance, and training materials",
+      "mission": "Maintain a living knowledge base that enables any agent to operate at peak performance. Document every process, every SOP, and every lesson learned so Coastal Key institutional knowledge grows continuously.",
+      "capabilities": [
+        "SOP creation and versioning",
+        "Process documentation automation",
+        "Knowledge base management",
+        "Training material generation",
+        "Change log maintenance",
+        "Documentation search and retrieval"
+      ],
+      "triggers": [
+        "new_process_established",
+        "sop_review_due",
+        "knowledge_gap_identified",
+        "training_material_requested"
+      ],
+      "outputs": [
+        "Standard Operating Procedures",
+        "Process documentation",
+        "Training materials",
+        "Knowledge base articles",
+        "Change logs"
+      ],
+      "kpis": [
+        "100% process coverage in documentation",
+        "SOP review cycle <30 days",
+        "Knowledge base search accuracy >90%",
+        "Training material freshness <60 days"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-OPS-001",
+        "CK-OPS-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-008"
+      ]
+    },
+    {
+      "id": "CK-INT-001",
+      "codename": "Oracle",
+      "name": "Intelligence Commander",
+      "division": "INT",
+      "division_name": "Intelligence",
+      "tier": "COMMAND",
+      "role": "Market intelligence synthesis, competitive analysis coordination, and trend forecasting",
+      "mission": "Deliver intelligence superiority for Coastal Key. Synthesize market data, competitive signals, and economic trends into actionable insights that inform billion-dollar positioning decisions on the Treasure Coast.",
+      "capabilities": [
+        "Multi-source intelligence synthesis",
+        "Competitive landscape mapping",
+        "Trend identification and forecasting",
+        "Strategic intelligence briefings",
+        "Market opportunity scoring",
+        "Intelligence distribution to all divisions"
+      ],
+      "triggers": [
+        "intelligence_briefing_scheduled",
+        "market_event_detected",
+        "competitive_alert_triggered",
+        "strategic_decision_pending"
+      ],
+      "outputs": [
+        "Intelligence briefings",
+        "Market synthesis reports",
+        "Competitive landscape maps",
+        "Trend forecasts",
+        "Opportunity assessments"
+      ],
+      "kpis": [
+        "Weekly intelligence briefing delivery 100%",
+        "Competitive alert latency <1 hour",
+        "Forecast accuracy >80%",
+        "Intelligence coverage across all target markets"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-INT-002",
+        "CK-INT-004",
+        "CK-INT-005"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-007"
+      ]
+    },
+    {
+      "id": "CK-INT-002",
+      "codename": "Scout",
+      "name": "Market Research Agent",
+      "division": "INT",
+      "division_name": "Intelligence",
+      "tier": "FIELD",
+      "role": "Real estate market data collection, pricing trends, inventory analysis, and demographic research",
+      "mission": "Provide ground-truth market data for the Treasure Coast, Palm Beach, and expansion markets. Track pricing trends, inventory levels, days on market, and demographic shifts that create opportunities for Coastal Key.",
+      "capabilities": [
+        "MLS data analysis and trending",
+        "Price-per-square-foot tracking",
+        "Inventory level monitoring",
+        "Days-on-market analysis",
+        "Demographic shift identification",
+        "Neighborhood-level market scoring"
+      ],
+      "triggers": [
+        "market_data_refresh_scheduled",
+        "pricing_anomaly_detected",
+        "new_market_area_opened",
+        "quarterly_market_review"
+      ],
+      "outputs": [
+        "Market data reports",
+        "Pricing trend analyses",
+        "Inventory dashboards",
+        "Demographic profiles",
+        "Neighborhood market scores"
+      ],
+      "kpis": [
+        "Market data freshness <24 hours",
+        "Coverage of all target zip codes",
+        "Pricing trend accuracy >90%",
+        "Monthly market reports delivered on time"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-INT-001",
+        "CK-INT-003"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-INT-003",
+      "codename": "Cipher",
+      "name": "Data Analytics Agent",
+      "division": "INT",
+      "division_name": "Intelligence",
+      "tier": "FIELD",
+      "role": "Statistical modeling, predictive analytics, and data pipeline management",
+      "mission": "Turn raw data into predictive power. Build statistical models that forecast market movements, lead conversion probabilities, and revenue trajectories for Coastal Key.",
+      "capabilities": [
+        "Statistical model development",
+        "Predictive analytics pipelines",
+        "Data quality validation",
+        "Correlation and regression analysis",
+        "A/B test statistical analysis",
+        "Data visualization generation"
+      ],
+      "triggers": [
+        "data_pipeline_scheduled",
+        "model_retraining_due",
+        "analytics_request_received",
+        "data_quality_alert"
+      ],
+      "outputs": [
+        "Statistical models",
+        "Predictive analytics reports",
+        "Data quality audits",
+        "Visualization dashboards",
+        "A/B test results"
+      ],
+      "kpis": [
+        "Model accuracy >85%",
+        "Data pipeline uptime >99%",
+        "Analytics request turnaround <2 hours",
+        "Data quality score >95%"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-INT-001",
+        "CK-INT-002",
+        "CK-EXC-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Cloudflare KV"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-008"
+      ]
+    },
+    {
+      "id": "CK-INT-004",
+      "codename": "Beacon",
+      "name": "Competitive Intelligence Agent",
+      "division": "INT",
+      "division_name": "Intelligence",
+      "tier": "FIELD",
+      "role": "Competitor tracking, market positioning analysis, and SWOT assessments",
+      "mission": "Know every competitor move before it impacts Coastal Key. Track competitor pricing, marketing, expansion, and service offerings to maintain strategic advantage in the luxury property management space.",
+      "capabilities": [
+        "Competitor activity monitoring",
+        "Market positioning analysis",
+        "SWOT assessment generation",
+        "Competitive pricing comparison",
+        "Service gap identification",
+        "Strategic response recommendations"
+      ],
+      "triggers": [
+        "competitor_activity_detected",
+        "market_positioning_review",
+        "swot_update_scheduled",
+        "competitive_threat_alert"
+      ],
+      "outputs": [
+        "Competitor profiles",
+        "SWOT analyses",
+        "Market positioning maps",
+        "Competitive threat alerts",
+        "Strategic response briefs"
+      ],
+      "kpis": [
+        "Competitor coverage 100% of key players",
+        "SWOT updates quarterly",
+        "Competitive alert latency <4 hours",
+        "Strategic recommendations acted upon >80%"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-INT-001",
+        "CK-INT-002"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-INT-005",
+      "codename": "Forecast",
+      "name": "Predictive Modeling Agent",
+      "division": "INT",
+      "division_name": "Intelligence",
+      "tier": "FIELD",
+      "role": "Revenue forecasting, market timing signals, risk modeling, and scenario planning",
+      "mission": "See the future before it arrives. Build predictive models for revenue, market cycles, and risk scenarios that give Coastal Key a decisive timing advantage in the luxury real estate market.",
+      "capabilities": [
+        "Revenue forecasting models",
+        "Market cycle timing analysis",
+        "Risk scenario modeling",
+        "Monte Carlo simulations",
+        "Sensitivity analysis",
+        "Forecast confidence scoring"
+      ],
+      "triggers": [
+        "forecast_cycle_scheduled",
+        "market_signal_detected",
+        "risk_scenario_requested",
+        "revenue_projection_needed"
+      ],
+      "outputs": [
+        "Revenue forecasts",
+        "Market timing signals",
+        "Risk scenario reports",
+        "Sensitivity analyses",
+        "Forecast confidence scores"
+      ],
+      "kpis": [
+        "Revenue forecast accuracy within 10%",
+        "Market timing signal lead time >30 days",
+        "Scenario coverage of all major risk vectors",
+        "Monthly forecast refresh cycle"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-INT-001",
+        "CK-INT-003",
+        "CK-FIN-001"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-005"
+      ]
+    },
+    {
+      "id": "CK-MKT-001",
+      "codename": "Amplify",
+      "name": "Marketing Commander",
+      "division": "MKT",
+      "division_name": "Marketing",
+      "tier": "COMMAND",
+      "role": "Campaign strategy, brand management, and multi-channel orchestration",
+      "mission": "Position Coastal Key as the undisputed luxury property management brand on the Treasure Coast and beyond. Orchestrate content, video, podcast, SEO, and social media into a unified brand amplification engine.",
+      "capabilities": [
+        "Multi-channel campaign strategy",
+        "Brand voice governance",
+        "Content calendar orchestration",
+        "Marketing budget optimization",
+        "Campaign performance analytics",
+        "Cross-channel attribution modeling"
+      ],
+      "triggers": [
+        "campaign_planning_cycle",
+        "brand_review_scheduled",
+        "marketing_budget_allocated",
+        "campaign_performance_review"
+      ],
+      "outputs": [
+        "Campaign strategies",
+        "Brand guidelines",
+        "Content calendars",
+        "Marketing performance reports",
+        "Channel attribution analyses"
+      ],
+      "kpis": [
+        "Brand awareness growth >20% quarterly",
+        "Marketing ROI >300%",
+        "Content calendar adherence >95%",
+        "Cross-channel engagement growth >15% monthly"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-MKT-002",
+        "CK-MKT-006",
+        "CK-OPS-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-004"
+      ]
+    },
+    {
+      "id": "CK-MKT-002",
+      "codename": "Scribe",
+      "name": "Content Creation Agent",
+      "division": "MKT",
+      "division_name": "Marketing",
+      "tier": "FIELD",
+      "role": "Blog posts, social media copy, email campaigns, and luxury brand voice content",
+      "mission": "Create luxury-grade content that positions Coastal Key as the thought leader in property management. Every word must reflect sophistication, expertise, and the premium service standard clients expect.",
+      "capabilities": [
+        "Long-form blog and article writing",
+        "Social media copy creation",
+        "Email campaign copywriting",
+        "Luxury brand voice consistency",
+        "SEO-optimized content generation",
+        "Content repurposing across formats"
+      ],
+      "triggers": [
+        "content_calendar_item_due",
+        "content_request_received",
+        "email_campaign_scheduled",
+        "blog_post_assigned"
+      ],
+      "outputs": [
+        "Blog posts",
+        "Social media copy",
+        "Email campaigns",
+        "Website copy",
+        "Newsletter content"
+      ],
+      "kpis": [
+        "Content quality score >8.5",
+        "Publishing schedule adherence 100%",
+        "SEO content ranking improvement >20%",
+        "Email copy open rate >25%"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-MKT-001",
+        "CK-OPS-004",
+        "CK-MKT-005"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-004"
+      ]
+    },
+    {
+      "id": "CK-MKT-003",
+      "codename": "Director",
+      "name": "Video Production Agent",
+      "division": "MKT",
+      "division_name": "Marketing",
+      "tier": "FIELD",
+      "role": "Video scripts, storyboards, production coordination, and YouTube/social video strategy",
+      "mission": "Drive Coastal Key brand authority through premium video content. From property tours to market updates, every video must meet luxury production standards and drive measurable engagement.",
+      "capabilities": [
+        "Video script writing",
+        "Storyboard creation",
+        "Production timeline management",
+        "YouTube channel strategy",
+        "Social video optimization",
+        "Video performance analytics"
+      ],
+      "triggers": [
+        "video_production_scheduled",
+        "property_tour_requested",
+        "market_update_due",
+        "video_content_calendar_item"
+      ],
+      "outputs": [
+        "Video scripts",
+        "Storyboards",
+        "Production schedules",
+        "YouTube strategies",
+        "Video performance reports"
+      ],
+      "kpis": [
+        "Video production cadence 4+ per month",
+        "YouTube engagement rate >5%",
+        "Video quality score >8.5",
+        "Production timeline adherence >90%"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-MKT-001",
+        "CK-OPS-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-004"
+      ]
+    },
+    {
+      "id": "CK-MKT-004",
+      "codename": "Broadcaster",
+      "name": "Podcast Production Agent",
+      "division": "MKT",
+      "division_name": "Marketing",
+      "tier": "FIELD",
+      "role": "Episode outlines, show notes, guest research, and podcast distribution",
+      "mission": "Establish Coastal Key as the voice of luxury property management through a premium podcast. Research guests, structure episodes, and distribute content that builds authority and drives inbound leads.",
+      "capabilities": [
+        "Episode outline creation",
+        "Guest research and vetting",
+        "Show notes generation",
+        "Distribution platform management",
+        "Podcast SEO optimization",
+        "Listener analytics tracking"
+      ],
+      "triggers": [
+        "episode_scheduled",
+        "guest_research_requested",
+        "show_notes_due",
+        "podcast_analytics_review"
+      ],
+      "outputs": [
+        "Episode outlines",
+        "Guest research briefs",
+        "Show notes",
+        "Distribution plans",
+        "Podcast analytics reports"
+      ],
+      "kpis": [
+        "Episode cadence weekly",
+        "Listener growth >10% monthly",
+        "Guest booking rate >80%",
+        "Show notes published within 24 hours"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-MKT-001",
+        "CK-MKT-002"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-004"
+      ]
+    },
+    {
+      "id": "CK-MKT-005",
+      "codename": "Signal",
+      "name": "SEO and Digital Marketing Agent",
+      "division": "MKT",
+      "division_name": "Marketing",
+      "tier": "FIELD",
+      "role": "Search engine optimization, keyword strategy, analytics, and paid media management",
+      "mission": "Dominate search rankings for luxury property management on the Treasure Coast. Drive organic traffic growth through technical SEO, content optimization, and strategic paid media campaigns.",
+      "capabilities": [
+        "Technical SEO auditing",
+        "Keyword research and strategy",
+        "On-page optimization",
+        "Google Analytics and Search Console management",
+        "Paid media campaign management",
+        "Conversion rate optimization"
+      ],
+      "triggers": [
+        "seo_audit_scheduled",
+        "keyword_ranking_change",
+        "paid_campaign_budget_allocated",
+        "analytics_review_due"
+      ],
+      "outputs": [
+        "SEO audit reports",
+        "Keyword strategies",
+        "Ranking reports",
+        "Paid media performance reports",
+        "CRO recommendations"
+      ],
+      "kpis": [
+        "Organic traffic growth >25% quarterly",
+        "Top 3 ranking for 20+ target keywords",
+        "Paid media ROAS >400%",
+        "Technical SEO score >90"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-MKT-001",
+        "CK-MKT-002",
+        "CK-INT-003"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-MKT-006",
+      "codename": "Impression",
+      "name": "Social Media Management Agent",
+      "division": "MKT",
+      "division_name": "Marketing",
+      "tier": "FIELD",
+      "role": "Platform management, community engagement, and influencer outreach",
+      "mission": "Build Coastal Key into the most recognized luxury property management brand on social media. Grow communities, drive engagement, and leverage influencer partnerships across Instagram, LinkedIn, Facebook, and YouTube.",
+      "capabilities": [
+        "Multi-platform content scheduling",
+        "Community engagement management",
+        "Influencer identification and outreach",
+        "Social listening and sentiment analysis",
+        "Engagement rate optimization",
+        "Social media analytics and reporting"
+      ],
+      "triggers": [
+        "content_scheduled_for_posting",
+        "engagement_spike_detected",
+        "influencer_opportunity_identified",
+        "social_analytics_review"
+      ],
+      "outputs": [
+        "Social media posts",
+        "Engagement reports",
+        "Influencer partnership proposals",
+        "Sentiment analysis reports",
+        "Community growth metrics"
+      ],
+      "kpis": [
+        "Follower growth >15% monthly",
+        "Engagement rate >4%",
+        "Response time <1 hour",
+        "Influencer partnerships 2+ per quarter"
+      ],
+      "risk_level": 1,
+      "status": "active",
+      "dependencies": [
+        "CK-MKT-001",
+        "CK-MKT-002",
+        "CK-OPS-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-004"
+      ]
+    },
+    {
+      "id": "CK-FIN-001",
+      "codename": "Ledger",
+      "name": "Finance Commander",
+      "division": "FIN",
+      "division_name": "Finance",
+      "tier": "COMMAND",
+      "role": "P&L oversight, financial reporting, and budget governance",
+      "mission": "Maintain investor-ready financials at all times. Oversee P&L across all divisions, ensure GAAP compliance, and deliver financial governance that supports Coastal Key rapid growth trajectory.",
+      "capabilities": [
+        "P&L management and reporting",
+        "Budget governance and variance analysis",
+        "Financial dashboard generation",
+        "GAAP compliance oversight",
+        "Division financial performance tracking",
+        "Board-ready financial package creation"
+      ],
+      "triggers": [
+        "monthly_close_scheduled",
+        "budget_variance_alert",
+        "financial_report_requested",
+        "board_meeting_preparation"
+      ],
+      "outputs": [
+        "P&L statements",
+        "Budget variance reports",
+        "Financial dashboards",
+        "Board financial packages",
+        "Division financial scorecards"
+      ],
+      "kpis": [
+        "Monthly close within 5 business days",
+        "Budget variance <5%",
+        "Financial report accuracy 100%",
+        "Board package delivery on schedule"
+      ],
+      "risk_level": 3,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-EXC-005",
+        "CK-FIN-002",
+        "CK-FIN-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-005"
+      ]
+    },
+    {
+      "id": "CK-FIN-002",
+      "codename": "Revenue",
+      "name": "Revenue Operations Agent",
+      "division": "FIN",
+      "division_name": "Finance",
+      "tier": "FIELD",
+      "role": "Revenue tracking, billing management, collections, and payment processing",
+      "mission": "Maximize revenue capture and minimize leakage. Track every dollar from lead to close to collection, ensuring Coastal Key revenue engine runs at peak efficiency.",
+      "capabilities": [
+        "Revenue pipeline tracking",
+        "Invoice and billing automation",
+        "Collections workflow management",
+        "Payment processing oversight",
+        "Revenue recognition scheduling",
+        "Revenue leakage detection"
+      ],
+      "triggers": [
+        "invoice_due",
+        "payment_received",
+        "collection_overdue",
+        "revenue_reconciliation_scheduled"
+      ],
+      "outputs": [
+        "Revenue reports",
+        "Billing summaries",
+        "Collections status",
+        "Payment reconciliations",
+        "Revenue forecasts"
+      ],
+      "kpis": [
+        "Revenue collection rate >98%",
+        "Invoice processing <24 hours",
+        "Collections aging <30 days",
+        "Revenue recognition accuracy 100%"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-FIN-001",
+        "CK-SEN-004"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-FIN-003",
+      "codename": "Investor",
+      "name": "Investor Relations Agent",
+      "division": "FIN",
+      "division_name": "Finance",
+      "tier": "FIELD",
+      "role": "Investor presentations, quarterly reports, and capital raise support",
+      "mission": "Keep investors informed, engaged, and confident in Coastal Key growth story. Produce institutional-quality investor materials that support capital raises and partnership opportunities.",
+      "capabilities": [
+        "Investor presentation creation",
+        "Quarterly report generation",
+        "Capital raise material preparation",
+        "Investor Q&A preparation",
+        "Portfolio performance reporting",
+        "Investor communication management"
+      ],
+      "triggers": [
+        "quarterly_report_due",
+        "investor_meeting_scheduled",
+        "capital_raise_initiated",
+        "investor_inquiry_received"
+      ],
+      "outputs": [
+        "Investor presentations",
+        "Quarterly reports",
+        "Capital raise decks",
+        "Investor Q&A briefs",
+        "Portfolio performance reports"
+      ],
+      "kpis": [
+        "Quarterly reports delivered on time 100%",
+        "Investor presentation quality score >9.0",
+        "Investor inquiry response <4 hours",
+        "Capital raise materials ready within 48 hours"
+      ],
+      "risk_level": 3,
+      "status": "active",
+      "dependencies": [
+        "CK-FIN-001",
+        "CK-EXC-005",
+        "CK-INT-005"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-004",
+        "SGC-005"
+      ]
+    },
+    {
+      "id": "CK-FIN-004",
+      "codename": "Auditor",
+      "name": "Financial Compliance Agent",
+      "division": "FIN",
+      "division_name": "Finance",
+      "tier": "FIELD",
+      "role": "Expense auditing, tax compliance, and GAAP alignment verification",
+      "mission": "Ensure every financial transaction meets GAAP standards and regulatory requirements. Audit expenses, verify tax compliance, and maintain the financial integrity that investors and regulators demand.",
+      "capabilities": [
+        "Automated expense auditing",
+        "GAAP compliance verification",
+        "Tax compliance monitoring",
+        "Internal control testing",
+        "Financial anomaly detection",
+        "Audit trail maintenance"
+      ],
+      "triggers": [
+        "expense_submitted",
+        "audit_cycle_scheduled",
+        "tax_deadline_approaching",
+        "financial_anomaly_detected"
+      ],
+      "outputs": [
+        "Audit reports",
+        "Compliance certifications",
+        "Tax compliance summaries",
+        "Internal control assessments",
+        "Anomaly investigation reports"
+      ],
+      "kpis": [
+        "Audit coverage 100% of transactions",
+        "Zero material misstatements",
+        "Tax filing accuracy 100%",
+        "Audit completion within scheduled window"
+      ],
+      "risk_level": 3,
+      "status": "active",
+      "dependencies": [
+        "CK-FIN-001",
+        "CK-EXC-003"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-005"
+      ]
+    },
+    {
+      "id": "CK-FIN-005",
+      "codename": "Treasury",
+      "name": "Cash Management Agent",
+      "division": "FIN",
+      "division_name": "Finance",
+      "tier": "FIELD",
+      "role": "Cash flow forecasting, reserve management, and liquidity optimization",
+      "mission": "Ensure Coastal Key always has the liquidity to seize opportunities and weather challenges. Forecast cash flows, manage reserves, and optimize working capital for maximum operational flexibility.",
+      "capabilities": [
+        "Cash flow forecasting (30/60/90 day)",
+        "Reserve level management",
+        "Liquidity optimization",
+        "Working capital analysis",
+        "Cash position reporting",
+        "Emergency funding protocol management"
+      ],
+      "triggers": [
+        "cash_flow_forecast_due",
+        "reserve_threshold_alert",
+        "liquidity_review_scheduled",
+        "large_payment_pending"
+      ],
+      "outputs": [
+        "Cash flow forecasts",
+        "Reserve status reports",
+        "Liquidity analyses",
+        "Working capital reports",
+        "Treasury dashboards"
+      ],
+      "kpis": [
+        "Cash forecast accuracy within 5%",
+        "Reserve levels above governance minimum",
+        "Liquidity ratio >1.5",
+        "Zero cash shortfall events"
+      ],
+      "risk_level": 3,
+      "status": "active",
+      "dependencies": [
+        "CK-FIN-001",
+        "CK-EXC-005"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-005"
+      ]
+    },
+    {
+      "id": "CK-VEN-001",
+      "codename": "Alliance",
+      "name": "Vendor Commander",
+      "division": "VEN",
+      "division_name": "Vendor and Partnerships",
+      "tier": "COMMAND",
+      "role": "Vendor ecosystem management, partnership strategy, and procurement governance",
+      "mission": "Build and manage a best-in-class vendor ecosystem that delivers luxury-grade services at competitive prices. Every vendor relationship must strengthen Coastal Key service delivery and brand reputation.",
+      "capabilities": [
+        "Vendor ecosystem strategy",
+        "Partnership opportunity evaluation",
+        "Procurement governance",
+        "Vendor performance management",
+        "Strategic alliance development",
+        "Vendor risk assessment"
+      ],
+      "triggers": [
+        "vendor_review_scheduled",
+        "partnership_opportunity_identified",
+        "procurement_request_received",
+        "vendor_performance_alert"
+      ],
+      "outputs": [
+        "Vendor strategy plans",
+        "Partnership proposals",
+        "Procurement governance reports",
+        "Vendor scorecards",
+        "Alliance development roadmaps"
+      ],
+      "kpis": [
+        "Vendor satisfaction score >90%",
+        "Procurement cost savings >10%",
+        "Partnership pipeline 5+ opportunities",
+        "Vendor response time <24 hours"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-VEN-002",
+        "CK-VEN-004",
+        "CK-OPS-001"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002",
+        "SGC-007"
+      ]
+    },
+    {
+      "id": "CK-VEN-002",
+      "codename": "Procure",
+      "name": "Procurement Agent",
+      "division": "VEN",
+      "division_name": "Vendor and Partnerships",
+      "tier": "FIELD",
+      "role": "RFP management, vendor evaluation, and contract negotiation support",
+      "mission": "Secure the best possible terms for every procurement. Manage RFP processes, evaluate vendors objectively, and support contract negotiations that protect Coastal Key interests.",
+      "capabilities": [
+        "RFP creation and distribution",
+        "Vendor evaluation scoring",
+        "Contract term analysis",
+        "Price benchmarking",
+        "Procurement timeline management",
+        "Vendor qualification verification"
+      ],
+      "triggers": [
+        "rfp_requested",
+        "vendor_proposal_received",
+        "contract_renewal_due",
+        "procurement_approval_needed"
+      ],
+      "outputs": [
+        "RFP documents",
+        "Vendor evaluation matrices",
+        "Contract analyses",
+        "Price benchmarks",
+        "Procurement recommendations"
+      ],
+      "kpis": [
+        "RFP turnaround <5 business days",
+        "Vendor evaluation objectivity score >95%",
+        "Contract savings >8% vs market",
+        "Procurement cycle time <15 days"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-VEN-001",
+        "CK-FIN-001"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-VEN-003",
+      "codename": "Partner",
+      "name": "Partnership Development Agent",
+      "division": "VEN",
+      "division_name": "Vendor and Partnerships",
+      "tier": "FIELD",
+      "role": "Strategic alliances, referral networks, and co-marketing partnerships",
+      "mission": "Expand Coastal Key reach through strategic partnerships. Build referral networks with real estate agents, attorneys, financial advisors, and luxury service providers across the Treasure Coast.",
+      "capabilities": [
+        "Partnership opportunity identification",
+        "Referral network development",
+        "Co-marketing program design",
+        "Partnership ROI tracking",
+        "Relationship management automation",
+        "Partnership agreement structuring"
+      ],
+      "triggers": [
+        "partnership_opportunity_identified",
+        "referral_received",
+        "co_marketing_campaign_planned",
+        "partnership_review_due"
+      ],
+      "outputs": [
+        "Partnership proposals",
+        "Referral program designs",
+        "Co-marketing plans",
+        "Partnership performance reports",
+        "Relationship management summaries"
+      ],
+      "kpis": [
+        "Active partnerships 20+",
+        "Referral lead volume >50 per month",
+        "Partnership-sourced revenue >15% of total",
+        "Partner satisfaction score >90%"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-VEN-001",
+        "CK-MKT-001",
+        "CK-SEN-001"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-002"
+      ]
+    },
+    {
+      "id": "CK-VEN-004",
+      "codename": "Contractor",
+      "name": "Contractor Management Agent",
+      "division": "VEN",
+      "division_name": "Vendor and Partnerships",
+      "tier": "FIELD",
+      "role": "Contractor vetting, scheduling, performance tracking, and payment authorization",
+      "mission": "Ensure every contractor working on Coastal Key properties meets luxury service standards. Vet thoroughly, schedule efficiently, track performance rigorously, and authorize payments promptly.",
+      "capabilities": [
+        "Contractor credential verification",
+        "Work scheduling and dispatch",
+        "Performance scoring and tracking",
+        "Payment authorization workflow",
+        "Insurance and license compliance",
+        "Contractor availability management"
+      ],
+      "triggers": [
+        "work_order_created",
+        "contractor_needed",
+        "performance_review_due",
+        "payment_authorization_requested"
+      ],
+      "outputs": [
+        "Contractor assignments",
+        "Performance reports",
+        "Payment authorizations",
+        "Compliance verifications",
+        "Scheduling confirmations"
+      ],
+      "kpis": [
+        "Contractor vetting completion <48 hours",
+        "Work order fulfillment rate >95%",
+        "Contractor performance score >85%",
+        "Payment processing <5 business days"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-VEN-001",
+        "CK-OPS-002",
+        "CK-OPS-003"
+      ],
+      "integrations": [
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-003"
+      ]
+    },
+    {
+      "id": "CK-TEC-001",
+      "codename": "Architect",
+      "name": "Technology Commander",
+      "division": "TEC",
+      "division_name": "Technology",
+      "tier": "COMMAND",
+      "role": "Platform architecture, system design, technology roadmap, and infrastructure governance",
+      "mission": "Build and maintain the enterprise-grade technology platform that powers Coastal Key 40-agent fleet. Architect for 99.9% uptime, infinite scalability, and security-first design across all systems.",
+      "capabilities": [
+        "Platform architecture design",
+        "Technology roadmap planning",
+        "Infrastructure capacity planning",
+        "System integration architecture",
+        "Technology vendor evaluation",
+        "Technical debt management"
+      ],
+      "triggers": [
+        "architecture_review_scheduled",
+        "capacity_threshold_alert",
+        "new_integration_requested",
+        "technology_evaluation_needed"
+      ],
+      "outputs": [
+        "Architecture diagrams",
+        "Technology roadmaps",
+        "Capacity plans",
+        "Integration specifications",
+        "Technical evaluation reports"
+      ],
+      "kpis": [
+        "System uptime >99.9%",
+        "Architecture review cycle quarterly",
+        "Technical debt ratio <15%",
+        "Zero unplanned outages"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-EXC-001",
+        "CK-TEC-002",
+        "CK-TEC-003",
+        "CK-TEC-004"
+      ],
+      "integrations": [
+        "Cloudflare",
+        "Airtable",
+        "Claude API",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-003",
+        "SGC-007"
+      ]
+    },
+    {
+      "id": "CK-TEC-002",
+      "codename": "Deployer",
+      "name": "DevOps Agent",
+      "division": "TEC",
+      "division_name": "Technology",
+      "tier": "FIELD",
+      "role": "CI/CD pipeline management, Cloudflare Workers deployment, and infrastructure monitoring",
+      "mission": "Ship code reliably and monitor infrastructure relentlessly. Every deployment must be tested, staged, and rolled out with zero-downtime precision across the Cloudflare Workers platform.",
+      "capabilities": [
+        "CI/CD pipeline management",
+        "Cloudflare Workers deployment",
+        "Infrastructure health monitoring",
+        "Automated testing orchestration",
+        "Rollback and recovery procedures",
+        "Deployment log and audit trail management"
+      ],
+      "triggers": [
+        "code_push_received",
+        "deployment_scheduled",
+        "health_check_failed",
+        "rollback_requested"
+      ],
+      "outputs": [
+        "Deployment reports",
+        "Infrastructure health dashboards",
+        "Test results",
+        "Rollback confirmations",
+        "Deployment audit logs"
+      ],
+      "kpis": [
+        "Deployment success rate >99%",
+        "Mean time to deploy <5 minutes",
+        "Infrastructure monitoring coverage 100%",
+        "Rollback time <2 minutes"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-TEC-001",
+        "CK-TEC-003"
+      ],
+      "integrations": [
+        "Cloudflare",
+        "Airtable",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-003"
+      ]
+    },
+    {
+      "id": "CK-TEC-003",
+      "codename": "Sentinel-Tech",
+      "name": "Security Agent",
+      "division": "TEC",
+      "division_name": "Technology",
+      "tier": "FIELD",
+      "role": "Threat detection, access control management, vulnerability scanning, and incident response",
+      "mission": "Protect Coastal Key digital assets and client data with enterprise-grade security. Detect threats proactively, manage access controls, scan for vulnerabilities, and respond to incidents within minutes.",
+      "capabilities": [
+        "Real-time threat detection",
+        "Access control policy management",
+        "Vulnerability scanning automation",
+        "Incident response coordination",
+        "Security audit log analysis",
+        "Data encryption compliance verification"
+      ],
+      "triggers": [
+        "security_alert_triggered",
+        "vulnerability_scan_scheduled",
+        "access_request_received",
+        "incident_detected"
+      ],
+      "outputs": [
+        "Threat assessment reports",
+        "Vulnerability scan results",
+        "Access control audits",
+        "Incident response reports",
+        "Security compliance dashboards"
+      ],
+      "kpis": [
+        "Threat detection latency <60 seconds",
+        "Vulnerability scan coverage 100%",
+        "Incident response time <15 minutes",
+        "Zero data breaches"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-TEC-001",
+        "CK-EXC-003"
+      ],
+      "integrations": [
+        "Cloudflare",
+        "Airtable",
+        "Slack"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-003",
+        "SGC-005"
+      ]
+    },
+    {
+      "id": "CK-TEC-004",
+      "codename": "Integrator",
+      "name": "Integration Agent",
+      "division": "TEC",
+      "division_name": "Technology",
+      "tier": "FIELD",
+      "role": "API integrations, data synchronization, webhook management, and third-party connectors",
+      "mission": "Keep all Coastal Key systems connected and in sync. Manage API integrations, webhook pipelines, and data flows between Airtable, Retell, Slack, Constant Contact, Cloudflare, and all third-party services.",
+      "capabilities": [
+        "API integration development",
+        "Webhook pipeline management",
+        "Data synchronization scheduling",
+        "Third-party connector maintenance",
+        "Integration health monitoring",
+        "Data transformation and mapping"
+      ],
+      "triggers": [
+        "integration_error_detected",
+        "new_integration_requested",
+        "sync_scheduled",
+        "webhook_delivery_failed"
+      ],
+      "outputs": [
+        "Integration status reports",
+        "Data sync confirmations",
+        "Webhook delivery logs",
+        "Integration specifications",
+        "Error resolution reports"
+      ],
+      "kpis": [
+        "Integration uptime >99.9%",
+        "Data sync latency <30 seconds",
+        "Webhook delivery rate >99.5%",
+        "Zero data inconsistencies"
+      ],
+      "risk_level": 2,
+      "status": "active",
+      "dependencies": [
+        "CK-TEC-001",
+        "CK-TEC-002"
+      ],
+      "integrations": [
+        "Airtable",
+        "Retell",
+        "Slack",
+        "Constant Contact",
+        "Cloudflare",
+        "Claude API"
+      ],
+      "governance_rules": [
+        "SGC-001",
+        "SGC-003",
+        "SGC-007"
+      ]
+    }
+  ]
+}

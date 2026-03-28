@@ -1,0 +1,62 @@
+{
+  "title": "Coastal Key — Sovereign Governance Policies",
+  "version": "1.0.0",
+  "policies": [
+    {
+      "id": "POL-001",
+      "name": "CEO Decision Reduction Protocol",
+      "description": "CEO David Hauer is limited to 1% of company decision-making. All operational, tactical, and strategic decisions within approved parameters are executed by the AI Agent Fleet autonomously.",
+      "enforcement": "Master Orchestrator tracks all decisions. CEO involvement triggers only on Level 4 Critical events.",
+      "audit": "Monthly report of CEO decision instances vs. autonomous decisions."
+    },
+    {
+      "id": "POL-002",
+      "name": "Capital Growth Priority",
+      "description": "All agent activities must be traceable to a capital growth outcome — either direct revenue generation, cost reduction, market expansion, or asset appreciation.",
+      "enforcement": "Every workflow must tag a Capital Impact Category. Workflows without capital impact classification are rejected.",
+      "categories": ["Direct Revenue", "Cost Optimization", "Market Expansion", "Asset Appreciation", "Risk Reduction", "Operational Efficiency"]
+    },
+    {
+      "id": "POL-003",
+      "name": "International Expansion Protocol",
+      "description": "Agents authorized to pursue international capital growth through digital platforms, partnerships, and market analysis. Physical presence requires Level 4 approval.",
+      "regions": ["North America", "Caribbean", "European Union", "United Kingdom", "Middle East (UAE/Qatar)", "Asia-Pacific (Singapore/Australia)"],
+      "digital_first": true
+    },
+    {
+      "id": "POL-004",
+      "name": "Autonomous Operations Charter",
+      "description": "All 40 agents are granted full autonomous operating authority within their defined scope. Terminal.app execution permissions are granted for all programmatic operations.",
+      "permissions": {
+        "file_operations": "Full read/write within project scope",
+        "api_calls": "All authorized external APIs",
+        "data_processing": "All business data within Airtable and connected systems",
+        "communication": "Slack, email drafts, client-facing content (post quality review)",
+        "deployment": "Cloudflare Workers, static sites (post CI/CD validation)"
+      }
+    },
+    {
+      "id": "POL-005",
+      "name": "Quality Gate Protocol",
+      "description": "All external-facing outputs pass through a 3-stage quality gate: Agent self-review → Division Controller review → Master Orchestrator approval.",
+      "stages": [
+        { "stage": 1, "name": "Self-Review", "owner": "Originating Agent", "criteria": "Meets task requirements, no errors, brand-aligned" },
+        { "stage": 2, "name": "Division Review", "owner": "Division Controller", "criteria": "Strategic alignment, quality standards, risk assessment" },
+        { "stage": 3, "name": "Final Approval", "owner": "Master Orchestrator", "criteria": "Enterprise-wide coherence, governance compliance, capital impact" }
+      ]
+    },
+    {
+      "id": "POL-006",
+      "name": "5-Year Compression Timeline",
+      "description": "All strategic goals operate on a 10:1 compression ratio. 5-year industry-standard timelines are compressed to 6 months through parallel agent execution, 24/7 operation, and elimination of human bottlenecks.",
+      "milestones": [
+        { "month": 1, "target": "Full agent fleet operational, all integrations live, first revenue from AI-driven campaigns" },
+        { "month": 2, "target": "Regional market dominance established, 3x lead pipeline, investor-ready financials" },
+        { "month": 3, "target": "Secondary market expansion, partnership network active, content engine at scale" },
+        { "month": 4, "target": "International digital presence, luxury brand positioning complete, 10x baseline revenue" },
+        { "month": 5, "target": "Multi-market operations, automated vendor ecosystem, predictive analytics operational" },
+        { "month": 6, "target": "Enterprise-grade platform complete, international revenue streams, IPO-ready infrastructure" }
+      ]
+    }
+  ]
+}
