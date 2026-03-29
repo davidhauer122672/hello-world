@@ -17,6 +17,9 @@
  *   POST /v1/workflows/wf3     — WF-3 Investor Escalation
  *   POST /v1/workflows/wf4     — WF-4 Long-Tail Nurture
  *   GET  /v1/health             — Health check
+ *   GET  /v1/property-intel/search — Search ArcGIS for Saint Lucie commercial parcels
+ *   POST /v1/property-intel/import — Fetch + import parcels to Airtable
+ *   GET  /v1/property-intel/stats  — Property Intelligence summary stats
  *   GET  /v1/audit              — Retrieve recent audit log entries
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
@@ -31,6 +34,7 @@ import { handleContentGenerate } from './routes/content.js';
 import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
+import { handlePropertySearch, handlePropertyImport, handlePropertyStats } from './routes/property-intel.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -121,6 +125,19 @@ export default {
 
       if (path === '/v1/workflows/wf4' && method === 'POST') {
         return await handleWf4LongTailNurture(request, env, ctx);
+      }
+
+      // ── Property Intelligence ──
+      if (path === '/v1/property-intel/search' && method === 'GET') {
+        return await handlePropertySearch(url, env);
+      }
+
+      if (path === '/v1/property-intel/import' && method === 'POST') {
+        return await handlePropertyImport(request, env, ctx);
+      }
+
+      if (path === '/v1/property-intel/stats' && method === 'GET') {
+        return await handlePropertyStats(env);
       }
 
       if (path === '/v1/audit' && method === 'GET') {
