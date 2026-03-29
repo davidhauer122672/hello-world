@@ -1,0 +1,24 @@
+{
+  "name": "coastalkey-enterprise",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Coastal Key Enterprise AI Operations Platform — Monorepo",
+  "workspaces": [
+    "ck-api-gateway",
+    "sentinel-webhook"
+  ],
+  "scripts": {
+    "dev:gateway": "cd ck-api-gateway && npm run dev",
+    "dev:sentinel": "cd sentinel-webhook && npm run dev",
+    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc",
+    "deploy:gateway": "cd ck-api-gateway && npm run deploy",
+    "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
+    "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
+    "test": "npm run test:gateway && npm run test:sentinel",
+    "test:gateway": "cd ck-api-gateway && npm test",
+    "test:sentinel": "cd sentinel-webhook && npm test"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
