@@ -12,6 +12,48 @@ import { writeAudit } from '../utils/audit.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 
 /**
+ * POST /v1/leads/public — Create a lead from the public website contact form.
+ * No auth required. Rate-limited by IP. Accepts simple JSON body.
+ */
+export async function handlePublicLead(request, env, ctx) {
+  const body = await request.json();
+
+  const name = String(body.name || '').trim().slice(0, 200);
+  const email = String(body.email || '').trim().slice(0, 200);
+  const phone = String(body.phone || '').trim().slice(0, 30);
+  const zone = String(body.zone || '').trim().slice(0, 100);
+  const message = String(body.message || '').trim().slice(0, 5000);
+
+  if (!name && !email && !phone) {
+    return errorResponse('At least one of name, email, or phone is required.', 400);
+  }
+
+  const fields = {
+    'Lead Name': name,
+    'Email': email,
+    'Phone Number': phone,
+    'Service Zone': zone,
+    'Inquiry Notes': message,
+    'Lead Source': { name: 'Website' },
+    'Status': { name: 'New' },
+    'Date Captured': new Date().toISOString().split('T')[0],
+    'Audit Trail/Activity Log': `${new Date().toISOString()} — Website inquiry submitted via coastalkey-pm.com contact form.`,
+  };
+
+  const record = await createRecord(env, TABLES.LEADS, fields);
+
+  writeAudit(env, ctx, {
+    route: '/v1/leads/public',
+    action: 'create',
+    recordId: record.id,
+    leadName: name,
+    source: 'website',
+  });
+
+  return jsonResponse({ success: true, id: record.id }, 201);
+}
+
+/**
  * POST /v1/leads — Create a new lead.
  * Body: Airtable field name → value map.
  */

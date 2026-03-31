@@ -4,6 +4,7 @@
  * Routes:
  *   POST /v1/inference          — Claude inference with KV caching + audit logging
  *   POST /v1/leads              — Create lead in Airtable Leads table
+ *   POST /v1/leads/public       — Public website contact form → Lead (no auth)
  *   POST /v1/leads/enrich       — AI-enrich an existing lead (battle plan, segment analysis)
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
@@ -16,6 +17,8 @@
  *   POST /v1/workflows/scaa1   — SCAA-1 Battle Plan Pipeline
  *   POST /v1/workflows/wf3     — WF-3 Investor Escalation
  *   POST /v1/workflows/wf4     — WF-4 Long-Tail Nurture
+ *   POST /v1/pricing/recommend   — Dynamic pricing recommendation
+ *   GET  /v1/pricing/zones      — Zone-level pricing benchmarks
  *   GET  /v1/health             — Health check
  *   GET  /v1/property-intel/search — Search ArcGIS for Saint Lucie commercial parcels
  *   POST /v1/property-intel/import — Fetch + import parcels to Airtable
@@ -33,7 +36,7 @@
 import { authenticate } from './middleware/auth.js';
 import { rateLimit } from './middleware/rate-limit.js';
 import { handleInference } from './routes/inference.js';
-import { handleCreateLead, handleGetLead, handleEnrichLead } from './routes/leads.js';
+import { handleCreateLead, handleGetLead, handleEnrichLead, handlePublicLead } from './routes/leads.js';
 import { handleRetellWebhook } from './routes/retell.js';
 import { handleContentGenerate } from './routes/content.js';
 import { handleAuditLog } from './routes/audit.js';
@@ -41,6 +44,7 @@ import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
 import { handlePropertySearch, handlePropertyImport, handlePropertyStats } from './routes/property-intel.js';
 import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAnalytics, handleCampaignLeadContacts, handleCampaignDashboard } from './routes/sentinel-campaign.js';
+import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -56,12 +60,79 @@ export default {
 
     // ── Health (no auth) ──
     if (path === '/v1/health' && method === 'GET') {
+      const deep = url.searchParams.get('deep') === 'true';
+
+      if (!deep) {
+        return jsonResponse({
+          status: 'operational',
+          service: 'ck-api-gateway',
+          version: '2.0.0',
+          agents: 250,
+          divisions: 8,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      // Deep health check — verify external dependencies
+      const checks = {};
+
+      // Airtable connectivity
+      try {
+        const atRes = await fetch(
+          `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/Leads?maxRecords=1&fields%5B%5D=Name`,
+          { headers: { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` } },
+        );
+        checks.airtable = { status: atRes.ok ? 'ok' : 'error', code: atRes.status };
+      } catch (err) {
+        checks.airtable = { status: 'error', message: err.message };
+      }
+
+      // Anthropic connectivity
+      try {
+        const anRes = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': env.ANTHROPIC_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 5,
+            messages: [{ role: 'user', content: 'ping' }],
+          }),
+        });
+        checks.anthropic = { status: anRes.ok ? 'ok' : 'error', code: anRes.status };
+      } catch (err) {
+        checks.anthropic = { status: 'error', message: err.message };
+      }
+
+      // KV stores
+      checks.kv = {
+        cache: env.CACHE ? 'available' : 'missing',
+        sessions: env.SESSIONS ? 'available' : 'missing',
+        rateLimits: env.RATE_LIMITS ? 'available' : 'missing',
+        auditLog: env.AUDIT_LOG ? 'available' : 'missing',
+      };
+
+      const allOk = checks.airtable?.status === 'ok' &&
+                     checks.anthropic?.status === 'ok' &&
+                     checks.kv.cache === 'available';
+
       return jsonResponse({
-        status: 'operational',
+        status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
-        version: '1.0.0',
+        version: '2.0.0',
+        agents: 290,
+        divisions: 9,
+        checks,
         timestamp: new Date().toISOString(),
       });
+    }
+
+    // ── Public routes (no auth) ──
+    if (path === '/v1/leads/public' && method === 'POST') {
+      return await handlePublicLead(request, env, ctx);
     }
 
     // ── Auth gate ──
@@ -165,6 +236,15 @@ export default {
 
       if (path === '/v1/campaign/dashboard' && method === 'GET') {
         return await handleCampaignDashboard(env);
+      }
+
+      // ── Pricing Engine ──
+      if (path === '/v1/pricing/recommend' && method === 'POST') {
+        return await handlePricingRecommend(request, env, ctx);
+      }
+
+      if (path === '/v1/pricing/zones' && method === 'GET') {
+        return handlePricingZones();
       }
 
       if (path === '/v1/audit' && method === 'GET') {

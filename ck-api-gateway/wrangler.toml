@@ -13,19 +13,19 @@ MAX_TRANSCRIPT_CHARS = "100000"
 
 [[kv_namespaces]]
 binding = "CACHE"
-id = "ck-cache"
+id = "2a4a09a04ea146b29fa06ebb9af61609"
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "ck-sessions"
+id = "c88aa8d5534c4b0cb3f2722f97cceca6"
 
 [[kv_namespaces]]
 binding = "RATE_LIMITS"
-id = "ck-rate-limits"
+id = "0acfb96a7aaf49bb92055c143a882506"
 
 [[kv_namespaces]]
 binding = "AUDIT_LOG"
-id = "ck-audit-log"
+id = "3d722426db4241209fd0444b42f84904"
 
 # ── Secrets (set via dashboard or `wrangler secret put`) ──
 # ANTHROPIC_API_KEY        — Anthropic console API key
