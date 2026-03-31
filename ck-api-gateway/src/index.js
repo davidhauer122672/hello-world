@@ -29,6 +29,11 @@
  *   GET  /v1/campaign/analytics — TH Sentinel campaign analytics
  *   GET  /v1/campaign/contacts  — TH Sentinel lead contacts
  *   GET  /v1/campaign/dashboard — TH Sentinel combined campaign dashboard
+ *   GET  /v1/intel/officers    — List all 50 Intelligence Officers
+ *   GET  /v1/intel/officers/:id — Get single Intelligence Officer
+ *   POST /v1/intel/officers/:id/scan — Trigger officer scan
+ *   GET  /v1/intel/dashboard   — Intelligence Officer fleet dashboard
+ *   POST /v1/intel/fleet-scan  — Scan all critical-severity officers
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -45,6 +50,7 @@ import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNu
 import { handlePropertySearch, handlePropertyImport, handlePropertyStats } from './routes/property-intel.js';
 import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAnalytics, handleCampaignLeadContacts, handleCampaignDashboard } from './routes/sentinel-campaign.js';
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
+import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -245,6 +251,28 @@ export default {
 
       if (path === '/v1/pricing/zones' && method === 'GET') {
         return handlePricingZones();
+      }
+
+      // ── Intelligence Officers ──
+      if (path === '/v1/intel/officers' && method === 'GET') {
+        return handleListOfficers(url);
+      }
+
+      if (path === '/v1/intel/dashboard' && method === 'GET') {
+        return await handleOfficerDashboard(env);
+      }
+
+      if (path === '/v1/intel/fleet-scan' && method === 'POST') {
+        return await handleFleetScan(env, ctx);
+      }
+
+      if (path.match(/^\/v1\/intel\/officers\/[^/]+\/scan$/) && method === 'POST') {
+        return await handleOfficerScan(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/intel\/officers\/[^/]+$/) && method === 'GET') {
+        const officerId = path.split('/v1/intel/officers/')[1];
+        return handleGetOfficer(officerId);
       }
 
       if (path === '/v1/audit' && method === 'GET') {
