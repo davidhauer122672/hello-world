@@ -34,6 +34,11 @@
  *   POST /v1/intel/officers/:id/scan — Trigger officer scan
  *   GET  /v1/intel/dashboard   — Intelligence Officer fleet dashboard
  *   POST /v1/intel/fleet-scan  — Scan all critical-severity officers
+ *   GET  /v1/email/agents      — List all 20 email agents
+ *   GET  /v1/email/agents/:id  — Get single email agent
+ *   POST /v1/email/compose     — AI-compose email via Claude
+ *   POST /v1/email/classify    — Classify/score inbound email
+ *   GET  /v1/email/dashboard   — Email operations dashboard
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -51,6 +56,7 @@ import { handlePropertySearch, handlePropertyImport, handlePropertyStats } from 
 import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAnalytics, handleCampaignLeadContacts, handleCampaignDashboard } from './routes/sentinel-campaign.js';
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
+import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -273,6 +279,28 @@ export default {
       if (path.match(/^\/v1\/intel\/officers\/[^/]+$/) && method === 'GET') {
         const officerId = path.split('/v1/intel/officers/')[1];
         return handleGetOfficer(officerId);
+      }
+
+      // ── Email Agents ──
+      if (path === '/v1/email/agents' && method === 'GET') {
+        return handleListEmailAgents(url);
+      }
+
+      if (path === '/v1/email/dashboard' && method === 'GET') {
+        return handleEmailDashboard();
+      }
+
+      if (path === '/v1/email/compose' && method === 'POST') {
+        return await handleEmailCompose(request, env, ctx);
+      }
+
+      if (path === '/v1/email/classify' && method === 'POST') {
+        return await handleEmailClassify(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/email\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/email/agents/')[1];
+        return handleGetEmailAgent(agentId);
       }
 
       if (path === '/v1/audit' && method === 'GET') {

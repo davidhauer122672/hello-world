@@ -37,6 +37,21 @@ export const TABLES = {
   TH_AGENT_PERFORMANCE: 'tblzTUg9QXQnZmA4I',
   TH_CAMPAIGN_ANALYTICS:'tblSkigMl8YSYN16u',
   TH_LEAD_CONTACTS:     'tbl0XVTVz3qambhog',
+  // ── Remaining Tables (wired 2026-03-31) ──
+  OWNERS:               'tblQHBNEB2qmJL93z',
+  SERVICE_PROVIDERS:     'tblngg2GLe9WzJ1I7',
+  COMMUNICATIONS:       'tblJQUZJU9DiqCnRG',
+  CONSULTATIONS:        'tblVAfA6cMLhbqYcT',
+  STORM_PROTOCOLS:      'tbl4KNqlFzEA4Frka',
+  AMENITIES:            'tblHpTEAxYoN8nOlH',
+  LEASE_APPLICATIONS:   'tblDCiTSI7wmU4GJO',
+  FEMA_DEPLOYMENT:      'tblqitX2wwJLOwLQ3',
+  VENDORS:              'tblYk94NsfZ8cGgxP',
+  SOURCE_REFRESH:       'tblv7T4KFSEXavlCQ',
+  COMPETITOR_DATA:      'tblDqhWAKzJM0E8F5',
+  MARKET_DATA:          'tblVjGvL1UYin5U2h',
+  PORTFOLIO_DATA:       'tblaRlV25mTmeZdzQ',
+  REGULATORY_DATA:      'tblyyEjxqQjEmO16T',
 };
 
 /**
