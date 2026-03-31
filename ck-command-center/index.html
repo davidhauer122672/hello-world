@@ -108,6 +108,25 @@ a{color:var(--accent);text-decoration:none}
 .empty{text-align:center;padding:60px 20px;color:var(--text2)}
 .empty-icon{font-size:48px;margin-bottom:12px;opacity:.3}
 
+/* ── Property Grid ── */
+.property-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.property-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:all .15s;position:relative;overflow:hidden}
+.property-card:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.property-card .property-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.property-card .property-owner{font-size:15px;font-weight:600;margin-bottom:4px}
+.property-card .property-address{font-size:12px;color:var(--text2);margin-bottom:8px;line-height:1.6}
+.property-card .property-detail{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text2);margin-bottom:4px}
+.property-card .property-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.use-code-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(124,92,252,0.15);color:var(--accent2)}
+.potential-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.potential-badge.high{background:rgba(34,197,94,0.15);color:var(--green)}
+.potential-badge.medium{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.potential-badge.low{background:rgba(239,68,68,0.15);color:var(--red)}
+.property-status-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(79,143,255,0.15);color:var(--accent)}
+.import-btn{background:var(--accent2);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;transition:opacity .15s}
+.import-btn:hover{opacity:.9}
+.import-btn:disabled{opacity:.5;cursor:not-allowed}
+
 /* ── Responsive ── */
 @media(max-width:768px){
   .app{grid-template-columns:1fr;grid-template-rows:64px auto 1fr}
@@ -150,6 +169,10 @@ a{color:var(--accent);text-decoration:none}
         <span>All Agents</span>
         <span class="count" id="totalCount">—</span>
       </div>
+      <div class="nav-item" data-view="property-intel" onclick="switchView('property-intel')">
+        <span>Property Intel</span>
+        <span class="count" id="propertyCount">—</span>
+      </div>
     </div>
     <div class="sidebar-section">
       <h3>Divisions</h3>
@@ -176,6 +199,8 @@ let allAgents = [];
 let allDivisions = [];
 let currentView = 'dashboard';
 let dashboardData = null;
+let propertyData = null;
+let propertyStats = null;
 
 // ── Division colors from registry ──
 const DIV_COLORS = {
@@ -280,6 +305,7 @@ function switchView(view) {
 
   if (view === 'dashboard') renderDashboard();
   else if (view === 'all-agents') renderAllAgents();
+  else if (view === 'property-intel') renderPropertyIntel();
   else if (view.startsWith('div-')) renderDivisionView(view.replace('div-', ''));
 }
 
@@ -486,6 +512,151 @@ async function agentAction(agentId, action) {
   } catch (err) {
     alert(`Action failed: ${err.message}`);
   }
+}
+
+// ── Property Intelligence ──
+async function fetchPropertyData() {
+  try {
+    const stats = await api('/v1/property-intel/stats');
+    propertyStats = stats;
+    propertyData = stats.properties || [];
+    document.getElementById('propertyCount').textContent = stats.totalProperties || propertyData.length || '—';
+    return stats;
+  } catch (err) {
+    console.error('Failed to fetch property data:', err);
+    propertyStats = null;
+    propertyData = [];
+    return null;
+  }
+}
+
+async function importProperties() {
+  const btn = document.getElementById('importBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Importing...'; }
+  try {
+    const result = await apiPost('/v1/property-intel/import', {
+      filters: { useCode: 'all', serviceZone: 'all', leadPotential: 'all' }
+    });
+    alert(`Import complete: ${result.imported || 0} properties imported.`);
+    await fetchPropertyData();
+    renderPropertyIntel();
+  } catch (err) {
+    alert(`Import failed: ${err.message}`);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Import Properties'; }
+  }
+}
+
+async function renderPropertyIntel() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div> Loading property intelligence...</div>';
+
+  if (!propertyData) await fetchPropertyData();
+
+  const stats = propertyStats || {};
+  const properties = propertyData || [];
+  const high = stats.highPotential || properties.filter(p => (p.leadPotential || '').toLowerCase() === 'high').length;
+  const medium = stats.mediumPotential || properties.filter(p => (p.leadPotential || '').toLowerCase() === 'medium').length;
+  const low = stats.lowPotential || properties.filter(p => (p.leadPotential || '').toLowerCase() === 'low').length;
+  const total = stats.totalProperties || properties.length;
+
+  main.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.5px">Property Intelligence <span style="font-weight:400;font-size:18px;color:var(--text2)">(${total})</span></h1>
+      <button class="import-btn" id="importBtn" onclick="importProperties()">Import Properties</button>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Properties</div><div class="stat-value blue">${total}</div></div>
+      <div class="stat-card"><div class="stat-label">High Potential</div><div class="stat-value green">${high}</div></div>
+      <div class="stat-card"><div class="stat-label">Medium Potential</div><div class="stat-value yellow">${medium}</div></div>
+      <div class="stat-card"><div class="stat-label">Low Potential</div><div class="stat-value red">${low}</div></div>
+    </div>
+    <div class="filter-bar">
+      <input type="text" placeholder="Search properties..." id="propSearchInput" oninput="applyPropertyFilters()">
+      <select id="propFilterUseCode" onchange="applyPropertyFilters()">
+        <option value="">All Use Codes</option>
+        <option value="Office">Office</option>
+        <option value="Retail">Retail</option>
+        <option value="Medical">Medical</option>
+        <option value="Institutional">Institutional</option>
+        <option value="Industrial">Industrial</option>
+        <option value="Mixed Use">Mixed Use</option>
+        <option value="Other Commercial">Other Commercial</option>
+      </select>
+      <select id="propFilterZone" onchange="applyPropertyFilters()">
+        <option value="">All Service Zones</option>
+        <option value="Port St. Lucie">Port St. Lucie</option>
+        <option value="Fort Pierce">Fort Pierce</option>
+        <option value="Vero Beach">Vero Beach</option>
+        <option value="Sebastian">Sebastian</option>
+        <option value="Stuart">Stuart</option>
+        <option value="Jensen Beach">Jensen Beach</option>
+        <option value="Palm City">Palm City</option>
+        <option value="Hutchinson Island">Hutchinson Island</option>
+        <option value="Hobe Sound">Hobe Sound</option>
+        <option value="Other">Other</option>
+      </select>
+      <select id="propFilterPotential" onchange="applyPropertyFilters()">
+        <option value="">All Potentials</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </div>
+    <div class="property-grid" id="propertyGrid">
+      ${properties.length === 0 ? '<div class="empty"><div class="empty-icon">&#127970;</div><p>No properties loaded. Click Import Properties to get started.</p></div>' :
+        properties.map(p => propertyCardHTML(p)).join('')}
+    </div>
+  `;
+}
+
+function applyPropertyFilters() {
+  const search = (document.getElementById('propSearchInput')?.value || '').toLowerCase();
+  const useCode = document.getElementById('propFilterUseCode')?.value || '';
+  const zone = document.getElementById('propFilterZone')?.value || '';
+  const potential = document.getElementById('propFilterPotential')?.value || '';
+
+  let filtered = [...(propertyData || [])];
+  if (search) filtered = filtered.filter(p =>
+    (p.parcelId || '').toLowerCase().includes(search) ||
+    (p.ownerName || '').toLowerCase().includes(search) ||
+    (p.siteAddress || '').toLowerCase().includes(search)
+  );
+  if (useCode) filtered = filtered.filter(p => p.useCode === useCode);
+  if (zone) filtered = filtered.filter(p => p.serviceZone === zone);
+  if (potential) filtered = filtered.filter(p => (p.leadPotential || '').toLowerCase() === potential.toLowerCase());
+
+  const grid = document.getElementById('propertyGrid');
+  if (grid) {
+    grid.innerHTML = filtered.length === 0
+      ? '<div class="empty"><div class="empty-icon">&#128269;</div><p>No properties match your filters.</p></div>'
+      : filtered.map(p => propertyCardHTML(p)).join('');
+  }
+}
+
+function propertyCardHTML(p) {
+  const potentialClass = (p.leadPotential || '').toLowerCase();
+  const assessedFormatted = p.assessedValue ? `$${Number(p.assessedValue).toLocaleString()}` : '—';
+  return `<div class="property-card">
+    <div class="property-header">
+      <span class="agent-id">${p.parcelId || '—'}</span>
+      <span class="use-code-badge">${p.useCode || '—'}</span>
+    </div>
+    <div class="property-owner">${p.ownerName || '—'}</div>
+    <div class="property-address">${p.siteAddress || '—'}</div>
+    <div class="property-detail">
+      <span>Assessed Value</span>
+      <span style="font-weight:600;color:var(--text)">${assessedFormatted}</span>
+    </div>
+    <div class="property-detail">
+      <span>Service Zone</span>
+      <span style="color:var(--text)">${p.serviceZone || '—'}</span>
+    </div>
+    <div class="property-footer">
+      <span class="potential-badge ${potentialClass}">${p.leadPotential || '—'}</span>
+      <span class="property-status-badge">${p.status || 'New'}</span>
+    </div>
+  </div>`;
 }
 
 // ── Keyboard shortcuts ──
