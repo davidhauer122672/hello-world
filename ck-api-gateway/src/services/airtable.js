@@ -32,6 +32,11 @@ export const TABLES = {
   NOTEBOOKLM_IMPORTS:   'tblmk7HdK3nn7RBaH',
   INCOMPLETE_LEADS:     'tblYh4Rg4NxkRstJl',
   MISSED_FAILED_CALLS:  'tblWW25r6GmsQe3mQ',
+  PROPERTY_INTELLIGENCE:'tblHxObVO2ldeSxDo',
+  TH_CALL_LOG:          'tbl1a2YPUpZvnRKbi',
+  TH_AGENT_PERFORMANCE: 'tblzTUg9QXQnZmA4I',
+  TH_CAMPAIGN_ANALYTICS:'tblSkigMl8YSYN16u',
+  TH_LEAD_CONTACTS:     'tbl0XVTVz3qambhog',
 };
 
 /**

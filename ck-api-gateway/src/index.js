@@ -20,7 +20,15 @@
  *   POST /v1/pricing/recommend   — Dynamic pricing recommendation
  *   GET  /v1/pricing/zones      — Zone-level pricing benchmarks
  *   GET  /v1/health             — Health check
+ *   GET  /v1/property-intel/search — Search ArcGIS for Saint Lucie commercial parcels
+ *   POST /v1/property-intel/import — Fetch + import parcels to Airtable
+ *   GET  /v1/property-intel/stats  — Property Intelligence summary stats
  *   GET  /v1/audit              — Retrieve recent audit log entries
+ *   GET  /v1/campaign/calls     — TH Sentinel campaign call log
+ *   GET  /v1/campaign/agents    — TH Sentinel agent performance
+ *   GET  /v1/campaign/analytics — TH Sentinel campaign analytics
+ *   GET  /v1/campaign/contacts  — TH Sentinel lead contacts
+ *   GET  /v1/campaign/dashboard — TH Sentinel combined campaign dashboard
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -34,6 +42,8 @@ import { handleContentGenerate } from './routes/content.js';
 import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
+import { handlePropertySearch, handlePropertyImport, handlePropertyStats } from './routes/property-intel.js';
+import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAnalytics, handleCampaignLeadContacts, handleCampaignDashboard } from './routes/sentinel-campaign.js';
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -192,6 +202,40 @@ export default {
 
       if (path === '/v1/workflows/wf4' && method === 'POST') {
         return await handleWf4LongTailNurture(request, env, ctx);
+      }
+
+      // ── Property Intelligence ──
+      if (path === '/v1/property-intel/search' && method === 'GET') {
+        return await handlePropertySearch(url, env);
+      }
+
+      if (path === '/v1/property-intel/import' && method === 'POST') {
+        return await handlePropertyImport(request, env, ctx);
+      }
+
+      if (path === '/v1/property-intel/stats' && method === 'GET') {
+        return await handlePropertyStats(env);
+      }
+
+      // ── TH Sentinel Campaign ──
+      if (path === '/v1/campaign/calls' && method === 'GET') {
+        return await handleCampaignCallLog(url, env);
+      }
+
+      if (path === '/v1/campaign/agents' && method === 'GET') {
+        return await handleCampaignAgentPerformance(url, env);
+      }
+
+      if (path === '/v1/campaign/analytics' && method === 'GET') {
+        return await handleCampaignAnalytics(url, env);
+      }
+
+      if (path === '/v1/campaign/contacts' && method === 'GET') {
+        return await handleCampaignLeadContacts(url, env);
+      }
+
+      if (path === '/v1/campaign/dashboard' && method === 'GET') {
+        return await handleCampaignDashboard(env);
       }
 
       // ── Pricing Engine ──
