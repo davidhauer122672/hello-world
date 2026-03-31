@@ -1,0 +1,9 @@
+{
+  "description": "Placeholder icon for Coastal Key mobile app. Replace with actual brand icon.",
+  "note": "Generate actual PNG icons using: npx expo-asset-generator or design in Canva/Figma.",
+  "specifications": {
+    "icon.png": "1024x1024 px, PNG, no transparency, brand gold (#C9A84C) CK monogram on dark navy (#0B1426)",
+    "adaptive-icon.png": "1024x1024 px, PNG with safe zone for Android adaptive icons",
+    "splash.png": "1284x2778 px, PNG, CK logo centered on dark navy background"
+  }
+}

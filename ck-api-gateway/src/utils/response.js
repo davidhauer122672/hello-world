@@ -13,10 +13,20 @@ export function errorResponse(message, status = 500) {
   return jsonResponse({ error: message, status }, status);
 }
 
-export function corsHeaders() {
+const ALLOWED_ORIGINS = [
+  'https://coastalkey-pm.com',
+  'https://www.coastalkey-pm.com',
+];
+
+export function corsHeaders(request) {
+  const origin = request?.headers?.get?.('Origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+
   return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
   };
 }
