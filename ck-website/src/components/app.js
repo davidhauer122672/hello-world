@@ -9,6 +9,12 @@
 import { registerRoute, navigate } from '../utils/router.js';
 import { isAuthenticated, login, logout, apiCall } from '../utils/auth.js';
 
+/** Escape HTML to prevent XSS when rendering dynamic/API data. */
+function esc(str) {
+  if (typeof str !== 'string') return String(str ?? '');
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 // ── Route Registration ──────────────────────────────────────────────────────
 
 export function renderApp() {
@@ -50,7 +56,7 @@ function setPublicLayout(main, title, content) {
         <a href="/contact" data-nav="/contact">Contact</a>
         <a href="/portal" class="nav-portal-btn">Team Portal</a>
       </div>
-      <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <button class="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='false');document.querySelector('.nav-links').classList.toggle('open')">
         <span></span><span></span><span></span>
       </button>
     </nav>
@@ -229,7 +235,7 @@ function renderAbout(main) {
     <section class="about-content">
       <div class="about-text">
         <h2>Built for the Future of Property Management</h2>
-        <p>Coastal Key Property Management operates 250 AI agents across 8 specialized divisions — Executive, Sales, Operations, Intelligence, Marketing, Finance, Vendor Management, and Technology. Our AI fleet handles everything from inbound sales calls to hurricane preparation, from investor reporting to social media content creation.</p>
+        <p>Coastal Key Property Management operates 290 AI agents across 9 specialized divisions — Executive, Sales, Operations, Intelligence, Marketing, Finance, Vendor Management, Technology, and Email AI. Our AI fleet handles everything from inbound sales calls to hurricane preparation, from investor reporting to social media content creation.</p>
         <p>But technology is only as good as the human vision behind it. Coastal Key was founded on a simple principle: property owners on the Treasure Coast deserve enterprise-grade operations with boutique-level personal care. Our AI systems amplify human expertise — they don't replace it.</p>
         <h3>Our Divisions</h3>
         <ul class="division-list">
@@ -253,13 +259,13 @@ function renderContact(main) {
     <section class="contact-section">
       <form class="contact-form" id="contact-form">
         <div class="form-row">
-          <div class="form-group"><label>Full Name</label><input type="text" name="name" required placeholder="Your name"></div>
-          <div class="form-group"><label>Email</label><input type="email" name="email" required placeholder="you@example.com"></div>
+          <div class="form-group"><label for="cf-name">Full Name</label><input type="text" id="cf-name" name="name" required placeholder="Your name"></div>
+          <div class="form-group"><label for="cf-email">Email</label><input type="email" id="cf-email" name="email" required placeholder="you@example.com"></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Phone</label><input type="tel" name="phone" placeholder="(555) 123-4567"></div>
-          <div class="form-group"><label>Property Location</label>
-            <select name="zone"><option value="">Select area...</option>
+          <div class="form-group"><label for="cf-phone">Phone</label><input type="tel" id="cf-phone" name="phone" placeholder="(555) 123-4567"></div>
+          <div class="form-group"><label for="cf-zone">Property Location</label>
+            <select id="cf-zone" name="zone"><option value="">Select area...</option>
               <option>Vero Beach</option><option>Sebastian</option><option>Fort Pierce</option>
               <option>Port St. Lucie</option><option>Jensen Beach</option><option>Stuart</option>
               <option>Palm City</option><option>Hobe Sound</option><option>Jupiter</option>
@@ -267,7 +273,7 @@ function renderContact(main) {
             </select>
           </div>
         </div>
-        <div class="form-group"><label>How can we help?</label><textarea name="message" rows="4" placeholder="Tell us about your property and goals..."></textarea></div>
+        <div class="form-group"><label for="cf-message">How can we help?</label><textarea id="cf-message" name="message" rows="4" placeholder="Tell us about your property and goals..."></textarea></div>
         <button type="submit" class="btn btn-primary btn-lg" id="contact-submit">Send Inquiry</button>
         <div id="contact-status" class="form-status"></div>
       </form>
@@ -283,6 +289,13 @@ function renderContact(main) {
     status.textContent = '';
     try {
       const data = Object.fromEntries(new FormData(form));
+      // Client-side validation
+      if (!data.name?.trim() && !data.email?.trim() && !data.phone?.trim()) {
+        throw new Error('Please provide at least a name, email, or phone number.');
+      }
+      if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        throw new Error('Please enter a valid email address.');
+      }
       // Direct Airtable write for public form (no auth required)
       const res = await fetch('/v1/leads/public', {
         method: 'POST',
@@ -304,7 +317,7 @@ function renderContact(main) {
         throw new Error('Submission failed');
       }
     } catch (err) {
-      status.textContent = 'Something went wrong. Please call us directly.';
+      status.textContent = err.message || 'Something went wrong. Please call us directly.';
       status.className = 'form-status error';
     }
     btn.disabled = false;
@@ -326,8 +339,8 @@ function renderPortalGate(main) {
         <h2>Team Portal</h2>
         <p>Connect to the CK Command Center API to access the operational dashboard.</p>
         <form id="portal-login-form">
-          <div class="form-group"><label>API Gateway URL</label><input type="url" id="api-url" required placeholder="https://ck-api-gateway.your-domain.workers.dev"></div>
-          <div class="form-group"><label>Bearer Token</label><input type="password" id="api-token" required placeholder="Your API token"></div>
+          <div class="form-group"><label for="api-url">API Gateway URL</label><input type="url" id="api-url" required placeholder="https://ck-api-gateway.your-domain.workers.dev"></div>
+          <div class="form-group"><label for="api-token">Bearer Token</label><input type="password" id="api-token" required placeholder="Your API token" autocomplete="current-password"></div>
           <button type="submit" class="btn btn-primary btn-full">Connect</button>
         </form>
         <p class="login-note">Access restricted to authorized Coastal Key team members.</p>
@@ -336,8 +349,16 @@ function renderPortalGate(main) {
   `);
   document.getElementById('portal-login-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const url = document.getElementById('api-url').value;
-    const token = document.getElementById('api-token').value;
+    const url = document.getElementById('api-url').value.trim();
+    const token = document.getElementById('api-token').value.trim();
+    if (!url.startsWith('https://') && !url.startsWith('http://localhost')) {
+      alert('API URL must use HTTPS.');
+      return;
+    }
+    if (!token || token.length < 8) {
+      alert('Bearer token must be at least 8 characters.');
+      return;
+    }
     login(url, token);
     navigate('/portal/dashboard');
   });
@@ -429,10 +450,10 @@ function renderPortalDashboard(main) {
     const grid = document.getElementById('division-grid');
     if (!grid) return;
     grid.innerHTML = divisions.map(d => `
-      <div class="division-card" style="border-left:4px solid ${d.color}">
-        <span class="division-code">${d.code}</span>
-        <span class="division-name">${d.name}</span>
-        <span class="division-count">${d.agents} agents</span>
+      <div class="division-card" style="border-left:4px solid ${esc(d.color)}">
+        <span class="division-code">${esc(d.code)}</span>
+        <span class="division-name">${esc(d.name)}</span>
+        <span class="division-count">${esc(d.agents)} agents</span>
       </div>
     `).join('');
   }
@@ -441,7 +462,7 @@ function renderPortalDashboard(main) {
     const feed = document.getElementById('activity-feed');
     if (!feed) return;
     feed.innerHTML = items.map(a => `
-      <li class="activity-item"><span class="activity-ts">${a.ts}</span> ${a.text}</li>
+      <li class="activity-item"><span class="activity-ts">${esc(a.ts)}</span> ${esc(a.text)}</li>
     `).join('');
   }
 

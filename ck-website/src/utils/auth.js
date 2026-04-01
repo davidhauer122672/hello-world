@@ -7,15 +7,18 @@
  */
 
 const AUTH_KEY = 'ck_portal_session';
-const API_URL_KEY = 'ck_api_url';
-const TOKEN_KEY = 'ck_api_token';
+const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000; // 8 hours
 
 export function initAuth() {
-  // Restore saved API config
   const saved = localStorage.getItem(AUTH_KEY);
   if (saved) {
     try {
       const session = JSON.parse(saved);
+      // Expire sessions older than 8 hours
+      if (session.loginAt && (Date.now() - new Date(session.loginAt).getTime()) > SESSION_MAX_AGE_MS) {
+        localStorage.removeItem(AUTH_KEY);
+        return;
+      }
       window.__ckSession = session;
     } catch {
       localStorage.removeItem(AUTH_KEY);
