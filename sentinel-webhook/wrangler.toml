@@ -4,7 +4,7 @@ compatibility_date = "2024-12-01"
 
 [vars]
 AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
-AIRTABLE_TABLE_ID = "tblpNasm0AxreRqLW"
+AIRTABLE_TABLE_ID = "tblpNasm0AxreRqLW"  # Main Leads table (not the campaign-specific Lead Contacts table)
 
 # Set these secrets via: wrangler secret put <NAME>
 # AIRTABLE_API_KEY       — Required: Airtable personal access token

@@ -6,6 +6,17 @@
 const MISSED_CALLS_TABLE_ID = 'tblWW25r6GmsQe3mQ';
 
 /**
+ * Mask phone numbers for TCPA/CCPA compliance in notifications.
+ * Shows only last 4 digits: +17725551234 → ***-***-1234
+ */
+function maskPhone(phone) {
+  if (!phone) return 'N/A';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length < 4) return '***';
+  return '***-***-' + digits.slice(-4);
+}
+
+/**
  * Retry a fetch with exponential backoff (max 3 attempts).
  */
 async function fetchWithRetry(url, options, maxRetries = 3) {
@@ -59,7 +70,7 @@ export async function sendSlackNotification(env, fields, record, call) {
       {
         type: 'section',
         fields: [
-          { type: 'mrkdwn', text: `*Phone:*\n${fields['Phone Number'] || 'N/A'}` },
+          { type: 'mrkdwn', text: `*Phone:*\n${maskPhone(fields['Phone Number'])}` },
           { type: 'mrkdwn', text: `*Disposition:*\n${disposition}` },
           { type: 'mrkdwn', text: `*Segment:*\n${segment}` },
           { type: 'mrkdwn', text: `*Duration:*\n${meta.durationSec || 0}s` },
@@ -126,7 +137,7 @@ export async function sendSlackFailedCallNotification(env, call, failedRecord) {
         type: 'section',
         fields: [
           { type: 'mrkdwn', text: `*Call ID:*\n\`${call.call_id || 'N/A'}\`` },
-          { type: 'mrkdwn', text: `*Phone:*\n${phone || 'N/A'}` },
+          { type: 'mrkdwn', text: `*Phone:*\n${maskPhone(phone)}` },
           { type: 'mrkdwn', text: `*Failure:*\n${reasonMap[call.disconnection_reason] || call.disconnection_reason}` },
           { type: 'mrkdwn', text: `*Duration:*\n${durationSec}s` },
         ],

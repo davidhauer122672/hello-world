@@ -103,9 +103,20 @@ describe('Response Utils', () => {
     assert.equal(body.error, 'Not found');
   });
 
-  it('includes CORS headers', () => {
-    const headers = corsHeaders();
-    assert.equal(headers['Access-Control-Allow-Origin'], '*');
+  it('includes CORS headers for allowed origin', () => {
+    const headers = corsHeaders('https://coastalkey-pm.com');
+    assert.equal(headers['Access-Control-Allow-Origin'], 'https://coastalkey-pm.com');
+    assert.equal(headers['Vary'], 'Origin');
+  });
+
+  it('defaults CORS to primary origin for unknown origins', () => {
+    const headers = corsHeaders('https://evil.com');
+    assert.equal(headers['Access-Control-Allow-Origin'], 'https://coastalkey-pm.com');
+  });
+
+  it('allows localhost origins for local development', () => {
+    const headers = corsHeaders('http://localhost:8787');
+    assert.equal(headers['Access-Control-Allow-Origin'], 'http://localhost:8787');
   });
 });
 

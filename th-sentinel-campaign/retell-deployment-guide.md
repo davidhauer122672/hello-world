@@ -42,7 +42,7 @@ In Retell Dashboard → Agent → **Functions/Tools**:
     },
     "required": ["reason"]
   },
-  "transfer_phone_number": "+17727638900",
+  "transfer_phone_number": "DEPLOY_TRANSFER_PHONE_E164",
   "transfer_message": "Hi Tracey, I have a warm lead on the line — [reason]. Connecting you now."
 }
 ```
@@ -124,7 +124,7 @@ In Retell Dashboard → Campaigns → Create New Campaign:
 | Calls Per Agent Per Hour | 10-12 |
 | Max Retries Per Number | 3 |
 | Retry Interval | 48 hours |
-| Caller ID | 772-763-8900 |
+| Caller ID | {{transfer_phone_number}} |
 
 ### Contact List Upload:
 Upload contact lists in CSV format with these headers:
@@ -137,7 +137,7 @@ first_name,last_name,phone_number,property_address,city,state,zip,lead_source
 ## STEP 5: Compliance Configuration
 
 ### TCPA Compliance Checklist:
-- [ ] Caller ID displays 772-763-8900 (Tracey's business number)
+- [ ] Caller ID displays {{transfer_phone_number}} (Tracey's business number)
 - [ ] AI disclosure: Agent identifies as AI when asked
 - [ ] Do Not Call scrubbing: All lists scrubbed against National DNC Registry
 - [ ] State DNC compliance: Florida-specific regulations applied
@@ -196,12 +196,12 @@ When a prospect requests DNC removal:
 ### Pre-Launch (Complete before going live):
 - [ ] All 40 agents created and configured in Retell
 - [ ] System prompt tested with 10+ sample calls
-- [ ] Transfer function tested — confirmed Tracey receives calls at 772-763-8900
+- [ ] Transfer function tested — confirmed Tracey receives calls at {{transfer_phone_number}}
 - [ ] Voicemail detection tested and voicemail script verified
 - [ ] Webhook integration tested — records appearing in Airtable
 - [ ] DNC scrubbing completed on all contact lists
 - [ ] TCPA compliance review completed
-- [ ] Caller ID verified (772-763-8900)
+- [ ] Caller ID verified ({{transfer_phone_number}})
 - [ ] Campaign schedule confirmed: Mon-Sat, 10AM-3PM ET
 - [ ] Airtable automations tested end-to-end
 - [ ] Contact lists uploaded (minimum 10,000 records for launch week)

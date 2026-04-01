@@ -104,4 +104,77 @@ describe('transformRetellToAirtable', () => {
     const fields = transformRetellToAirtable(call);
     assert.deepEqual(fields['Service Zone'], { name: 'Vero Beach' });
   });
+
+  it('handles minimal call object with only call_id', () => {
+    const call = { call_id: 'call_min' };
+    const fields = transformRetellToAirtable(call);
+    assert.equal(fields['Lead Name'], 'Sentinel Lead call_min');
+    assert.deepEqual(fields['Status'], { name: 'New' });
+    assert.ok(fields['Date Captured']);
+  });
+
+  it('sets no disposition for unknown disconnection_reason', () => {
+    const call = {
+      call_id: 'call_unk',
+      disconnection_reason: 'some_future_reason',
+      retell_llm_dynamic_variables: {},
+      metadata: {},
+    };
+    const fields = transformRetellToAirtable(call);
+    assert.equal(fields['Call Disposition'], undefined);
+  });
+
+  it('sets no segment for unknown campaign keyword', () => {
+    const call = {
+      call_id: 'call_noseg',
+      retell_llm_dynamic_variables: {},
+      metadata: { campaign: 'unknown_campaign_type' },
+    };
+    const fields = transformRetellToAirtable(call);
+    assert.equal(fields['Sentinel Segment'], undefined);
+  });
+
+  it('sets no zone for unknown region', () => {
+    const call = {
+      call_id: 'call_nozone',
+      retell_llm_dynamic_variables: {},
+      metadata: { region: 'moon_base' },
+    };
+    const fields = transformRetellToAirtable(call);
+    assert.equal(fields['Service Zone'], undefined);
+  });
+
+  it('truncates very long transcripts', () => {
+    const call = {
+      call_id: 'call_long',
+      transcript: 'x'.repeat(200000),
+      retell_llm_dynamic_variables: {},
+      metadata: {},
+    };
+    const fields = transformRetellToAirtable(call);
+    assert.ok(fields['Inquiry Notes'].length <= 100100); // truncated near 100k boundary
+    assert.ok(fields['Inquiry Notes'].length < 200000); // significantly shorter than input
+    assert.ok(fields['Inquiry Notes'].includes('[TRUNCATED AT LIMIT]'));
+  });
+
+  it('computes duration from duration_ms field', () => {
+    const call = {
+      call_id: 'call_dur',
+      duration_ms: 45000,
+      retell_llm_dynamic_variables: {},
+      metadata: {},
+    };
+    const fields = transformRetellToAirtable(call);
+    assert.equal(fields._meta.durationSec, 45);
+  });
+
+  it('extracts email from customer_email fallback', () => {
+    const call = {
+      call_id: 'call_email',
+      retell_llm_dynamic_variables: { customer_email: 'alt@test.com' },
+      metadata: {},
+    };
+    const fields = transformRetellToAirtable(call);
+    assert.equal(fields['Email'], 'alt@test.com');
+  });
 });

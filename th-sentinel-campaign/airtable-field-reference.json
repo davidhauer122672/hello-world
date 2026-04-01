@@ -5,6 +5,7 @@
   },
   "tables": {
     "lead_contacts": {
+      "_comment": "Campaign-specific table. The sentinel-webhook writes to the main Leads table (tblpNasm0AxreRqLW) configured in sentinel-webhook/wrangler.toml, not this table.",
       "table_id": "tbl0XVTVz3qambhog",
       "table_name": "TH Sentinel - Lead Contacts",
       "fields": {
