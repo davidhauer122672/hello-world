@@ -351,7 +351,7 @@ export async function handleWf3InvestorEscalation(request, env, ctx) {
   const firstName = leadName.split(' ')[0] || leadName;
   const emailPayload = {
     to: email,
-    from: 'david@coastalkey-pm.com',
+    from: 'info@coastalkey-pm.com',
     subject: `Welcome to Coastal Key — ${firstName}`,
     body: [
       `Hi ${firstName},`,

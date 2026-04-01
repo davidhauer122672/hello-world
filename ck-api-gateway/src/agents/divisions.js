@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Division Definitions
  *
- * 8 operational divisions that map to the org chart.
+ * 9 operational divisions that map to the org chart.
  * Each division has a color, icon, and description used by the Command Center UI.
  */
 

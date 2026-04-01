@@ -247,6 +247,7 @@ function renderAbout(main) {
           <li><strong>Finance (25 agents)</strong> — Revenue tracking, investor reporting, budgets</li>
           <li><strong>Vendor Management (25 agents)</strong> — Compliance, contracts, quality</li>
           <li><strong>Technology (25 agents)</strong> — Platform ops, integrations, security</li>
+          <li><strong>Email AI (20 agents)</strong> — Compose, classify, and respond to inbound/outbound email</li>
         </ul>
       </div>
     </section>
@@ -380,17 +381,13 @@ function renderPortalDashboard(main) {
 
   const fallbackStats = {
     totalAgents: 290,
-    activeAgents: 273,
+    activeAgents: 290,
     divisions: 9,
-    uptime: '99.9%',
+    uptime: '--',
   };
 
   const fallbackActivity = [
-    { ts: 'Just now',   text: 'SEN-12 qualified inbound lead — Vero Beach oceanfront' },
-    { ts: '2 min ago',  text: 'OPS-7 dispatched maintenance crew — Stuart condo unit 4B' },
-    { ts: '8 min ago',  text: 'MKT-22 published social post — Instagram Reel #TreasureCoast' },
-    { ts: '15 min ago', text: 'INT-3 generated market report — Indian River County Q1' },
-    { ts: '22 min ago', text: 'FIN-9 processed owner distribution — Jupiter portfolio' },
+    { ts: '--',  text: 'Awaiting first operational data — Sentinel deployment pending' },
   ];
 
   // ── Build the layout ──────────────────────────────────────────────────────
