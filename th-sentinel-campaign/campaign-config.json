@@ -6,12 +6,12 @@
     "launch_date": "2026-03-28",
     "end_date": "2026-09-28",
     "duration_months": 6,
-    "owner": "Tracey Merritt Hunter",
-    "company": "Tracey Hunter Group — RE/MAX of Stuart",
-    "office_address": "1407 SE Legacy Cove Circle, Stuart, FL",
-    "transfer_number": "772-763-8900",
-    "website": "www.traceyhuntergroup.com",
-    "email": "tracey@traceyhuntergroup.com"
+    "owner": "${CAMPAIGN_OWNER_NAME}",
+    "company": "${CAMPAIGN_COMPANY_NAME}",
+    "office_address": "${CAMPAIGN_OFFICE_ADDRESS}",
+    "transfer_number": "${CAMPAIGN_TRANSFER_NUMBER}",
+    "website": "${CAMPAIGN_WEBSITE}",
+    "email": "${CAMPAIGN_EMAIL}"
   },
   "schedule": {
     "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -86,7 +86,7 @@
     "estimated_total_daily_calls": 2400,
     "dnc_compliance": true,
     "tcpa_compliant": true,
-    "caller_id_display": "772-763-8900"
+    "caller_id_display": "${CAMPAIGN_TRANSFER_NUMBER}"
   },
   "target_markets": {
     "primary": [
@@ -161,6 +161,6 @@
     },
     "dialer": "Retell AI",
     "webhook_endpoint": "/api/retell/webhook",
-    "transfer_endpoint": "tel:+17727638900"
+    "transfer_endpoint": "${CAMPAIGN_TRANSFER_ENDPOINT}"
   }
 }

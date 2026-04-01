@@ -6,6 +6,26 @@
 const MISSED_CALLS_TABLE_ID = 'tblWW25r6GmsQe3mQ';
 
 /**
+ * Retry a fetch with exponential backoff (max 3 attempts).
+ */
+async function fetchWithRetry(url, options, maxRetries = 3) {
+  let lastError;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok || response.status < 500) return response;
+      lastError = new Error(`HTTP ${response.status}`);
+    } catch (err) {
+      lastError = err;
+    }
+    if (attempt < maxRetries - 1) {
+      await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+    }
+  }
+  throw lastError;
+}
+
+/**
  * Send a formatted Slack notification for a new Sentinel lead.
  * @param {object} env — Cloudflare Worker env bindings
  * @param {object} fields — Transformed Airtable fields
@@ -20,9 +40,10 @@ export async function sendSlackNotification(env, fields, record, call) {
   }
 
   const meta = fields._meta || {};
-  const transcriptExcerpt = meta.transcript
+  const rawExcerpt = meta.transcript
     ? meta.transcript.slice(0, 500) + (meta.transcript.length > 500 ? '...' : '')
     : 'No transcript available';
+  const transcriptExcerpt = rawExcerpt.replace(/`/g, "'");
 
   const airtableLink = `https://airtable.com/${env.AIRTABLE_BASE_ID}/${env.AIRTABLE_TABLE_ID}/${record.id}`;
 
@@ -67,14 +88,14 @@ export async function sendSlackNotification(env, fields, record, call) {
     ],
   };
 
-  const response = await fetch(webhookUrl, {
+  const response = await fetchWithRetry(webhookUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(message),
   });
 
   if (!response.ok) {
-    console.error(`Slack notification failed (${response.status}): ${await response.text()}`);
+    console.error(`Slack notification failed (${response.status})`);
   }
 }
 
@@ -117,7 +138,7 @@ export async function sendSlackFailedCallNotification(env, call, failedRecord) {
   };
 
   try {
-    await fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(message) });
+    await fetchWithRetry(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(message) });
   } catch (err) {
     console.error('Slack failed call notification error:', err);
   }

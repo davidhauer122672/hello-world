@@ -34,7 +34,17 @@ export default {
     }
 
     try {
-      const payload = await request.json();
+      // ── Step 0: Verify webhook signature (if secret configured) ──
+      const rawBody = await request.text();
+      if (env.RETELL_WEBHOOK_SECRET) {
+        const signature = request.headers.get('x-retell-signature') || '';
+        const isValid = await verifyWebhookSignature(rawBody, signature, env.RETELL_WEBHOOK_SECRET);
+        if (!isValid) {
+          return json({ error: 'Invalid webhook signature' }, 401);
+        }
+      }
+
+      const payload = JSON.parse(rawBody);
 
       // ── Step 1: Filter — only process call_analyzed events ──
       const event = payload.event;
@@ -82,10 +92,39 @@ export default {
 
     } catch (err) {
       console.error('Sentinel webhook error:', err);
-      return json({ error: 'Internal processing error', detail: err.message }, 500);
+      return json({ error: 'Internal processing error' }, 500);
     }
   },
 };
+
+/**
+ * Verify Retell webhook HMAC-SHA256 signature.
+ */
+async function verifyWebhookSignature(body, signature, secret) {
+  try {
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign'],
+    );
+    const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
+    const expected = Array.from(new Uint8Array(sig))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+    // Constant-time comparison
+    if (signature.length !== expected.length) return false;
+    let result = 0;
+    for (let i = 0; i < expected.length; i++) {
+      result |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
+    }
+    return result === 0;
+  } catch {
+    return false;
+  }
+}
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -96,8 +135,9 @@ function json(data, status = 200) {
 
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': 'https://retell.ai',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Vary': 'Origin',
   };
 }

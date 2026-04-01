@@ -9,6 +9,26 @@
 const AIRTABLE_API = 'https://api.airtable.com/v0';
 const MISSED_CALLS_TABLE_ID = 'tblWW25r6GmsQe3mQ';
 
+/**
+ * Retry a fetch with exponential backoff (max 3 attempts).
+ */
+async function fetchWithRetry(url, options, maxRetries = 3) {
+  let lastError;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok || response.status < 500) return response;
+      lastError = new Error(`HTTP ${response.status}`);
+    } catch (err) {
+      lastError = err;
+    }
+    if (attempt < maxRetries - 1) {
+      await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+    }
+  }
+  throw lastError;
+}
+
 const FAILURE_REASON_MAP = {
   'inactivity_timeout': 'Inactivity Timeout',
   'machine_hangup':     'Machine Hangup',
@@ -34,7 +54,7 @@ export async function createAirtableRecord(env, fields) {
 
   const url = `${AIRTABLE_API}/${baseId}/${tableId}`;
 
-  const response = await fetch(url, {
+  const response = await fetchWithRetry(url, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
@@ -42,7 +62,7 @@ export async function createAirtableRecord(env, fields) {
     },
     body: JSON.stringify({
       records: [{ fields: airtableFields }],
-      typecast: true,  // auto-create missing select options (e.g., "Sentinel AI Agent")
+      typecast: true,
     }),
   });
 
@@ -91,7 +111,7 @@ export async function createMissedCallRecord(env, call, fields) {
 
   const url = `${AIRTABLE_API}/${baseId}/${MISSED_CALLS_TABLE_ID}`;
 
-  const response = await fetch(url, {
+  const response = await fetchWithRetry(url, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,

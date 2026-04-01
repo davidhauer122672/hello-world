@@ -7,6 +7,6 @@ AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
 AIRTABLE_TABLE_ID = "tblpNasm0AxreRqLW"
 
 # Set these secrets via: wrangler secret put <NAME>
-# AIRTABLE_API_KEY
-# SLACK_WEBHOOK_URL
-# RETELL_WEBHOOK_SECRET (optional — for signature verification)
+# AIRTABLE_API_KEY       — Required: Airtable personal access token
+# SLACK_WEBHOOK_URL      — Required: Slack incoming webhook for notifications
+# RETELL_WEBHOOK_SECRET  — Recommended: HMAC-SHA256 signature verification for webhook security

@@ -1,7 +1,26 @@
 node_modules/
 .wrangler/
 .dev.vars
+.dev.vars.*
 .env
+.env.*
+!.env.example
 *.log
 dist/
 .DS_Store
+
+# Secrets & credentials — never commit
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+*secret*
+!**/src/**
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

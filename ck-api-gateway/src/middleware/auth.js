@@ -8,7 +8,7 @@ import { errorResponse } from '../utils/response.js';
 export function authenticate(request, env) {
   const token = env.WORKER_AUTH_TOKEN;
   if (!token) {
-    return errorResponse('Server misconfiguration: auth token not set', 500);
+    return errorResponse('Authentication service unavailable', 500);
   }
 
   const authHeader = request.headers.get('Authorization') || '';
@@ -27,15 +27,16 @@ export function authenticate(request, env) {
 
 /**
  * Constant-time string comparison to prevent timing-based token extraction.
+ * Pads shorter input to expected length so length differences don't leak via timing.
  */
 function timingSafeEqual(a, b) {
-  if (a.length !== b.length) return false;
   const encoder = new TextEncoder();
   const bufA = encoder.encode(a);
   const bufB = encoder.encode(b);
-  let result = 0;
-  for (let i = 0; i < bufA.length; i++) {
-    result |= bufA[i] ^ bufB[i];
+  const maxLen = Math.max(bufA.length, bufB.length);
+  let result = bufA.length ^ bufB.length; // non-zero if lengths differ
+  for (let i = 0; i < maxLen; i++) {
+    result |= (bufA[i] || 0) ^ (bufB[i] || 0);
   }
   return result === 0;
 }

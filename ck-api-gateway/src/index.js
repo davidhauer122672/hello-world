@@ -62,8 +62,9 @@ import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 export default {
   async fetch(request, env, ctx) {
     // CORS preflight
+    const requestOrigin = request.headers.get('Origin') || '';
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: corsHeaders() });
+      return new Response(null, { status: 204, headers: corsHeaders(requestOrigin) });
     }
 
     const url = new URL(request.url);
@@ -79,8 +80,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 250,
-          divisions: 8,
+          agents: 290,
+          divisions: 9,
           timestamp: new Date().toISOString(),
         });
       }
@@ -325,7 +326,7 @@ export default {
         );
       }
 
-      return errorResponse(`Internal error: ${err.message}`, 500);
+      return errorResponse('Internal server error', 500);
     }
   },
 };
