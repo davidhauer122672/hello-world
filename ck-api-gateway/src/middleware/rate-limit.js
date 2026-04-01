@@ -18,7 +18,7 @@ export async function rateLimit(request, env) {
     return errorResponse(`Rate limit exceeded. Max ${rpm} requests per minute.`, 429);
   }
 
-  // Increment (fire-and-forget — non-blocking)
+  // Increment counter before proceeding (awaited to prevent race conditions)
   await env.RATE_LIMITS.put(windowKey, String(current + 1), { expirationTtl: 120 });
 
   return null;

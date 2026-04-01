@@ -59,8 +59,25 @@ import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerD
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
+// Log missing secrets once on first request
+let _secretsChecked = false;
+function validateSecrets(env) {
+  if (_secretsChecked) return;
+  _secretsChecked = true;
+  const required = ['WORKER_AUTH_TOKEN', 'ANTHROPIC_API_KEY', 'AIRTABLE_API_KEY'];
+  const recommended = ['SLACK_WEBHOOK_URL'];
+  for (const key of required) {
+    if (!env[key]) console.error(`[STARTUP] MISSING REQUIRED SECRET: ${key}`);
+  }
+  for (const key of recommended) {
+    if (!env[key]) console.warn(`[STARTUP] Missing recommended secret: ${key}`);
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
+    validateSecrets(env);
+
     // CORS preflight
     const requestOrigin = request.headers.get('Origin') || '';
     if (request.method === 'OPTIONS') {

@@ -50,20 +50,30 @@ export async function inference(env, options) {
 
   const model = MODEL_MAP[tier] || MODEL_MAP.standard;
 
-  const response = await fetch(ANTHROPIC_API, {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      system,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  });
+  // 25s timeout to stay within Cloudflare Worker CPU limits
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
+
+  let response;
+  try {
+    response = await fetch(ANTHROPIC_API, {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: maxTokens,
+        system,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     const errBody = await response.text();

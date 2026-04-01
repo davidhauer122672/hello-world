@@ -19,6 +19,9 @@ export function authenticate(request, env) {
 
   const provided = match[1];
   if (!timingSafeEqual(provided, token)) {
+    // Log failed auth attempts for intrusion detection
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    console.warn(`[Auth Failure] IP=${ip} path=${request.url} ts=${new Date().toISOString()}`);
     return errorResponse('Invalid bearer token', 403);
   }
 
