@@ -24,8 +24,8 @@ import {
   crossPlatformPublish,
 } from './integrations.js';
 
-// ── Upgrade Ops Airtable Table ──
-const UPGRADE_OPS_TABLE = TABLES.DELEGATION_OPS;
+// ── Upgrade Ops uses the Delegation Ops table ──
+const UPGRADE_OPS_TABLE = TABLES.DELEGATION_OPS || 'tblx1HfUCXhhA8UkJ';
 
 // ── Sprint Day Configuration ──
 const SPRINT_SCHEDULE = {

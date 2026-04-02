@@ -54,6 +54,12 @@
  *   POST /v1/upgrade/content        — Auto-generate content for gaps
  *   POST /v1/upgrade/enroll         — Enroll contact in Constant Contact
  *   GET  /v1/upgrade/integrations   — Integration status for all platforms
+ *   GET  /v1/orchestrator/dashboard — CEO Administration Dashboard
+ *   POST /v1/orchestrator/health    — Enterprise health scan (9 systems)
+ *   POST /v1/orchestrator/escalation— Process escalation (S1-S4)
+ *   POST /v1/orchestrator/system    — Execute integrated prompting system
+ *   GET  /v1/orchestrator/hierarchy — Command hierarchy map
+ *   GET  /v1/orchestrator/systems   — List 6 integrated prompting systems
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -74,6 +80,7 @@ import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerD
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleDelegationFleet, handleDelegationScan, handleDelegationDispatch, handleDelegationHandoff, handleDelegationBriefing, handleListDelegationAgents, handleGetDelegationAgent } from './routes/delegation.js';
 import { handleUpgradeSprint, handleListUpgradeAgents, handleGetUpgradeAgent, handleUpgradeExecute, handleUpgradePublish, handleUpgradeContent, handleUpgradeEnroll, handleUpgradeIntegrations } from './routes/upgrade.js';
+import { handleOrchestratorDashboard, handleOrchestratorHealth, handleOrchestratorEscalation, handleOrchestratorSystem, handleOrchestratorHierarchy, handleOrchestratorSystems } from './routes/orchestrator.js';
 import { handleScheduledEvent } from './services/upgrade-engine.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -383,6 +390,31 @@ export default {
       if (path.match(/^\/v1\/upgrade\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/upgrade/agents/')[1];
         return handleGetUpgradeAgent(agentId);
+      }
+
+      // ── Master Orchestrator (Department 1) ──
+      if (path === '/v1/orchestrator/dashboard' && method === 'GET') {
+        return handleOrchestratorDashboard();
+      }
+
+      if (path === '/v1/orchestrator/health' && method === 'POST') {
+        return await handleOrchestratorHealth(request, env, ctx);
+      }
+
+      if (path === '/v1/orchestrator/escalation' && method === 'POST') {
+        return await handleOrchestratorEscalation(request, env, ctx);
+      }
+
+      if (path === '/v1/orchestrator/system' && method === 'POST') {
+        return await handleOrchestratorSystem(request, env, ctx);
+      }
+
+      if (path === '/v1/orchestrator/hierarchy' && method === 'GET') {
+        return handleOrchestratorHierarchy();
+      }
+
+      if (path === '/v1/orchestrator/systems' && method === 'GET') {
+        return handleOrchestratorSystems();
       }
 
       if (path === '/v1/audit' && method === 'GET') {
