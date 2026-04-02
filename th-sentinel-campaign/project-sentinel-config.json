@@ -1,0 +1,174 @@
+{
+  "deployment": {
+    "name": "Project Sentinel",
+    "version": "1.0.0",
+    "authorization_date": "2026-04-02",
+    "authorized_by": "David Hauer, Founder and CEO",
+    "classification": "Confidential — CEO Use Only",
+    "status": "CEO_AUTHORIZED_READY_FOR_EXECUTION",
+    "airtable_record": "recpEkZoxXTKNXYWW"
+  },
+  "campaign": {
+    "name": "[CK] Project Sentinel - Outbound",
+    "type": "6-Touch 14-Day Outbound",
+    "platform": ["Atlas", "Retell AI", "Airtable", "Zapier"],
+    "mode": "DRAFT"
+  },
+  "prospect_segments": [
+    {
+      "name": "Absentee Homeowners",
+      "priority": 1,
+      "revenue_target": "$195 to $395/month recurring"
+    },
+    {
+      "name": "Luxury Property ($1M+)",
+      "priority": 2,
+      "revenue_target": "$395/month + property premium"
+    },
+    {
+      "name": "Investor / Family Office",
+      "priority": 1,
+      "track": "Investor",
+      "revenue_target": "Multi-property; $5M+ triggers WF-3"
+    },
+    {
+      "name": "Seasonal Residents / Snowbirds",
+      "priority": 2,
+      "revenue_target": "$295 to $395/month"
+    },
+    {
+      "name": "STR / Vacation Rental Owners",
+      "priority": 3,
+      "revenue_target": "10% of gross rental income"
+    }
+  ],
+  "sequence": [
+    { "day": 1,  "touch": "Cold Open Call",        "channel": "Retell Outbound",   "script": "Script 1", "goal": "Qualify + book consultation" },
+    { "day": 2,  "touch": "Voicemail Drop",         "channel": "Retell VM Drop",    "script": "Script 2", "goal": "Restate value, leave callback" },
+    { "day": 4,  "touch": "Second Live Attempt",    "channel": "Retell Outbound",   "script": "Script 3", "goal": "Handle objections, close to consult" },
+    { "day": 7,  "touch": "Welcome Email Trigger",  "channel": "Zapier to Gmail",   "script": null,       "goal": "CEO welcome email + launch video" },
+    { "day": 10, "touch": "Final Call",              "channel": "Retell Outbound",   "script": "Script 4", "goal": "Hard close or disqualify" },
+    { "day": 14, "touch": "Long-Tail Nurture",      "channel": "Constant Contact",  "script": null,       "goal": "90-day drip if no close" }
+  ],
+  "calling_hours": {
+    "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "start_time": "09:00",
+    "end_time": "19:00",
+    "timezone": "America/New_York",
+    "sunday": false,
+    "daily_dial_cap_min": 80,
+    "daily_dial_cap_max": 100
+  },
+  "airtable": {
+    "base_id": "appUSnNgpDkcEOzhN",
+    "leads_table_id": "tblpNasm0AxreRqLW",
+    "tasks_table_id": "tbl5kGQ81WObMHTup",
+    "fields": {
+      "lead_name": "fldAQJqw8WaAzVJkc",
+      "sentinel_segment": "fldIO7nG7Rdjbg1CY",
+      "property_value": "fldxaWbH7pkY7Jpzv",
+      "service_zone": "fldqWoQGCR1M1k3O9",
+      "call_disposition": "fld6O4IRIKmGfzWHg",
+      "investor_flag": "fldbgutLkHL3YAYmL",
+      "sequence_step": "fldKNvxsK7YjykNPY",
+      "property_address": "fldM63iz3K8k36Vjh",
+      "mailing_address": "fldNVapicg1kweyZt",
+      "wf3_sent": "fldQku2Qjy5oMnfUQ",
+      "phone_number": "fld1QyH8hdLQnTm09"
+    },
+    "dispositions": ["Booked", "Callback", "Not Interested", "Disqualified", "No Answer"],
+    "webhook_event": "atlas_connect"
+  },
+  "investor_flag_logic": {
+    "trigger_conditions": [
+      { "field": "property_value", "operator": "greater_than", "value": 5000000 },
+      { "field": "any", "operator": "keyword_match", "keywords": ["investor", "family office", "trust", "ROI"] }
+    ],
+    "action": {
+      "field_id": "fldbgutLkHL3YAYmL",
+      "set_value": true
+    },
+    "accuracy_target": "100% of $5M+ leads flagged"
+  },
+  "zapier_workflows": {
+    "wf1_new_lead_nurture": {
+      "name": "WF-1 New Lead Nurture",
+      "trigger": {
+        "app": "Airtable",
+        "event": "New Record",
+        "table_id": "tblpNasm0AxreRqLW",
+        "base_id": "appUSnNgpDkcEOzhN"
+      },
+      "steps": [
+        { "step": 1, "action": "Run SCAA-1 Agent",       "app": "Zapier AI Actions" },
+        { "step": 2, "action": "Post to #sales-alerts",   "app": "Slack", "channel_id": "C0AP1HRFTBL" },
+        { "step": 3, "action": "DM Sales Agent",          "app": "Slack" },
+        { "step": 4, "action": "Send CEO Welcome Email",  "app": "Gmail" }
+      ]
+    },
+    "wf3_investor_escalation": {
+      "name": "WF-3 Investor Escalation",
+      "trigger": {
+        "app": "Airtable",
+        "event": "Record matches conditions",
+        "table_id": "tblpNasm0AxreRqLW",
+        "filter": {
+          "investor_flag": true,
+          "wf3_sent": false
+        }
+      },
+      "steps": [
+        { "step": 1, "action": "Alert #sales-alerts-high-value", "app": "Slack", "channel_id": "C0ANV6HALHH" },
+        { "step": 2, "action": "Send CEO Investor Email",        "app": "Gmail" },
+        { "step": 3, "action": "Create Follow-Up Task",          "app": "Airtable", "table_id": "tbl5kGQ81WObMHTup", "due": "4 hours" },
+        { "step": 4, "action": "Set WF-3 Sent to true",          "app": "Airtable", "field_id": "fldQku2Qjy5oMnfUQ" }
+      ]
+    }
+  },
+  "slack_channels": {
+    "sales_alerts": { "name": "#sales-alerts", "channel_id": "C0AP1HRFTBL" },
+    "sales_alerts_high_value": { "name": "#sales-alerts-high-value", "channel_id": "C0ANV6HALHH" }
+  },
+  "kpi_targets": {
+    "dials_per_agent_per_day": { "min": 80, "max": 100 },
+    "connect_rate": { "min": 0.12, "max": 0.18 },
+    "consultation_book_rate": { "min": 0.25, "max": 0.35 },
+    "consultation_to_close_rate": { "min": 0.40, "max": 0.60 },
+    "cost_per_acquisition_target": 150,
+    "ltv_annual": 3540,
+    "sequence_completion_rate": 0.85,
+    "investor_flag_accuracy": 1.0
+  },
+  "revenue_projection": {
+    "dials_per_day": 80,
+    "connect_rate": 0.15,
+    "connects_per_agent": 12,
+    "book_rate": 0.30,
+    "consults_per_day": 3.6,
+    "close_rate": 0.50,
+    "new_clients_per_day": 1.8,
+    "arr_per_client": 3540,
+    "weekly_new_recurring_revenue": 31860
+  },
+  "pre_launch_blockers": [
+    { "id": 1, "blocker": "Slack channel IDs not confirmed", "resolved": false },
+    { "id": 2, "blocker": "Zapier WF-1 not built", "resolved": false },
+    { "id": 3, "blocker": "Zapier WF-3 not built", "resolved": false },
+    { "id": 4, "blocker": "TCPA DNC scrub not confirmed", "resolved": false }
+  ],
+  "step_10_locked": true,
+  "legal": {
+    "tcpa_compliant": false,
+    "dnc_scrub_complete": false,
+    "sovereign_legal_clearance": false,
+    "calling_hours_enforced": true
+  },
+  "company": {
+    "name": "Coastal Key Property Management LLC",
+    "address": "1407 SE Legacy Cove Circle, Ste 100, Stuart, FL 34997",
+    "phone": "(772) 247-0982",
+    "email": "david@coastalkey-pm.com",
+    "fl_re_license": "SL3575566",
+    "fl_cam_license": "CAM65337"
+  }
+}
