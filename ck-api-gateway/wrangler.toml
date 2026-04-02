@@ -7,6 +7,9 @@ AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
 ENVIRONMENT = "production"
 RATE_LIMIT_RPM = "60"
 MAX_TRANSCRIPT_CHARS = "100000"
+# Buffer profile ID mapping — update with real profile IDs after connecting Buffer
+# Format: {"Instagram":"<id>","Facebook":"<id>","LinkedIn":"<id>"}
+BUFFER_PROFILE_IDS = "{}"
 
 # ── KV Namespace Bindings ──
 # These cache inference results, session state, rate limits, and audit logs
@@ -32,3 +35,4 @@ id = "3d722426db4241209fd0444b42f84904"
 # AIRTABLE_API_KEY         — Airtable personal access token
 # WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Zapier)
 # SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications
+# BUFFER_ACCESS_TOKEN        — Buffer API access token for WF-2 publishing

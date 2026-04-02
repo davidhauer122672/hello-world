@@ -2,6 +2,7 @@
  * Workflow Routes — Automated pipelines replacing Zapier steps.
  *
  *   POST /v1/workflows/scaa1 — SCAA-1 Battle Plan Pipeline
+ *   POST /v1/workflows/wf2   — WF-2 Approval to Buffer (Content Publishing)
  *   POST /v1/workflows/wf3   — WF-3 Investor Escalation
  *   POST /v1/workflows/wf4   — WF-4 Long-Tail Nurture
  *
@@ -11,6 +12,7 @@
 
 import { inference } from '../services/anthropic.js';
 import { createRecord, getRecord, updateRecord, listRecords, TABLES } from '../services/airtable.js';
+import { createBufferPost, resolveProfileId } from '../services/buffer.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 
@@ -204,6 +206,273 @@ export async function handleScaa1BattlePlan(request, env, ctx) {
     leadName,
     taskId: taskRecord?.id || null,
     aiLogId: aiLogRecord?.id || null,
+  });
+}
+
+// ── WF-2: Approval to Buffer ─────────────────────────────────────────────────
+
+/**
+ * Content Calendar field IDs (from Airtable schema).
+ */
+const CC_FIELDS = {
+  POST_TITLE:    'fldDO8WWya6iMm5Gh',
+  POST_DATE:     'fldFESTOO3wxMT4u2',
+  PLATFORM:      'fldDnzP4666RLB3Cq',
+  CAPTION:       'fldgJXI5IAaWcyw89',
+  ASSET:         'fldlbwkaiT9JBV18E',
+  STATUS:        'fldD2rgOO9z1MTs9U',
+  IMAGE_URL:     'fldy3EIvPPxPg0JZK',
+  HASHTAGS:      'fldW8KZoD1Eg9Lted',
+  BUFFER_STATUS: 'fldlJB2ANK1wOyx3A',
+  BUFFER_POST_ID:'fld6XYtNXFL12m2qD',
+  NOTES:         'fld0hiWEXsL70GFpS',
+};
+
+/**
+ * POST /v1/workflows/wf2 — WF-2: Approval to Buffer.
+ *
+ * Triggered when a Content Calendar record Status changes to "Approved".
+ * Chain:
+ *   1. Validate record — Status must be "Approved"
+ *   2. Validate Post Date — must be in the future
+ *   3. Validate Asset — must have an attachment (not just an Image URL)
+ *   4. Slack notification → #content-production
+ *   5. Schedule post to Buffer for each platform
+ *   6. Update Airtable: Status → "Scheduled", Buffer Status + Buffer Post ID
+ *
+ * Body: { recordId: "recXXX" }
+ */
+export async function handleWf2ApprovalToBuffer(request, env, ctx) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return errorResponse('Invalid JSON body.', 400);
+  }
+
+  const validationError = validateRecordId(body);
+  if (validationError) return errorResponse(validationError, 400);
+
+  const { recordId } = body;
+  const timestamp = new Date().toISOString();
+  const now = new Date();
+
+  // ── 1. Fetch Content Calendar record ──
+  let record;
+  try {
+    record = await getRecord(env, TABLES.CONTENT_CALENDAR, recordId);
+  } catch (err) {
+    return errorResponse(`Failed to fetch Content Calendar record: ${err.message}`, 502);
+  }
+
+  const fields = record.fields;
+  const postTitle = fields['Post Title'] || 'Untitled';
+  const postDate = fields['Post Date'] || null;
+  const caption = fields['Caption'] || '';
+  const hashtags = fields['Hashtags'] || '';
+  const asset = fields['Asset'] || null; // attachment array
+  const imageUrl = fields['Image URL'] || null;
+  const status = typeof fields['Status'] === 'object' ? fields['Status']?.name : fields['Status'];
+
+  // Extract platform names from select objects
+  const platforms = Array.isArray(fields['Platform'])
+    ? fields['Platform'].map(p => typeof p === 'object' ? p.name : p)
+    : [];
+
+  // ── 2. Validate Status is "Approved" ──
+  if (status !== 'Approved') {
+    return jsonResponse({
+      fired: false,
+      reason: `Status is "${status}", not "Approved". WF-2 requires Status = Approved.`,
+      recordId,
+    });
+  }
+
+  // ── 3. Validate Post Date is in the future ──
+  if (!postDate) {
+    return errorResponse('Post Date is empty. Cannot schedule to Buffer without a date.', 422);
+  }
+
+  const scheduledDate = new Date(`${postDate}T12:00:00Z`);
+  if (scheduledDate <= now) {
+    return errorResponse(
+      `Post Date (${postDate}) is in the past. Buffer rejects past-dated schedules. Update Post Date to a future date.`,
+      422
+    );
+  }
+
+  // ── 4. Resolve media URL — prefer Asset attachment over Image URL ──
+  let mediaUrl = null;
+  let mediaSource = null;
+
+  if (Array.isArray(asset) && asset.length > 0) {
+    // Use the first attachment's URL (direct file)
+    mediaUrl = asset[0].url || asset[0].thumbnails?.full?.url || null;
+    mediaSource = 'Asset attachment';
+  } else if (imageUrl) {
+    // Check if Image URL is a direct file or a web page
+    const isDirectFile = /\.(jpg|jpeg|png|gif|webp|mp4)(\?.*)?$/i.test(imageUrl);
+    if (isDirectFile) {
+      mediaUrl = imageUrl;
+      mediaSource = 'Image URL (direct file)';
+    } else {
+      // Image URL is a page link (e.g., Canva) — cannot use
+      const warning = `Image URL is a web page link (${imageUrl}), not a direct image file. ` +
+        'Buffer requires a direct .jpg/.png/.webp URL. ' +
+        'Export the design as PNG and upload to the Asset attachment field.';
+
+      // Update notes with warning
+      ctx.waitUntil(
+        updateRecord(env, TABLES.CONTENT_CALENDAR, recordId, {
+          [CC_FIELDS.BUFFER_STATUS]: 'Failed — Invalid Media',
+          [CC_FIELDS.NOTES]: (fields['Notes'] || '') +
+            `\n[${timestamp}] WF-2 BLOCKED: ${warning}`,
+        }).catch(err => console.error('Notes update failed:', err))
+      );
+
+      return errorResponse(warning, 422);
+    }
+  }
+
+  // For Instagram, media is required
+  if (platforms.includes('Instagram') && !mediaUrl) {
+    return errorResponse(
+      'Instagram feed posts require an image. Attach a PNG/JPG to the Asset field before approving.',
+      422
+    );
+  }
+
+  // ── 5. Slack notification → #content-production ──
+  sendSlack(env, ctx, '#content-production', [
+    `🚨 *New Asset Approved. Routing to Buffer.*`,
+    `*Title:* ${postTitle}`,
+    `*Platforms:* ${platforms.join(', ') || 'None specified'}`,
+    `*Post Date:* ${postDate}`,
+    `*Media:* ${mediaSource || 'Text only (no media)'}`,
+    `*Record:* https://airtable.com/${env.AIRTABLE_BASE_ID}/${TABLES.CONTENT_CALENDAR}/${recordId}`,
+  ].join('\n'));
+
+  // ── 6. Schedule to Buffer ──
+  const bufferResults = [];
+  let allSuccess = true;
+
+  // Resolve Buffer profile IDs for each platform
+  const profileIds = [];
+  const unmappedPlatforms = [];
+
+  for (const platform of platforms) {
+    const profileId = resolveProfileId(env, platform);
+    if (profileId) {
+      profileIds.push(profileId);
+    } else {
+      unmappedPlatforms.push(platform);
+    }
+  }
+
+  if (unmappedPlatforms.length > 0) {
+    console.warn(`WF-2: No Buffer profile mapped for platforms: ${unmappedPlatforms.join(', ')}`);
+  }
+
+  // Build post text
+  const postText = [caption, hashtags].filter(Boolean).join('\n\n');
+
+  if (profileIds.length > 0) {
+    try {
+      const bufferResponse = await createBufferPost(env, {
+        profileIds,
+        text: postText,
+        mediaUrl,
+        scheduledAt: scheduledDate.toISOString(),
+      });
+
+      bufferResults.push({
+        success: true,
+        profiles: profileIds,
+        response: bufferResponse,
+      });
+    } catch (err) {
+      console.error('Buffer scheduling failed:', err);
+      allSuccess = false;
+      bufferResults.push({
+        success: false,
+        profiles: profileIds,
+        error: err.message,
+      });
+    }
+  } else if (platforms.length > 0) {
+    // Platforms specified but no profile IDs mapped
+    allSuccess = false;
+    bufferResults.push({
+      success: false,
+      profiles: [],
+      error: `No Buffer profiles mapped. Set BUFFER_PROFILE_IDS env var with mapping: ${JSON.stringify(Object.fromEntries(platforms.map(p => [p, '<buffer_profile_id>'])))}`,
+    });
+  }
+
+  // ── 7. Update Airtable: Status → Scheduled, Buffer Status, Buffer Post ID ──
+  const newStatus = allSuccess && profileIds.length > 0 ? 'Scheduled' : 'Approved';
+  const bufferStatus = allSuccess && profileIds.length > 0
+    ? 'Queued'
+    : (allSuccess ? 'Pending — No Profiles' : 'Failed');
+
+  // Extract Buffer post ID if available
+  const bufferPostId = bufferResults
+    .filter(r => r.success && r.response?.updates)
+    .flatMap(r => r.response.updates.map(u => u.id))
+    .join(', ') || null;
+
+  const auditNote = `\n[${timestamp}] WF-2 fired. ` +
+    `Platforms: ${platforms.join(', ')}. ` +
+    `Buffer: ${bufferStatus}. ` +
+    `${unmappedPlatforms.length ? `Unmapped: ${unmappedPlatforms.join(', ')}. ` : ''}` +
+    `${bufferPostId ? `Post ID: ${bufferPostId}` : 'No post ID (profiles not connected)'}`;
+
+  try {
+    await updateRecord(env, TABLES.CONTENT_CALENDAR, recordId, {
+      [CC_FIELDS.STATUS]: newStatus,
+      [CC_FIELDS.BUFFER_STATUS]: bufferStatus,
+      ...(bufferPostId ? { [CC_FIELDS.BUFFER_POST_ID]: bufferPostId } : {}),
+      [CC_FIELDS.NOTES]: (fields['Notes'] || '') + auditNote,
+    });
+  } catch (err) {
+    console.error('Airtable status update failed:', err);
+  }
+
+  // ── 8. Final Slack confirmation ──
+  if (allSuccess && profileIds.length > 0) {
+    sendSlack(env, ctx, '#content-production', [
+      `✅ *Buffer Post Scheduled*`,
+      `*Title:* ${postTitle}`,
+      `*Date:* ${postDate}`,
+      `*Platforms:* ${platforms.join(', ')}`,
+      `*Buffer Post ID:* ${bufferPostId || 'N/A'}`,
+    ].join('\n'));
+  }
+
+  // ── 9. Audit ──
+  writeAudit(env, ctx, {
+    route: '/v1/workflows/wf2',
+    action: 'approval_to_buffer',
+    recordId,
+    postTitle,
+    platforms,
+    bufferStatus,
+    bufferPostId,
+    allSuccess,
+  });
+
+  return jsonResponse({
+    fired: true,
+    recordId,
+    postTitle,
+    postDate,
+    platforms,
+    mediaSource,
+    bufferResults,
+    bufferStatus,
+    newStatus,
+    unmappedPlatforms,
+    timestamp,
   });
 }
 
