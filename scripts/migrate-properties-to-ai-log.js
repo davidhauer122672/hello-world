@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Migration Script: Properties Table Cleanup
+ * Properties Table Cleanup — Delete misplaced automation records
  *
  * Problem: 17 records containing Airtable Automation scheduling metadata
  * (week_of_year, date_year, next_occurrence, etc.) were incorrectly written
  * to the Properties table (tblT0wq21qxU1KJNM) by a misconfigured automation.
  *
- * Solution: Transfer these records to AI_LOG (tblZ0bgRmH7KQiZyf) as
- * automation run logs, then delete them from Properties.
+ * The scheduling data has already been archived to AI_LOG (recowbUxmHyh2jBA7).
+ * This script deletes the 17 junk records from Properties.
  *
  * Usage:
  *   AIRTABLE_API_KEY=pat... node scripts/migrate-properties-to-ai-log.js
@@ -17,7 +17,6 @@
 
 const BASE_ID = 'appUSnNgpDkcEOzhN';
 const PROPERTIES_TABLE = 'tblT0wq21qxU1KJNM';
-const AI_LOG_TABLE = 'tblZ0bgRmH7KQiZyf';
 const API = 'https://api.airtable.com/v0';
 
 const API_KEY = process.env.AIRTABLE_API_KEY;
@@ -34,148 +33,88 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-// Scheduling metadata fields that indicate misplaced automation data
-const SCHEDULING_FIELDS = [
-  'week_of_year', 'date_year', 'date_month', 'date_day',
-  'time_hour', 'time_minute', 'time_second',
-  'day_of_week', 'pretty_day_of_week', 'pretty_date',
-  'pretty_time', 'next_occurrence', 'pretty_next_occurrence',
+// All 17 junk record IDs confirmed via Airtable MCP on 2026-04-02
+const RECORDS_TO_DELETE = [
+  'rec2bIO1JGeJjp1ti',  // "2026 12:00:00 AM +00:00"
+  'rec4axUGINtqksGmY',  // "week_of_year": 10
+  'rec4dyNvo6NAyqtbT',  // "2026"
+  'rec6YVaowvsMQRa73',  // {"id": "2026-03-05T02:22:51Z"
+  'rec9e8uzsXepzFqJi',  // "pretty_date": "Mar 5"
+  'recBqeFnedCLu8cZd',  // "date_year": "2026"
+  'recElWCCtrGUfI6DN',  // "time_minute": "22"
+  'recIT294JSRn1j1Fd',  // "date_day": "5"
+  'recLLKtJZeq7olJr1',  // "next_occurrence": "2026-03-06T00:00:00Z"
+  'recRGSMlIXkbN8kwX',  // "time_hour": "2"
+  'recRnCUzucxb1jYUd',  // "pretty_next_occurrence": "Mar 06"
+  'recTv9NgtYhtVhzf5',  // "pretty_time": "02:22:51 AM"
+  'recWDU7OO99zWC96X',  // "time_second": "51"
+  'recamXLOxedJoIIT4',  // "date_month": "3"
+  'recd3gqQ0U51OgyJR',  // "pretty_day_of_week": "Thursday"
+  'rece9O7IOjTODK0xC',  // "day_of_week": "3"
+  'recvFuBxwIS89MV9f',  // Empty record — Status: Maintenance only
 ];
 
-async function listAllRecords(tableId) {
-  const records = [];
-  let offset = null;
-
-  do {
-    const params = new URLSearchParams({ pageSize: '100' });
-    if (offset) params.set('offset', offset);
-
-    const res = await fetch(`${API}/${BASE_ID}/${tableId}?${params}`, { headers });
-    if (!res.ok) throw new Error(`List failed (${res.status}): ${await res.text()}`);
-
-    const data = await res.json();
-    records.push(...data.records);
-    offset = data.offset;
-  } while (offset);
-
-  return records;
-}
-
-function isSchedulingRecord(record) {
-  const fieldNames = Object.keys(record.fields);
-  return SCHEDULING_FIELDS.some(f => fieldNames.includes(f));
-}
-
-async function createAiLogRecords(records) {
-  // Airtable allows max 10 records per batch
-  const batches = [];
-  for (let i = 0; i < records.length; i += 10) {
-    batches.push(records.slice(i, i + 10));
-  }
-
-  const created = [];
-  for (const batch of batches) {
-    const payload = {
-      records: batch.map(r => ({
-        fields: {
-          'Log Type': 'Automation Run - Migrated from Properties',
-          'Timestamp': r.fields.id || r.fields.next_occurrence || new Date().toISOString(),
-          'Details': JSON.stringify(r.fields, null, 2),
-          'Source': 'properties-table-cleanup',
-        },
-      })),
-      typecast: true,
-    };
-
-    const res = await fetch(`${API}/${BASE_ID}/${AI_LOG_TABLE}`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) throw new Error(`AI_LOG create failed (${res.status}): ${await res.text()}`);
-    const data = await res.json();
-    created.push(...data.records);
-    console.log(`  Created ${data.records.length} AI_LOG records`);
-  }
-
-  return created;
-}
-
-async function deleteRecords(tableId, recordIds) {
+async function deleteRecords(recordIds) {
   // Airtable allows max 10 deletes per request
   const batches = [];
   for (let i = 0; i < recordIds.length; i += 10) {
     batches.push(recordIds.slice(i, i + 10));
   }
 
+  let totalDeleted = 0;
   for (const batch of batches) {
     const params = batch.map(id => `records[]=${id}`).join('&');
-    const res = await fetch(`${API}/${BASE_ID}/${tableId}?${params}`, {
-      method: 'DELETE',
-      headers,
-    });
+    const url = `${API}/${BASE_ID}/${PROPERTIES_TABLE}?${params}`;
 
+    if (DRY_RUN) {
+      console.log(`  [DRY RUN] Would DELETE ${batch.length} records: ${batch.join(', ')}`);
+      totalDeleted += batch.length;
+      continue;
+    }
+
+    const res = await fetch(url, { method: 'DELETE', headers });
     if (!res.ok) throw new Error(`Delete failed (${res.status}): ${await res.text()}`);
     const data = await res.json();
-    console.log(`  Deleted ${data.records.length} records from ${tableId}`);
+    totalDeleted += data.records.length;
+    console.log(`  Deleted batch of ${data.records.length} records`);
   }
+
+  return totalDeleted;
+}
+
+async function verifyEmpty() {
+  const url = `${API}/${BASE_ID}/${PROPERTIES_TABLE}?pageSize=1`;
+  const res = await fetch(url, { method: 'GET', headers });
+  if (!res.ok) throw new Error(`Verify failed (${res.status}): ${await res.text()}`);
+  const data = await res.json();
+  return data.records.length;
 }
 
 async function main() {
-  console.log(DRY_RUN ? '=== DRY RUN ===' : '=== MIGRATION START ===');
+  console.log(DRY_RUN ? '=== DRY RUN ===' : '=== PROPERTIES TABLE CLEANUP ===');
+  console.log(`  Target: ${RECORDS_TO_DELETE.length} junk records in Properties table`);
+  console.log(`  AI_LOG archive: recowbUxmHyh2jBA7 (already created)`);
   console.log();
 
-  // Step 1: Read all Properties records
-  console.log('Step 1: Reading Properties table...');
-  const allRecords = await listAllRecords(PROPERTIES_TABLE);
-  console.log(`  Found ${allRecords.length} total records`);
-
-  // Step 2: Identify scheduling metadata records
-  const schedulingRecords = allRecords.filter(isSchedulingRecord);
-  const propertyRecords = allRecords.filter(r => !isSchedulingRecord(r));
-  console.log(`  ${schedulingRecords.length} scheduling metadata records (to migrate)`);
-  console.log(`  ${propertyRecords.length} legitimate property records (to keep)`);
+  console.log('Deleting records from Properties table...');
+  const deleted = await deleteRecords(RECORDS_TO_DELETE);
+  console.log(`  Total deleted: ${deleted}`);
   console.log();
 
-  if (schedulingRecords.length === 0) {
-    console.log('No scheduling records found. Nothing to migrate.');
-    return;
+  if (!DRY_RUN) {
+    console.log('Verifying...');
+    const remaining = await verifyEmpty();
+    console.log(`  Properties table now has ${remaining} records`);
+    console.log();
+    console.log(remaining === 0
+      ? '=== SUCCESS: Properties table is now empty ==='
+      : `=== WARNING: ${remaining} records still remain ===`);
+  } else {
+    console.log('DRY RUN complete. Remove --dry-run to execute.');
   }
-
-  // Show sample record
-  console.log('Sample scheduling record fields:');
-  console.log(JSON.stringify(schedulingRecords[0].fields, null, 2));
-  console.log();
-
-  if (DRY_RUN) {
-    console.log('DRY RUN: No changes made. Remove --dry-run to execute.');
-    return;
-  }
-
-  // Step 3: Create AI_LOG entries
-  console.log('Step 2: Creating AI_LOG entries...');
-  await createAiLogRecords(schedulingRecords);
-  console.log();
-
-  // Step 4: Delete from Properties
-  console.log('Step 3: Deleting scheduling records from Properties...');
-  const idsToDelete = schedulingRecords.map(r => r.id);
-  await deleteRecords(PROPERTIES_TABLE, idsToDelete);
-  console.log();
-
-  // Step 5: Verify
-  console.log('Step 4: Verifying...');
-  const remaining = await listAllRecords(PROPERTIES_TABLE);
-  console.log(`  Properties table now has ${remaining.length} records`);
-
-  console.log();
-  console.log('=== MIGRATION COMPLETE ===');
-  console.log(`  Migrated: ${schedulingRecords.length} records → AI_LOG`);
-  console.log(`  Remaining in Properties: ${remaining.length}`);
 }
 
 main().catch(err => {
-  console.error('Migration failed:', err.message);
+  console.error('Cleanup failed:', err.message);
   process.exit(1);
 });
