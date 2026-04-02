@@ -83,4 +83,11 @@ export const DIVISIONS = [
     icon: 'arrow-up-circle',
     description: '7-day enterprise upgrade sprint. 20 agents deploying Buffer, Twitter/X, Constant Contact, Google Calendar, Gmail, Canva, Gamma, Zapier, Google Sheets, Manus AI, Slack ops, cron triggers, and content pipelines.',
   },
+  {
+    id: 'ENF',
+    name: 'Enterprise Reinforcement',
+    color: '#1e3a5f',
+    icon: 'shield-exclamation',
+    description: 'Perpetual structural operations. 20 agents reinforcing the 7 pillars of Fortune 500 enterprise scaling: standardization, codified processes, capital allocation, data-driven automation, talent pipelines, risk frameworks, brand consistency. No end date. No finish line.',
+  },
 ];

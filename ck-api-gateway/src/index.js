@@ -60,6 +60,13 @@
  *   POST /v1/orchestrator/system    — Execute integrated prompting system
  *   GET  /v1/orchestrator/hierarchy — Command hierarchy map
  *   GET  /v1/orchestrator/systems   — List 6 integrated prompting systems
+ *   GET  /v1/reinforcement/dashboard — Enterprise Reinforcement dashboard
+ *   POST /v1/reinforcement/scan      — Full 10-pillar enterprise scan
+ *   POST /v1/reinforcement/pillar    — Execute specific pillar action
+ *   POST /v1/reinforcement/cycle     — Generate next goal cycle
+ *   GET  /v1/reinforcement/agents    — List all 20 ENF agents
+ *   GET  /v1/reinforcement/agents/:id— Get single ENF agent
+ *   GET  /v1/reinforcement/pillars   — List all 10 pillars
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -81,6 +88,7 @@ import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleE
 import { handleDelegationFleet, handleDelegationScan, handleDelegationDispatch, handleDelegationHandoff, handleDelegationBriefing, handleListDelegationAgents, handleGetDelegationAgent } from './routes/delegation.js';
 import { handleUpgradeSprint, handleListUpgradeAgents, handleGetUpgradeAgent, handleUpgradeExecute, handleUpgradePublish, handleUpgradeContent, handleUpgradeEnroll, handleUpgradeIntegrations } from './routes/upgrade.js';
 import { handleOrchestratorDashboard, handleOrchestratorHealth, handleOrchestratorEscalation, handleOrchestratorSystem, handleOrchestratorHierarchy, handleOrchestratorSystems } from './routes/orchestrator.js';
+import { handleReinforcementDashboard, handleReinforcementScan, handleReinforcementPillar, handleReinforcementCycle, handleListReinforcementAgents, handleGetReinforcementAgent, handleReinforcementPillars } from './routes/reinforcement.js';
 import { handleScheduledEvent } from './services/upgrade-engine.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -104,8 +112,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '3.0.0',
-          agents: 330,
-          divisions: 11,
+          agents: 350,
+          divisions: 12,
           timestamp: new Date().toISOString(),
         });
       }
@@ -159,9 +167,9 @@ export default {
       return jsonResponse({
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
-        version: '3.0.0',
-        agents: 330,
-        divisions: 11,
+        version: '3.1.0',
+        agents: 350,
+        divisions: 12,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -415,6 +423,36 @@ export default {
 
       if (path === '/v1/orchestrator/systems' && method === 'GET') {
         return handleOrchestratorSystems();
+      }
+
+      // ── Enterprise Reinforcement (Perpetual) ──
+      if (path === '/v1/reinforcement/dashboard' && method === 'GET') {
+        return handleReinforcementDashboard();
+      }
+
+      if (path === '/v1/reinforcement/scan' && method === 'POST') {
+        return await handleReinforcementScan(request, env, ctx);
+      }
+
+      if (path === '/v1/reinforcement/pillar' && method === 'POST') {
+        return await handleReinforcementPillar(request, env, ctx);
+      }
+
+      if (path === '/v1/reinforcement/cycle' && method === 'POST') {
+        return await handleReinforcementCycle(request, env, ctx);
+      }
+
+      if (path === '/v1/reinforcement/agents' && method === 'GET') {
+        return handleListReinforcementAgents(url);
+      }
+
+      if (path === '/v1/reinforcement/pillars' && method === 'GET') {
+        return handleReinforcementPillars();
+      }
+
+      if (path.match(/^\/v1\/reinforcement\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/reinforcement/agents/')[1];
+        return handleGetReinforcementAgent(agentId);
       }
 
       if (path === '/v1/audit' && method === 'GET') {
