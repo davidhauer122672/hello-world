@@ -48,6 +48,16 @@ export const getPricingRecommendation = (data) =>
   apiCall('/v1/pricing/recommend', { method: 'POST', body: JSON.stringify(data) });
 export const getPricingZones = () => apiCall('/v1/pricing/zones');
 
+// ── Podcast ─────────────────────────────────────────────────────────────────
+export const fetchPodcastEpisodes = (params = {}) => {
+  const qs = new URLSearchParams(params).toString();
+  return apiCall(`/v1/podcast/episodes${qs ? '?' + qs : ''}`);
+};
+export const fetchPodcastEpisode = (id) => apiCall(`/v1/podcast/episodes/${id}`);
+export const generatePodcastEpisode = (data) =>
+  apiCall('/v1/podcast/episodes', { method: 'POST', body: JSON.stringify(data) });
+export const fetchPodcastStats = () => apiCall('/v1/podcast/stats');
+
 // ── Audit ────────────────────────────────────────────────────────────────────
 export const fetchAuditLog = (limit = 50) =>
   apiCall(`/v1/audit?limit=${limit}`);

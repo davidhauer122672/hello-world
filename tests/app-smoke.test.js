@@ -117,7 +117,7 @@ describe('App routes and features', () => {
   });
 
   it('should register all public routes', () => {
-    const requiredRoutes = ['/', '/services', '/areas', '/about', '/contact'];
+    const requiredRoutes = ['/', '/services', '/areas', '/about', '/contact', '/podcast'];
     for (const route of requiredRoutes) {
       assert.ok(
         appCode.includes(`'${route}'`) || appCode.includes(`"${route}"`),
@@ -130,7 +130,7 @@ describe('App routes and features', () => {
     const portalRoutes = [
       '/portal', '/portal/dashboard', '/portal/agents',
       '/portal/leads', '/portal/tasks', '/portal/content',
-      '/portal/vendors', '/portal/reports'
+      '/portal/vendors', '/portal/reports', '/portal/podcast'
     ];
     for (const route of portalRoutes) {
       assert.ok(
@@ -262,6 +262,13 @@ describe('API client', () => {
     assert.ok(apiCode.includes('runScaa1'), 'runScaa1 export required');
     assert.ok(apiCode.includes('/v1/workflows'), 'must call /v1/workflows');
   });
+
+  it('should export podcast endpoints', () => {
+    assert.ok(apiCode.includes('fetchPodcastEpisodes'), 'fetchPodcastEpisodes export required');
+    assert.ok(apiCode.includes('generatePodcastEpisode'), 'generatePodcastEpisode export required');
+    assert.ok(apiCode.includes('fetchPodcastStats'), 'fetchPodcastStats export required');
+    assert.ok(apiCode.includes('/v1/podcast'), 'must call /v1/podcast');
+  });
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -298,5 +305,11 @@ describe('Responsive design', () => {
   it('should have button styles', () => {
     assert.ok(css.includes('.btn-primary'), 'primary button style required');
     assert.ok(css.includes('.btn-secondary'), 'secondary button style required');
+  });
+
+  it('should have podcast styles', () => {
+    assert.ok(css.includes('.podcast-hero'), 'podcast hero styles required');
+    assert.ok(css.includes('.episode-card'), 'episode card styles required');
+    assert.ok(css.includes('.series-grid'), 'series grid styles required');
   });
 });

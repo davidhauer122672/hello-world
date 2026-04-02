@@ -39,6 +39,11 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   GET  /v1/podcast/episodes       — List podcast episodes
+ *   GET  /v1/podcast/episodes/:id   — Get single episode
+ *   POST /v1/podcast/episodes       — Generate new episode via Claude
+ *   GET  /v1/podcast/feed.xml       — Public RSS feed (no auth)
+ *   GET  /v1/podcast/stats          — Podcast channel analytics
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -57,6 +62,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleListEpisodes, handleGetEpisode, handleCreateEpisode, handlePodcastFeed, handlePodcastStats } from './routes/podcast.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -145,6 +151,10 @@ export default {
     // ── Public routes (no auth) ──
     if (path === '/v1/leads/public' && method === 'POST') {
       return await handlePublicLead(request, env, ctx);
+    }
+
+    if (path === '/v1/podcast/feed.xml' && method === 'GET') {
+      return await handlePodcastFeed(env);
     }
 
     // ── Auth gate ──
@@ -301,6 +311,24 @@ export default {
       if (path.match(/^\/v1\/email\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/email/agents/')[1];
         return handleGetEmailAgent(agentId);
+      }
+
+      // ── Podcast Channel ──
+      if (path === '/v1/podcast/episodes' && method === 'GET') {
+        return await handleListEpisodes(url, env);
+      }
+
+      if (path === '/v1/podcast/episodes' && method === 'POST') {
+        return await handleCreateEpisode(request, env, ctx);
+      }
+
+      if (path === '/v1/podcast/stats' && method === 'GET') {
+        return await handlePodcastStats(env);
+      }
+
+      if (path.match(/^\/v1\/podcast\/episodes\/[^/]+$/) && method === 'GET') {
+        const recordId = path.split('/v1/podcast/episodes/')[1];
+        return await handleGetEpisode(recordId, env);
       }
 
       if (path === '/v1/audit' && method === 'GET') {

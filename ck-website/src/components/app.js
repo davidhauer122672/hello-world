@@ -23,6 +23,7 @@ export function renderApp() {
   registerRoute('/areas', renderAreas);
   registerRoute('/about', renderAbout);
   registerRoute('/contact', renderContact);
+  registerRoute('/podcast', renderPodcast);
   registerRoute('/portal', renderPortalGate);
   registerRoute('/portal/dashboard', renderPortalDashboard);
   registerRoute('/portal/agents', renderPortalAgents);
@@ -31,6 +32,7 @@ export function renderApp() {
   registerRoute('/portal/content', renderPortalContent);
   registerRoute('/portal/vendors', renderPortalVendors);
   registerRoute('/portal/reports', renderPortalReports);
+  registerRoute('/portal/podcast', renderPortalPodcast);
   registerRoute('/404', renderNotFound);
 }
 
@@ -47,6 +49,7 @@ function setPublicLayout(main, title, content) {
         <a href="/services" data-nav="/services">Services</a>
         <a href="/areas" data-nav="/areas">Areas</a>
         <a href="/about" data-nav="/about">About</a>
+        <a href="/podcast" data-nav="/podcast">Podcast</a>
         <a href="/contact" data-nav="/contact">Contact</a>
         <a href="/portal" class="nav-portal-btn">Team Portal</a>
       </div>
@@ -78,6 +81,7 @@ function setPublicLayout(main, title, content) {
       <div class="footer-col">
         <h4>Company</h4>
         <a href="/about">About Us</a>
+        <a href="/podcast">Podcast</a>
         <a href="/contact">Contact</a>
         <a href="/portal">Team Portal</a>
       </div>
@@ -110,6 +114,7 @@ function setPortalLayout(main, title, content) {
         <a href="/portal/content" data-nav="/portal/content">Content</a>
         <a href="/portal/vendors" data-nav="/portal/vendors">Vendors</a>
         <a href="/portal/reports" data-nav="/portal/reports">Reports</a>
+        <a href="/portal/podcast" data-nav="/portal/podcast">Podcast</a>
       </div>
       <div class="portal-actions">
         <a href="/" class="portal-public-link">Public Site</a>
@@ -539,6 +544,319 @@ function renderPortalReports(main) {
     <h1 class="portal-title">Reports & Analytics</h1>
     <div class="portal-card"><div class="card-body"><p>Intelligence division (30 agents) generates market reports, forecasts, and operational analytics.</p></div></div>
   `);
+}
+
+// ── Podcast (Public) ───────────────────────────────────────────────────────
+
+function renderPodcast(main) {
+  const series = [
+    { id: 'market-pulse', name: 'Market Pulse', icon: '📊', desc: 'Weekly Treasure Coast market data, trends, and forecasts.' },
+    { id: 'owner-spotlight', name: 'Owner Spotlight', icon: '🎙', desc: 'Conversations with property owners about their investment journey.' },
+    { id: 'ai-ops', name: 'AI & Operations', icon: '🤖', desc: 'How 290 AI agents power modern property management.' },
+    { id: 'treasure-coast-living', name: 'Treasure Coast Living', icon: '🌴', desc: 'Lifestyle, neighborhoods, and what makes the Treasure Coast special.' },
+    { id: 'investor-edge', name: 'Investor Edge', icon: '📈', desc: 'ROI strategies, portfolio analysis, and market opportunities.' },
+  ];
+
+  setPublicLayout(main, 'Podcast', `
+    <section class="page-header">
+      <h1>Coastal Key Insights</h1>
+      <p>AI-Powered Property Management on the Treasure Coast — The Podcast</p>
+    </section>
+
+    <section class="podcast-hero">
+      <div class="podcast-hero-content">
+        <div class="podcast-cover">
+          <div class="podcast-cover-placeholder">
+            <span class="logo-mark lg">CK</span>
+            <span class="podcast-cover-title">Coastal Key<br>Insights</span>
+          </div>
+        </div>
+        <div class="podcast-info">
+          <h2>Your Weekly Treasure Coast Real Estate Intelligence</h2>
+          <p>Join the Coastal Key team for weekly episodes covering luxury property management, real estate investment strategies, market intelligence, and the future of AI-driven operations — from Vero Beach to Jupiter.</p>
+          <div class="podcast-subscribe-row">
+            <a href="/v1/podcast/feed.xml" class="btn btn-primary" target="_blank" rel="noopener">Subscribe via RSS</a>
+            <a href="/contact" class="btn btn-secondary">Suggest a Topic</a>
+          </div>
+          <div class="podcast-meta">
+            <span>New episodes weekly</span>
+            <span>25-40 min per episode</span>
+            <span>Free to listen</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="podcast-series">
+      <h2>Episode Series</h2>
+      <div class="series-grid">
+        ${series.map(s => `
+          <div class="series-card" data-series="${s.id}">
+            <span class="series-icon">${s.icon}</span>
+            <h3>${s.name}</h3>
+            <p>${s.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+
+    <section class="podcast-episodes">
+      <h2>Latest Episodes</h2>
+      <div id="episode-list" class="episode-list">
+        <p class="loading-text">Loading episodes...</p>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Want to Be a Guest?</h2>
+      <p>We're always looking for Treasure Coast property owners, investors, and industry experts to share their stories.</p>
+      <a href="/contact" class="btn btn-primary btn-lg">Get in Touch</a>
+    </section>
+  `);
+
+  // Try to load episodes from API (gracefully falls back to placeholder)
+  loadPublicEpisodes();
+}
+
+async function loadPublicEpisodes() {
+  const container = document.getElementById('episode-list');
+  if (!container) return;
+
+  // Placeholder episodes shown while we try the API
+  const placeholderEpisodes = [
+    { num: 1, title: 'Welcome to Coastal Key Insights', series: 'AI & Operations', duration: '28:00', date: '2026-04-01', desc: 'Meet the team, learn about our 290 AI agents, and discover how technology is transforming luxury property management on the Treasure Coast.' },
+    { num: 2, title: 'Treasure Coast Market Report — Q1 2026', series: 'Market Pulse', duration: '34:00', date: '2026-04-08', desc: 'A deep dive into Q1 numbers across Indian River, St. Lucie, and Martin counties. Price trends, inventory levels, and what to expect in Q2.' },
+    { num: 3, title: 'Storm Season Prep: AI-Powered Hurricane Readiness', series: 'AI & Operations', duration: '26:00', date: '2026-04-15', desc: 'How Coastal Key uses predictive AI to prepare properties for hurricane season — from automated checklists to real-time vendor coordination.' },
+    { num: 4, title: 'Investing in Stuart: The Sailfish Capital Opportunity', series: 'Investor Edge', duration: '31:00', date: '2026-04-22', desc: 'Why Stuart is attracting investor attention: downtown revitalization, waterfront appreciation, and short-term rental potential.' },
+    { num: 5, title: 'Life on Hutchinson Island: A Local\'s Guide', series: 'Treasure Coast Living', duration: '25:00', date: '2026-04-29', desc: 'Exploring Hutchinson Island\'s barrier island lifestyle — oceanfront living, nature preserves, and the tight-knit community.' },
+  ];
+
+  try {
+    const res = await fetch('/v1/podcast/feed.xml');
+    if (res.ok) {
+      const text = await res.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, 'text/xml');
+      const items = xml.querySelectorAll('item');
+
+      if (items.length > 0) {
+        container.innerHTML = Array.from(items).map((item, i) => {
+          const title = item.querySelector('title')?.textContent || 'Untitled';
+          const desc = item.querySelector('description')?.textContent || '';
+          const pubDate = item.querySelector('pubDate')?.textContent || '';
+          const duration = item.querySelector('itunes\\:duration, duration')?.textContent || '';
+          return episodeCardHtml(i + 1, title, '', duration, pubDate ? new Date(pubDate).toLocaleDateString() : '', desc);
+        }).join('');
+        return;
+      }
+    }
+  } catch {
+    // Fall through to placeholders
+  }
+
+  container.innerHTML = placeholderEpisodes.map(ep =>
+    episodeCardHtml(ep.num, ep.title, ep.series, ep.duration, ep.date, ep.desc)
+  ).join('');
+}
+
+function episodeCardHtml(num, title, series, duration, date, desc) {
+  return `
+    <article class="episode-card">
+      <div class="episode-number">EP ${num}</div>
+      <div class="episode-body">
+        <div class="episode-header">
+          <h3>${title}</h3>
+          <div class="episode-meta">
+            ${series ? `<span class="episode-series">${series}</span>` : ''}
+            ${duration ? `<span class="episode-duration">${duration}</span>` : ''}
+            ${date ? `<span class="episode-date">${date}</span>` : ''}
+          </div>
+        </div>
+        <p>${desc}</p>
+      </div>
+    </article>
+  `;
+}
+
+// ── Podcast (Portal Management) ────────────────────────────────────────────
+
+function renderPortalPodcast(main) {
+  setPortalLayout(main, 'Podcast', `
+    <h1 class="portal-title">Podcast Channel — Coastal Key Insights</h1>
+
+    <div class="portal-stats" id="podcast-stats">
+      <div class="stat-card"><span class="stat-num" id="pc-total">--</span><span class="stat-label">Total Episodes</span></div>
+      <div class="stat-card"><span class="stat-num" id="pc-published">--</span><span class="stat-label">Published</span></div>
+      <div class="stat-card"><span class="stat-num" id="pc-draft">--</span><span class="stat-label">Drafts</span></div>
+      <div class="stat-card"><span class="stat-num" id="pc-series">5</span><span class="stat-label">Series</span></div>
+    </div>
+
+    <div class="portal-grid">
+      <div class="portal-card">
+        <h3>Generate New Episode</h3>
+        <div class="card-body">
+          <form id="podcast-generate-form">
+            <div class="form-group">
+              <label>Episode Topic</label>
+              <input type="text" id="pg-topic" required placeholder="e.g., Vero Beach luxury market trends Q1 2026">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Series</label>
+                <select id="pg-series">
+                  <option value="">No series</option>
+                  <option value="market-pulse">Market Pulse</option>
+                  <option value="owner-spotlight">Owner Spotlight</option>
+                  <option value="ai-ops">AI & Operations</option>
+                  <option value="treasure-coast-living">Treasure Coast Living</option>
+                  <option value="investor-edge">Investor Edge</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Guest Name (optional)</label>
+                <input type="text" id="pg-guest" placeholder="Guest name for interview episode">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Target Audience</label>
+              <select id="pg-segment">
+                <option value="">General</option>
+                <option value="property_owners">Property Owners</option>
+                <option value="investors">Real Estate Investors</option>
+                <option value="luxury_buyers">Luxury Homebuyers</option>
+                <option value="str_operators">STR Operators</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="pg-submit">Generate Episode</button>
+            <div id="pg-status" class="form-status"></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="portal-card">
+        <h3>Channel Info</h3>
+        <div class="card-body">
+          <p><strong>Coastal Key Insights</strong></p>
+          <p>AI-Powered Property Management on the Treasure Coast</p>
+          <div style="margin-top:16px">
+            <p><strong>RSS Feed:</strong> <a href="/v1/podcast/feed.xml" target="_blank">/v1/podcast/feed.xml</a></p>
+            <p><strong>Public Page:</strong> <a href="/podcast">/podcast</a></p>
+            <p><strong>Episodes API:</strong> /v1/podcast/episodes</p>
+          </div>
+          <div style="margin-top:16px">
+            <h4 style="margin-bottom:8px">Series</h4>
+            <ul style="list-style:none;padding:0">
+              <li style="padding:4px 0">📊 Market Pulse</li>
+              <li style="padding:4px 0">🎙 Owner Spotlight</li>
+              <li style="padding:4px 0">🤖 AI & Operations</li>
+              <li style="padding:4px 0">🌴 Treasure Coast Living</li>
+              <li style="padding:4px 0">📈 Investor Edge</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="portal-card" style="margin-top:20px">
+      <h3>Recent Episodes</h3>
+      <div class="card-body">
+        <div id="portal-episode-list">Loading episodes...</div>
+      </div>
+    </div>
+
+    <div class="portal-card" style="margin-top:20px" id="pg-result-card" hidden>
+      <h3>Generated Episode</h3>
+      <div class="card-body" id="pg-result"></div>
+    </div>
+  `);
+
+  // Load stats
+  (async () => {
+    try {
+      const data = await apiCall('/v1/podcast/stats');
+      if (data?.stats) {
+        const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+        el('pc-total', data.stats.totalEpisodes);
+        el('pc-published', data.stats.published);
+        el('pc-draft', data.stats.draft);
+      }
+    } catch { /* stats unavailable */ }
+  })();
+
+  // Load episode list
+  (async () => {
+    try {
+      const data = await apiCall('/v1/podcast/episodes');
+      const list = document.getElementById('portal-episode-list');
+      if (!list) return;
+
+      if (data?.episodes?.length) {
+        list.innerHTML = data.episodes.map(ep => `
+          <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+            <strong>${ep.title}</strong>
+            <span style="color:var(--text-secondary);font-size:13px;margin-left:12px">${ep.status}</span>
+            ${ep.series ? `<span style="color:var(--accent);font-size:12px;margin-left:8px">${ep.series}</span>` : ''}
+            ${ep.duration ? `<span style="color:var(--text-secondary);font-size:12px;margin-left:8px">${ep.duration}</span>` : ''}
+          </div>
+        `).join('');
+      } else {
+        list.innerHTML = '<p>No episodes yet. Generate your first episode above.</p>';
+      }
+    } catch {
+      const list = document.getElementById('portal-episode-list');
+      if (list) list.innerHTML = '<p>Connect to the API to view episodes.</p>';
+    }
+  })();
+
+  // Generate form handler
+  document.getElementById('podcast-generate-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('pg-submit');
+    const status = document.getElementById('pg-status');
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    status.textContent = '';
+
+    try {
+      const data = await apiCall('/v1/podcast/episodes', {
+        method: 'POST',
+        body: JSON.stringify({
+          topic: document.getElementById('pg-topic').value,
+          series: document.getElementById('pg-series').value || undefined,
+          guest: document.getElementById('pg-guest').value || undefined,
+          segment: document.getElementById('pg-segment').value || undefined,
+        }),
+      });
+
+      if (data?.episode) {
+        status.textContent = 'Episode generated successfully!';
+        status.className = 'form-status success';
+
+        const resultCard = document.getElementById('pg-result-card');
+        const result = document.getElementById('pg-result');
+        if (resultCard && result) {
+          resultCard.hidden = false;
+          result.innerHTML = `
+            <h4 style="margin-bottom:8px">${data.episode.title}</h4>
+            ${data.episode.subtitle ? `<p style="color:var(--accent);margin-bottom:12px">${data.episode.subtitle}</p>` : ''}
+            <p style="margin-bottom:16px">${data.episode.description || ''}</p>
+            ${data.episode.talkingPoints?.length ? `<h4 style="margin:16px 0 8px">Talking Points</h4><ul>${data.episode.talkingPoints.map(t => `<li>${t}</li>`).join('')}</ul>` : ''}
+            ${data.episode.introScript ? `<h4 style="margin:16px 0 8px">Intro Script</h4><p style="font-style:italic">${data.episode.introScript}</p>` : ''}
+            ${data.episode.outroScript ? `<h4 style="margin:16px 0 8px">Outro Script</h4><p style="font-style:italic">${data.episode.outroScript}</p>` : ''}
+            ${data.episode.guestQuestions?.length ? `<h4 style="margin:16px 0 8px">Guest Questions</h4><ol>${data.episode.guestQuestions.map(q => `<li>${q}</li>`).join('')}</ol>` : ''}
+            ${data.episode.showNotes ? `<h4 style="margin:16px 0 8px">Show Notes</h4><div>${data.episode.showNotes}</div>` : ''}
+            <p style="margin-top:16px;font-size:13px;color:var(--text-secondary)">Model: ${data.model || 'N/A'} | Cached: ${data.cached || false}${data.episode.id ? ` | Record: ${data.episode.id}` : ''}</p>
+          `;
+        }
+      }
+    } catch (err) {
+      status.textContent = `Error: ${err.message}`;
+      status.className = 'form-status error';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Generate Episode';
+  });
 }
 
 function renderNotFound(main) {
