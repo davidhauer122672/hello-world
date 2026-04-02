@@ -10,13 +10,13 @@
  *   SEN  Sentinel Sales      — 40 agents
  *   OPS  Operations          — 45 agents
  *   INT  Intelligence        — 30 agents
- *   MKT  Marketing           — 40 agents
+ *   MKT  Marketing           — 60 agents (40 core + 20 Design & Luxury Brand)
  *   FIN  Finance             — 25 agents
  *   VEN  Vendor Management   — 25 agents
  *   TEC  Technology          — 25 agents
  *   WEB  Website Development — 40 agents
  *   SEC  Sovereign Shield   — 25 agents
- *                       Total: 315 agents
+ *                       Total: 335 agents
  */
 
 import { DIVISIONS } from './divisions.js';
@@ -30,6 +30,7 @@ import { VEN_AGENTS } from './agents-ven.js';
 import { TEC_AGENTS } from './agents-tec.js';
 import { WEB_AGENTS } from './agents-web.js';
 import { SEC_AGENTS } from './agents-sec.js';
+import { MKT_DESIGN_AGENTS } from './agents-mkt-design.js';
 
 // ── Merged agent list ───────────────────────────────────────────────────────
 
@@ -39,6 +40,7 @@ export const AGENTS = [
   ...OPS_AGENTS,
   ...INT_AGENTS,
   ...MKT_AGENTS,
+  ...MKT_DESIGN_AGENTS,
   ...FIN_AGENTS,
   ...VEN_AGENTS,
   ...TEC_AGENTS,
