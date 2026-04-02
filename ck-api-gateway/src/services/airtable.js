@@ -52,6 +52,8 @@ export const TABLES = {
   MARKET_DATA:          'tblVjGvL1UYin5U2h',
   PORTFOLIO_DATA:       'tblaRlV25mTmeZdzQ',
   REGULATORY_DATA:      'tblyyEjxqQjEmO16T',
+  // ── AI Delegation Division (wired 2026-04-02) ──
+  DELEGATION_OPS:       'tblx1HfUCXhhA8UkJ',
 };
 
 /**

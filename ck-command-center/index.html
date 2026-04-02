@@ -173,6 +173,10 @@ a{color:var(--accent);text-decoration:none}
         <span>Property Intel</span>
         <span class="count" id="propertyCount">—</span>
       </div>
+      <div class="nav-item" data-view="delegation" onclick="switchView('delegation')">
+        <span>Delegation Ops</span>
+        <span class="count" style="background:#dc2626;color:#fff">20</span>
+      </div>
     </div>
     <div class="sidebar-section">
       <h3>Divisions</h3>
@@ -205,10 +209,12 @@ let propertyStats = null;
 // ── Division colors from registry ──
 const DIV_COLORS = {
   EXC:'#1a1a2e', SEN:'#e94560', OPS:'#0f3460', INT:'#16213e',
-  MKT:'#533483', FIN:'#c9485b', VEN:'#e07c24', TEC:'#2d6a4f'
+  MKT:'#533483', FIN:'#c9485b', VEN:'#e07c24', TEC:'#2d6a4f',
+  WEB:'#0ea5e9', DEL:'#dc2626'
 };
 const DIV_ICONS = {
-  EXC:'E', SEN:'S', OPS:'O', INT:'I', MKT:'M', FIN:'F', VEN:'V', TEC:'T'
+  EXC:'E', SEN:'S', OPS:'O', INT:'I', MKT:'M', FIN:'F', VEN:'V', TEC:'T',
+  WEB:'W', DEL:'D'
 };
 
 // ── Persist config ──
@@ -306,6 +312,7 @@ function switchView(view) {
   if (view === 'dashboard') renderDashboard();
   else if (view === 'all-agents') renderAllAgents();
   else if (view === 'property-intel') renderPropertyIntel();
+  else if (view === 'delegation') renderDelegationOps();
   else if (view.startsWith('div-')) renderDivisionView(view.replace('div-', ''));
 }
 
@@ -667,6 +674,151 @@ document.addEventListener('keydown', e => {
     document.getElementById('searchInput')?.focus();
   }
 });
+
+// ── Delegation Ops View ──
+let delegationData = null;
+
+async function fetchDelegationFleet() {
+  if (!API_URL || !API_TOKEN) return;
+  try {
+    const res = await fetch(`${API_URL}/v1/delegation/fleet`, {
+      headers: { 'Authorization': `Bearer ${API_TOKEN}` }
+    });
+    if (res.ok) delegationData = await res.json();
+  } catch (e) { console.error('Delegation fetch failed:', e); }
+}
+
+function renderDelegationOps() {
+  const main = document.getElementById('mainContent');
+  if (!delegationData) {
+    fetchDelegationFleet().then(() => renderDelegationOps());
+    main.innerHTML = '<div class="loading"><div class="spinner"></div> Loading Delegation Fleet...</div>';
+    return;
+  }
+
+  const d = delegationData;
+  const fleet = d.fleet || {};
+  const agents = d.agents || [];
+
+  main.innerHTML = `
+    <div class="division-header">
+      <div class="div-color" style="background:#dc2626">D</div>
+      <div>
+        <h2>AI Delegation Division</h2>
+        <p>Badge-authenticated cross-divisional authority. Enterprise Full Access clearance. Cooperates with all Chiefs of Staff.</p>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Delegation Agents</div><div class="stat-value red">${agents.length}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Operations</div><div class="stat-value blue">${fleet.totalOps || 0}</div></div>
+      <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value green">${fleet.byStatus?.Completed || 0}</div></div>
+      <div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value yellow">${fleet.byStatus?.['In Progress'] || fleet.byStatus?.Dispatched || 0}</div></div>
+      <div class="stat-card"><div class="stat-label">Escalated</div><div class="stat-value red">${fleet.byStatus?.Escalated || 0}</div></div>
+      <div class="stat-card"><div class="stat-label">Handoffs</div><div class="stat-value blue">${fleet.byStatus?.['Handed Off'] || 0}</div></div>
+    </div>
+
+    <h2 style="font-size:18px;font-weight:600;margin:20px 0 14px">Delegation Agent Fleet</h2>
+    <div class="agent-grid">
+      ${agents.map(a => `
+        <div class="agent-card" onclick="showDelegationAgent('${a.id}')" style="border-left:3px solid #dc2626">
+          <div class="agent-header">
+            <span class="agent-id">${a.id}</span>
+            <span class="status-badge ${a.status}">${a.status}</span>
+          </div>
+          <div class="agent-name">${a.name}</div>
+          <div class="agent-role">${a.role}</div>
+          <div class="agent-footer">
+            <span class="tier-badge">${a.tier}</span>
+            <span style="font-size:10px;color:#dc2626;font-weight:700">ENTERPRISE ACCESS</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    ${fleet.recentOps?.length ? `
+    <h2 style="font-size:18px;font-weight:600;margin:24px 0 14px">Recent Operations</h2>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="background:var(--bg3)">
+            <th style="padding:10px 14px;text-align:left;color:var(--text2)">Task</th>
+            <th style="padding:10px 14px;text-align:left;color:var(--text2)">Agent</th>
+            <th style="padding:10px 14px;text-align:left;color:var(--text2)">Status</th>
+            <th style="padding:10px 14px;text-align:left;color:var(--text2)">Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${fleet.recentOps.map(op => `
+            <tr style="border-top:1px solid var(--border)">
+              <td style="padding:10px 14px">${op.taskName || '—'}</td>
+              <td style="padding:10px 14px;font-family:monospace;font-size:11px">${op.agentId || '—'}</td>
+              <td style="padding:10px 14px"><span class="status-badge ${op.status === 'Completed' ? 'active' : op.status === 'Escalated' ? 'maintenance' : 'training'}">${op.status || '—'}</span></td>
+              <td style="padding:10px 14px">${op.priority || '—'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>` : ''}
+  `;
+}
+
+function showDelegationAgent(agentId) {
+  const allDelAgents = [
+    {id:'DEL-001',name:'Oversight Prime',role:'Chief Delegation Officer',desc:'Master orchestrator. Receives CEO briefings, decomposes into atomic tasks, dispatches to specialist agents, tracks completion.'},
+    {id:'DEL-002',name:'Content Sentinel',role:'Content Pipeline Auditor',desc:'Scans Content Calendar for coverage gaps across all platforms. Detects dark platforms, pillar imbalances, stalled pipelines.'},
+    {id:'DEL-003',name:'Content Forge',role:'Auto-Content Generator',desc:'Generates world-class content to close gaps. Writes directly to Airtable with Sovereign Standard formatting.'},
+    {id:'DEL-004',name:'Pipeline Guardian',role:'Status Pipeline Tracker',desc:'Detects posts stuck in Draft/Approved status. Cleans empty draft records polluting the calendar.'},
+    {id:'DEL-005',name:'Revenue Hunter',role:'Revenue Opportunity Scanner',desc:'Scans for unconverted leads, upsell opportunities, dormant clients, underpriced properties, vacant units.'},
+    {id:'DEL-006',name:'Lead Optimizer',role:'Lead Pipeline Optimizer',desc:'Audits entire lead pipeline. Finds stuck leads, missing enrichment, unassigned leads, broken workflow triggers.'},
+    {id:'DEL-007',name:'Automation Watchdog',role:'Automation Health Monitor',desc:'Monitors all deployed automations. Detects failures, silent errors, drift from expected behavior.'},
+    {id:'DEL-008',name:'Integration Architect',role:'Integration Bridge Agent',desc:'Manages data flow between Airtable, Cloudflare, Retell AI, Slack, Buffer, Claude API. Detects broken connections.'},
+    {id:'DEL-009',name:'Fiscal Sentinel',role:'Financial Urgency Prioritizer',desc:'Ranks tasks by financial urgency. Calculates opportunity cost of delays. Flags revenue-at-risk items.'},
+    {id:'DEL-010',name:'Data Integrity Officer',role:'Data Validation Agent',desc:'Validates data quality across all 57 Airtable tables. Detects duplicates, orphans, missing fields.'},
+    {id:'DEL-011',name:'Performance Hawk',role:'Agent Performance Monitor',desc:'Tracks KPIs for all 310 AI agents. Detects underperformers and idle agents.'},
+    {id:'DEL-012',name:'Campaign Commander',role:'Campaign Optimization Agent',desc:'Optimizes all active sales campaigns. Analyzes call logs, agent performance, conversion metrics.'},
+    {id:'DEL-013',name:'Vendor Shield',role:'Vendor Compliance Scanner',desc:'Audits vendor compliance, insurance expiration, license status, service quality metrics.'},
+    {id:'DEL-014',name:'Retention Guardian',role:'Client Retention Agent',desc:'Identifies at-risk clients through satisfaction signals, communication gaps, renewal dates.'},
+    {id:'DEL-015',name:'Market Radar',role:'Market Intelligence Agent',desc:'Scans competitive landscape, pricing shifts, new entrants, regulatory changes on Treasure Coast.'},
+    {id:'DEL-016',name:'Security Fortress',role:'Security Posture Agent',desc:'Monitors security across all systems. Detects exposed endpoints, expired secrets, authentication weaknesses.'},
+    {id:'DEL-017',name:'Workflow Nexus',role:'Workflow Orchestrator',desc:'Manages cross-agent handoffs and multi-step workflow execution. Detects bottlenecks and routing failures.'},
+    {id:'DEL-018',name:'Enterprise Reporter',role:'Executive Report Generator',desc:'Produces CEO-ready briefings with measurable proof. Compiles cross-divisional fleet performance data.'},
+    {id:'DEL-019',name:'Gap Annihilator',role:'Enterprise Gap Closer',desc:'Master gap-finder. Scans for ungenerated systems, unperformed actions, missed opportunities across all operations.'},
+    {id:'DEL-020',name:'Money Machine',role:'Financial Systems Integrator',desc:'Architects revenue-generating systems: upsell triggers, dynamic pricing, investor pipeline automations.'},
+  ];
+  const agent = allDelAgents.find(a => a.id === agentId);
+  if (!agent) return;
+
+  const panel = document.getElementById('detailPanel');
+  panel.innerHTML = `
+    <button class="detail-close" onclick="closeDetail()">&times;</button>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+      <div style="width:48px;height:48px;border-radius:12px;background:#dc2626;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:18px">D</div>
+      <div>
+        <div style="font-size:11px;font-family:monospace;color:var(--text2)">${agent.id}</div>
+        <h2 style="font-size:20px;font-weight:700">${agent.name}</h2>
+        <div style="font-size:13px;color:var(--text2)">${agent.role}</div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h4>Mission</h4>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7">${agent.desc}</p>
+    </div>
+    <div class="detail-section">
+      <h4>Badge Clearance</h4>
+      <span style="background:rgba(220,38,38,0.15);color:#dc2626;padding:4px 12px;border-radius:8px;font-size:12px;font-weight:700">Enterprise Full Access</span>
+    </div>
+    <div class="detail-section">
+      <h4>Cooperation Authority</h4>
+      <p style="font-size:12px;color:var(--text2)">All Chiefs of Staff, Division Leads, Division Managers, CEO, Executive Administrator, CMO, CTO, CFO</p>
+    </div>
+    <div class="detail-section">
+      <h4>Division</h4>
+      <span style="font-size:12px;color:var(--text2)">DEL — AI Delegation</span>
+    </div>
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
+}
 
 // ── Auto-refresh every 30s ──
 setInterval(() => { if (API_URL && API_TOKEN) fetchAll(); }, 30000);

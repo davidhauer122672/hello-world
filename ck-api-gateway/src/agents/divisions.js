@@ -69,4 +69,11 @@ export const DIVISIONS = [
     icon: 'globe',
     description: 'Website architecture, frontend development, deployment, and domain consolidation for coastalkey-pm.com.',
   },
+  {
+    id: 'DEL',
+    name: 'AI Delegation',
+    color: '#dc2626',
+    icon: 'shield-check',
+    description: 'Badge-authenticated AI Delegation Agents with enterprise-wide cross-divisional authority. Scans for gaps, dispatches tasks, executes handoffs, and drives measurable outcomes across all divisions.',
+  },
 ];

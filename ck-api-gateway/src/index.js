@@ -39,6 +39,13 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   GET  /v1/delegation/fleet       — Delegation fleet status dashboard
+ *   POST /v1/delegation/scan        — Run DEL agent scan
+ *   POST /v1/delegation/dispatch    — Dispatch task to DEL agent
+ *   POST /v1/delegation/handoff     — Inter-agent handoff
+ *   POST /v1/delegation/briefing    — Process CEO briefing
+ *   GET  /v1/delegation/agents      — List all 20 DEL agents
+ *   GET  /v1/delegation/agents/:id  — Get single DEL agent
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -57,6 +64,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleDelegationFleet, handleDelegationScan, handleDelegationDispatch, handleDelegationHandoff, handleDelegationBriefing, handleListDelegationAgents, handleGetDelegationAgent } from './routes/delegation.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -135,8 +143,8 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 290,
-        divisions: 9,
+        agents: 310,
+        divisions: 10,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -301,6 +309,36 @@ export default {
       if (path.match(/^\/v1\/email\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/email/agents/')[1];
         return handleGetEmailAgent(agentId);
+      }
+
+      // ── AI Delegation Agents ──
+      if (path === '/v1/delegation/fleet' && method === 'GET') {
+        return await handleDelegationFleet(env);
+      }
+
+      if (path === '/v1/delegation/scan' && method === 'POST') {
+        return await handleDelegationScan(request, env, ctx);
+      }
+
+      if (path === '/v1/delegation/dispatch' && method === 'POST') {
+        return await handleDelegationDispatch(request, env, ctx);
+      }
+
+      if (path === '/v1/delegation/handoff' && method === 'POST') {
+        return await handleDelegationHandoff(request, env, ctx);
+      }
+
+      if (path === '/v1/delegation/briefing' && method === 'POST') {
+        return await handleDelegationBriefing(request, env, ctx);
+      }
+
+      if (path === '/v1/delegation/agents' && method === 'GET') {
+        return handleListDelegationAgents(url);
+      }
+
+      if (path.match(/^\/v1\/delegation\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/delegation/agents/')[1];
+        return handleGetDelegationAgent(agentId);
       }
 
       if (path === '/v1/audit' && method === 'GET') {
