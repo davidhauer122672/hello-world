@@ -32,8 +32,9 @@
     "portal_path": "/portal"
   },
   "agents": {
-    "total": 290,
-    "divisions": 9,
-    "web_dev_agents": 40
+    "total": 310,
+    "divisions": 10,
+    "web_dev_agents": 40,
+    "business_forecast_agents": 20
   }
 }

@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Agent Registry
  *
- * Central registry for all 290 AI agents across 9 divisions.
+ * Central registry for all 310 AI agents across 10 divisions.
  * Exports the AGENTS array, DIVISIONS array, and lookup functions
  * consumed by routes/agents.js and the Command Center dashboard.
  *
@@ -15,7 +15,8 @@
  *   VEN  Vendor Management   — 25 agents
  *   TEC  Technology          — 25 agents
  *   WEB  Website Development — 40 agents
- *                       Total: 290 agents
+ *   BFR  Business Forecast   — 20 agents
+ *                       Total: 310 agents
  */
 
 import { DIVISIONS } from './divisions.js';
@@ -28,6 +29,7 @@ import { FIN_AGENTS } from './agents-fin.js';
 import { VEN_AGENTS } from './agents-ven.js';
 import { TEC_AGENTS } from './agents-tec.js';
 import { WEB_AGENTS } from './agents-web.js';
+import { BFR_AGENTS } from './agents-bfr.js';
 
 // ── Merged agent list ───────────────────────────────────────────────────────
 
@@ -41,6 +43,7 @@ export const AGENTS = [
   ...VEN_AGENTS,
   ...TEC_AGENTS,
   ...WEB_AGENTS,
+  ...BFR_AGENTS,
 ];
 
 // Re-export divisions so consumers only need one import path

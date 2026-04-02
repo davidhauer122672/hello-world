@@ -39,6 +39,12 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   GET  /v1/forecast/agents      — List all 20 Business Forecast agents
+ *   GET  /v1/forecast/agents/:id  — Get single BFR agent
+ *   GET  /v1/forecast/dashboard   — BFR division dashboard
+ *   GET  /v1/forecast/market-pulse — Current market conditions snapshot
+ *   POST /v1/forecast/generate    — Generate 18-month forecast via Claude
+ *   POST /v1/forecast/scenario    — Run stress-test scenario simulation
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -57,6 +63,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleListForecastAgents, handleGetForecastAgent, handleForecastDashboard, handleForecastGenerate, handleForecastScenario, handleMarketPulse } from './routes/business-forecast.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -79,8 +86,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 250,
-          divisions: 8,
+          agents: 310,
+          divisions: 10,
           timestamp: new Date().toISOString(),
         });
       }
@@ -135,8 +142,8 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 290,
-        divisions: 9,
+        agents: 310,
+        divisions: 10,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -305,6 +312,32 @@ export default {
 
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
+      }
+
+      // ── Business Forecast Division ──
+      if (path === '/v1/forecast/agents' && method === 'GET') {
+        return handleListForecastAgents(url);
+      }
+
+      if (path === '/v1/forecast/dashboard' && method === 'GET') {
+        return handleForecastDashboard();
+      }
+
+      if (path === '/v1/forecast/market-pulse' && method === 'GET') {
+        return handleMarketPulse();
+      }
+
+      if (path === '/v1/forecast/generate' && method === 'POST') {
+        return await handleForecastGenerate(request, env, ctx);
+      }
+
+      if (path === '/v1/forecast/scenario' && method === 'POST') {
+        return await handleForecastScenario(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/forecast\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/forecast/agents/')[1];
+        return handleGetForecastAgent(agentId);
       }
 
       return errorResponse('Not found', 404);

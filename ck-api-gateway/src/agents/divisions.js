@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Division Definitions
  *
- * 8 operational divisions that map to the org chart.
+ * 10 operational divisions that map to the org chart.
  * Each division has a color, icon, and description used by the Command Center UI.
  */
 
@@ -68,5 +68,12 @@ export const DIVISIONS = [
     color: '#0ea5e9',
     icon: 'globe',
     description: 'Website architecture, frontend development, deployment, and domain consolidation for coastalkey-pm.com.',
+  },
+  {
+    id: 'BFR',
+    name: 'Business Forecast',
+    color: '#dc2626',
+    icon: 'trending-up',
+    description: 'Ferrari-grade 18-month market forecasting, demand modeling, competitive intelligence, and CEO-ready strategic deliverables for home watch and property management.',
   },
 ];
