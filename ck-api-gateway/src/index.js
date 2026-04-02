@@ -39,6 +39,13 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   GET  /v1/sentinel/deployment         — Project Sentinel deployment status + blockers
+ *   POST /v1/sentinel/deployment/blocker  — Resolve a pre-launch blocker
+ *   GET  /v1/sentinel/sequence           — 6-touch 14-day sequence config
+ *   POST /v1/sentinel/sequence/advance    — Advance lead to next sequence step
+ *   POST /v1/sentinel/investor-flag       — Evaluate and set investor flag
+ *   GET  /v1/sentinel/kpis               — Live KPI snapshot vs targets
+ *   POST /v1/sentinel/go-live            — Authorize Step 10 activation
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -57,6 +64,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleSentinelDeployment, handleResolveBlocker, handleSentinelSequence, handleSequenceAdvance, handleInvestorFlagEvaluate, handleSentinelKpis, handleSentinelGoLive } from './routes/project-sentinel.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -301,6 +309,35 @@ export default {
       if (path.match(/^\/v1\/email\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/email/agents/')[1];
         return handleGetEmailAgent(agentId);
+      }
+
+      // ── Project Sentinel ──
+      if (path === '/v1/sentinel/deployment' && method === 'GET') {
+        return await handleSentinelDeployment(env);
+      }
+
+      if (path === '/v1/sentinel/deployment/blocker' && method === 'POST') {
+        return await handleResolveBlocker(request, env, ctx);
+      }
+
+      if (path === '/v1/sentinel/sequence' && method === 'GET') {
+        return await handleSentinelSequence();
+      }
+
+      if (path === '/v1/sentinel/sequence/advance' && method === 'POST') {
+        return await handleSequenceAdvance(request, env, ctx);
+      }
+
+      if (path === '/v1/sentinel/investor-flag' && method === 'POST') {
+        return await handleInvestorFlagEvaluate(request, env, ctx);
+      }
+
+      if (path === '/v1/sentinel/kpis' && method === 'GET') {
+        return await handleSentinelKpis(env);
+      }
+
+      if (path === '/v1/sentinel/go-live' && method === 'POST') {
+        return await handleSentinelGoLive(request, env, ctx);
       }
 
       if (path === '/v1/audit' && method === 'GET') {
