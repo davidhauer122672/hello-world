@@ -16,7 +16,8 @@
     "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
     "test": "npm run test:gateway && npm run test:sentinel",
     "test:gateway": "cd ck-api-gateway && npm test",
-    "test:sentinel": "cd sentinel-webhook && npm test"
+    "test:sentinel": "cd sentinel-webhook && npm test",
+    "migrate:properties-cleanup": "node scripts/migrate-properties-to-ai-log.js"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"
