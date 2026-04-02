@@ -39,6 +39,23 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   POST /v1/workflows/wf2    — WF-2 Approved Content → Buffer Social Publish
+ *   POST /v1/workflows/wf5    — WF-5 Missed Call → QA Alert + Auto-Retry
+ *   POST /v1/workflows/wf6    — WF-6 Daily Campaign Digest
+ *   POST /v1/workflows/wf7    — WF-7 Foundation Donation Pipeline
+ *   POST /v1/webhooks/donation — Inbound donation webhook (public, no auth)
+ *   GET  /v1/foundation/dashboard — Live fundraising dashboard (public, no auth)
+ *   GET  /v1/fundraising/dashboard — Fundraising overview dashboard
+ *   GET  /v1/fundraising/campaigns — List all campaigns
+ *   GET  /v1/fundraising/campaigns/:id — Get campaign details
+ *   POST /v1/fundraising/campaigns — Create new campaign
+ *   GET  /v1/fundraising/agents   — List FND division agents
+ *   GET  /v1/fundraising/agents/:id — Get single FND agent
+ *   GET  /v1/fundraising/rise     — CEO RISE Campaign details
+ *   POST /v1/social/publish       — Queue content to Buffer
+ *   GET  /v1/social/profiles      — List connected social profiles
+ *   GET  /v1/social/queue         — View scheduled posts
+ *   POST /v1/social/generate      — AI-generate social content
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -52,6 +69,9 @@ import { handleContentGenerate } from './routes/content.js';
 import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
+import { handleWf2ContentPublish, handleWf5MissedCallRetry, handleWf6DailyDigest, handleWf7DonationPipeline, handleDonationWebhook, handleFoundationDashboard } from './routes/workflows-extended.js';
+import { handleFundraisingDashboard, handleListCampaigns, handleGetCampaign, handleCreateCampaign, handleListFundraisingAgents, handleGetFundraisingAgent, handleRiseCampaign } from './routes/fundraising.js';
+import { handleSocialPublish, handleSocialProfiles, handleSocialQueue, handleSocialGenerate } from './routes/social-media.js';
 import { handlePropertySearch, handlePropertyImport, handlePropertyStats } from './routes/property-intel.js';
 import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAnalytics, handleCampaignLeadContacts, handleCampaignDashboard } from './routes/sentinel-campaign.js';
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
@@ -79,8 +99,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 250,
-          divisions: 8,
+          agents: 310,
+          divisions: 10,
           timestamp: new Date().toISOString(),
         });
       }
@@ -135,8 +155,8 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 290,
-        divisions: 9,
+        agents: 310,
+        divisions: 10,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -145,6 +165,14 @@ export default {
     // ── Public routes (no auth) ──
     if (path === '/v1/leads/public' && method === 'POST') {
       return await handlePublicLead(request, env, ctx);
+    }
+
+    if (path === '/v1/webhooks/donation' && method === 'POST') {
+      return await handleDonationWebhook(request, env, ctx);
+    }
+
+    if (path === '/v1/foundation/dashboard' && method === 'GET') {
+      return await handleFoundationDashboard(request, env);
     }
 
     // ── Auth gate ──
@@ -305,6 +333,71 @@ export default {
 
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
+      }
+
+      // ── Extended Workflows (WF-2, WF-5, WF-6, WF-7) ──
+      if (path === '/v1/workflows/wf2' && method === 'POST') {
+        return await handleWf2ContentPublish(request, env, ctx);
+      }
+
+      if (path === '/v1/workflows/wf5' && method === 'POST') {
+        return await handleWf5MissedCallRetry(request, env, ctx);
+      }
+
+      if (path === '/v1/workflows/wf6' && method === 'POST') {
+        return await handleWf6DailyDigest(request, env, ctx);
+      }
+
+      if (path === '/v1/workflows/wf7' && method === 'POST') {
+        return await handleWf7DonationPipeline(request, env, ctx);
+      }
+
+      // ── Fundraising ──
+      if (path === '/v1/fundraising/dashboard' && method === 'GET') {
+        return await handleFundraisingDashboard(env);
+      }
+
+      if (path === '/v1/fundraising/campaigns' && method === 'GET') {
+        return handleListCampaigns();
+      }
+
+      if (path === '/v1/fundraising/campaigns' && method === 'POST') {
+        return await handleCreateCampaign(request, env, ctx);
+      }
+
+      if (path === '/v1/fundraising/agents' && method === 'GET') {
+        return handleListFundraisingAgents(url);
+      }
+
+      if (path === '/v1/fundraising/rise' && method === 'GET') {
+        return await handleRiseCampaign(env);
+      }
+
+      if (path.match(/^\/v1\/fundraising\/campaigns\/[^/]+$/) && method === 'GET') {
+        const campaignId = path.split('/v1/fundraising/campaigns/')[1];
+        return handleGetCampaign(campaignId);
+      }
+
+      if (path.match(/^\/v1\/fundraising\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/fundraising/agents/')[1];
+        return handleGetFundraisingAgent(agentId);
+      }
+
+      // ── Social Media ──
+      if (path === '/v1/social/publish' && method === 'POST') {
+        return await handleSocialPublish(request, env, ctx);
+      }
+
+      if (path === '/v1/social/profiles' && method === 'GET') {
+        return handleSocialProfiles();
+      }
+
+      if (path === '/v1/social/queue' && method === 'GET') {
+        return await handleSocialQueue(url, env);
+      }
+
+      if (path === '/v1/social/generate' && method === 'POST') {
+        return await handleSocialGenerate(request, env, ctx);
       }
 
       return errorResponse('Not found', 404);

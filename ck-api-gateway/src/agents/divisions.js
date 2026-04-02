@@ -69,4 +69,11 @@ export const DIVISIONS = [
     icon: 'globe',
     description: 'Website architecture, frontend development, deployment, and domain consolidation for coastalkey-pm.com.',
   },
+  {
+    id: 'FND',
+    name: 'Fundraising',
+    color: '#fbbf24',
+    icon: 'heart',
+    description: 'Coastal Key Foundation fundraising operations, donor relations, campaign management, media creation, and international outreach.',
+  },
 ];

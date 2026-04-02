@@ -1,0 +1,154 @@
+{
+  "step": 10,
+  "name": "Atlas Step 10 — Module A Outbound Activation",
+  "status": "pending_activation",
+  "description": "Activates outbound dialing for Module A of the TH Sentinel Campaign. Once activated, calls begin immediately during permitted calling hours.",
+  "module": "A",
+  "campaign": "TH Sentinel Campaign",
+  "owner": "Tracey Merritt Hunter",
+
+  "activation_checklist": {
+    "retell_voice_profile_loaded": {
+      "status": "pending",
+      "profile": "professional_female_warm",
+      "agents": "TH-SENTINEL-001 through TH-SENTINEL-040",
+      "language": "en-US",
+      "verification": "Confirm voice profile responds correctly in test call before activation"
+    },
+    "dnc_scrub_complete": {
+      "status": "pending",
+      "provider": "DNC.com / National DNC Registry",
+      "last_scrub_date": null,
+      "records_scrubbed": 0,
+      "records_remaining": 0,
+      "compliance": ["TCPA", "TSR", "Florida DNCL"],
+      "verification": "Confirm zero flagged numbers remain in dial queue"
+    },
+    "caller_id_verified": {
+      "status": "pending",
+      "number": "772-763-8900",
+      "cnam": "Coastal Key PM",
+      "stir_shaken": true
+    },
+    "airtable_tables_ready": {
+      "status": "pending",
+      "tables": [
+        "TH Sentinel - Lead Contacts",
+        "TH Sentinel - Call Log",
+        "TH Sentinel - Agent Performance",
+        "TH Sentinel - Campaign Analytics"
+      ]
+    },
+    "webhook_endpoint_active": {
+      "status": "pending",
+      "url": "https://sentinel-webhook.<ACCOUNT>.workers.dev/webhook/retell",
+      "test_payload_sent": false
+    }
+  },
+
+  "calling_schedule": {
+    "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "start_time": "09:00",
+    "end_time": "19:00",
+    "timezone": "America/New_York",
+    "blackout_days": ["Sunday"],
+    "holidays": [
+      "2026-05-25",
+      "2026-07-04",
+      "2026-09-07"
+    ],
+    "max_hours_per_day": 10,
+    "max_days_per_week": 6
+  },
+
+  "dialing_config": {
+    "mode": "predictive",
+    "concurrent_agents": 40,
+    "calls_per_agent_per_hour": 12,
+    "max_daily_calls": 2400,
+    "ring_timeout_seconds": 30,
+    "max_call_duration_seconds": 180,
+    "voicemail_detection": true,
+    "voicemail_action": "leave_message",
+    "max_retries_per_lead": 3,
+    "retry_interval_hours": 48,
+    "abandon_rate_threshold": 0.03
+  },
+
+  "compliance": {
+    "tcpa_compliant": true,
+    "tsr_compliant": true,
+    "florida_dncl_compliant": true,
+    "prior_express_consent": "required_for_autodialer",
+    "opt_out_mechanism": "press_9_or_say_remove",
+    "call_recording_disclosure": true,
+    "time_zone_restrictions": {
+      "earliest_call": "09:00",
+      "latest_call": "19:00",
+      "timezone_lookup": "by_area_code"
+    }
+  },
+
+  "retell_config": {
+    "platform": "retell_ai",
+    "agent_prefix": "TH-SENTINEL",
+    "agent_count": 40,
+    "voice_profile": {
+      "id": "professional_female_warm",
+      "name": "Sarah (Professional Warm)",
+      "language": "en-US",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "stability": 0.75,
+      "similarity_boost": 0.8
+    },
+    "llm_config": {
+      "model": "gpt-4",
+      "temperature": 0.7,
+      "max_tokens": 500,
+      "system_prompt_file": "retell-system-prompt.txt"
+    },
+    "webhook": {
+      "url": "https://sentinel-webhook.<ACCOUNT>.workers.dev/webhook/retell",
+      "events": ["call_started", "call_ended", "call_analyzed"],
+      "secret_header": "x-retell-signature"
+    },
+    "transfer_number": "772-763-8900",
+    "fallback_number": "772-763-8900"
+  },
+
+  "target_markets": {
+    "primary": [
+      { "city": "Stuart", "state": "FL", "zip_prefix": "349" },
+      { "city": "Palm City", "state": "FL", "zip_prefix": "349" },
+      { "city": "Jensen Beach", "state": "FL", "zip_prefix": "349" },
+      { "city": "Hobe Sound", "state": "FL", "zip_prefix": "334" },
+      { "city": "Port St. Lucie", "state": "FL", "zip_prefix": "349" },
+      { "city": "Hutchinson Island", "state": "FL", "zip_prefix": "349" }
+    ],
+    "secondary": [
+      { "city": "Jupiter", "state": "FL", "zip_prefix": "334" },
+      { "city": "Tequesta", "state": "FL", "zip_prefix": "334" },
+      { "city": "Palm Beach Gardens", "state": "FL", "zip_prefix": "334" },
+      { "city": "Vero Beach", "state": "FL", "zip_prefix": "329" },
+      { "city": "Fort Pierce", "state": "FL", "zip_prefix": "349" },
+      { "city": "Sebastian", "state": "FL", "zip_prefix": "329" }
+    ]
+  },
+
+  "activation_api": {
+    "endpoint": "/v1/campaign/atlas/step10/activate",
+    "method": "POST",
+    "required_params": {
+      "confirm_voice_profile": true,
+      "confirm_dnc_scrub": true,
+      "confirm_compliance": true,
+      "operator_name": "string"
+    },
+    "response": {
+      "activated": true,
+      "activation_time": "ISO8601",
+      "first_call_window": "next valid calling hour"
+    }
+  }
+}

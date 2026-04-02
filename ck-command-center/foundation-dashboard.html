@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coastal Key Foundation — Live Fundraising Dashboard</title>
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #131829;
+      --surface2: #1a2035;
+      --border: #2a3050;
+      --text: #e2e8f0;
+      --text-muted: #8892b0;
+      --accent: #4f8fff;
+      --accent2: #7c5cfc;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --gold: #fbbf24;
+      --rose: #f43f5e;
+      --gradient: linear-gradient(135deg, #4f8fff 0%, #7c5cfc 100%);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header .subtitle {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--success);
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── Config Bar ── */
+    .config-bar {
+      background: var(--surface2);
+      padding: 0.75rem 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+    .config-bar input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      flex: 1;
+      max-width: 350px;
+    }
+    .config-bar button {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* ── Main Layout ── */
+    .main {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ── Hero Stats ── */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .hero-card.primary {
+      background: linear-gradient(135deg, rgba(79,143,255,0.15), rgba(124,92,252,0.15));
+      border-color: var(--accent);
+    }
+    .hero-card .label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .hero-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .hero-card.primary .value {
+      font-size: 2.5rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-card .change {
+      font-size: 0.75rem;
+      color: var(--success);
+      margin-top: 0.25rem;
+    }
+
+    /* ── Progress Bar ── */
+    .progress-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .progress-section h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .progress-bar-container {
+      background: var(--bg);
+      border-radius: 12px;
+      height: 32px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--gradient);
+      border-radius: 12px;
+      transition: width 1s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      min-width: 60px;
+    }
+    .progress-milestones {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .milestone {
+      text-align: center;
+    }
+    .milestone.reached {
+      color: var(--success);
+      font-weight: 600;
+    }
+    .goal-targets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .goal-target {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .goal-target .phase {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .goal-target .amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .goal-target .desc {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ── Grid Sections ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .section h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── Donor Tiers ── */
+    .tier-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .tier-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+    .tier-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .tier-range {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .tier-angel { border-left: 3px solid var(--gold); }
+    .tier-visionary { border-left: 3px solid var(--accent2); }
+    .tier-champion { border-left: 3px solid var(--accent); }
+    .tier-advocate { border-left: 3px solid var(--success); }
+    .tier-supporter { border-left: 3px solid var(--text-muted); }
+
+    /* ── Agent Grid ── */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    .agent-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+    }
+    .agent-card .agent-id {
+      font-size: 0.7rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .agent-card .agent-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 0.15rem 0;
+    }
+    .agent-card .agent-role {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .agent-status {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+    .status-active { background: rgba(16,185,129,0.15); color: var(--success); }
+
+    /* ── Recent Donations ── */
+    .donation-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .donation-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.65rem 1rem;
+    }
+    .donation-amount {
+      font-weight: 700;
+      color: var(--success);
+    }
+    .donation-name {
+      font-size: 0.85rem;
+    }
+    .donation-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Workflow Status ── */
+    .wf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.75rem;
+    }
+    .wf-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .wf-id {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .wf-name {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin: 0.25rem 0;
+    }
+    .wf-status-on {
+      display: inline-block;
+      background: rgba(16,185,129,0.15);
+      color: var(--success);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    /* ── Embeddable Widget ── */
+    .embed-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .embed-section h3 { font-size: 1rem; margin-bottom: 0.75rem; }
+    .embed-code {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .goal-targets { grid-template-columns: 1fr 1fr; }
+      .agent-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ── Header ── -->
+  <div class="header">
+    <div>
+      <h1>Coastal Key Foundation</h1>
+      <div class="subtitle">Live Fundraising Dashboard — CEO RISE Campaign</div>
+    </div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      LIVE
+    </div>
+  </div>
+
+  <!-- ── Config Bar ── -->
+  <div class="config-bar">
+    <label>Gateway URL:</label>
+    <input type="text" id="gatewayUrl" value="https://ck-api-gateway.coastalkey.workers.dev" placeholder="API Gateway URL">
+    <label>Token:</label>
+    <input type="password" id="authToken" placeholder="Bearer token">
+    <button onclick="refreshDashboard()">Refresh</button>
+  </div>
+
+  <div class="main">
+    <!-- ── Hero Stats ── -->
+    <div class="hero-stats">
+      <div class="hero-card primary">
+        <div class="label">Total Raised</div>
+        <div class="value" id="totalRaised">$0</div>
+        <div class="change" id="raisedChange">Campaign Active</div>
+      </div>
+      <div class="hero-card">
+        <div class="label">Donors</div>
+        <div class="value" id="donorCount">0</div>
+      </div>
+      <div class="hero-card">
+        <div class="label">Goal Progress</div>
+        <div class="value" id="goalProgress">0%</div>
+      </div>
+      <div class="hero-card">
+        <div class="label">FND Agents Active</div>
+        <div class="value" id="agentCount">20</div>
+      </div>
+    </div>
+
+    <!-- ── Progress Bar ── -->
+    <div class="progress-section">
+      <h2>CEO RISE Campaign Progress</h2>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar" style="width: 0%">0%</div>
+      </div>
+      <div class="progress-milestones">
+        <div class="milestone" id="m10">10% Ignition</div>
+        <div class="milestone" id="m25">25% Momentum</div>
+        <div class="milestone" id="m50">50% Halfway</div>
+        <div class="milestone" id="m75">75% Final Push</div>
+        <div class="milestone" id="m100">100% Goal!</div>
+      </div>
+      <div class="goal-targets">
+        <div class="goal-target">
+          <div class="phase">Phase 1</div>
+          <div class="amount">$15,000</div>
+          <div class="desc">Launch & Domestic</div>
+        </div>
+        <div class="goal-target">
+          <div class="phase">Phase 2</div>
+          <div class="amount">$35,000</div>
+          <div class="desc">International Travel</div>
+        </div>
+        <div class="goal-target">
+          <div class="phase">Phase 3</div>
+          <div class="amount">$75,000</div>
+          <div class="desc">Investor Summits</div>
+        </div>
+        <div class="goal-target">
+          <div class="phase">Stretch</div>
+          <div class="amount">$150,000</div>
+          <div class="desc">Global Partnerships</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Two-Column Grid ── -->
+    <div class="grid-2">
+      <!-- Donor Tiers -->
+      <div class="section">
+        <h3>Donor Tiers</h3>
+        <div class="tier-list">
+          <div class="tier-item tier-angel">
+            <div><div class="tier-name">Angel Partner</div><div class="tier-range">$5,000+</div></div>
+            <div class="tier-range">Private CEO meeting + advisory board</div>
+          </div>
+          <div class="tier-item tier-visionary">
+            <div><div class="tier-name">Visionary</div><div class="tier-range">$1,000 - $4,999</div></div>
+            <div class="tier-range">Annual gala + investor briefing</div>
+          </div>
+          <div class="tier-item tier-champion">
+            <div><div class="tier-name">Champion</div><div class="tier-range">$250 - $999</div></div>
+            <div class="tier-range">Video thank-you + Foundation wall</div>
+          </div>
+          <div class="tier-item tier-advocate">
+            <div><div class="tier-name">Advocate</div><div class="tier-range">$50 - $249</div></div>
+            <div class="tier-range">Impact report + social shoutout</div>
+          </div>
+          <div class="tier-item tier-supporter">
+            <div><div class="tier-name">Supporter</div><div class="tier-range">$1 - $49</div></div>
+            <div class="tier-range">Thank-you email + newsletter</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Donations -->
+      <div class="section">
+        <h3>Recent Donations</h3>
+        <div class="donation-list" id="recentDonations">
+          <div class="donation-item">
+            <div>
+              <div class="donation-name">Waiting for first donation...</div>
+              <div class="donation-time">Campaign is active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- FND Agent Fleet -->
+      <div class="section">
+        <h3>Fundraising Agent Fleet (FND Division)</h3>
+        <div class="agent-grid" id="agentGrid">
+          <div class="agent-card"><div class="agent-id">FND-001</div><div class="agent-name">Foundation Commander</div><div class="agent-role">Fundraising Operations Director</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-002</div><div class="agent-name">Donor Sentinel</div><div class="agent-role">Donor Pipeline Manager</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-003</div><div class="agent-name">Story Weaver</div><div class="agent-role">Campaign Narrative Creator</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-004</div><div class="agent-name">Social Amplifier</div><div class="agent-role">Social Media Fundraising</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-009</div><div class="agent-name">Media Forge</div><div class="agent-role">Fundraising Media Creator</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-010</div><div class="agent-name">International Outreach</div><div class="agent-role">Global Fundraising Coordinator</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-011</div><div class="agent-name">Angel Connector</div><div class="agent-role">Angel Investor Outreach</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-012</div><div class="agent-name">Dashboard Pulse</div><div class="agent-role">Live Dashboard Manager</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-016</div><div class="agent-name">Analytics Oracle</div><div class="agent-role">Fundraising Data Analyst</div><div class="agent-status status-active">Active</div></div>
+          <div class="agent-card"><div class="agent-id">FND-020</div><div class="agent-name">CEO Rise Strategist</div><div class="agent-role">CEO RISE Campaign Director</div><div class="agent-status status-active">Active</div></div>
+        </div>
+      </div>
+
+      <!-- Workflow Status -->
+      <div class="section">
+        <h3>Zapier Workflow Status</h3>
+        <div class="wf-grid">
+          <div class="wf-card"><div class="wf-id">WF-1</div><div class="wf-name">New Lead Battle Plan</div><div class="wf-status-on">ON</div></div>
+          <div class="wf-card"><div class="wf-id">WF-2</div><div class="wf-name">Content Publish</div><div class="wf-status-on">ON</div></div>
+          <div class="wf-card"><div class="wf-id">WF-3</div><div class="wf-name">Investor Escalation</div><div class="wf-status-on">ON</div></div>
+          <div class="wf-card"><div class="wf-id">WF-4</div><div class="wf-name">Nurture Drip</div><div class="wf-status-on">ON</div></div>
+          <div class="wf-card"><div class="wf-id">WF-5</div><div class="wf-name">Missed Call Retry</div><div class="wf-status-on">ON</div></div>
+          <div class="wf-card"><div class="wf-id">WF-6</div><div class="wf-name">Daily Digest</div><div class="wf-status-on">ON</div></div>
+          <div class="wf-card"><div class="wf-id">WF-7</div><div class="wf-name">Donation Pipeline</div><div class="wf-status-on">ON</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Embeddable Widget Code ── -->
+    <div class="embed-section">
+      <h3>Embeddable Widget — Add to coastalkey-pm.com</h3>
+      <div class="embed-code" id="embedCode">&lt;!-- Coastal Key Foundation Live Fundraising Widget --&gt;
+&lt;div id="ck-foundation-widget"&gt;&lt;/div&gt;
+&lt;script&gt;
+(function() {
+  const API = 'https://ck-api-gateway.coastalkey.workers.dev/v1/foundation/dashboard';
+  const el = document.getElementById('ck-foundation-widget');
+  fetch(API).then(r =&gt; r.json()).then(data =&gt; {
+    el.innerHTML = '&lt;div style="text-align:center;padding:2rem;"&gt;' +
+      '&lt;h3&gt;Coastal Key Foundation&lt;/h3&gt;' +
+      '&lt;p style="font-size:2rem;font-weight:700;color:#4f8fff;"&gt;$' +
+      (data.stats?.totalRaised || 0).toLocaleString() + ' Raised&lt;/p&gt;' +
+      '&lt;p&gt;' + (data.stats?.donorCount || 0) + ' Donors&lt;/p&gt;' +
+      '&lt;a href="/foundation/rise"&gt;Support the CEO RISE Campaign&lt;/a&gt;' +
+      '&lt;/div&gt;';
+  });
+})();
+&lt;/script&gt;</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Coastal Key Foundation &mdash; Powered by Coastal Key Property Management LLC &mdash; David Hauer, Owner<br>
+    Dashboard powered by ck-api-gateway + Cloudflare Workers
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    async function refreshDashboard() {
+      const url = $('gatewayUrl').value.replace(/\/$/, '');
+      const token = $('authToken').value;
+
+      try {
+        // Fetch foundation dashboard (public endpoint)
+        const res = await fetch(`${url}/v1/foundation/dashboard`);
+        const data = await res.json();
+
+        // Update hero stats
+        const raised = data.stats?.totalRaised || 0;
+        const donors = data.stats?.donorCount || 0;
+        const goal = 75000;
+        const pct = goal > 0 ? Math.min(100, (raised / goal) * 100) : 0;
+
+        $('totalRaised').textContent = '$' + raised.toLocaleString();
+        $('donorCount').textContent = donors.toLocaleString();
+        $('goalProgress').textContent = pct.toFixed(1) + '%';
+
+        // Update progress bar
+        $('progressBar').style.width = pct + '%';
+        $('progressBar').textContent = pct.toFixed(1) + '%';
+
+        // Update milestones
+        [10, 25, 50, 75, 100].forEach(m => {
+          const el = $('m' + m);
+          if (pct >= m) el.classList.add('reached');
+          else el.classList.remove('reached');
+        });
+
+        // Update last donation
+        if (data.lastDonation) {
+          $('recentDonations').innerHTML = `
+            <div class="donation-item">
+              <div>
+                <div class="donation-name">${data.lastDonation.donorName}</div>
+                <div class="donation-time">${new Date(data.lastDonation.timestamp).toLocaleString()}</div>
+              </div>
+              <div class="donation-amount">$${data.lastDonation.amount}</div>
+            </div>`;
+        }
+      } catch (err) {
+        console.error('Dashboard refresh failed:', err);
+      }
+
+      // Fetch FND agents if authenticated
+      if (token) {
+        try {
+          const agentRes = await fetch(`${url}/v1/fundraising/agents`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const agentData = await agentRes.json();
+          $('agentCount').textContent = agentData.count || 20;
+        } catch (err) {
+          console.error('Agent fetch failed:', err);
+        }
+      }
+    }
+
+    // Auto-refresh every 30 seconds
+    setInterval(refreshDashboard, 30000);
+
+    // Initial load
+    refreshDashboard();
+  </script>
+</body>
+</html>
