@@ -46,6 +46,14 @@
  *   POST /v1/delegation/briefing    — Process CEO briefing
  *   GET  /v1/delegation/agents      — List all 20 DEL agents
  *   GET  /v1/delegation/agents/:id  — Get single DEL agent
+ *   GET  /v1/upgrade/sprint         — Systems Upgrade sprint dashboard
+ *   GET  /v1/upgrade/agents         — List all 20 UPG agents
+ *   GET  /v1/upgrade/agents/:id     — Get single UPG agent
+ *   POST /v1/upgrade/execute        — Execute integration upgrade action
+ *   POST /v1/upgrade/publish        — Cross-platform publish
+ *   POST /v1/upgrade/content        — Auto-generate content for gaps
+ *   POST /v1/upgrade/enroll         — Enroll contact in Constant Contact
+ *   GET  /v1/upgrade/integrations   — Integration status for all platforms
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -65,6 +73,8 @@ import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js'
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleDelegationFleet, handleDelegationScan, handleDelegationDispatch, handleDelegationHandoff, handleDelegationBriefing, handleListDelegationAgents, handleGetDelegationAgent } from './routes/delegation.js';
+import { handleUpgradeSprint, handleListUpgradeAgents, handleGetUpgradeAgent, handleUpgradeExecute, handleUpgradePublish, handleUpgradeContent, handleUpgradeEnroll, handleUpgradeIntegrations } from './routes/upgrade.js';
+import { handleScheduledEvent } from './services/upgrade-engine.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -86,9 +96,9 @@ export default {
         return jsonResponse({
           status: 'operational',
           service: 'ck-api-gateway',
-          version: '2.0.0',
-          agents: 250,
-          divisions: 8,
+          version: '3.0.0',
+          agents: 330,
+          divisions: 11,
           timestamp: new Date().toISOString(),
         });
       }
@@ -142,9 +152,9 @@ export default {
       return jsonResponse({
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
-        version: '2.0.0',
-        agents: 310,
-        divisions: 10,
+        version: '3.0.0',
+        agents: 330,
+        divisions: 11,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -341,6 +351,40 @@ export default {
         return handleGetDelegationAgent(agentId);
       }
 
+      // ── Systems Upgrade Agents ──
+      if (path === '/v1/upgrade/sprint' && method === 'GET') {
+        return handleUpgradeSprint();
+      }
+
+      if (path === '/v1/upgrade/agents' && method === 'GET') {
+        return handleListUpgradeAgents(url);
+      }
+
+      if (path === '/v1/upgrade/integrations' && method === 'GET') {
+        return handleUpgradeIntegrations(env);
+      }
+
+      if (path === '/v1/upgrade/execute' && method === 'POST') {
+        return await handleUpgradeExecute(request, env, ctx);
+      }
+
+      if (path === '/v1/upgrade/publish' && method === 'POST') {
+        return await handleUpgradePublish(request, env, ctx);
+      }
+
+      if (path === '/v1/upgrade/content' && method === 'POST') {
+        return await handleUpgradeContent(request, env, ctx);
+      }
+
+      if (path === '/v1/upgrade/enroll' && method === 'POST') {
+        return await handleUpgradeEnroll(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/upgrade\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/upgrade/agents/')[1];
+        return handleGetUpgradeAgent(agentId);
+      }
+
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
       }
@@ -364,6 +408,23 @@ export default {
       }
 
       return errorResponse(`Internal error: ${err.message}`, 500);
+    }
+  },
+
+  /**
+   * Cloudflare Workers Cron Trigger Handler.
+   *
+   * Schedule (wrangler.toml [triggers]):
+   *   - Hourly: content scans, gap alerts, pipeline tracking, cleanup
+   *
+   * Cron dispatch logic lives in upgrade-engine.js handleScheduledEvent().
+   */
+  async scheduled(event, env, ctx) {
+    try {
+      const results = await handleScheduledEvent(env, ctx, event.scheduledTime);
+      console.log(`[CK Cron] Executed ${results.length} scheduled tasks at ${new Date(event.scheduledTime).toISOString()}`);
+    } catch (err) {
+      console.error(`[CK Cron Error] ${err.message}`);
     }
   },
 };

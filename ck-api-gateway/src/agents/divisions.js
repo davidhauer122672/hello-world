@@ -76,4 +76,11 @@ export const DIVISIONS = [
     icon: 'shield-check',
     description: 'Badge-authenticated AI Delegation Agents with enterprise-wide cross-divisional authority. Scans for gaps, dispatches tasks, executes handoffs, and drives measurable outcomes across all divisions.',
   },
+  {
+    id: 'UPG',
+    name: 'Systems Upgrade',
+    color: '#059669',
+    icon: 'arrow-up-circle',
+    description: '7-day enterprise upgrade sprint. 20 agents deploying Buffer, Twitter/X, Constant Contact, Google Calendar, Gmail, Canva, Gamma, Zapier, Google Sheets, Manus AI, Slack ops, cron triggers, and content pipelines.',
+  },
 ];

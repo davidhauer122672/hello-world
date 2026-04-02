@@ -27,8 +27,18 @@ id = "0acfb96a7aaf49bb92055c143a882506"
 binding = "AUDIT_LOG"
 id = "3d722426db4241209fd0444b42f84904"
 
+# ── Cron Triggers (UPG-013 Cron Sentinel) ──
+# Hourly check dispatches to the correct scan based on UTC hour + day
+[triggers]
+crons = ["0 * * * *"]
+
 # ── Secrets (set via dashboard or `wrangler secret put`) ──
 # ANTHROPIC_API_KEY        — Anthropic console API key
 # AIRTABLE_API_KEY         — Airtable personal access token
 # WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Zapier)
 # SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications
+# BUFFER_ACCESS_TOKEN       — Buffer API access token for cross-platform publishing
+# TWITTER_BEARER_TOKEN      — Twitter/X API v2 bearer token for direct posting
+# TWITTER_API_KEY           — Twitter/X API key for OAuth
+# CONSTANT_CONTACT_API_KEY  — Constant Contact API key
+# CONSTANT_CONTACT_TOKEN    — Constant Contact OAuth token

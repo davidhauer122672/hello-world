@@ -131,6 +131,131 @@ export const SCAA1_BATTLE_PLAN = {
  *
  * @type {Object.<string, {name: string, purpose: string}>}
  */
+/**
+ * DEL-OPS — Delegation Ops Status Change Triggers
+ *
+ * Fires when a Delegation Ops record's Status field changes.
+ * Routes: Dispatched → execute, Completed → handoff, Failed → escalate.
+ *
+ * @type {TriggerConfig}
+ */
+export const DEL_OPS_DISPATCH = {
+  id: 'del-ops-dispatch',
+  description: 'Auto-execute dispatched delegation tasks',
+  trigger: {
+    type: 'fieldChange',
+    table: 'Delegation Ops',
+    field: 'Status',
+  },
+  conditions: {
+    status: {
+      matchValues: ['Dispatched'],
+    },
+  },
+  action: {
+    method: 'POST',
+    endpoint: '/v1/delegation/dispatch',
+    payload: {
+      agentId: '{{record.Agent ID}}',
+      taskName: '{{record.Task Name}}',
+      taskContext: '{{record.CEO Prompt}}',
+      executeNow: true,
+    },
+  },
+  slack_channel: '#delegation-ops',
+};
+
+export const DEL_OPS_HANDOFF = {
+  id: 'del-ops-handoff',
+  description: 'Auto-handoff completed delegation tasks to target division',
+  trigger: {
+    type: 'fieldChange',
+    table: 'Delegation Ops',
+    field: 'Status',
+  },
+  conditions: {
+    status: {
+      matchValues: ['Completed'],
+    },
+    targetDivision: {
+      not: 'DEL',
+    },
+  },
+  action: {
+    method: 'POST',
+    endpoint: '/v1/delegation/handoff',
+    payload: {
+      fromAgentId: '{{record.Agent ID}}',
+      toAgentId: '{{record.Handoff To}}',
+      taskContext: '{{record.Scan Results}}',
+      handoffInstructions: '{{record.Task Name}}',
+    },
+  },
+  slack_channel: '#delegation-ops',
+};
+
+export const DEL_OPS_ESCALATION = {
+  id: 'del-ops-escalation',
+  description: 'Escalate failed delegation tasks to DEL-001 Oversight Prime',
+  trigger: {
+    type: 'fieldChange',
+    table: 'Delegation Ops',
+    field: 'Status',
+  },
+  conditions: {
+    status: {
+      matchValues: ['Failed'],
+    },
+  },
+  action: {
+    method: 'POST',
+    endpoint: '/v1/delegation/dispatch',
+    payload: {
+      agentId: 'DEL-001',
+      taskName: 'ESCALATION: {{record.Task Name}}',
+      taskContext: 'FAILED TASK ESCALATION — Original Agent: {{record.Agent ID}} — Error: {{record.Scan Results}}',
+      priority: 'Critical',
+      executeNow: true,
+    },
+  },
+  slack_channel: '#delegation-ops',
+  sla: '1 hour',
+};
+
+/**
+ * UPG-OPS — Systems Upgrade Status Triggers
+ *
+ * Fires when upgrade tasks complete, routing to integration-specific actions.
+ *
+ * @type {TriggerConfig}
+ */
+export const UPG_CONTENT_PUBLISH = {
+  id: 'upg-content-auto-publish',
+  description: 'Auto-publish Scheduled content via Buffer when status changes to Scheduled',
+  trigger: {
+    type: 'fieldChange',
+    table: 'Content Calendar',
+    field: 'Status',
+  },
+  conditions: {
+    status: {
+      matchValues: ['Scheduled'],
+    },
+    source: {
+      includes: 'AI Generated',
+    },
+  },
+  action: {
+    method: 'POST',
+    endpoint: '/v1/upgrade/publish',
+    payload: {
+      contentRecordId: '{{record.id}}',
+      platforms: ['instagram', 'facebook', 'linkedin', 'twitter'],
+    },
+  },
+  slack_channel: '#delegation-ops',
+};
+
 export const SLACK_CHANNELS = {
   SALES_ALERTS: {
     name: '#sales-alerts',
@@ -147,5 +272,9 @@ export const SLACK_CHANNELS = {
   GENERAL: {
     name: '#general',
     purpose: 'System-wide announcements and status updates',
+  },
+  DELEGATION_OPS: {
+    name: '#delegation-ops',
+    purpose: 'Real-time AI Delegation Agent dispatch alerts, handoffs, escalations, and upgrade sprint notifications',
   },
 };
