@@ -15,7 +15,8 @@
  *   VEN  Vendor Management   — 25 agents
  *   TEC  Technology          — 25 agents
  *   WEB  Website Development — 40 agents
- *                       Total: 290 agents
+ *   SEC  Sovereign Shield   — 25 agents
+ *                       Total: 315 agents
  */
 
 import { DIVISIONS } from './divisions.js';
@@ -28,6 +29,7 @@ import { FIN_AGENTS } from './agents-fin.js';
 import { VEN_AGENTS } from './agents-ven.js';
 import { TEC_AGENTS } from './agents-tec.js';
 import { WEB_AGENTS } from './agents-web.js';
+import { SEC_AGENTS } from './agents-sec.js';
 
 // ── Merged agent list ───────────────────────────────────────────────────────
 
@@ -41,6 +43,7 @@ export const AGENTS = [
   ...VEN_AGENTS,
   ...TEC_AGENTS,
   ...WEB_AGENTS,
+  ...SEC_AGENTS,
 ];
 
 // Re-export divisions so consumers only need one import path

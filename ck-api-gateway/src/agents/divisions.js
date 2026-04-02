@@ -69,4 +69,11 @@ export const DIVISIONS = [
     icon: 'globe',
     description: 'Website architecture, frontend development, deployment, and domain consolidation for coastalkey-pm.com.',
   },
+  {
+    id: 'SEC',
+    name: 'Sovereign Shield',
+    color: '#dc2626',
+    icon: 'shield-check',
+    description: 'Enterprise security operations: API protection, middleware hardening, cloud governance, threat detection, compliance, and incident response.',
+  },
 ];

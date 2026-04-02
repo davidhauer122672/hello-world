@@ -46,12 +46,18 @@
  *   POST /v1/sentinel/investor-flag       — Evaluate and set investor flag
  *   GET  /v1/sentinel/kpis               — Live KPI snapshot vs targets
  *   POST /v1/sentinel/go-live            — Authorize Step 10 activation
+ *   GET  /v1/security/dashboard        — Sovereign Shield security posture
+ *   GET  /v1/security/events           — Recent security events
+ *   POST /v1/security/scan             — On-demand payload/URL security scan
+ *   GET  /v1/security/compliance       — Compliance status across all vectors
+ *   POST /v1/security/incident         — Report a security incident
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
 
 import { authenticate } from './middleware/auth.js';
 import { rateLimit } from './middleware/rate-limit.js';
+import { securityInspect, hardenResponse } from './middleware/security.js';
 import { handleInference } from './routes/inference.js';
 import { handleCreateLead, handleGetLead, handleEnrichLead, handlePublicLead } from './routes/leads.js';
 import { handleRetellWebhook } from './routes/retell.js';
@@ -65,6 +71,7 @@ import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js'
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleSentinelDeployment, handleResolveBlocker, handleSentinelSequence, handleSequenceAdvance, handleInvestorFlagEvaluate, handleSentinelKpis, handleSentinelGoLive } from './routes/project-sentinel.js';
+import { handleSecurityDashboard, handleSecurityEvents, handleSecurityScan, handleSecurityCompliance, handleSecurityIncident } from './routes/security-ops.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -162,6 +169,10 @@ export default {
     // ── Rate limit ──
     const rateLimitError = await rateLimit(request, env);
     if (rateLimitError) return rateLimitError;
+
+    // ── Sovereign Shield security inspection ──
+    const securityError = await securityInspect(request, env, ctx);
+    if (securityError) return hardenResponse(securityError);
 
     try {
       // ── Route dispatch ──
@@ -342,6 +353,27 @@ export default {
 
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
+      }
+
+      // ── Sovereign Shield Security Operations ──
+      if (path === '/v1/security/dashboard' && method === 'GET') {
+        return await handleSecurityDashboard(env);
+      }
+
+      if (path === '/v1/security/events' && method === 'GET') {
+        return await handleSecurityEvents(url, env);
+      }
+
+      if (path === '/v1/security/scan' && method === 'POST') {
+        return await handleSecurityScan(request, env, ctx);
+      }
+
+      if (path === '/v1/security/compliance' && method === 'GET') {
+        return handleSecurityCompliance();
+      }
+
+      if (path === '/v1/security/incident' && method === 'POST') {
+        return await handleSecurityIncident(request, env, ctx);
       }
 
       return errorResponse('Not found', 404);
