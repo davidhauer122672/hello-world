@@ -51,3 +51,38 @@ export const getPricingZones = () => apiCall('/v1/pricing/zones');
 // ── Audit ────────────────────────────────────────────────────────────────────
 export const fetchAuditLog = (limit = 50) =>
   apiCall(`/v1/audit?limit=${limit}`);
+
+// ── Project Sentinel ────────────────────────────────────────────────────────
+export const fetchSentinelDeployment = () => apiCall('/v1/sentinel/deployment');
+export const resolveSentinelBlocker = (data) =>
+  apiCall('/v1/sentinel/deployment/blocker', { method: 'POST', body: JSON.stringify(data) });
+export const fetchSentinelSequence = () => apiCall('/v1/sentinel/sequence');
+export const advanceSentinelSequence = (data) =>
+  apiCall('/v1/sentinel/sequence/advance', { method: 'POST', body: JSON.stringify(data) });
+export const evaluateInvestorFlag = (data) =>
+  apiCall('/v1/sentinel/investor-flag', { method: 'POST', body: JSON.stringify(data) });
+export const fetchSentinelKpis = () => apiCall('/v1/sentinel/kpis');
+export const activateSentinelGoLive = (data) =>
+  apiCall('/v1/sentinel/go-live', { method: 'POST', body: JSON.stringify(data) });
+
+// ── Sovereign Shield Security ───────────────────────────────────────────────
+export const fetchSecurityDashboard = () => apiCall('/v1/security/dashboard');
+export const fetchSecurityEvents = (severity = 'critical', limit = 50) =>
+  apiCall(`/v1/security/events?severity=${severity}&limit=${limit}`);
+export const runSecurityScan = (data) =>
+  apiCall('/v1/security/scan', { method: 'POST', body: JSON.stringify(data) });
+export const fetchSecurityCompliance = () => apiCall('/v1/security/compliance');
+export const reportSecurityIncident = (data) =>
+  apiCall('/v1/security/incident', { method: 'POST', body: JSON.stringify(data) });
+
+// ── Campaign ────────────────────────────────────────────────────────────────
+export const fetchCampaignDashboard = () => apiCall('/v1/campaign/dashboard');
+export const fetchCampaignCalls = (params = {}) => {
+  const qs = new URLSearchParams(params).toString();
+  return apiCall(`/v1/campaign/calls${qs ? '?' + qs : ''}`);
+};
+export const fetchCampaignAgents = () => apiCall('/v1/campaign/agents');
+export const fetchCampaignAnalytics = (params = {}) => {
+  const qs = new URLSearchParams(params).toString();
+  return apiCall(`/v1/campaign/analytics${qs ? '?' + qs : ''}`);
+};
