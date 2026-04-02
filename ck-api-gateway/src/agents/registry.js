@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Agent Registry
  *
- * Central registry for all 350 AI agents across 12 divisions.
+ * Central registry for all 396 AI agents across 13 divisions.
  * Exports the AGENTS array, DIVISIONS array, and lookup functions
  * consumed by routes/agents.js and the Command Center dashboard.
  *
@@ -18,7 +18,8 @@
  *   DEL  AI Delegation          — 20 agents
  *   UPG  Systems Upgrade        — 20 agents
  *   ENF  Enterprise Reinforcement — 20 agents
- *                          Total: 350 agents
+ *   CFP  Cash Flow Production   — 46 agents
+ *                          Total: 396 agents
  */
 
 import { DIVISIONS } from './divisions.js';
@@ -34,6 +35,7 @@ import { WEB_AGENTS } from './agents-web.js';
 import { DEL_AGENTS } from './agents-del.js';
 import { UPG_AGENTS } from './agents-upg.js';
 import { ENF_AGENTS } from './agents-enf.js';
+import { CFP_AGENTS } from './agents-cfp.js';
 
 // ── Merged agent list ───────────────────────────────────────────────────────
 
@@ -50,6 +52,7 @@ export const AGENTS = [
   ...DEL_AGENTS,
   ...UPG_AGENTS,
   ...ENF_AGENTS,
+  ...CFP_AGENTS,
 ];
 
 // Re-export divisions so consumers only need one import path

@@ -90,4 +90,11 @@ export const DIVISIONS = [
     icon: 'shield-exclamation',
     description: 'Perpetual structural operations. 20 agents reinforcing the 7 pillars of Fortune 500 enterprise scaling: standardization, codified processes, capital allocation, data-driven automation, talent pipelines, risk frameworks, brand consistency. No end date. No finish line.',
   },
+  {
+    id: 'CFP',
+    name: 'Cash Flow Production',
+    color: '#15803d',
+    icon: 'banknotes',
+    description: '46 agents across 9 specialized squads producing cash flow. AI architects, engineers, survey engineers, project managers, construction executives, superintendents, data crunchers, intel gatherers, and integration specialists. Every output advances revenue.',
+  },
 ];

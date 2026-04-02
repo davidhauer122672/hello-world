@@ -67,6 +67,13 @@
  *   GET  /v1/reinforcement/agents    — List all 20 ENF agents
  *   GET  /v1/reinforcement/agents/:id— Get single ENF agent
  *   GET  /v1/reinforcement/pillars   — List all 10 pillars
+ *   GET  /v1/cashflow/dashboard      — Cash Flow Production dashboard
+ *   POST /v1/cashflow/scan           — Full cash flow health scan
+ *   POST /v1/cashflow/squad          — Execute squad-specific action
+ *   POST /v1/cashflow/revenue        — Revenue opportunity scan
+ *   GET  /v1/cashflow/metrics        — Enterprise metrics summary
+ *   GET  /v1/cashflow/agents         — List all 46 CFP agents
+ *   GET  /v1/cashflow/agents/:id     — Get single CFP agent
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -89,6 +96,7 @@ import { handleDelegationFleet, handleDelegationScan, handleDelegationDispatch, 
 import { handleUpgradeSprint, handleListUpgradeAgents, handleGetUpgradeAgent, handleUpgradeExecute, handleUpgradePublish, handleUpgradeContent, handleUpgradeEnroll, handleUpgradeIntegrations } from './routes/upgrade.js';
 import { handleOrchestratorDashboard, handleOrchestratorHealth, handleOrchestratorEscalation, handleOrchestratorSystem, handleOrchestratorHierarchy, handleOrchestratorSystems } from './routes/orchestrator.js';
 import { handleReinforcementDashboard, handleReinforcementScan, handleReinforcementPillar, handleReinforcementCycle, handleListReinforcementAgents, handleGetReinforcementAgent, handleReinforcementPillars } from './routes/reinforcement.js';
+import { handleCashFlowDashboard, handleCashFlowScan, handleCashFlowSquad, handleCashFlowRevenue, handleCashFlowMetrics, handleListCashFlowAgents, handleGetCashFlowAgent } from './routes/cashflow.js';
 import { handleScheduledEvent } from './services/upgrade-engine.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -112,8 +120,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '3.0.0',
-          agents: 350,
-          divisions: 12,
+          agents: 396,
+          divisions: 13,
           timestamp: new Date().toISOString(),
         });
       }
@@ -167,9 +175,9 @@ export default {
       return jsonResponse({
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
-        version: '3.1.0',
-        agents: 350,
-        divisions: 12,
+        version: '3.2.0',
+        agents: 396,
+        divisions: 13,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -453,6 +461,36 @@ export default {
       if (path.match(/^\/v1\/reinforcement\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/reinforcement/agents/')[1];
         return handleGetReinforcementAgent(agentId);
+      }
+
+      // ── Cash Flow Production (46 agents, 9 squads) ──
+      if (path === '/v1/cashflow/dashboard' && method === 'GET') {
+        return handleCashFlowDashboard();
+      }
+
+      if (path === '/v1/cashflow/scan' && method === 'POST') {
+        return await handleCashFlowScan(request, env, ctx);
+      }
+
+      if (path === '/v1/cashflow/squad' && method === 'POST') {
+        return await handleCashFlowSquad(request, env, ctx);
+      }
+
+      if (path === '/v1/cashflow/revenue' && method === 'POST') {
+        return await handleCashFlowRevenue(request, env, ctx);
+      }
+
+      if (path === '/v1/cashflow/metrics' && method === 'GET') {
+        return await handleCashFlowMetrics(env);
+      }
+
+      if (path === '/v1/cashflow/agents' && method === 'GET') {
+        return handleListCashFlowAgents(url);
+      }
+
+      if (path.match(/^\/v1\/cashflow\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/cashflow/agents/')[1];
+        return handleGetCashFlowAgent(agentId);
       }
 
       if (path === '/v1/audit' && method === 'GET') {
