@@ -2,8 +2,22 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 
+// ─── Service Worker Registration ─────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((reg) => {
+        console.log('SW registered:', reg.scope);
+      })
+      .catch((err) => {
+        console.warn('SW registration failed:', err);
+      });
+  });
+}
+
+// ─── Splash Screen ───────────────────────────────────────────────────
 function SplashScreen({ onFinish }) {
-  const [phase, setPhase] = useState(0); // 0=enter, 1=hold, 2=exit
+  const [phase, setPhase] = useState(0);
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 200);
@@ -16,13 +30,17 @@ function SplashScreen({ onFinish }) {
   const exiting = phase === 2;
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 9999,
-      background: 'radial-gradient(ellipse at 50% 40%, #12243d 0%, #0a1628 70%)',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      opacity: exiting ? 0 : 1,
-      transition: 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}>
+    <div
+      role="presentation"
+      aria-label="Loading Tracey Hunter Group"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'radial-gradient(ellipse at 50% 40%, #12243d 0%, #0a1628 70%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        opacity: exiting ? 0 : 1,
+        transition: 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+    >
       {/* Ambient glow */}
       <div style={{
         position: 'absolute', top: '35%', left: '50%', width: 300, height: 300,
@@ -91,6 +109,7 @@ function SplashScreen({ onFinish }) {
   );
 }
 
+// ─── Root ────────────────────────────────────────────────────────────
 function Root() {
   const [showSplash, setShowSplash] = useState(true);
   const handleFinish = useCallback(() => setShowSplash(false), []);
