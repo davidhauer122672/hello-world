@@ -14,9 +14,12 @@
     "deploy:gateway": "cd ck-api-gateway && npm run deploy",
     "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
     "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
-    "test": "npm run test:gateway && npm run test:sentinel",
+    "test": "npm run test:gateway && npm run test:sentinel && npm run test:domain && npm run test:smoke",
     "test:gateway": "cd ck-api-gateway && npm test",
-    "test:sentinel": "cd sentinel-webhook && npm test"
+    "test:sentinel": "cd sentinel-webhook && npm test",
+    "test:domain": "node --test tests/domain-validation.test.js",
+    "test:smoke": "node --test tests/app-smoke.test.js",
+    "test:domain:live": "LIVE_DOMAIN_TEST=1 node --test tests/domain-validation.test.js"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"
