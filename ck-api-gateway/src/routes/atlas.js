@@ -1,185 +1,179 @@
 /**
- * Atlas Routes — MongoDB Atlas Data API endpoints
+ * Atlas Routes — youratlas.com AI Campaign Platform API proxy endpoints
  *
  * Routes:
- *   GET  /v1/atlas/transcripts         — Search call transcripts
- *   GET  /v1/atlas/transcripts/:callId — Get single transcript
- *   GET  /v1/atlas/analytics           — Get call analytics for date range
- *   POST /v1/atlas/analytics           — Store daily analytics snapshot
- *   GET  /v1/atlas/agents/:id/history  — Get agent performance history
- *   POST /v1/atlas/prompts             — Store new prompt version
- *   GET  /v1/atlas/prompts/active      — Get active prompt version
- *   GET  /v1/atlas/properties          — Search property intelligence
- *   GET  /v1/atlas/health              — Atlas connectivity check
+ *   GET  /v1/atlas/campaigns              — List all Atlas campaigns
+ *   GET  /v1/atlas/campaigns/:id          — Get single campaign
+ *   PUT  /v1/atlas/campaigns/:id/status   — Set campaign status (active/paused)
+ *   GET  /v1/atlas/statistics              — Overview stats across all campaigns
+ *   GET  /v1/atlas/campaigns/:id/stats    — Stats for a specific campaign
+ *   GET  /v1/atlas/campaigns/:id/calls    — Call records for a campaign
+ *   GET  /v1/atlas/campaigns/:id/calls/:callId — Single call record detail
+ *   POST /v1/atlas/campaigns/:id/schedule — Schedule a new call
+ *   GET  /v1/atlas/campaigns/:id/bookings — Bookings for a campaign
+ *   GET  /v1/atlas/kb/files               — List all knowledge base files
+ *   POST /v1/atlas/speed-to-lead          — Trigger speed-to-lead call for new lead
+ *   GET  /v1/atlas/health                 — Atlas API connectivity check
  */
 
 import {
-  searchTranscripts,
-  getTranscript,
-  getAnalytics,
-  storeDailyAnalytics,
-  storeAgentSnapshot,
-  storePromptVersion,
-  getActivePrompt,
-  searchProperties,
+  listCampaigns,
+  getCampaign,
+  setCampaignStatus,
+  getCampaignsOverviewStats,
+  getCampaignStats,
+  getCallRecords,
+  getCallRecordDetail,
+  createScheduledCall,
+  getCampaignBookings,
+  listKnowledgeBaseFiles,
+  triggerSpeedToLead,
   atlasRequest,
-  DATABASES,
-  COLLECTIONS,
 } from '../services/atlas.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 import { writeAudit } from '../utils/audit.js';
 
-export async function handleAtlasTranscripts(url, env) {
-  const filters = {
-    agent_id: url.searchParams.get('agent_id'),
-    campaign: url.searchParams.get('campaign'),
-    disposition: url.searchParams.get('disposition'),
-    service_zone: url.searchParams.get('service_zone'),
-    since: url.searchParams.get('since'),
-  };
+// ── Campaign Management ──
 
-  // Remove null filters
-  Object.keys(filters).forEach(k => { if (!filters[k]) delete filters[k]; });
-
-  const limit = parseInt(url.searchParams.get('limit') || '50', 10);
-  const result = await searchTranscripts(env, filters, limit);
-
-  return jsonResponse({
-    success: true,
-    count: result.documents?.length || 0,
-    transcripts: result.documents || [],
-  });
+export async function handleAtlasCampaigns(env) {
+  const result = await listCampaigns(env);
+  return jsonResponse({ success: true, campaigns: result });
 }
 
-export async function handleAtlasTranscriptById(callId, env) {
-  const result = await getTranscript(env, callId);
+export async function handleAtlasCampaignById(campaignId, env) {
+  const result = await getCampaign(env, campaignId);
+  return jsonResponse({ success: true, campaign: result });
+}
 
-  if (!result.document) {
-    return errorResponse(`Transcript not found for call_id: ${callId}`, 404);
+export async function handleAtlasCampaignStatus(request, campaignId, env, ctx) {
+  const body = await request.json();
+  if (!body.status) {
+    return errorResponse('status is required (e.g. "active", "paused")', 400);
   }
 
-  return jsonResponse({
-    success: true,
-    transcript: result.document,
-  });
-}
+  const result = await setCampaignStatus(env, campaignId, body.status);
 
-export async function handleAtlasAnalyticsGet(url, env) {
-  const startDate = url.searchParams.get('start') || new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
-  const endDate = url.searchParams.get('end') || new Date().toISOString().split('T')[0];
-  const campaign = url.searchParams.get('campaign') || 'th-sentinel';
-
-  const result = await getAnalytics(env, startDate, endDate, campaign);
-
-  return jsonResponse({
-    success: true,
-    period: { start: startDate, end: endDate },
-    campaign,
-    count: result.documents?.length || 0,
-    analytics: result.documents || [],
-  });
-}
-
-export async function handleAtlasAnalyticsStore(request, env, ctx) {
-  const body = await request.json();
-  const result = await storeDailyAnalytics(env, body);
-
-  writeAudit(env, ctx, { route: '/v1/atlas/analytics', action: 'store_analytics', date: body.date });
-
-  return jsonResponse({ success: true, inserted_id: result.insertedId });
-}
-
-export async function handleAtlasAgentHistory(agentId, url, env) {
-  const since = url.searchParams.get('since') || new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
-
-  const result = await atlasRequest(env, 'find', DATABASES.OPERATIONS, COLLECTIONS.AGENT_PERFORMANCE_HISTORY, {
-    filter: {
-      agent_id: agentId,
-      date: { $gte: { $date: new Date(since).toISOString() } },
-    },
-    sort: { date: -1 },
-    limit: 90,
+  writeAudit(env, ctx, {
+    route: '/v1/atlas/campaigns/:id/status',
+    action: 'set_campaign_status',
+    campaignId,
+    status: body.status,
   });
 
-  return jsonResponse({
-    success: true,
-    agent_id: agentId,
-    since,
-    count: result.documents?.length || 0,
-    history: result.documents || [],
-  });
+  return jsonResponse({ success: true, result });
 }
 
-export async function handleAtlasPromptStore(request, env, ctx) {
+// ── Statistics ──
+
+export async function handleAtlasOverviewStats(env) {
+  const result = await getCampaignsOverviewStats(env);
+  return jsonResponse({ success: true, statistics: result });
+}
+
+export async function handleAtlasCampaignStatsById(campaignId, env) {
+  const result = await getCampaignStats(env, campaignId);
+  return jsonResponse({ success: true, campaign_id: campaignId, statistics: result });
+}
+
+// ── Call Records ──
+
+export async function handleAtlasCallRecords(campaignId, url, env) {
+  const queryParams = {};
+  if (url.searchParams.get('limit')) queryParams.limit = url.searchParams.get('limit');
+  if (url.searchParams.get('offset')) queryParams.offset = url.searchParams.get('offset');
+
+  const result = await getCallRecords(env, campaignId, Object.keys(queryParams).length ? queryParams : null);
+  return jsonResponse({ success: true, campaign_id: campaignId, call_records: result });
+}
+
+export async function handleAtlasCallRecordDetail(campaignId, callId, env) {
+  const result = await getCallRecordDetail(env, campaignId, callId);
+  return jsonResponse({ success: true, campaign_id: campaignId, call_id: callId, record: result });
+}
+
+// ── Scheduled Calls ──
+
+export async function handleAtlasScheduleCall(request, campaignId, env, ctx) {
   const body = await request.json();
 
-  if (!body.version || !body.prompt_text) {
-    return errorResponse('version and prompt_text are required', 400);
+  if (!body.phone_number) {
+    return errorResponse('phone_number is required', 400);
   }
 
-  const result = await storePromptVersion(env, body);
+  const result = await createScheduledCall(env, campaignId, body);
 
-  writeAudit(env, ctx, { route: '/v1/atlas/prompts', action: 'store_prompt', version: body.version });
-
-  return jsonResponse({ success: true, inserted_id: result.insertedId });
-}
-
-export async function handleAtlasActivePrompt(url, env) {
-  const campaign = url.searchParams.get('campaign') || 'th-sentinel';
-  const result = await getActivePrompt(env, campaign);
-
-  return jsonResponse({
-    success: true,
-    campaign,
-    prompt: result.document || null,
+  writeAudit(env, ctx, {
+    route: '/v1/atlas/campaigns/:id/schedule',
+    action: 'schedule_call',
+    campaignId,
+    phone: body.phone_number,
   });
+
+  return jsonResponse({ success: true, scheduled: result });
 }
 
-export async function handleAtlasProperties(url, env) {
-  const filters = {
-    service_zone: url.searchParams.get('zone'),
-    property_type: url.searchParams.get('type'),
-    is_absentee: url.searchParams.get('absentee') === 'true' ? true : undefined,
-    min_value: url.searchParams.get('min_value') ? parseInt(url.searchParams.get('min_value'), 10) : undefined,
-    city: url.searchParams.get('city'),
-  };
+// ── Bookings ──
 
-  Object.keys(filters).forEach(k => { if (filters[k] === undefined) delete filters[k]; });
+export async function handleAtlasCampaignBookings(campaignId, env) {
+  const result = await getCampaignBookings(env, campaignId);
+  return jsonResponse({ success: true, campaign_id: campaignId, bookings: result });
+}
 
-  const limit = parseInt(url.searchParams.get('limit') || '100', 10);
-  const result = await searchProperties(env, filters, limit);
+// ── Knowledge Base ──
 
-  return jsonResponse({
-    success: true,
-    count: result.documents?.length || 0,
-    properties: result.documents || [],
+export async function handleAtlasKBFiles(env) {
+  const result = await listKnowledgeBaseFiles(env);
+  return jsonResponse({ success: true, files: result });
+}
+
+// ── Speed-to-Lead ──
+
+export async function handleAtlasSpeedToLead(request, env, ctx) {
+  const body = await request.json();
+
+  if (!body.campaign_id || !body.phone_number) {
+    return errorResponse('campaign_id and phone_number are required', 400);
+  }
+
+  const result = await triggerSpeedToLead(env, body.campaign_id, body);
+
+  writeAudit(env, ctx, {
+    route: '/v1/atlas/speed-to-lead',
+    action: 'speed_to_lead_triggered',
+    campaignId: body.campaign_id,
+    phone: body.phone_number,
+    lead_source: body.lead_source || 'api',
   });
+
+  return jsonResponse({ success: true, triggered: result });
 }
+
+// ── Health Check ──
 
 export async function handleAtlasHealth(env) {
-  if (!env.ATLAS_DATA_API_URL || !env.ATLAS_DATA_API_KEY) {
+  if (!env.ATLAS_API_KEY) {
     return jsonResponse({
       status: 'not_configured',
-      message: 'Atlas Data API credentials not set. Configure ATLAS_DATA_API_URL and ATLAS_DATA_API_KEY.',
+      platform: 'Atlas AI (youratlas.com)',
+      message: 'ATLAS_API_KEY not set. Configure via wrangler secret put ATLAS_API_KEY.',
     });
   }
 
   try {
-    // Lightweight connectivity test
-    await atlasRequest(env, 'find', DATABASES.AI_OPS, COLLECTIONS.AUDIT_TRAIL, {
-      filter: {},
-      limit: 1,
-    });
+    const campaigns = await listCampaigns(env);
+    const campaignCount = Array.isArray(campaigns) ? campaigns.length : (campaigns?.data?.length || 0);
 
     return jsonResponse({
       status: 'operational',
-      cluster: env.ATLAS_CLUSTER_NAME || 'ckpm-production',
-      databases: ['ckpm_operations', 'ckpm_property_intel', 'ckpm_ai_ops'],
+      platform: 'Atlas AI (youratlas.com)',
+      dashboard: 'https://app.youratlas.com/dashboard/campaigns',
+      campaigns_found: campaignCount,
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
     return jsonResponse({
       status: 'error',
+      platform: 'Atlas AI (youratlas.com)',
       message: err.message,
       timestamp: new Date().toISOString(),
     }, 503);

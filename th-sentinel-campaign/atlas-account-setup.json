@@ -1,395 +1,318 @@
 {
   "atlas_account": {
+    "platform": "Atlas AI (youratlas.com)",
+    "dashboard_url": "https://app.youratlas.com/dashboard/campaigns",
+    "api_base_url": "https://api.youratlas.com/v1/api",
+    "api_docs_url": "https://apidocs.youratlas.com",
     "organization": "Coastal Key Property Management",
-    "project_name": "CKPM-Enterprise-AI",
-    "billing_entity": "Tracey Hunter Group — RE/MAX of Stuart",
     "primary_contact": "Tracey Merritt Hunter",
-    "email": "tracey@traceyhuntergroup.com"
+    "email": "tracey@traceyhuntergroup.com",
+    "billing_entity": "Tracey Hunter Group — RE/MAX of Stuart",
+    "account_type": "Business"
   },
-  "cluster": {
-    "name": "ckpm-production",
-    "provider": "AWS",
-    "region": "us-east-1",
-    "tier": "M10",
-    "version": "7.0",
-    "backup": {
-      "enabled": true,
-      "frequency": "daily",
-      "retention_days": 30,
-      "point_in_time_recovery": true
-    },
-    "scaling": {
-      "auto_scaling": true,
-      "min_instance_size": "M10",
-      "max_instance_size": "M30",
-      "disk_auto_scaling": true
-    }
-  },
-  "databases": {
-    "ckpm_operations": {
-      "description": "Core operational data — call transcripts, analytics, ML training sets",
-      "collections": {
-        "call_transcripts": {
-          "description": "Full Retell call transcripts with metadata for analysis and prompt tuning",
-          "schema": {
-            "call_id": { "type": "string", "indexed": true, "unique": true },
-            "agent_id": { "type": "string", "indexed": true },
-            "agent_name": { "type": "string" },
-            "campaign": { "type": "string", "indexed": true },
-            "phone_number": { "type": "string", "indexed": true },
-            "contact_name": { "type": "string" },
-            "direction": { "type": "string", "enum": ["inbound", "outbound"] },
-            "start_timestamp": { "type": "date", "indexed": true },
-            "end_timestamp": { "type": "date" },
-            "duration_seconds": { "type": "number" },
-            "disconnection_reason": { "type": "string", "indexed": true },
-            "disposition": { "type": "string", "indexed": true },
-            "transcript_raw": { "type": "array", "items": { "role": "string", "content": "string", "timestamp": "number" } },
-            "transcript_text": { "type": "string" },
-            "service_zone": { "type": "string", "indexed": true },
-            "sentinel_segment": { "type": "string", "indexed": true },
-            "property_address": { "type": "string" },
-            "dynamic_variables": { "type": "object" },
-            "metadata": { "type": "object" },
-            "quality_score": { "type": "number" },
-            "airtable_lead_id": { "type": "string" },
-            "airtable_call_log_id": { "type": "string" },
-            "created_at": { "type": "date", "default": "now" }
-          },
-          "indexes": [
-            { "keys": { "call_id": 1 }, "unique": true },
-            { "keys": { "agent_id": 1, "start_timestamp": -1 } },
-            { "keys": { "campaign": 1, "start_timestamp": -1 } },
-            { "keys": { "disposition": 1, "service_zone": 1 } },
-            { "keys": { "disconnection_reason": 1, "created_at": -1 } },
-            { "keys": { "transcript_text": "text" }, "name": "transcript_fulltext" }
-          ],
-          "ttl": null
-        },
-        "call_analytics": {
-          "description": "Aggregated call metrics for dashboards and trend analysis",
-          "schema": {
-            "date": { "type": "date", "indexed": true },
-            "campaign": { "type": "string", "indexed": true },
-            "agent_id": { "type": "string", "indexed": true },
-            "service_zone": { "type": "string" },
-            "total_calls": { "type": "number" },
-            "connections": { "type": "number" },
-            "qualified_leads": { "type": "number" },
-            "transfers": { "type": "number" },
-            "appointments": { "type": "number" },
-            "avg_duration_seconds": { "type": "number" },
-            "connection_rate": { "type": "number" },
-            "qualification_rate": { "type": "number" },
-            "transfer_success_rate": { "type": "number" },
-            "top_objections": { "type": "array", "items": { "objection": "string", "count": "number" } },
-            "top_dispositions": { "type": "array", "items": { "disposition": "string", "count": "number" } },
-            "hourly_breakdown": { "type": "array", "items": { "hour": "number", "calls": "number", "connections": "number" } },
-            "created_at": { "type": "date", "default": "now" }
-          },
-          "indexes": [
-            { "keys": { "date": -1, "campaign": 1 } },
-            { "keys": { "agent_id": 1, "date": -1 } }
-          ],
-          "ttl": null
-        },
-        "agent_performance_history": {
-          "description": "Daily snapshots of agent performance for trend analysis and optimization",
-          "schema": {
-            "agent_id": { "type": "string", "indexed": true },
-            "agent_name": { "type": "string" },
-            "date": { "type": "date", "indexed": true },
-            "campaign": { "type": "string" },
-            "calls_made": { "type": "number" },
-            "connections": { "type": "number" },
-            "qualified_leads": { "type": "number" },
-            "transfers_completed": { "type": "number" },
-            "avg_call_duration": { "type": "number" },
-            "connection_rate": { "type": "number" },
-            "qualification_rate": { "type": "number" },
-            "transfer_rate": { "type": "number" },
-            "sentiment_score": { "type": "number" },
-            "objection_handling_score": { "type": "number" },
-            "prompt_version": { "type": "string" },
-            "created_at": { "type": "date", "default": "now" }
-          },
-          "indexes": [
-            { "keys": { "agent_id": 1, "date": -1 } },
-            { "keys": { "date": -1 } }
-          ],
-          "ttl": null
-        },
-        "prompt_versions": {
-          "description": "Version-controlled Retell prompts for A/B testing and rollback",
-          "schema": {
-            "version": { "type": "string", "indexed": true, "unique": true },
-            "prompt_text": { "type": "string" },
-            "campaign": { "type": "string" },
-            "created_by": { "type": "string" },
-            "ab_test_group": { "type": "string" },
-            "performance_metrics": {
-              "type": "object",
-              "properties": {
-                "connection_rate": "number",
-                "qualification_rate": "number",
-                "avg_duration": "number",
-                "sentiment_score": "number"
-              }
-            },
-            "status": { "type": "string", "enum": ["draft", "testing", "active", "retired"] },
-            "deployed_to_agents": { "type": "array", "items": "string" },
-            "created_at": { "type": "date", "default": "now" },
-            "retired_at": { "type": "date" }
-          },
-          "indexes": [
-            { "keys": { "version": 1 }, "unique": true },
-            { "keys": { "status": 1, "campaign": 1 } }
-          ],
-          "ttl": null
-        }
-      }
-    },
-    "ckpm_property_intel": {
-      "description": "Property intelligence, market data, and competitive analysis",
-      "collections": {
-        "properties": {
-          "description": "Enriched property records from ArcGIS and public records",
-          "schema": {
-            "parcel_id": { "type": "string", "indexed": true, "unique": true },
-            "address": { "type": "string", "indexed": true },
-            "city": { "type": "string", "indexed": true },
-            "state": { "type": "string" },
-            "zip": { "type": "string" },
-            "county": { "type": "string" },
-            "property_type": { "type": "string", "indexed": true },
-            "estimated_value": { "type": "number" },
-            "lot_size_sqft": { "type": "number" },
-            "building_sqft": { "type": "number" },
-            "year_built": { "type": "number" },
-            "bedrooms": { "type": "number" },
-            "bathrooms": { "type": "number" },
-            "owner_name": { "type": "string" },
-            "owner_mailing_address": { "type": "string" },
-            "is_absentee": { "type": "boolean", "indexed": true },
-            "last_sale_date": { "type": "date" },
-            "last_sale_price": { "type": "number" },
-            "tax_assessed_value": { "type": "number" },
-            "service_zone": { "type": "string", "indexed": true },
-            "location": { "type": "geo2dsphere" },
-            "enrichment_data": { "type": "object" },
-            "airtable_record_id": { "type": "string" },
-            "created_at": { "type": "date", "default": "now" },
-            "updated_at": { "type": "date" }
-          },
-          "indexes": [
-            { "keys": { "parcel_id": 1 }, "unique": true },
-            { "keys": { "location": "2dsphere" } },
-            { "keys": { "city": 1, "property_type": 1 } },
-            { "keys": { "is_absentee": 1, "estimated_value": -1 } },
-            { "keys": { "service_zone": 1 } }
-          ],
-          "ttl": null
-        },
-        "market_snapshots": {
-          "description": "Weekly market data snapshots per zone for pricing intelligence",
-          "schema": {
-            "date": { "type": "date", "indexed": true },
-            "service_zone": { "type": "string", "indexed": true },
-            "property_type": { "type": "string" },
-            "median_price": { "type": "number" },
-            "avg_price_per_sqft": { "type": "number" },
-            "active_listings": { "type": "number" },
-            "days_on_market_avg": { "type": "number" },
-            "new_listings": { "type": "number" },
-            "closed_sales": { "type": "number" },
-            "price_change_pct": { "type": "number" },
-            "inventory_months": { "type": "number" },
-            "data_source": { "type": "string" },
-            "created_at": { "type": "date", "default": "now" }
-          },
-          "indexes": [
-            { "keys": { "service_zone": 1, "date": -1 } },
-            { "keys": { "date": -1, "property_type": 1 } }
-          ],
-          "ttl": null
-        },
-        "competitive_intel": {
-          "description": "Competitor property management data and market positioning",
-          "schema": {
-            "competitor_name": { "type": "string", "indexed": true },
-            "service_zone": { "type": "string", "indexed": true },
-            "properties_managed": { "type": "number" },
-            "avg_management_fee_pct": { "type": "number" },
-            "services_offered": { "type": "array", "items": "string" },
-            "online_rating": { "type": "number" },
-            "review_count": { "type": "number" },
-            "strengths": { "type": "array", "items": "string" },
-            "weaknesses": { "type": "array", "items": "string" },
-            "last_updated": { "type": "date" },
-            "data_source": { "type": "string" },
-            "created_at": { "type": "date", "default": "now" }
-          },
-          "indexes": [
-            { "keys": { "competitor_name": 1 } },
-            { "keys": { "service_zone": 1 } }
-          ],
-          "ttl": null
-        }
-      }
-    },
-    "ckpm_ai_ops": {
-      "description": "AI operations — inference logs, fleet telemetry, audit trails",
-      "collections": {
-        "inference_logs": {
-          "description": "Claude API inference logs for cost tracking and quality monitoring",
-          "schema": {
-            "request_id": { "type": "string", "indexed": true },
-            "agent_id": { "type": "string", "indexed": true },
-            "model": { "type": "string" },
-            "route": { "type": "string" },
-            "prompt_tokens": { "type": "number" },
-            "completion_tokens": { "type": "number" },
-            "total_tokens": { "type": "number" },
-            "cost_usd": { "type": "number" },
-            "latency_ms": { "type": "number" },
-            "cache_hit": { "type": "boolean" },
-            "status": { "type": "string" },
-            "error": { "type": "string" },
-            "created_at": { "type": "date", "default": "now" }
-          },
-          "indexes": [
-            { "keys": { "agent_id": 1, "created_at": -1 } },
-            { "keys": { "created_at": -1 } },
-            { "keys": { "model": 1, "created_at": -1 } }
-          ],
-          "ttl": { "field": "created_at", "expire_after_seconds": 7776000 }
-        },
-        "fleet_telemetry": {
-          "description": "Real-time agent fleet status and health metrics",
-          "schema": {
-            "agent_id": { "type": "string", "indexed": true },
-            "division": { "type": "string", "indexed": true },
-            "status": { "type": "string", "enum": ["active", "idle", "paused", "error", "training"] },
-            "last_action": { "type": "string" },
-            "last_action_time": { "type": "date" },
-            "uptime_hours": { "type": "number" },
-            "tasks_completed_today": { "type": "number" },
-            "error_count_today": { "type": "number" },
-            "memory_usage_mb": { "type": "number" },
-            "created_at": { "type": "date", "default": "now" }
-          },
-          "indexes": [
-            { "keys": { "agent_id": 1, "created_at": -1 } },
-            { "keys": { "division": 1, "status": 1 } }
-          ],
-          "ttl": { "field": "created_at", "expire_after_seconds": 604800 }
-        },
-        "audit_trail": {
-          "description": "Persistent audit trail (supplements Cloudflare KV short-term audit)",
-          "schema": {
-            "event_id": { "type": "string", "indexed": true },
-            "timestamp": { "type": "date", "indexed": true },
-            "route": { "type": "string" },
-            "action": { "type": "string" },
-            "actor": { "type": "string" },
-            "details": { "type": "object" },
-            "ip_address": { "type": "string" },
-            "user_agent": { "type": "string" },
-            "created_at": { "type": "date", "default": "now" }
-          },
-          "indexes": [
-            { "keys": { "timestamp": -1 } },
-            { "keys": { "route": 1, "timestamp": -1 } },
-            { "keys": { "actor": 1, "timestamp": -1 } }
-          ],
-          "ttl": { "field": "created_at", "expire_after_seconds": 31536000 }
-        }
-      }
-    }
-  },
-  "security": {
-    "network_access": {
-      "ip_allowlist": [
-        { "cidr": "0.0.0.0/0", "description": "Cloudflare Workers (serverless — IP varies)", "note": "Restrict to Cloudflare IP ranges in production" }
-      ],
-      "private_endpoint": {
-        "enabled": false,
-        "note": "Enable when migrating to dedicated Cloudflare Workers infrastructure"
-      }
-    },
+  "api_configuration": {
+    "base_url": "https://api.youratlas.com/v1/api",
     "authentication": {
-      "database_users": [
-        {
-          "username": "ckpm-gateway-worker",
-          "role": "readWrite",
-          "databases": ["ckpm_operations", "ckpm_property_intel", "ckpm_ai_ops"],
-          "auth_method": "SCRAM-SHA-256",
-          "secret_name": "ATLAS_CONNECTION_STRING"
-        },
-        {
-          "username": "ckpm-sentinel-worker",
-          "role": "readWrite",
-          "databases": ["ckpm_operations"],
-          "auth_method": "SCRAM-SHA-256",
-          "secret_name": "ATLAS_SENTINEL_CONNECTION_STRING"
-        },
-        {
-          "username": "ckpm-readonly-analytics",
-          "role": "read",
-          "databases": ["ckpm_operations", "ckpm_property_intel", "ckpm_ai_ops"],
-          "auth_method": "SCRAM-SHA-256",
-          "secret_name": "ATLAS_ANALYTICS_CONNECTION_STRING"
-        }
-      ]
+      "method": "API Key",
+      "header": "Authorization",
+      "format": "Bearer {ATLAS_API_KEY}",
+      "secret_name": "ATLAS_API_KEY",
+      "storage": "Cloudflare Worker Secrets"
     },
-    "encryption": {
-      "at_rest": true,
-      "in_transit": "TLS 1.2+",
-      "field_level_encryption": {
-        "enabled": false,
-        "candidates": ["phone_number", "email", "owner_name"]
+    "endpoints": {
+      "campaigns": {
+        "list": { "method": "GET", "path": "/campaigns" },
+        "get": { "method": "GET", "path": "/campaign/{id}" },
+        "update": { "method": "PUT", "path": "/campaign/{id}" },
+        "delete": { "method": "DELETE", "path": "/campaign/{id}" },
+        "set_status": { "method": "PUT", "path": "/campaign/{id}/status" }
+      },
+      "statistics": {
+        "overview": { "method": "GET", "path": "/campaigns/statistics" },
+        "campaign": { "method": "GET", "path": "/campaign/{id}/statistics" },
+        "call_records": { "method": "GET", "path": "/campaign/{id}/call-records" },
+        "call_detail": { "method": "GET", "path": "/campaign/{id}/call-records/{callId}" },
+        "delete_record": { "method": "DELETE", "path": "/campaign/{id}/call-records/{callId}" }
+      },
+      "calls": {
+        "scheduled": { "method": "GET", "path": "/campaign/{id}/scheduled-calls" },
+        "create": { "method": "POST", "path": "/campaign/{id}/scheduled-calls" }
+      },
+      "bookings": {
+        "for_campaign": { "method": "GET", "path": "/campaign/{id}/bookings" },
+        "for_call": { "method": "GET", "path": "/campaign/{id}/bookings/callId/{callId}" }
+      },
+      "knowledge_base": {
+        "list_all": { "method": "GET", "path": "/knowledge-base/files" },
+        "list_for_campaign": { "method": "GET", "path": "/campaign/{id}/knowledge-base/files" },
+        "upload": { "method": "POST", "path": "/knowledge-base/files" },
+        "delete": { "method": "DELETE", "path": "/knowledge-base/files/{fileId}" },
+        "attach_to_campaign": { "method": "POST", "path": "/campaign/{id}/knowledge-base/attach" },
+        "detach_from_campaign": { "method": "POST", "path": "/campaign/{id}/knowledge-base/detach" }
       }
     }
   },
-  "data_api": {
-    "enabled": true,
-    "description": "Atlas Data API for Cloudflare Workers (no driver needed)",
-    "base_url": "https://us-east-1.aws.data.mongodb-api.com/app/data-xxxxx/endpoint/data/v1",
-    "api_key_secret": "ATLAS_DATA_API_KEY",
-    "endpoints": {
-      "find": "/action/find",
-      "findOne": "/action/findOne",
-      "insertOne": "/action/insertOne",
-      "insertMany": "/action/insertMany",
-      "updateOne": "/action/updateOne",
-      "aggregate": "/action/aggregate"
+  "telephony": {
+    "provider": "Twilio",
+    "integration": "Connected via Atlas Twilio Integration",
+    "phone_numbers": [
+      {
+        "number": "+17727638900",
+        "label": "Tracey Hunter Business Line",
+        "usage": "Caller ID + Transfer Destination",
+        "type": "local"
+      }
+    ],
+    "call_forwarding": {
+      "enabled": true,
+      "transfer_number": "+17727638900",
+      "transfer_label": "Tracey Hunter Direct"
     }
   },
-  "integration_with_retell": {
-    "data_flow": "Retell call_analyzed → Sentinel Webhook → Airtable (primary) + Atlas (archival)",
-    "atlas_captures": [
-      "Full transcript with speaker timestamps",
-      "Call metadata and dynamic variables",
-      "Disposition and qualification data",
-      "Agent performance snapshot at call time",
-      "Quality score (computed post-call)"
-    ],
-    "analytics_pipelines": [
+  "campaigns": [
+    {
+      "name": "CKPM Sentinel — Speed-to-Lead",
+      "type": "speed_to_lead",
+      "description": "60-second contact for new inbound leads from website, ads, and referrals",
+      "status": "ACTIVE",
+      "schedule": {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "start_time": "09:00",
+        "end_time": "18:00",
+        "timezone": "America/New_York"
+      },
+      "settings": {
+        "speed_to_lead_seconds": 60,
+        "max_call_duration_seconds": 180,
+        "max_retries": 3,
+        "retry_interval_hours": 24,
+        "caller_id": "+17727638900",
+        "voicemail_detection": true,
+        "voicemail_action": "leave_message"
+      },
+      "qualification_criteria": [
+        "Property ownership confirmed",
+        "Timeline to sell within 12 months",
+        "Property value above $200,000",
+        "Located in Treasure Coast service zones",
+        "Motivated seller indicators (2 of 5 required)"
+      ],
+      "transfer_rules": {
+        "qualified_lead": { "action": "transfer", "number": "+17727638900" },
+        "not_interested": { "action": "end_call", "disposition": "not_interested" },
+        "dnc_request": { "action": "end_call", "disposition": "dnc_request" }
+      }
+    },
+    {
+      "name": "CKPM Sentinel — Dead Lead Revival",
+      "type": "dead_lead_revival",
+      "description": "Re-engage cold leads from Airtable pipeline — qualify current interest and rebook",
+      "status": "ACTIVE",
+      "schedule": {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "start_time": "10:00",
+        "end_time": "15:00",
+        "timezone": "America/New_York"
+      },
+      "settings": {
+        "max_call_duration_seconds": 180,
+        "max_retries": 2,
+        "retry_interval_hours": 72,
+        "caller_id": "+17727638900",
+        "voicemail_detection": true,
+        "voicemail_action": "leave_message"
+      },
+      "lead_source": {
+        "type": "airtable_sync",
+        "table": "tblpNasm0AxreRqLW",
+        "filter": "Status = 'Cold' OR Status = 'Stale' OR Status = 'No Response'",
+        "fields_to_sync": ["Lead Name", "Phone Number", "Property Address", "Service Zone", "Sentinel Segment"]
+      }
+    },
+    {
+      "name": "CKPM Sentinel — Appointment Confirmation",
+      "type": "appointment_confirmation",
+      "description": "Proactive calls to confirm upcoming appointments — reduce no-shows by 50%",
+      "status": "ACTIVE",
+      "schedule": {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "start_time": "09:00",
+        "end_time": "17:00",
+        "timezone": "America/New_York"
+      },
+      "settings": {
+        "max_call_duration_seconds": 120,
+        "confirmation_window_hours": 24,
+        "caller_id": "+17727638900"
+      }
+    },
+    {
+      "name": "CKPM Sentinel — AI Receptionist (Inbound)",
+      "type": "inbound_receptionist",
+      "description": "24/7 inbound call handling — answer FAQs, qualify callers, book appointments",
+      "status": "ACTIVE",
+      "schedule": {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "start_time": "00:00",
+        "end_time": "23:59",
+        "timezone": "America/New_York"
+      },
+      "settings": {
+        "max_call_duration_seconds": 300,
+        "transfer_to_live_agent": true,
+        "transfer_number": "+17727638900",
+        "transfer_hours": { "start": "09:00", "end": "18:00" },
+        "after_hours_action": "book_appointment"
+      }
+    },
+    {
+      "name": "CKPM Sentinel — Outbound Prospecting (TH-SENTINEL Fleet)",
+      "type": "outbound_prospecting",
+      "description": "40-agent outbound campaign targeting Treasure Coast property owners",
+      "status": "ACTIVE",
+      "start_date": "2026-03-28",
+      "end_date": "2026-09-28",
+      "schedule": {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "start_time": "10:00",
+        "end_time": "15:00",
+        "timezone": "America/New_York"
+      },
+      "settings": {
+        "concurrent_agents": 40,
+        "calls_per_agent_per_hour": 12,
+        "max_retries_per_number": 3,
+        "retry_interval_hours": 48,
+        "caller_id": "+17727638900",
+        "max_call_duration_seconds": 180,
+        "voicemail_detection": true,
+        "voicemail_action": "leave_message"
+      },
+      "target_markets": {
+        "primary": ["Stuart", "Palm City", "Jensen Beach", "Hobe Sound", "Port St. Lucie", "Hutchinson Island"],
+        "secondary": ["Jupiter", "Tequesta", "Palm Beach Gardens", "Vero Beach", "Fort Pierce", "Sebastian"]
+      },
+      "lead_segments": [
+        { "key": "absentee_homeowner", "label": "Absentee Homeowner", "priority": 1 },
+        { "key": "luxury_property", "label": "Luxury Property $1M+", "priority": 2 },
+        { "key": "investor", "label": "Investor / Family Office", "priority": 3 },
+        { "key": "seasonal", "label": "Seasonal / Snowbird", "priority": 4 },
+        { "key": "str", "label": "STR / Vacation Rental", "priority": 5 }
+      ],
+      "kpi_targets": {
+        "daily_calls": 2400,
+        "daily_connections": 480,
+        "daily_qualified_leads": 24,
+        "daily_transfers": 8,
+        "daily_appointments": 4,
+        "connection_rate_target": 0.20,
+        "qualification_rate_target": 0.05,
+        "transfer_success_rate_target": 0.90
+      }
+    }
+  ],
+  "knowledge_base": {
+    "files": [
       {
-        "name": "Daily Agent Performance Rollup",
-        "schedule": "0 20 * * *",
-        "description": "Aggregate daily call data per agent into agent_performance_history"
+        "name": "CKPM Property Management Overview",
+        "description": "Company info, services, service zones, pricing for AI agent context",
+        "attached_to": ["all_campaigns"]
       },
       {
-        "name": "Weekly Market Zone Analysis",
-        "schedule": "0 6 * * 1",
-        "description": "Compute connection/qualification rates by service zone"
+        "name": "Treasure Coast Market Data",
+        "description": "Current market stats by zone — median prices, days on market, inventory",
+        "attached_to": ["outbound_prospecting", "dead_lead_revival"]
       },
       {
-        "name": "Prompt A/B Test Results",
-        "schedule": "0 8 * * *",
-        "description": "Compare prompt version performance metrics for SEN-033/034 optimization"
+        "name": "FAQ — Property Management Services",
+        "description": "Common questions and answers about CKPM services",
+        "attached_to": ["inbound_receptionist"]
+      },
+      {
+        "name": "Objection Handling Playbook",
+        "description": "7 common objections with scripted responses for AI agents",
+        "attached_to": ["outbound_prospecting", "speed_to_lead", "dead_lead_revival"]
       }
     ]
+  },
+  "atlas_actions": {
+    "description": "Mid-call HTTP requests to CKPM API for real-time data enrichment",
+    "actions": [
+      {
+        "name": "lookup_property",
+        "description": "Fetch property details from CKPM gateway during call",
+        "endpoint": "https://ck-api-gateway.david-e59.workers.dev/v1/property-intel/search",
+        "method": "GET",
+        "auth": "Bearer {WORKER_AUTH_TOKEN}",
+        "use_case": "Agent references live property data during conversation"
+      },
+      {
+        "name": "check_lead_status",
+        "description": "Check if caller is already in the lead pipeline",
+        "endpoint": "https://ck-api-gateway.david-e59.workers.dev/v1/leads/{id}",
+        "method": "GET",
+        "auth": "Bearer {WORKER_AUTH_TOKEN}",
+        "use_case": "Agent personalizes conversation based on existing lead history"
+      },
+      {
+        "name": "get_pricing_recommendation",
+        "description": "Fetch dynamic pricing for a property zone during qualification",
+        "endpoint": "https://ck-api-gateway.david-e59.workers.dev/v1/pricing/zones",
+        "method": "GET",
+        "auth": "Bearer {WORKER_AUTH_TOKEN}",
+        "use_case": "Agent provides market-informed pricing context to sellers"
+      }
+    ]
+  },
+  "integrations": {
+    "airtable": {
+      "sync_direction": "Atlas → Airtable (via CKPM gateway webhook)",
+      "pipeline": "Atlas call completion → sentinel-webhook → Airtable leads/call log",
+      "tables": {
+        "leads": "tblpNasm0AxreRqLW",
+        "call_log": "tbl1a2YPUpZvnRKbi",
+        "missed_calls_qa": "tblWW25r6GmsQe3mQ",
+        "lead_contacts": "tbl0XVTVz3qambhog",
+        "agent_performance": "tblzTUg9QXQnZmA4I",
+        "campaign_analytics": "tblSkigMl8YSYN16u"
+      }
+    },
+    "slack": {
+      "channels": {
+        "new_leads": "sentinel-leads",
+        "failed_calls": "sentinel-qa",
+        "daily_reports": "sentinel-analytics",
+        "compliance_alerts": "sentinel-compliance"
+      }
+    },
+    "retell_ai": {
+      "relationship": "Atlas and Retell operate as complementary voice agent platforms",
+      "retell_role": "Inbound call handling via sentinel-webhook pipeline",
+      "atlas_role": "Outbound campaigns, speed-to-lead, dead lead revival, appointment confirmation",
+      "shared_infrastructure": {
+        "webhook_handler": "sentinel-webhook.david-e59.workers.dev",
+        "api_gateway": "ck-api-gateway.david-e59.workers.dev",
+        "airtable_base": "appUSnNgpDkcEOzhN"
+      }
+    }
+  },
+  "compliance": {
+    "tcpa": {
+      "enabled": true,
+      "ai_disclosure": "Agent identifies as AI assistant when directly asked",
+      "dnc_scrubbing": "National DNC Registry + Florida State DNC",
+      "calling_window": { "start": "10:00", "end": "15:00", "timezone": "America/New_York" },
+      "opt_out_mechanism": "Immediate removal on request",
+      "call_recording_disclosure": true,
+      "consent_documentation": "Airtable audit trail"
+    }
+  },
+  "monitoring": {
+    "dashboards": {
+      "atlas_campaigns": "https://app.youratlas.com/dashboard/campaigns",
+      "command_center": "https://main.coastalkey-pm.pages.dev",
+      "airtable_campaign": "https://airtable.com/appUSnNgpDkcEOzhN",
+      "api_health": "https://ck-api-gateway.david-e59.workers.dev/v1/health?deep=true"
+    }
   }
 }

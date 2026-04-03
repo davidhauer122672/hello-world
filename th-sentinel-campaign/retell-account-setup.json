@@ -170,9 +170,14 @@
       }
     },
     "retell_to_atlas": {
-      "purpose": "Long-term transcript storage, analytics, and ML training data",
-      "collections": ["call_transcripts", "call_analytics", "agent_performance_history"],
-      "sync_frequency": "real-time via webhook"
+      "platform": "Atlas AI (youratlas.com)",
+      "purpose": "Dead lead revival, appointment confirmation, and speed-to-lead via Atlas AI campaigns",
+      "sync_actions": [
+        "Failed/missed Retell calls → schedule Atlas dead-lead-revival follow-up",
+        "Booked dispositions → schedule Atlas appointment confirmation call",
+        "New inbound leads → trigger Atlas speed-to-lead (60-second contact)"
+      ],
+      "sync_frequency": "real-time via webhook (fire-and-forget)"
     }
   }
 }
