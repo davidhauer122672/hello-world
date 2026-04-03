@@ -119,7 +119,7 @@ export default {
         return jsonResponse({
           status: 'operational',
           service: 'ck-api-gateway',
-          version: '3.0.0',
+          version: '3.2.0',
           agents: 396,
           divisions: 13,
           timestamp: new Date().toISOString(),
