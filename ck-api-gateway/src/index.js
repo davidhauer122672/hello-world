@@ -39,6 +39,12 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   GET  /v1/automations              — List all workflows (Zapier replacement)
+ *   GET  /v1/automations/:id          — Get workflow details
+ *   POST /v1/automations/run/:id      — Manually trigger a workflow
+ *   GET  /v1/automations/executions   — List recent executions
+ *   GET  /v1/automations/dashboard    — Automation operations dashboard
+ *   POST /v1/automations/poll         — Manually trigger poll cycle
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -57,9 +63,19 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleListAutomations, handleGetAutomation, handleRunAutomation, handleListExecutions, handleGetExecution, handleAutomationDashboard, handleManualPoll } from './routes/automations.js';
+import { runScheduledWorkflows } from './engine/scheduler.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
+  /**
+   * Scheduled handler — Cloudflare Cron Trigger entry point.
+   * Replaces Zapier's scheduled triggers with native cron execution.
+   */
+  async scheduled(event, env, ctx) {
+    await runScheduledWorkflows(event, env, ctx);
+  },
+
   async fetch(request, env, ctx) {
     // CORS preflight
     if (request.method === 'OPTIONS') {
@@ -305,6 +321,33 @@ export default {
 
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
+      }
+
+      // ── Automation Engine (Zapier Replacement) ──
+      if (path === '/v1/automations' && method === 'GET') {
+        return handleListAutomations(url);
+      }
+
+      if (path === '/v1/automations/dashboard' && method === 'GET') {
+        return await handleAutomationDashboard(env);
+      }
+
+      if (path === '/v1/automations/executions' && method === 'GET') {
+        return await handleListExecutions(url, env);
+      }
+
+      if (path === '/v1/automations/poll' && method === 'POST') {
+        return await handleManualPoll(env, ctx);
+      }
+
+      if (path.match(/^\/v1\/automations\/run\/[^/]+$/) && method === 'POST') {
+        const workflowId = path.split('/v1/automations/run/')[1];
+        return await handleRunAutomation(request, env, ctx, workflowId);
+      }
+
+      if (path.match(/^\/v1\/automations\/[^/]+$/) && method === 'GET') {
+        const workflowId = path.split('/v1/automations/')[1];
+        return handleGetAutomation(workflowId);
       }
 
       return errorResponse('Not found', 404);

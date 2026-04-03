@@ -27,8 +27,19 @@ id = "0acfb96a7aaf49bb92055c143a882506"
 binding = "AUDIT_LOG"
 id = "3d722426db4241209fd0444b42f84904"
 
+# ── Cron Triggers (Workflow Engine — replaces Zapier scheduled triggers) ──
+# Runs the workflow engine's poll cycle and scheduled workflows.
+[triggers]
+crons = [
+  "*/5 * * * *",       # Every 5 min: Poll Airtable for new records (WF triggers)
+  "0 13 * * 1-6",      # 8 AM EST Mon-Sat: Daily campaign digest (WF-6)
+  "0 14 * * 1",        # 9 AM EST Monday: Stale lead check (WF-7)
+  "0 15 * * 1-5",      # 10 AM EST Weekdays: Property intel update (WF-9)
+  "*/30 * * * *",      # Every 30 min: System health monitor (WF-10)
+]
+
 # ── Secrets (set via dashboard or `wrangler secret put`) ──
 # ANTHROPIC_API_KEY        — Anthropic console API key
 # AIRTABLE_API_KEY         — Airtable personal access token
-# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Zapier)
+# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, automations)
 # SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications
