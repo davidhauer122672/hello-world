@@ -116,8 +116,8 @@ describe('Design & Luxury Brand Division — Strategic Coverage', () => {
 });
 
 describe('Design & Luxury Brand Division — Registry Integration', () => {
-  it('total enterprise agent count is 335', () => {
-    assert.equal(AGENTS.length, 335);
+  it('total enterprise agent count is 340', () => {
+    assert.equal(AGENTS.length, 340);
   });
 
   it('MKT division has 60 total agents (40 core + 20 design)', () => {

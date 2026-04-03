@@ -32,10 +32,11 @@
     "portal_path": "/portal"
   },
   "agents": {
-    "total": 335,
-    "divisions": 10,
+    "total": 340,
+    "divisions": 11,
     "web_dev_agents": 40,
     "security_agents": 25,
-    "design_brand_agents": 20
+    "design_brand_agents": 20,
+    "internal_building_agents": 5
   }
 }

@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Division Definitions
  *
- * 10 operational divisions that map to the org chart.
+ * 11 operational divisions that map to the org chart.
  * Each division has a color, icon, and description used by the Command Center UI.
  */
 
@@ -75,5 +75,12 @@ export const DIVISIONS = [
     color: '#dc2626',
     icon: 'shield-check',
     description: 'Enterprise security operations: API protection, middleware hardening, cloud governance, threat detection, compliance, and incident response.',
+  },
+  {
+    id: 'IB',
+    name: 'Internal Building',
+    color: '#a855f7',
+    icon: 'building-office',
+    description: 'Enterprise brain and central nervous system. Zoning, planning, and development authority for all internal operations. Cross-divisional knowledge transfer, manager prompting, and continuous system building.',
   },
 ];

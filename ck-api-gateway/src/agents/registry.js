@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Agent Registry
  *
- * Central registry for all 335 AI agents across 10 divisions.
+ * Central registry for all 340 AI agents across 11 divisions.
  * Exports the AGENTS array, DIVISIONS array, and lookup functions
  * consumed by routes/agents.js and the Command Center dashboard.
  *
@@ -16,7 +16,8 @@
  *   TEC  Technology          — 25 agents
  *   WEB  Website Development — 40 agents
  *   SEC  Sovereign Shield   — 25 agents
- *                       Total: 335 agents
+ *   IB   Internal Building  — 5 agents
+ *                       Total: 340 agents
  */
 
 import { DIVISIONS } from './divisions.js';
@@ -31,6 +32,7 @@ import { TEC_AGENTS } from './agents-tec.js';
 import { WEB_AGENTS } from './agents-web.js';
 import { SEC_AGENTS } from './agents-sec.js';
 import { MKT_DESIGN_AGENTS } from './agents-mkt-design.js';
+import { IB_AGENTS } from './agents-ib.js';
 
 // ── Merged agent list ───────────────────────────────────────────────────────
 
@@ -46,6 +48,7 @@ export const AGENTS = [
   ...TEC_AGENTS,
   ...WEB_AGENTS,
   ...SEC_AGENTS,
+  ...IB_AGENTS,
 ];
 
 // Re-export divisions so consumers only need one import path

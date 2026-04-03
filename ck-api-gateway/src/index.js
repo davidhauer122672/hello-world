@@ -94,8 +94,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 335,
-          divisions: 10,
+          agents: 340,
+          divisions: 11,
           timestamp: new Date().toISOString(),
         });
       }
