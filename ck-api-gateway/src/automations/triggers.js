@@ -126,6 +126,57 @@ export const SCAA1_BATTLE_PLAN = {
 };
 
 /**
+ * WF2 - Social Approval → Buffer Publish Workflow
+ *
+ * Triggers when a Content Calendar record's "Status" field changes to "Approved".
+ * Sends Slack preview, schedules via Buffer API across all connected channels
+ * (Instagram, Facebook, LinkedIn, X), and updates record to Scheduled.
+ *
+ * Deployment Tracker: recBDReVmJrH6dPHg
+ * Content Calendar Table: tblEPr4f2lMz6ruxF
+ *
+ * @type {TriggerConfig}
+ */
+export const WF2_SOCIAL_PUBLISH = {
+  id: 'wf2-social-publish',
+  description: 'Publish approved Content Calendar posts to Buffer and notify Slack',
+  trigger: {
+    type: 'fieldChange',
+    table: 'Content Calendar',
+    tableId: 'tblEPr4f2lMz6ruxF',
+    field: 'Status',
+    fieldId: 'fldD2rgOO9z1MTs9U',
+  },
+  conditions: {
+    status: {
+      equals: 'Approved',
+    },
+  },
+  action: {
+    method: 'POST',
+    endpoint: '/v1/workflows/wf2',
+    payload: {
+      recordId: '{{record.id}}',
+    },
+  },
+  dependencies: [
+    'Buffer account connected (Instagram Business, Facebook Page, LinkedIn Company Page, X/Twitter)',
+    'BUFFER_ACCESS_TOKEN secret configured',
+    'Slack #content-calendar channel exists (C0ALCM1E5E2)',
+  ],
+  field_mapping: {
+    caption: { fieldId: 'fldgJXI5IAaWcyw89', maps_to: 'Buffer post text' },
+    asset: { fieldId: 'fldlbwkaiT9JBV18E', maps_to: 'Buffer post image' },
+    postDate: { fieldId: 'fldFESTOO3wxMT4u2', maps_to: 'Buffer scheduled_at' },
+    status: { fieldId: 'fldD2rgOO9z1MTs9U', maps_to: 'Airtable Status (Approved → Scheduled)' },
+    notes: { fieldId: 'fld0hiWEXsL70GFpS', maps_to: 'Buffer Post ID written here' },
+  },
+  supported_platforms: ['Instagram', 'Facebook', 'LinkedIn', 'X'],
+  test_record: 'rechVm1hmggAvfvXp',
+  slack_channel: '#content-calendar',
+};
+
+/**
  * Slack channel configuration for workflow notifications.
  * Maps logical channel identifiers to their Slack channel names and purposes.
  *
