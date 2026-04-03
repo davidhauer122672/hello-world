@@ -4,9 +4,17 @@
 Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, and Claude API integrations.
 
+## Live Endpoints
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev
+- **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
+- **Website**: https://main.coastalkey-pm.pages.dev
+- **Command Center**: Deploy `ck-command-center/` to Cloudflare Pages
+- **Gazette**: Available at `/gazette.html` on Command Center deployment
+
 ## Architecture
-- **ck-api-gateway**: Central API — inference, leads, agents, workflows (Cloudflare Worker)
-- **ck-command-center**: Dashboard UI for 40-agent fleet management (Cloudflare Pages, single HTML)
+- **ck-api-gateway**: Central API — 43 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers (Cloudflare Worker)
+- **ck-command-center**: Dashboard UI for 290-agent fleet + Coastal Key Gazette (Cloudflare Pages)
+- **ck-website**: Public-facing website with contact form (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
 - **th-sentinel-campaign**: Campaign config, Retell prompts, Airtable field reference
 
@@ -20,22 +28,24 @@ npm run test:sentinel   # Test sentinel webhook only
 npm run deploy          # Deploy all services
 ```
 
+## Autonomous Fleet (360 units)
+- **290 AI Agents** across 9 divisions: EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB
+- **50 Intelligence Officers** in 5 squads: ALPHA (Infrastructure), BRAVO (Data), CHARLIE (Security), DELTA (Revenue), ECHO (Performance)
+- **20 Email AI Agents** in 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
+
 ## Key Patterns
 - All workers use ES module format (`export default { fetch() }`)
 - Auth via Bearer token (`WORKER_AUTH_TOKEN` secret)
 - Rate limiting via KV namespace (`RATE_LIMITS`)
 - Audit logging via KV namespace (`AUDIT_LOG`)
-- Airtable base: `appUSnNgpDkcEOzhN`
+- Airtable base: `appUSnNgpDkcEOzhN` (38 tables, 100% wired)
 - All API routes prefixed with `/v1/`
 - CORS handled at gateway level
 - Tests use Node.js built-in test runner (`node --test`)
 
-## Secrets (set via wrangler secret put or Cloudflare dashboard)
-- ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN, SLACK_WEBHOOK_URL, RETELL_WEBHOOK_SECRET
-
-## Agent Fleet (40 agents across 8 divisions)
-Divisions: EXC (Executive), SEN (Sentinel), OPS (Operations), INT (Intelligence), MKT (Marketing), FIN (Finance), VEN (Ventures), TEC (Technology)
+## Secrets (all configured)
+- ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN, SLACK_WEBHOOK_URL
 
 ## CI/CD
-GitHub Actions on push to main: test → deploy all three services to Cloudflare.
-Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repo secrets.
+GitHub Actions on push to main: test → deploy all services to Cloudflare.
+Secrets configured: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
