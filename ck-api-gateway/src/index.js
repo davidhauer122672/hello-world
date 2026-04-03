@@ -91,7 +91,7 @@ export default {
       // Airtable connectivity
       try {
         const atRes = await fetch(
-          `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/Leads?maxRecords=1&fields%5B%5D=Name`,
+          `https://api.airtable.com/v0/${env.AIRTABLE_BASE_ID}/tblpNasm0AxreRqLW?maxRecords=1&fields%5B%5D=Lead%20Name`,
           { headers: { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` } },
         );
         checks.airtable = { status: atRes.ok ? 'ok' : 'error', code: atRes.status };
