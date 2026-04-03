@@ -32,3 +32,8 @@ id = "3d722426db4241209fd0444b42f84904"
 # AIRTABLE_API_KEY         — Airtable personal access token
 # WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Zapier)
 # SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications
+# BANANA_PRO_API_KEY       — Banana Pro AI GPU inference key
+# BUFFER_ACCESS_TOKEN       — Buffer social media management OAuth token
+# ALPHA_VANTAGE_KEY         — Alpha Vantage financial data API key
+# FRED_API_KEY              — Federal Reserve Economic Data API key
+# RETELL_WEBHOOK_SECRET     — Retell AI webhook verification secret

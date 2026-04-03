@@ -39,6 +39,34 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   POST /v1/banana/generate    — Generate content via Banana Pro AI
+ *   POST /v1/banana/score-lead  — AI lead scoring
+ *   POST /v1/banana/property-desc — Generate property description
+ *   POST /v1/banana/forecast    — Market forecast
+ *   POST /v1/banana/batch       — Batch content generation
+ *   GET  /v1/banana/health      — Banana Pro connection status
+ *   GET  /v1/buffer/profiles    — List connected Buffer profiles
+ *   POST /v1/buffer/schedule    — Schedule a Buffer post
+ *   POST /v1/buffer/cross-post  — Cross-platform post scheduling
+ *   GET  /v1/buffer/queue/:id   — Get pending posts
+ *   GET  /v1/buffer/sent/:id    — Get published posts
+ *   POST /v1/buffer/sync        — Sync analytics to Airtable
+ *   GET  /v1/buffer/health      — Buffer connection status
+ *   POST /v1/workflows/wf2      — WF-2 Content Engagement Pipeline
+ *   POST /v1/workflows/wf4-alignable — WF-4 Alignable Alert Branch
+ *   GET  /v1/market/quote/:sym  — Stock quote
+ *   GET  /v1/market/scan        — Full market scan
+ *   GET  /v1/market/report      — AI market intelligence report
+ *   POST /v1/market/portfolio   — Portfolio monitoring
+ *   GET  /v1/market/indicators  — Economic indicators
+ *   GET  /v1/market/watchlist   — Watchlist configuration
+ *   GET  /v1/diagnostics/scan   — Full enterprise system scan
+ *   GET  /v1/diagnostics/data-health — Data health analysis
+ *   POST /v1/diagnostics/activate — Activate dormant systems
+ *   POST /v1/diagnostics/upgrade — Upgrade inefficient systems
+ *   GET  /v1/diagnostics/sops   — Agent SOP registry
+ *   GET  /v1/diagnostics/sops/:id — Specific SOP detail
+ *   GET  /v1/diagnostics/fleet  — Fleet production mandate
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -57,6 +85,11 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleBananaGenerate, handleBananaScoreLead, handleBananaPropertyDesc, handleBananaForecast, handleBananaBatch, handleBananaHealth } from './routes/banana-pro.js';
+import { handleBufferProfiles, handleBufferSchedule, handleBufferCrossPost, handleBufferQueue, handleBufferSent, handleBufferSync, handleBufferHealth } from './routes/buffer.js';
+import { handleWf2ContentPipeline, handleWf4AlignableBranch } from './routes/wf2-content-pipeline.js';
+import { handleMarketQuote, handleMarketScan, handleMarketReport, handleMarketPortfolio, handleMarketIndicators, handleMarketWatchlist } from './routes/market-intel.js';
+import { handleDiagnosticsScan, handleDataHealth, handleSystemActivation, handleSystemUpgrade, handleSOPRegistry, handleSOPDetail, handleFleetMandate } from './routes/diagnostics.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -78,9 +111,9 @@ export default {
         return jsonResponse({
           status: 'operational',
           service: 'ck-api-gateway',
-          version: '2.0.0',
-          agents: 250,
-          divisions: 8,
+          version: '3.0.0',
+          agents: 290,
+          divisions: 9,
           timestamp: new Date().toISOString(),
         });
       }
@@ -127,6 +160,15 @@ export default {
         auditLog: env.AUDIT_LOG ? 'available' : 'missing',
       };
 
+      // Banana Pro connectivity
+      checks.bananaPro = { status: env.BANANA_PRO_API_KEY ? 'configured' : 'not_configured' };
+
+      // Buffer connectivity
+      checks.buffer = { status: env.BUFFER_ACCESS_TOKEN ? 'configured' : 'not_configured' };
+
+      // Market Intelligence
+      checks.marketIntel = { status: env.ALPHA_VANTAGE_KEY ? 'configured' : 'not_configured' };
+
       const allOk = checks.airtable?.status === 'ok' &&
                      checks.anthropic?.status === 'ok' &&
                      checks.kv.cache === 'available';
@@ -134,7 +176,7 @@ export default {
       return jsonResponse({
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
-        version: '2.0.0',
+        version: '3.0.0',
         agents: 290,
         divisions: 9,
         checks,
@@ -305,6 +347,104 @@ export default {
 
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
+      }
+
+      // ── Banana Pro AI ──
+      if (path === '/v1/banana/generate' && method === 'POST') {
+        return await handleBananaGenerate(request, env, ctx);
+      }
+      if (path === '/v1/banana/score-lead' && method === 'POST') {
+        return await handleBananaScoreLead(request, env, ctx);
+      }
+      if (path === '/v1/banana/property-desc' && method === 'POST') {
+        return await handleBananaPropertyDesc(request, env, ctx);
+      }
+      if (path === '/v1/banana/forecast' && method === 'POST') {
+        return await handleBananaForecast(request, env, ctx);
+      }
+      if (path === '/v1/banana/batch' && method === 'POST') {
+        return await handleBananaBatch(request, env, ctx);
+      }
+      if (path === '/v1/banana/health' && method === 'GET') {
+        return await handleBananaHealth(env);
+      }
+
+      // ── Buffer Integration ──
+      if (path === '/v1/buffer/profiles' && method === 'GET') {
+        return await handleBufferProfiles(env);
+      }
+      if (path === '/v1/buffer/schedule' && method === 'POST') {
+        return await handleBufferSchedule(request, env, ctx);
+      }
+      if (path === '/v1/buffer/cross-post' && method === 'POST') {
+        return await handleBufferCrossPost(request, env, ctx);
+      }
+      if (path === '/v1/buffer/sync' && method === 'POST') {
+        return await handleBufferSync(env, ctx);
+      }
+      if (path === '/v1/buffer/health' && method === 'GET') {
+        return await handleBufferHealth(env);
+      }
+      if (path.match(/^\/v1\/buffer\/queue\/[^/]+$/) && method === 'GET') {
+        const profileId = path.split('/v1/buffer/queue/')[1];
+        return await handleBufferQueue(profileId, env);
+      }
+      if (path.match(/^\/v1\/buffer\/sent\/[^/]+$/) && method === 'GET') {
+        const profileId = path.split('/v1/buffer/sent/')[1];
+        return await handleBufferSent(profileId, env, url);
+      }
+
+      // ── WF-2 Content Pipeline & WF-4 Alignable ──
+      if (path === '/v1/workflows/wf2' && method === 'POST') {
+        return await handleWf2ContentPipeline(request, env, ctx);
+      }
+      if (path === '/v1/workflows/wf4-alignable' && method === 'POST') {
+        return await handleWf4AlignableBranch(request, env, ctx);
+      }
+
+      // ── Market Intelligence ──
+      if (path === '/v1/market/scan' && method === 'GET') {
+        return await handleMarketScan(env, ctx);
+      }
+      if (path === '/v1/market/report' && method === 'GET') {
+        return await handleMarketReport(env, ctx);
+      }
+      if (path === '/v1/market/portfolio' && method === 'POST') {
+        return await handleMarketPortfolio(request, env, ctx);
+      }
+      if (path === '/v1/market/indicators' && method === 'GET') {
+        return await handleMarketIndicators(env);
+      }
+      if (path === '/v1/market/watchlist' && method === 'GET') {
+        return handleMarketWatchlist();
+      }
+      if (path.match(/^\/v1\/market\/quote\/[^/]+$/) && method === 'GET') {
+        const symbol = path.split('/v1/market/quote/')[1];
+        return await handleMarketQuote(symbol, env);
+      }
+
+      // ── Enterprise Diagnostics ──
+      if (path === '/v1/diagnostics/scan' && method === 'GET') {
+        return await handleDiagnosticsScan(env, ctx);
+      }
+      if (path === '/v1/diagnostics/data-health' && method === 'GET') {
+        return await handleDataHealth(env, ctx);
+      }
+      if (path === '/v1/diagnostics/activate' && method === 'POST') {
+        return await handleSystemActivation(request, env, ctx);
+      }
+      if (path === '/v1/diagnostics/upgrade' && method === 'POST') {
+        return await handleSystemUpgrade(request, env, ctx);
+      }
+      if (path === '/v1/diagnostics/sops' && method === 'GET') {
+        return handleSOPRegistry(url);
+      }
+      if (path === '/v1/diagnostics/fleet' && method === 'GET') {
+        return handleFleetMandate();
+      }
+      if (path.match(/^\/v1\/diagnostics\/sops\/[^/]+$/) && method === 'GET') {
+        const sopId = path.split('/v1/diagnostics/sops/')[1];
+        return handleSOPDetail(sopId);
       }
 
       return errorResponse('Not found', 404);
