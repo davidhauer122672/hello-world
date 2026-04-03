@@ -39,6 +39,14 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   GET  /v1/governance/compendium — Sovereign Governance Compendium
+ *   GET  /v1/governance/mission    — Mission Statement & Moral Principals
+ *   GET  /v1/subscriptions/tiers   — Subscription pricing tiers
+ *   GET  /v1/skills               — List AI skills catalog
+ *   POST /v1/skills/execute       — Execute an AI skill
+ *   GET  /v1/market/daily-brief   — Daily AI market briefing
+ *   GET  /v1/systems/status       — Fleet health & system status
+ *   POST /v1/systems/repair       — Trigger system auto-repair
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -57,6 +65,10 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleGovernanceCompendium, handleGovernanceMission, handleSubscriptionTiers } from './routes/governance.js';
+import { handleSkillsList, handleSkillExecute } from './routes/skills.js';
+import { handleMarketDailyBrief } from './routes/market.js';
+import { handleSystemStatus, handleSystemRepair } from './routes/systems.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -78,9 +90,11 @@ export default {
         return jsonResponse({
           status: 'operational',
           service: 'ck-api-gateway',
-          version: '2.0.0',
-          agents: 250,
-          divisions: 8,
+          version: '3.0.0',
+          agents: 360,
+          divisions: 9,
+          endpoints: 53,
+          governance: 'Sovereign Compendium v1.0',
           timestamp: new Date().toISOString(),
         });
       }
@@ -134,9 +148,11 @@ export default {
       return jsonResponse({
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
-        version: '2.0.0',
-        agents: 290,
+        version: '3.0.0',
+        agents: 360,
         divisions: 9,
+        endpoints: 53,
+        governance: 'Sovereign Compendium v1.0',
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -305,6 +321,43 @@ export default {
 
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
+      }
+
+      // ── Governance ──
+      if (path === '/v1/governance/compendium' && method === 'GET') {
+        return handleGovernanceCompendium();
+      }
+
+      if (path === '/v1/governance/mission' && method === 'GET') {
+        return handleGovernanceMission();
+      }
+
+      // ── Subscription Tiers ──
+      if (path === '/v1/subscriptions/tiers' && method === 'GET') {
+        return handleSubscriptionTiers();
+      }
+
+      // ── AI Skills ──
+      if (path === '/v1/skills' && method === 'GET') {
+        return handleSkillsList(url);
+      }
+
+      if (path === '/v1/skills/execute' && method === 'POST') {
+        return await handleSkillExecute(request, env, ctx);
+      }
+
+      // ── Market Intelligence ──
+      if (path === '/v1/market/daily-brief' && method === 'GET') {
+        return handleMarketDailyBrief();
+      }
+
+      // ── Systems & Diagnostics ──
+      if (path === '/v1/systems/status' && method === 'GET') {
+        return handleSystemStatus();
+      }
+
+      if (path === '/v1/systems/repair' && method === 'POST') {
+        return await handleSystemRepair(request, env, ctx);
       }
 
       return errorResponse('Not found', 404);

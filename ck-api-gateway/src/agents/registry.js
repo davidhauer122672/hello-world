@@ -5,16 +5,19 @@
  * Exports the AGENTS array, DIVISIONS array, and lookup functions
  * consumed by routes/agents.js and the Command Center dashboard.
  *
+ * All agents operate under the Coastal Key Sovereign Governance Compendium v1.0.
+ * Each agent inherits its division's Moral Principal alignment (Service, Stewardship, or Security).
+ *
  * Division breakdown:
- *   EXC  Executive           — 20 agents
- *   SEN  Sentinel Sales      — 40 agents
- *   OPS  Operations          — 45 agents
- *   INT  Intelligence        — 30 agents
- *   MKT  Marketing           — 40 agents
- *   FIN  Finance             — 25 agents
- *   VEN  Vendor Management   — 25 agents
- *   TEC  Technology          — 25 agents
- *   WEB  Website Development — 40 agents
+ *   EXC  Executive           — 20 agents  (Stewardship)
+ *   SEN  Sentinel Sales      — 40 agents  (Service)
+ *   OPS  Operations          — 45 agents  (Service)
+ *   INT  Intelligence        — 30 agents  (Stewardship)
+ *   MKT  Marketing           — 40 agents  (Security)
+ *   FIN  Finance             — 25 agents  (Stewardship)
+ *   VEN  Vendor Management   — 25 agents  (Service)
+ *   TEC  Technology          — 25 agents  (Security)
+ *   WEB  Website Development — 40 agents  (Security)
  *                       Total: 290 agents
  */
 
@@ -29,9 +32,19 @@ import { VEN_AGENTS } from './agents-ven.js';
 import { TEC_AGENTS } from './agents-tec.js';
 import { WEB_AGENTS } from './agents-web.js';
 
-// ── Merged agent list ───────────────────────────────────────────────────────
+// ── Division Governance Mapping ─────────────────────────────────────────────
 
-export const AGENTS = [
+const DIVISION_GOVERNANCE = {};
+for (const div of DIVISIONS) {
+  DIVISION_GOVERNANCE[div.id] = {
+    moralPrincipal: div.moralPrincipal,
+    governancePrinciples: div.governancePrinciples,
+  };
+}
+
+// ── Merged agent list with governance enrichment ────────────────────────────
+
+const RAW_AGENTS = [
   ...EXC_AGENTS,
   ...SEN_AGENTS,
   ...OPS_AGENTS,
@@ -42,6 +55,17 @@ export const AGENTS = [
   ...TEC_AGENTS,
   ...WEB_AGENTS,
 ];
+
+// Enrich each agent with governance metadata from its division
+export const AGENTS = RAW_AGENTS.map(agent => ({
+  ...agent,
+  governance: {
+    compendium: 'v1.0',
+    moralPrincipal: DIVISION_GOVERNANCE[agent.division]?.moralPrincipal || 'service',
+    principles: DIVISION_GOVERNANCE[agent.division]?.governancePrinciples || [],
+    compliant: true,
+  },
+}));
 
 // Re-export divisions so consumers only need one import path
 export { DIVISIONS };

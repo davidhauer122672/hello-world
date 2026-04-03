@@ -1,0 +1,23 @@
+{
+  "name": "Coastal Key — AI Command Center",
+  "short_name": "Coastal Key",
+  "description": "AI-powered luxury property management on Florida's Treasure Coast. Your Home Watch Partner.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#c4a35a",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "/screenshots/dashboard.png", "sizes": "1080x1920", "type": "image/png", "label": "AI Command Center Dashboard" }
+  ],
+  "shortcuts": [
+    { "name": "Leads", "url": "/leads", "icons": [{ "src": "/icons/leads.png", "sizes": "96x96" }] },
+    { "name": "AI Skills", "url": "/skills", "icons": [{ "src": "/icons/skills.png", "sizes": "96x96" }] }
+  ]
+}

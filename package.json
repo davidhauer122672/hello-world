@@ -10,10 +10,14 @@
   "scripts": {
     "dev:gateway": "cd ck-api-gateway && npm run dev",
     "dev:sentinel": "cd sentinel-webhook && npm run dev",
-    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc",
+    "dev:mobile": "cd ck-mobile-app && npx wrangler pages dev . --port 8788",
+    "dev:builder": "cd ck-app-builder && npx wrangler pages dev . --port 8789",
+    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc && npm run deploy:mobile && npm run deploy:builder",
     "deploy:gateway": "cd ck-api-gateway && npm run deploy",
     "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
     "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
+    "deploy:mobile": "npx wrangler pages deploy ck-mobile-app --project-name=ck-mobile-app",
+    "deploy:builder": "npx wrangler pages deploy ck-app-builder --project-name=ck-app-builder",
     "test": "npm run test:gateway && npm run test:sentinel",
     "test:gateway": "cd ck-api-gateway && npm test",
     "test:sentinel": "cd sentinel-webhook && npm test"
