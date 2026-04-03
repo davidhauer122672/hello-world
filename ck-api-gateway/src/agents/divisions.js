@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Division Definitions
  *
- * 10 operational divisions that map to the org chart.
+ * 11 operational divisions that map to the org chart.
  * Each division has a color, icon, and description used by the Command Center UI.
  */
 
@@ -75,5 +75,12 @@ export const DIVISIONS = [
     color: '#dc2626',
     icon: 'trending-up',
     description: 'Ferrari-grade 18-month market forecasting, demand modeling, competitive intelligence, and CEO-ready strategic deliverables for home watch and property management.',
+  },
+  {
+    id: 'SCM',
+    name: 'Social Campaign Marketing',
+    color: '#e11d48',
+    icon: 'fire',
+    description: 'Revenue-generating social media operations. Campaign-driven, aggressive, content-savvy. Converts social presence into signed property management clients through the Coastal Key business framework and CEO journey narrative.',
   },
 ];

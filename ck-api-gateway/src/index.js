@@ -45,6 +45,12 @@
  *   GET  /v1/forecast/market-pulse — Current market conditions snapshot
  *   POST /v1/forecast/generate    — Generate 18-month forecast via Claude
  *   POST /v1/forecast/scenario    — Run stress-test scenario simulation
+ *   GET  /v1/social/agents        — List all 20 Social Campaign Marketing agents
+ *   GET  /v1/social/agents/:id    — Get single SCM agent
+ *   GET  /v1/social/dashboard     — SCM division dashboard
+ *   GET  /v1/social/calendar      — Content calendar with posting schedule
+ *   POST /v1/social/generate      — Generate social content via Claude
+ *   POST /v1/social/campaign      — Generate full campaign brief via Claude
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -64,6 +70,7 @@ import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js'
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleListForecastAgents, handleGetForecastAgent, handleForecastDashboard, handleForecastGenerate, handleForecastScenario, handleMarketPulse } from './routes/business-forecast.js';
+import { handleListSocialAgents, handleGetSocialAgent, handleSocialDashboard, handleSocialGenerate, handleSocialCampaign, handleSocialCalendar } from './routes/social-campaign.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -86,8 +93,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 310,
-          divisions: 10,
+          agents: 330,
+          divisions: 11,
           timestamp: new Date().toISOString(),
         });
       }
@@ -142,8 +149,8 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 310,
-        divisions: 10,
+        agents: 330,
+        divisions: 11,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -338,6 +345,32 @@ export default {
       if (path.match(/^\/v1\/forecast\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/forecast/agents/')[1];
         return handleGetForecastAgent(agentId);
+      }
+
+      // ── Social Campaign Marketing Division ──
+      if (path === '/v1/social/agents' && method === 'GET') {
+        return handleListSocialAgents(url);
+      }
+
+      if (path === '/v1/social/dashboard' && method === 'GET') {
+        return handleSocialDashboard();
+      }
+
+      if (path === '/v1/social/calendar' && method === 'GET') {
+        return handleSocialCalendar(url);
+      }
+
+      if (path === '/v1/social/generate' && method === 'POST') {
+        return await handleSocialGenerate(request, env, ctx);
+      }
+
+      if (path === '/v1/social/campaign' && method === 'POST') {
+        return await handleSocialCampaign(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/social\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/social/agents/')[1];
+        return handleGetSocialAgent(agentId);
       }
 
       return errorResponse('Not found', 404);
