@@ -56,7 +56,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install root dependencies
+        run: npm install --ignore-scripts
+
+      - name: Install gateway dependencies
         working-directory: ck-api-gateway
         run: npm install
 
@@ -78,9 +81,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install root dependencies
+        run: npm install --ignore-scripts
+
+      - name: Install sentinel dependencies
         working-directory: sentinel-webhook
         run: npm install
 
@@ -102,6 +107,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
 
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy ck-command-center --project-name=ck-command-center
