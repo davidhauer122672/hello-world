@@ -39,15 +39,18 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
- *   GET  /v1/atlas/transcripts         — Search call transcripts (Atlas)
- *   GET  /v1/atlas/transcripts/:callId — Get single transcript (Atlas)
- *   GET  /v1/atlas/analytics           — Get call analytics (Atlas)
- *   POST /v1/atlas/analytics           — Store daily analytics (Atlas)
- *   GET  /v1/atlas/agents/:id/history  — Agent performance history (Atlas)
- *   POST /v1/atlas/prompts             — Store prompt version (Atlas)
- *   GET  /v1/atlas/prompts/active      — Get active prompt (Atlas)
- *   GET  /v1/atlas/properties          — Search property intel (Atlas)
- *   GET  /v1/atlas/health              — Atlas connectivity check
+ *   GET  /v1/atlas/campaigns              — List Atlas AI campaigns (youratlas.com)
+ *   GET  /v1/atlas/campaigns/:id          — Get single Atlas campaign
+ *   PUT  /v1/atlas/campaigns/:id/status   — Set campaign status
+ *   GET  /v1/atlas/statistics              — Overview stats across campaigns
+ *   GET  /v1/atlas/campaigns/:id/stats    — Stats for specific campaign
+ *   GET  /v1/atlas/campaigns/:id/calls    — Call records for campaign
+ *   GET  /v1/atlas/campaigns/:id/calls/:callId — Single call record detail
+ *   POST /v1/atlas/campaigns/:id/schedule — Schedule a new call
+ *   GET  /v1/atlas/campaigns/:id/bookings — Bookings for campaign
+ *   GET  /v1/atlas/kb/files               — List knowledge base files
+ *   POST /v1/atlas/speed-to-lead          — Trigger speed-to-lead call
+ *   GET  /v1/atlas/health                 — Atlas AI connectivity check
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -66,7 +69,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
-import { handleAtlasTranscripts, handleAtlasTranscriptById, handleAtlasAnalyticsGet, handleAtlasAnalyticsStore, handleAtlasAgentHistory, handleAtlasPromptStore, handleAtlasActivePrompt, handleAtlasProperties, handleAtlasHealth } from './routes/atlas.js';
+import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasHealth } from './routes/atlas.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -129,17 +132,18 @@ export default {
         checks.anthropic = { status: 'error', message: err.message };
       }
 
-      // Atlas connectivity
-      if (env.ATLAS_DATA_API_URL && env.ATLAS_DATA_API_KEY) {
+      // Atlas AI (youratlas.com) connectivity
+      if (env.ATLAS_API_KEY) {
         try {
-          const { atlasRequest, DATABASES, COLLECTIONS } = await import('./services/atlas.js');
-          await atlasRequest(env, 'find', DATABASES.AI_OPS, COLLECTIONS.AUDIT_TRAIL, { filter: {}, limit: 1 });
-          checks.atlas = { status: 'ok', cluster: env.ATLAS_CLUSTER_NAME || 'ckpm-production' };
+          const { listCampaigns } = await import('./services/atlas.js');
+          const campaigns = await listCampaigns(env);
+          const count = Array.isArray(campaigns) ? campaigns.length : (campaigns?.data?.length || 0);
+          checks.atlas = { status: 'ok', platform: 'youratlas.com', campaigns: count };
         } catch (err) {
-          checks.atlas = { status: 'error', message: err.message };
+          checks.atlas = { status: 'error', platform: 'youratlas.com', message: err.message };
         }
       } else {
-        checks.atlas = { status: 'not_configured' };
+        checks.atlas = { status: 'not_configured', platform: 'youratlas.com' };
       }
 
       // KV stores
@@ -330,43 +334,60 @@ export default {
         return await handleAuditLog(url, env);
       }
 
-      // ── Atlas Data API (MongoDB) ──
+      // ── Atlas AI Campaign Platform (youratlas.com) ──
       if (path === '/v1/atlas/health' && method === 'GET') {
         return await handleAtlasHealth(env);
       }
 
-      if (path === '/v1/atlas/transcripts' && method === 'GET') {
-        return await handleAtlasTranscripts(url, env);
+      if (path === '/v1/atlas/campaigns' && method === 'GET') {
+        return await handleAtlasCampaigns(env);
       }
 
-      if (path.match(/^\/v1\/atlas\/transcripts\/[^/]+$/) && method === 'GET') {
-        const callId = path.split('/v1/atlas/transcripts/')[1];
-        return await handleAtlasTranscriptById(callId, env);
+      if (path === '/v1/atlas/statistics' && method === 'GET') {
+        return await handleAtlasOverviewStats(env);
       }
 
-      if (path === '/v1/atlas/analytics' && method === 'GET') {
-        return await handleAtlasAnalyticsGet(url, env);
+      if (path === '/v1/atlas/speed-to-lead' && method === 'POST') {
+        return await handleAtlasSpeedToLead(request, env, ctx);
       }
 
-      if (path === '/v1/atlas/analytics' && method === 'POST') {
-        return await handleAtlasAnalyticsStore(request, env, ctx);
+      if (path === '/v1/atlas/kb/files' && method === 'GET') {
+        return await handleAtlasKBFiles(env);
       }
 
-      if (path.match(/^\/v1\/atlas\/agents\/[^/]+\/history$/) && method === 'GET') {
-        const agentId = path.split('/v1/atlas/agents/')[1].replace('/history', '');
-        return await handleAtlasAgentHistory(agentId, url, env);
+      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/status$/) && method === 'PUT') {
+        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/status', '');
+        return await handleAtlasCampaignStatus(request, campaignId, env, ctx);
       }
 
-      if (path === '/v1/atlas/prompts' && method === 'POST') {
-        return await handleAtlasPromptStore(request, env, ctx);
+      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/stats$/) && method === 'GET') {
+        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/stats', '');
+        return await handleAtlasCampaignStatsById(campaignId, env);
       }
 
-      if (path === '/v1/atlas/prompts/active' && method === 'GET') {
-        return await handleAtlasActivePrompt(url, env);
+      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/calls\/[^/]+$/) && method === 'GET') {
+        const parts = path.match(/^\/v1\/atlas\/campaigns\/([^/]+)\/calls\/([^/]+)$/);
+        return await handleAtlasCallRecordDetail(parts[1], parts[2], env);
       }
 
-      if (path === '/v1/atlas/properties' && method === 'GET') {
-        return await handleAtlasProperties(url, env);
+      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/calls$/) && method === 'GET') {
+        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/calls', '');
+        return await handleAtlasCallRecords(campaignId, url, env);
+      }
+
+      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/schedule$/) && method === 'POST') {
+        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/schedule', '');
+        return await handleAtlasScheduleCall(request, campaignId, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/bookings$/) && method === 'GET') {
+        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/bookings', '');
+        return await handleAtlasCampaignBookings(campaignId, env);
+      }
+
+      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+$/) && method === 'GET') {
+        const campaignId = path.split('/v1/atlas/campaigns/')[1];
+        return await handleAtlasCampaignById(campaignId, env);
       }
 
       return errorResponse('Not found', 404);

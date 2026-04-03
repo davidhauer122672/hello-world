@@ -10,7 +10,7 @@
  */
 
 import { createRecord, TABLES } from '../services/airtable.js';
-import { storeCallTranscript } from '../services/atlas.js';
+import { createScheduledCall } from '../services/atlas.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse } from '../utils/response.js';
 
@@ -151,31 +151,20 @@ export async function handleRetellWebhook(request, env, ctx) {
       }).catch(err => console.error('Failed to link records:', err))
     );
 
-    // Archive failed call to Atlas (fire-and-forget)
-    if (env.ATLAS_DATA_API_URL) {
+    // Schedule Atlas dead-lead-revival follow-up for failed calls (fire-and-forget)
+    if (env.ATLAS_API_KEY && env.ATLAS_REVIVAL_CAMPAIGN_ID && phone) {
       ctx.waitUntil(
-        storeCallTranscript(env, {
-          call_id: call.call_id,
-          agent_id: dynVars.agent_id || metadata.agent_id,
-          agent_name: dynVars.agent_name || metadata.agent_name,
-          campaign: metadata.campaign || 'th-sentinel',
+        createScheduledCall(env, env.ATLAS_REVIVAL_CAMPAIGN_ID, {
           phone_number: phone,
           contact_name: leadName,
-          direction: call.direction,
-          start_timestamp: call.start_timestamp,
-          end_timestamp: call.end_timestamp,
-          duration_seconds: durationSec,
-          disconnection_reason: call.disconnection_reason,
-          disposition: FAILURE_REASON_MAP[call.disconnection_reason] || 'No Answer',
-          transcript_raw: Array.isArray(call.transcript) ? call.transcript : [],
-          transcript_text: transcript,
-          service_zone: ZONE_MAP[zoneKey] || null,
-          sentinel_segment: SEGMENT_MAP[segmentKey] || null,
-          property_address: dynVars.property_address || metadata.property_address,
-          dynamic_variables: dynVars,
-          metadata: metadata,
-          airtable_lead_id: leadRecord.id,
-        }).catch(err => console.error('Atlas failed call archive failed:', err))
+          metadata: {
+            original_call_id: call.call_id,
+            failure_reason: call.disconnection_reason,
+            service_zone: ZONE_MAP[zoneKey] || '',
+            segment: SEGMENT_MAP[segmentKey] || '',
+            airtable_lead_id: leadRecord.id,
+          },
+        }).catch(err => console.error('Atlas revival schedule failed:', err))
       );
     }
 
@@ -206,31 +195,21 @@ export async function handleRetellWebhook(request, env, ctx) {
   // ── Engaged call → Leads table (standard path) ──
   const record = await createRecord(env, TABLES.LEADS, fields);
 
-  // ── Archive to Atlas (fire-and-forget) ──
-  if (env.ATLAS_DATA_API_URL) {
+  // ── Sync qualified lead to Atlas for appointment confirmation (fire-and-forget) ──
+  if (env.ATLAS_API_KEY && env.ATLAS_CONFIRMATION_CAMPAIGN_ID && disposition === 'Booked' && phone) {
     ctx.waitUntil(
-      storeCallTranscript(env, {
-        call_id: call.call_id,
-        agent_id: dynVars.agent_id || metadata.agent_id,
-        agent_name: dynVars.agent_name || metadata.agent_name,
-        campaign: metadata.campaign || 'th-sentinel',
+      createScheduledCall(env, env.ATLAS_CONFIRMATION_CAMPAIGN_ID, {
         phone_number: phone,
         contact_name: leadName,
-        direction: call.direction,
-        start_timestamp: call.start_timestamp,
-        end_timestamp: call.end_timestamp,
-        duration_seconds: durationSec,
-        disconnection_reason: call.disconnection_reason,
-        disposition: disposition,
-        transcript_raw: Array.isArray(call.transcript) ? call.transcript : [],
-        transcript_text: transcript,
-        service_zone: ZONE_MAP[zoneKey] || null,
-        sentinel_segment: SEGMENT_MAP[segmentKey] || null,
-        property_address: dynVars.property_address || metadata.property_address,
-        dynamic_variables: dynVars,
-        metadata: metadata,
-        airtable_lead_id: record.id,
-      }).catch(err => console.error('Atlas transcript archive failed:', err))
+        metadata: {
+          original_call_id: call.call_id,
+          disposition: disposition,
+          service_zone: ZONE_MAP[zoneKey] || '',
+          segment: SEGMENT_MAP[segmentKey] || '',
+          property_address: dynVars.property_address || metadata.property_address || '',
+          airtable_lead_id: record.id,
+        },
+      }).catch(err => console.error('Atlas confirmation schedule failed:', err))
     );
   }
 
