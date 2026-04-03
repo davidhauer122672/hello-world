@@ -18,49 +18,149 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Coastal Key Property Management",
-    "description": "AI-powered luxury property management on Florida's Treasure Coast.",
-    "url": "https://coastalkey-pm.com",
-    "telephone": "+1-772-555-0100",
-    "email": "david@coastalkey-pm.com",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Stuart",
-      "addressRegion": "FL",
-      "addressCountry": "US"
-    },
-    "areaServed": [
-      { "@type": "City", "name": "Vero Beach" },
-      { "@type": "City", "name": "Sebastian" },
-      { "@type": "City", "name": "Fort Pierce" },
-      { "@type": "City", "name": "Port Saint Lucie" },
-      { "@type": "City", "name": "Jensen Beach" },
-      { "@type": "City", "name": "Palm City" },
-      { "@type": "City", "name": "Stuart" },
-      { "@type": "City", "name": "Hutchinson Island" }
-    ],
-    "sameAs": [],
-    "priceRange": "$$",
-    "openingHours": "Mo-Su 00:00-23:59",
-    "image": "https://coastalkey-pm.com/assets/og-image.jpg",
     "@graph": [
       {
-        "@type": "WebSite",
-        "url": "https://coastalkey-pm.com",
+        "@type": "LocalBusiness",
+        "@id": "https://coastalkey-pm.com/#business",
         "name": "Coastal Key Property Management",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://coastalkey-pm.com/search?q={search_term_string}",
-          "query-input": "required name=search_term_string"
+        "alternateName": "CKPM",
+        "description": "NHWA-accredited home watch and luxury property management on Florida's Treasure Coast. AI-powered operations delivering white-glove service from Vero Beach to Jupiter.",
+        "url": "https://coastalkey-pm.com",
+        "telephone": "+1-772-444-2710",
+        "email": "david@coastalkey-pm.com",
+        "image": "https://coastalkey-pm.com/assets/og-image.jpg",
+        "logo": "https://coastalkey-pm.com/assets/logo.png",
+        "priceRange": "$$",
+        "foundingDate": "2024",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "729 SW Federal Hwy Suite 206",
+          "addressLocality": "Stuart",
+          "addressRegion": "FL",
+          "postalCode": "34994",
+          "addressCountry": "US"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "27.1975",
+          "longitude": "-80.2528"
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+            "opens": "07:00",
+            "closes": "19:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Saturday","Sunday"],
+            "opens": "08:00",
+            "closes": "17:00"
+          }
+        ],
+        "areaServed": [
+          { "@id": "https://coastalkey-pm.com/#area-indian-river" },
+          { "@id": "https://coastalkey-pm.com/#area-st-lucie" },
+          { "@id": "https://coastalkey-pm.com/#area-martin" },
+          { "@id": "https://coastalkey-pm.com/#area-palm-beach" }
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Property Services",
+          "itemListElement": [
+            { "@id": "https://coastalkey-pm.com/#service-home-watch" },
+            { "@id": "https://coastalkey-pm.com/#service-property-management" },
+            { "@id": "https://coastalkey-pm.com/#service-vehicle-vessel" }
+          ]
         }
       },
       {
         "@type": "Service",
+        "@id": "https://coastalkey-pm.com/#service-home-watch",
+        "name": "Home Watch Services",
+        "serviceType": "Home Watch",
+        "description": "NHWA-accredited home watch inspections for seasonal, vacant, and absentee-owned properties on Florida's Treasure Coast. Weekly and biweekly interior/exterior inspections with photo documentation.",
+        "url": "https://coastalkey-pm.com/home-watch",
+        "provider": { "@id": "https://coastalkey-pm.com/#business" },
+        "areaServed": [
+          { "@id": "https://coastalkey-pm.com/#area-indian-river" },
+          { "@id": "https://coastalkey-pm.com/#area-st-lucie" },
+          { "@id": "https://coastalkey-pm.com/#area-martin" },
+          { "@id": "https://coastalkey-pm.com/#area-palm-beach" }
+        ]
+      },
+      {
+        "@type": "Service",
+        "@id": "https://coastalkey-pm.com/#service-property-management",
+        "name": "Full-Service Property Management",
         "serviceType": "Property Management",
-        "provider": { "@type": "LocalBusiness", "name": "Coastal Key Property Management" },
-        "areaServed": { "@type": "State", "name": "Florida" },
-        "description": "Full-service property management including maintenance, guest services, concierge, investor relations, and AI-powered operations."
+        "description": "End-to-end property management including tenant screening, maintenance coordination, financial reporting, short-term rental management, and investor relations.",
+        "url": "https://coastalkey-pm.com/services",
+        "provider": { "@id": "https://coastalkey-pm.com/#business" }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://coastalkey-pm.com/#service-vehicle-vessel",
+        "name": "Vehicle & Vessel Oversight",
+        "serviceType": "Vehicle and Boat Care",
+        "description": "Comprehensive vehicle and vessel monitoring for absentee owners. Battery maintenance, engine cycling, bilge checks, detailing coordination, and secure storage oversight.",
+        "url": "https://coastalkey-pm.com/services",
+        "provider": { "@id": "https://coastalkey-pm.com/#business" }
+      },
+      {
+        "@type": "AdministrativeArea",
+        "@id": "https://coastalkey-pm.com/#area-indian-river",
+        "name": "Indian River County",
+        "geo": { "@type": "GeoCoordinates", "latitude": "27.6948", "longitude": "-80.3682" },
+        "containsPlace": [
+          { "@type": "City", "name": "Vero Beach" },
+          { "@type": "City", "name": "Sebastian" },
+          { "@type": "City", "name": "Indian River Shores" }
+        ]
+      },
+      {
+        "@type": "AdministrativeArea",
+        "@id": "https://coastalkey-pm.com/#area-st-lucie",
+        "name": "St. Lucie County",
+        "geo": { "@type": "GeoCoordinates", "latitude": "27.3800", "longitude": "-80.3500" },
+        "containsPlace": [
+          { "@type": "City", "name": "Fort Pierce" },
+          { "@type": "City", "name": "Port Saint Lucie" },
+          { "@type": "City", "name": "Hutchinson Island" }
+        ]
+      },
+      {
+        "@type": "AdministrativeArea",
+        "@id": "https://coastalkey-pm.com/#area-martin",
+        "name": "Martin County",
+        "geo": { "@type": "GeoCoordinates", "latitude": "27.0842", "longitude": "-80.3556" },
+        "containsPlace": [
+          { "@type": "City", "name": "Stuart" },
+          { "@type": "City", "name": "Jensen Beach" },
+          { "@type": "City", "name": "Palm City" },
+          { "@type": "City", "name": "Hobe Sound" }
+        ]
+      },
+      {
+        "@type": "AdministrativeArea",
+        "@id": "https://coastalkey-pm.com/#area-palm-beach",
+        "name": "Palm Beach County",
+        "geo": { "@type": "GeoCoordinates", "latitude": "26.6515", "longitude": "-80.2000" },
+        "containsPlace": [
+          { "@type": "City", "name": "Jupiter" },
+          { "@type": "City", "name": "Tequesta" },
+          { "@type": "City", "name": "Palm Beach Gardens" },
+          { "@type": "City", "name": "Juno Beach" },
+          { "@type": "City", "name": "North Palm Beach" }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://coastalkey-pm.com/#website",
+        "url": "https://coastalkey-pm.com",
+        "name": "Coastal Key Property Management",
+        "publisher": { "@id": "https://coastalkey-pm.com/#business" }
       }
     ]
   }
