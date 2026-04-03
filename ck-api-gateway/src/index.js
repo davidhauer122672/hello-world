@@ -14,6 +14,7 @@
  *   GET  /v1/agents/:id         — Get single agent details
  *   POST /v1/agents/:id/action  — Execute agent action (activate/pause/restart/train)
  *   GET  /v1/dashboard          — Combined dashboard data
+ *   POST /v1/workflows/wf2     — WF-2 Social Approval → Buffer Publish
  *   POST /v1/workflows/scaa1   — SCAA-1 Battle Plan Pipeline
  *   POST /v1/workflows/wf3     — WF-3 Investor Escalation
  *   POST /v1/workflows/wf4     — WF-4 Long-Tail Nurture
@@ -52,6 +53,7 @@ import { handleContentGenerate } from './routes/content.js';
 import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
+import { handleWf2SocialPublish } from './routes/social-publish.js';
 import { handlePropertySearch, handlePropertyImport, handlePropertyStats } from './routes/property-intel.js';
 import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAnalytics, handleCampaignLeadContacts, handleCampaignDashboard } from './routes/sentinel-campaign.js';
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
@@ -204,6 +206,10 @@ export default {
       }
 
       // ── Workflow Pipelines ──
+      if (path === '/v1/workflows/wf2' && method === 'POST') {
+        return await handleWf2SocialPublish(request, env, ctx);
+      }
+
       if (path === '/v1/workflows/scaa1' && method === 'POST') {
         return await handleScaa1BattlePlan(request, env, ctx);
       }
