@@ -4,6 +4,30 @@
 Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, and Claude API integrations.
 
+## Enterprise AI App Stack
+Core platform integrations powering CKPM operations:
+
+### Anthropic / Claude Ecosystem
+- **Claude Code** — CLI development agent for codebase management, deployment, and engineering tasks
+- **Claude Co-Work** — Collaborative AI workspace for team-based research and content production
+- **Atlas AI** — Strategic intelligence and market analysis platform
+
+### Google AI Ecosystem
+- **Gemini (gemini.google.com)** — Conversational AI for research, analysis, and content generation
+- **Google AI Studio** — Prompt engineering, model tuning, and API prototyping
+- **Google Gemini Gems** — Custom AI specialists for domain-specific workflows
+- **Google NotebookLM** — AI-powered research notebook for document analysis and source synthesis
+- **Google Lumiere** — AI video generation for property showcases and marketing content
+- **Google Palmelli** — Advanced language model integration for content workflows
+- **Google Whisk** — AI image generation and creative asset production
+- **Google Opal** — AI-assisted design and visual content platform
+
+### Independent AI Platforms
+- **Bananapro.ai** — AI content and automation platform for marketing operations
+- **Apex** — AI performance optimization and analytics engine
+- **OpenClaw** — Open-source AI tooling and model orchestration
+- **DanAI** — AI assistant platform for business intelligence and workflow automation
+
 ## Live Endpoints
 - **API Gateway**: https://ck-api-gateway.david-e59.workers.dev
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
