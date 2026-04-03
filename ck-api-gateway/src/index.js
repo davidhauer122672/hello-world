@@ -39,6 +39,15 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   GET  /v1/atlas/transcripts         — Search call transcripts (Atlas)
+ *   GET  /v1/atlas/transcripts/:callId — Get single transcript (Atlas)
+ *   GET  /v1/atlas/analytics           — Get call analytics (Atlas)
+ *   POST /v1/atlas/analytics           — Store daily analytics (Atlas)
+ *   GET  /v1/atlas/agents/:id/history  — Agent performance history (Atlas)
+ *   POST /v1/atlas/prompts             — Store prompt version (Atlas)
+ *   GET  /v1/atlas/prompts/active      — Get active prompt (Atlas)
+ *   GET  /v1/atlas/properties          — Search property intel (Atlas)
+ *   GET  /v1/atlas/health              — Atlas connectivity check
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -57,6 +66,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleAtlasTranscripts, handleAtlasTranscriptById, handleAtlasAnalyticsGet, handleAtlasAnalyticsStore, handleAtlasAgentHistory, handleAtlasPromptStore, handleAtlasActivePrompt, handleAtlasProperties, handleAtlasHealth } from './routes/atlas.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -117,6 +127,19 @@ export default {
         checks.anthropic = { status: anRes.ok ? 'ok' : 'error', code: anRes.status };
       } catch (err) {
         checks.anthropic = { status: 'error', message: err.message };
+      }
+
+      // Atlas connectivity
+      if (env.ATLAS_DATA_API_URL && env.ATLAS_DATA_API_KEY) {
+        try {
+          const { atlasRequest, DATABASES, COLLECTIONS } = await import('./services/atlas.js');
+          await atlasRequest(env, 'find', DATABASES.AI_OPS, COLLECTIONS.AUDIT_TRAIL, { filter: {}, limit: 1 });
+          checks.atlas = { status: 'ok', cluster: env.ATLAS_CLUSTER_NAME || 'ckpm-production' };
+        } catch (err) {
+          checks.atlas = { status: 'error', message: err.message };
+        }
+      } else {
+        checks.atlas = { status: 'not_configured' };
       }
 
       // KV stores
@@ -305,6 +328,45 @@ export default {
 
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
+      }
+
+      // ── Atlas Data API (MongoDB) ──
+      if (path === '/v1/atlas/health' && method === 'GET') {
+        return await handleAtlasHealth(env);
+      }
+
+      if (path === '/v1/atlas/transcripts' && method === 'GET') {
+        return await handleAtlasTranscripts(url, env);
+      }
+
+      if (path.match(/^\/v1\/atlas\/transcripts\/[^/]+$/) && method === 'GET') {
+        const callId = path.split('/v1/atlas/transcripts/')[1];
+        return await handleAtlasTranscriptById(callId, env);
+      }
+
+      if (path === '/v1/atlas/analytics' && method === 'GET') {
+        return await handleAtlasAnalyticsGet(url, env);
+      }
+
+      if (path === '/v1/atlas/analytics' && method === 'POST') {
+        return await handleAtlasAnalyticsStore(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/atlas\/agents\/[^/]+\/history$/) && method === 'GET') {
+        const agentId = path.split('/v1/atlas/agents/')[1].replace('/history', '');
+        return await handleAtlasAgentHistory(agentId, url, env);
+      }
+
+      if (path === '/v1/atlas/prompts' && method === 'POST') {
+        return await handleAtlasPromptStore(request, env, ctx);
+      }
+
+      if (path === '/v1/atlas/prompts/active' && method === 'GET') {
+        return await handleAtlasActivePrompt(url, env);
+      }
+
+      if (path === '/v1/atlas/properties' && method === 'GET') {
+        return await handleAtlasProperties(url, env);
       }
 
       return errorResponse('Not found', 404);

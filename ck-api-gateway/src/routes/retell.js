@@ -10,6 +10,7 @@
  */
 
 import { createRecord, TABLES } from '../services/airtable.js';
+import { storeCallTranscript } from '../services/atlas.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse } from '../utils/response.js';
 
@@ -150,6 +151,34 @@ export async function handleRetellWebhook(request, env, ctx) {
       }).catch(err => console.error('Failed to link records:', err))
     );
 
+    // Archive failed call to Atlas (fire-and-forget)
+    if (env.ATLAS_DATA_API_URL) {
+      ctx.waitUntil(
+        storeCallTranscript(env, {
+          call_id: call.call_id,
+          agent_id: dynVars.agent_id || metadata.agent_id,
+          agent_name: dynVars.agent_name || metadata.agent_name,
+          campaign: metadata.campaign || 'th-sentinel',
+          phone_number: phone,
+          contact_name: leadName,
+          direction: call.direction,
+          start_timestamp: call.start_timestamp,
+          end_timestamp: call.end_timestamp,
+          duration_seconds: durationSec,
+          disconnection_reason: call.disconnection_reason,
+          disposition: FAILURE_REASON_MAP[call.disconnection_reason] || 'No Answer',
+          transcript_raw: Array.isArray(call.transcript) ? call.transcript : [],
+          transcript_text: transcript,
+          service_zone: ZONE_MAP[zoneKey] || null,
+          sentinel_segment: SEGMENT_MAP[segmentKey] || null,
+          property_address: dynVars.property_address || metadata.property_address,
+          dynamic_variables: dynVars,
+          metadata: metadata,
+          airtable_lead_id: leadRecord.id,
+        }).catch(err => console.error('Atlas failed call archive failed:', err))
+      );
+    }
+
     // Slack alert for failed calls (different format)
     if (env.SLACK_WEBHOOK_URL) {
       ctx.waitUntil(sendSlackFailedAlert(env, call.call_id, phone, call.disconnection_reason, durationSec, transcript, failedRecord.id));
@@ -176,6 +205,34 @@ export async function handleRetellWebhook(request, env, ctx) {
 
   // ── Engaged call → Leads table (standard path) ──
   const record = await createRecord(env, TABLES.LEADS, fields);
+
+  // ── Archive to Atlas (fire-and-forget) ──
+  if (env.ATLAS_DATA_API_URL) {
+    ctx.waitUntil(
+      storeCallTranscript(env, {
+        call_id: call.call_id,
+        agent_id: dynVars.agent_id || metadata.agent_id,
+        agent_name: dynVars.agent_name || metadata.agent_name,
+        campaign: metadata.campaign || 'th-sentinel',
+        phone_number: phone,
+        contact_name: leadName,
+        direction: call.direction,
+        start_timestamp: call.start_timestamp,
+        end_timestamp: call.end_timestamp,
+        duration_seconds: durationSec,
+        disconnection_reason: call.disconnection_reason,
+        disposition: disposition,
+        transcript_raw: Array.isArray(call.transcript) ? call.transcript : [],
+        transcript_text: transcript,
+        service_zone: ZONE_MAP[zoneKey] || null,
+        sentinel_segment: SEGMENT_MAP[segmentKey] || null,
+        property_address: dynVars.property_address || metadata.property_address,
+        dynamic_variables: dynVars,
+        metadata: metadata,
+        airtable_lead_id: record.id,
+      }).catch(err => console.error('Atlas transcript archive failed:', err))
+    );
+  }
 
   // ── Slack notification (fire-and-forget) ──
   if (env.SLACK_WEBHOOK_URL) {

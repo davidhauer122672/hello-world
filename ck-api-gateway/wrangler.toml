@@ -7,6 +7,7 @@ AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
 ENVIRONMENT = "production"
 RATE_LIMIT_RPM = "60"
 MAX_TRANSCRIPT_CHARS = "100000"
+ATLAS_CLUSTER_NAME = "ckpm-production"
 
 # ── KV Namespace Bindings ──
 # These cache inference results, session state, rate limits, and audit logs
@@ -32,3 +33,5 @@ id = "3d722426db4241209fd0444b42f84904"
 # AIRTABLE_API_KEY         — Airtable personal access token
 # WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Zapier)
 # SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications
+# ATLAS_DATA_API_URL        — Atlas Data API base URL (e.g. https://us-east-1.aws.data.mongodb-api.com/app/data-xxxxx/endpoint/data/v1)
+# ATLAS_DATA_API_KEY        — Atlas Data API key
