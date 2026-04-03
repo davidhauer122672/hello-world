@@ -16,16 +16,23 @@
  *   /portal/content  — Content calendar
  *   /portal/vendors  — Vendor compliance
  *   /portal/reports  — Reports & analytics
+ *   /portal/podcast  — Podcast channel management
+ *   /podcast         — Public podcast page
  *
  * All legacy subdomains redirect to this domain via _redirects.
  */
 
-import { initRouter } from './src/utils/router.js';
-import { initAuth } from './src/utils/auth.js';
-import { renderApp } from './src/components/app.js';
+import { initRouter } from './utils/router.js';
+import { initAuth } from './utils/auth.js';
+import { renderApp } from './components/app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initAuth();
   renderApp();
   initRouter();
+
+  // Register service worker for PWA support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
 });

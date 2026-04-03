@@ -10,9 +10,10 @@
   "scripts": {
     "dev:gateway": "cd ck-api-gateway && npm run dev",
     "dev:sentinel": "cd sentinel-webhook && npm run dev",
-    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc",
+    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:website && npm run deploy:cc",
     "deploy:gateway": "cd ck-api-gateway && npm run deploy",
     "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
+    "deploy:website": "npx wrangler pages deploy ck-website --project-name=coastalkey-pm",
     "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
     "test": "npm run test:gateway && npm run test:sentinel && npm run test:domain && npm run test:smoke",
     "test:gateway": "cd ck-api-gateway && npm test",

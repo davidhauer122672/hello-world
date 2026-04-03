@@ -68,6 +68,64 @@ describe('App HTML structure', () => {
     assert.ok(html.includes('og:title'), 'og:title required');
     assert.ok(html.includes('og:description'), 'og:description required');
   });
+
+  it('should have PWA manifest link', () => {
+    assert.ok(html.includes('manifest.json'), 'manifest.json link required for PWA');
+  });
+
+  it('should have PWA meta tags', () => {
+    assert.ok(html.includes('theme-color'), 'theme-color meta required for PWA');
+    assert.ok(html.includes('apple-mobile-web-app-capable'), 'apple-mobile-web-app-capable required');
+    assert.ok(html.includes('apple-touch-icon'), 'apple-touch-icon link required');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PWA Configuration
+// ═══════════════════════════════════════════════════════════════════════════════
+
+describe('PWA configuration', () => {
+  let manifest;
+  let sw;
+  let mainJs;
+
+  before(() => {
+    manifest = JSON.parse(readFile('manifest.json'));
+    sw = readFile('sw.js');
+    mainJs = readFile('src/main.js');
+  });
+
+  it('should have a valid manifest.json', () => {
+    assert.ok(manifest.name, 'manifest name required');
+    assert.ok(manifest.short_name, 'manifest short_name required');
+    assert.ok(manifest.start_url, 'manifest start_url required');
+    assert.equal(manifest.display, 'standalone', 'display must be standalone for PWA');
+  });
+
+  it('should define PWA icons in manifest', () => {
+    assert.ok(Array.isArray(manifest.icons), 'manifest icons must be an array');
+    const sizes = manifest.icons.map(i => i.sizes);
+    assert.ok(sizes.includes('192x192'), '192x192 icon required');
+    assert.ok(sizes.includes('512x512'), '512x512 icon required');
+  });
+
+  it('should have a service worker file', () => {
+    assert.ok(sw.includes('install'), 'service worker must handle install event');
+    assert.ok(sw.includes('activate'), 'service worker must handle activate event');
+    assert.ok(sw.includes('fetch'), 'service worker must handle fetch event');
+  });
+
+  it('should register service worker in main.js', () => {
+    assert.ok(mainJs.includes('serviceWorker'), 'main.js must reference serviceWorker');
+    assert.ok(mainJs.includes('register'), 'main.js must register the service worker');
+  });
+
+  it('should have correct import paths in main.js', () => {
+    assert.ok(!mainJs.includes("'./src/utils/"), 'main.js must NOT use ./src/utils/ (double nesting)');
+    assert.ok(!mainJs.includes("'./src/components/"), 'main.js must NOT use ./src/components/ (double nesting)');
+    assert.ok(mainJs.includes("'./utils/"), 'main.js must use ./utils/ for imports');
+    assert.ok(mainJs.includes("'./components/"), 'main.js must use ./components/ for imports');
+  });
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
