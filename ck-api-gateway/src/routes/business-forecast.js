@@ -41,7 +41,21 @@ const CKPM_CURRENT_STATE = {
   properties: 0,
   monthlyRevenue: 0,
   launchDate: '2026-04-03',
-  phase: 'pre-revenue',
+  phase: 'launch',
+  milestonesCompleted: [
+    { item: 'Home Watch pricing finalized', date: '2026-04-03', status: 'complete' },
+    { item: 'Sentinel Sales division activated for outbound prospecting', date: '2026-04-03', status: 'complete' },
+    { item: 'First 2 clients targeted', date: '2026-04-03', status: 'complete' },
+    { item: 'NHWA accreditation secured', date: '2026-04-03', status: 'complete' },
+  ],
+  nextMilestones: [
+    { item: 'Close first 2 Home Watch clients', target: 'Month 1' },
+    { item: 'Build referral pipeline — RE agents and HOA boards', target: 'Month 2-3' },
+    { item: 'Deploy AI-powered service demo as competitive differentiator', target: 'Month 3' },
+    { item: 'Launch Seasonal Care tier ahead of hurricane season', target: 'Month 3-4' },
+    { item: 'Reach 8 clients / $5.2K monthly revenue', target: 'Month 3' },
+    { item: 'Evaluate break-even trajectory', target: 'Month 6' },
+  ],
 };
 
 const SERVICE_TIERS = [
@@ -226,7 +240,7 @@ export function handleMarketPulse() {
       note: 'CKPM is pre-revenue. Competitors are not yet aware of our entry.',
     },
     keyInsights: [
-      'CKPM launches with 0 clients, 0 revenue — all projections model ramp from zero',
+      'CKPM in launch phase: pricing set, NHWA accredited, Sentinel Sales active, first 2 clients targeted — revenue imminent',
       'Snowbird corridor migration accelerating — Treasure Coast absorption rate +16% YoY',
       'Concierge tier shows highest growth potential at 22.6% projected 18mo market increase',
       'Fragmented market (47+ operators, no dominant player) favors aggressive new entrant with technology moat',
@@ -253,15 +267,16 @@ export async function handleForecastGenerate(request, env, ctx) {
 
   const systemPrompt = `You are BFR-017 CEO Synthesizer, the executive briefing agent for Coastal Key Property Management's Business Forecast Division. You produce Ferrari-quality strategic forecasts.
 
-CRITICAL CONTEXT — STARTING FROM ZERO:
+CRITICAL CONTEXT — LAUNCH PHASE (WEEK 1):
 - Company: Coastal Key Property Management (CKPM)
 - Region: Treasure Coast, Florida (Vero Beach to North Palm Beach)
 - Services: Home Watch, Full Property Management, Concierge & Luxury, Seasonal Care
-- CURRENT CLIENTS: 0 (zero)
+- CURRENT CLIENTS: 0 (first 2 targeted, not yet closed)
 - CURRENT REVENUE: $0/month
 - CURRENT PROPERTIES: 0
-- COMPANY PHASE: Pre-revenue launch
+- COMPANY PHASE: Active launch — all systems operational
 - Launch Date: April 2026
+- COMPLETED: Home Watch pricing finalized, NHWA accredited, Sentinel Sales division activated, first 2 prospects targeted
 - Forecast Horizon: 18 months (${new Date().toISOString().slice(0, 7)} to ${new Date(Date.now() + 18 * 30.44 * 86400000).toISOString().slice(0, 7)})
 - Quality Standard: Ferrari-grade — precise, substantiated, actionable
 
@@ -418,11 +433,11 @@ HISTORICAL BASIS: ${scenarioConfig.historicalBasis}
 
 COMPANY CONTEXT:
 - Treasure Coast property management (Vero Beach to North Palm Beach)
-- CURRENT CLIENTS: 0 — company is pre-revenue, launching April 2026
-- CURRENT REVENUE: $0/month
+- CURRENT CLIENTS: 0 (first 2 targeted, Sentinel Sales active, NHWA accredited)
+- CURRENT REVENUE: $0/month — launch phase, week 1
 - Target portfolio at 18 months: 53 managed properties
 - Target revenue mix: Home Watch (35%), Full Management (30%), Concierge (20%), Seasonal (15%)
-- Competitive advantage: 310-agent AI fleet, zero competitors use AI
+- Competitive advantage: 310-agent AI fleet, NHWA accredited, zero competitors use AI
 
 Produce a structured stress-test analysis:
 1. SCENARIO DESCRIPTION — What exactly happens, over what timeline
