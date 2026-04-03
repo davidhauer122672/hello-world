@@ -4,8 +4,7 @@
  * Buffer API v1: https://buffer.com/developers/api
  * Requires BUFFER_ACCESS_TOKEN secret (set via wrangler secret put).
  *
- * Supported channels: Instagram Business, Facebook Page, LinkedIn Company Page.
- * Alignable is NOT supported by Buffer — requires manual posting (handled by WF-2 filter branch).
+ * Supported channels: Instagram Business, Facebook Page, LinkedIn Company Page, X (Twitter).
  */
 
 const BUFFER_API = 'https://api.bufferapp.com/1';
@@ -98,10 +97,10 @@ export async function getUpdate(env, updateId) {
 
 /**
  * Resolve Buffer profile IDs from platform names.
- * Matches platform strings (instagram, facebook, linkedin) against connected profiles.
+ * Matches platform strings (instagram, facebook, linkedin, x/twitter) against connected profiles.
  *
  * @param {object} env
- * @param {string[]} platforms — e.g. ["Instagram", "Facebook", "LinkedIn"]
+ * @param {string[]} platforms — e.g. ["Instagram", "Facebook", "LinkedIn", "X"]
  * @returns {object} — { profileIds: string[], unmatchedPlatforms: string[] }
  */
 export async function resolveProfiles(env, platforms) {

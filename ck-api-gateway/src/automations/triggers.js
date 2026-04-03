@@ -129,8 +129,8 @@ export const SCAA1_BATTLE_PLAN = {
  * WF2 - Social Approval → Buffer Publish Workflow
  *
  * Triggers when a Content Calendar record's "Status" field changes to "Approved".
- * Sends Slack preview, schedules via Buffer API, updates record to Scheduled,
- * and fires manual-publish alert for Alignable posts.
+ * Sends Slack preview, schedules via Buffer API across all connected channels
+ * (Instagram, Facebook, LinkedIn, X), and updates record to Scheduled.
  *
  * Deployment Tracker: recBDReVmJrH6dPHg
  * Content Calendar Table: tblEPr4f2lMz6ruxF
@@ -160,7 +160,7 @@ export const WF2_SOCIAL_PUBLISH = {
     },
   },
   dependencies: [
-    'Buffer account connected (Instagram Business, Facebook Page, LinkedIn Company Page)',
+    'Buffer account connected (Instagram Business, Facebook Page, LinkedIn Company Page, X/Twitter)',
     'BUFFER_ACCESS_TOKEN secret configured',
     'Slack #content-calendar channel exists (C0ALCM1E5E2)',
   ],
@@ -171,13 +171,7 @@ export const WF2_SOCIAL_PUBLISH = {
     status: { fieldId: 'fldD2rgOO9z1MTs9U', maps_to: 'Airtable Status (Approved → Scheduled)' },
     notes: { fieldId: 'fld0hiWEXsL70GFpS', maps_to: 'Buffer Post ID written here' },
   },
-  filter_branches: {
-    alignable: {
-      condition: 'Platform includes Alignable',
-      action: 'Slack alert to #content-calendar — manual publish required',
-      reason: 'Alignable does not support Buffer API',
-    },
-  },
+  supported_platforms: ['Instagram', 'Facebook', 'LinkedIn', 'X'],
   test_record: 'rechVm1hmggAvfvXp',
   slack_channel: '#content-calendar',
 };

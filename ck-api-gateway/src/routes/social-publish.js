@@ -7,7 +7,8 @@
  * 1. Sends Slack preview to #content-calendar
  * 2. Schedules post via Buffer API (Caption → text, Asset → image, Post Date → scheduled_at)
  * 3. Updates Airtable: Status → "Scheduled", Buffer Post ID → Notes
- * 4. Alignable filter: if platform includes Alignable → Slack manual-publish alert
+ *
+ * Supported platforms: Instagram, Facebook, LinkedIn, X (Twitter)
  *
  * Body: { recordId: "recXXX" }
  *
@@ -30,10 +31,6 @@ import { jsonResponse, errorResponse } from '../utils/response.js';
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const SLACK_CHANNEL_CONTENT = '#content-calendar';
-const ALIGNABLE_PLATFORM = 'Alignable';
-
-// Platforms that Buffer cannot publish to — require manual posting
-const MANUAL_ONLY_PLATFORMS = [ALIGNABLE_PLATFORM];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -58,7 +55,6 @@ function sendSlack(env, ctx, channel, text) {
 
 /**
  * Extract the first image URL from an Airtable attachment field.
- * Attachment fields are arrays of objects with { url, filename, type }.
  * @param {Array|undefined} attachments
  * @returns {string|null}
  */
@@ -85,16 +81,14 @@ function normalizePlatforms(platformValue) {
 }
 
 /**
- * Convert a date string or Date to ISO 8601 format suitable for Buffer.
+ * Convert a date string to ISO 8601 format suitable for Buffer.
  * If the date has no time component, defaults to 10:00 AM EST (15:00 UTC).
  * @param {string} dateStr — YYYY-MM-DD or ISO string
- * @returns {string} — ISO 8601 datetime
+ * @returns {string|null} — ISO 8601 datetime
  */
 function toBufferScheduleTime(dateStr) {
   if (!dateStr) return null;
-  // If already has a time component, return as-is
   if (dateStr.includes('T')) return dateStr;
-  // Default to 10:00 AM EST = 15:00 UTC
   return `${dateStr}T15:00:00Z`;
 }
 
@@ -154,32 +148,13 @@ export async function handleWf2SocialPublish(request, env, ctx) {
     `*Caption Preview:*\n${previewText}`,
   ].join('\n'));
 
-  // ── 4. Identify manual-only platforms (Alignable) ──
-  const manualPlatforms = platforms.filter(p =>
-    MANUAL_ONLY_PLATFORMS.some(m => p.toLowerCase().includes(m.toLowerCase()))
-  );
-  const bufferPlatforms = platforms.filter(p =>
-    !MANUAL_ONLY_PLATFORMS.some(m => p.toLowerCase().includes(m.toLowerCase()))
-  );
-
-  // ── 5. Alignable filter branch — Slack manual-publish alert ──
-  if (manualPlatforms.length > 0) {
-    sendSlack(env, ctx, SLACK_CHANNEL_CONTENT, [
-      '*ALIGNABLE POST READY*',
-      `*Title:* ${postTitle}`,
-      `*Post Date:* ${postDate || 'ASAP'}`,
-      `*Manual publish required.* Alignable does not support Buffer API.`,
-      `*Caption:*\n${caption}`,
-    ].join('\n'));
-  }
-
-  // ── 6. Buffer Create Post ──
+  // ── 4. Buffer Create Post ──
   let bufferResult = null;
   let bufferPostId = null;
 
-  if (bufferPlatforms.length > 0) {
+  if (platforms.length > 0) {
     try {
-      const { profileIds, unmatchedPlatforms } = await resolveProfiles(env, bufferPlatforms);
+      const { profileIds, unmatchedPlatforms } = await resolveProfiles(env, platforms);
 
       if (unmatchedPlatforms.length > 0) {
         console.warn(`WF-2: Unmatched platforms: ${unmatchedPlatforms.join(', ')}`);
@@ -201,16 +176,15 @@ export async function handleWf2SocialPublish(request, env, ctx) {
           bufferPostId = bufferResult.update.id;
         }
       } else {
-        console.warn('WF-2: No matching Buffer profiles found for platforms:', bufferPlatforms);
+        console.warn('WF-2: No matching Buffer profiles found for platforms:', platforms);
       }
     } catch (err) {
       console.error('WF-2 Buffer publish failed:', err);
-      // Non-fatal — continue to update Airtable with error note
       bufferPostId = `ERROR: ${err.message}`;
     }
   }
 
-  // ── 7. Update Airtable: Status → Scheduled, Buffer Post ID → Notes ──
+  // ── 5. Update Airtable: Status → Scheduled, Buffer Post ID → Notes ──
   const updateFields = {
     'Status': 'Scheduled',
   };
@@ -221,11 +195,6 @@ export async function handleWf2SocialPublish(request, env, ctx) {
     updateFields['Notes'] = existingNotes ? `${existingNotes}\n${bufferNote}` : bufferNote;
   }
 
-  if (manualPlatforms.length > 0) {
-    const manualNote = `[${new Date().toISOString()}] Manual publish required: ${manualPlatforms.join(', ')}`;
-    updateFields['Notes'] = (updateFields['Notes'] || fields['Notes'] || '') + `\n${manualNote}`;
-  }
-
   try {
     await updateRecord(env, TABLES.CONTENT_CALENDAR, recordId, updateFields);
   } catch (err) {
@@ -233,7 +202,7 @@ export async function handleWf2SocialPublish(request, env, ctx) {
     return errorResponse(`Buffer post created but Airtable update failed: ${err.message}`, 502);
   }
 
-  // ── 8. Audit log ──
+  // ── 6. Audit log ──
   writeAudit(env, ctx, {
     route: '/v1/workflows/wf2',
     action: 'social_publish',
@@ -241,16 +210,12 @@ export async function handleWf2SocialPublish(request, env, ctx) {
     postTitle,
     platforms: platforms.join(', '),
     bufferPostId: bufferPostId || 'none',
-    manualPlatforms: manualPlatforms.join(', ') || 'none',
   });
 
   return jsonResponse({
     published: true,
     postTitle,
-    platforms: {
-      buffer: bufferPlatforms,
-      manual: manualPlatforms,
-    },
+    platforms,
     bufferPostId: bufferPostId || null,
     bufferResult: bufferResult || null,
     airtableStatus: 'Scheduled',

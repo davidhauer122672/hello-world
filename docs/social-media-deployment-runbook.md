@@ -1,6 +1,6 @@
 # Social Media Automation — Deployment Runbook
 
-**Version:** 1.0
+**Version:** 2.0
 **Last Updated:** 2026-04-03
 **Owner:** CTO / TEC Division
 **Deployment Tracker:** `recBDReVmJrH6dPHg`
@@ -9,7 +9,7 @@
 
 ## Objective
 
-End-to-end deployment of the WF-2 Social Approval → Buffer pipeline, including account setup, API integrations, Zapier workflow build, and Cloudflare Worker deployment.
+End-to-end deployment of the WF-2 Social Approval → Buffer pipeline across four channels (Instagram, Facebook, LinkedIn, X), including account setup, API integrations, Zapier workflow build, and Cloudflare Worker deployment.
 
 ---
 
@@ -28,11 +28,13 @@ End-to-end deployment of the WF-2 Social Approval → Buffer pipeline, including
 | Instagram | Business Account | Connect via Facebook Business Suite |
 | Facebook | Business Page | Direct page connection |
 | LinkedIn | Company Page | Connect via LinkedIn OAuth |
+| X (Twitter) | Business/Pro Account | Connect via X API OAuth |
 
 - [ ] Instagram Business connected to Buffer
 - [ ] Facebook Business Page connected to Buffer
 - [ ] LinkedIn Company Page connected to Buffer
-- [ ] Verify all three channels show as "Connected" in Buffer dashboard
+- [ ] X (Twitter) account connected to Buffer
+- [ ] Verify all four channels show as "Connected" in Buffer dashboard
 - [ ] Post a test update to each channel to confirm permissions
 
 ### 1.3 Generate Buffer Access Token
@@ -65,10 +67,8 @@ Follow the detailed build guide: [`docs/wf2-zapier-setup-guide.md`](./wf2-zapier
 
 - [ ] Step 1: Airtable trigger configured (Updated Record, Status = Approved)
 - [ ] Step 2: Slack preview message configured
-- [ ] Step 3: Buffer Create Update configured (Caption, Asset, Post Date mapped)
+- [ ] Step 3: Buffer Create Update configured (Caption, Asset, Post Date mapped to all four channels)
 - [ ] Step 4: Airtable Update Record configured (Status → Scheduled, Notes → Buffer ID)
-- [ ] Step 5: Alignable filter branch configured
-- [ ] Step 6: Alignable manual-publish Slack alert configured
 - [ ] Zap turned ON
 
 ---
@@ -83,13 +83,13 @@ wrangler secret put BUFFER_ACCESS_TOKEN
 # Paste the Buffer access token when prompted
 ```
 
-### 3.2 Verify New Files
+### 3.2 Verify Files
 
 | File | Purpose |
 |---|---|
-| `src/services/buffer.js` | Buffer API client (profiles, create post, get update) |
+| `src/services/buffer.js` | Buffer API client — profiles, create post, resolve platforms (Instagram, Facebook, LinkedIn, X) |
 | `src/routes/social-publish.js` | WF-2 handler: POST /v1/workflows/wf2 |
-| `src/automations/triggers.js` | WF-2 trigger config (updated) |
+| `src/automations/triggers.js` | WF-2 trigger config with field mapping |
 | `src/index.js` | Gateway router (WF-2 route wired) |
 
 ### 3.3 Deploy
@@ -120,7 +120,7 @@ curl -X POST https://ck-api-gateway.<your-subdomain>.workers.dev/v1/workflows/wf
 
 - [ ] Open the target Canva design
 - [ ] Click Share → Download → PNG format
-- [ ] Resolution: 1080x1080 (Instagram square) or 1200x628 (Facebook/LinkedIn landscape)
+- [ ] Resolution: 1080x1080 (Instagram square) or 1200x628 (Facebook/LinkedIn/X landscape)
 - [ ] Download to local machine
 
 ### 4.2 Attach to Airtable Test Record
@@ -140,7 +140,7 @@ curl -X POST https://ck-api-gateway.<your-subdomain>.workers.dev/v1/workflows/wf
 Using test record `rechVm1hmggAvfvXp`:
 
 - [ ] Set **Caption** field to test copy (include hashtags and CTA)
-- [ ] Set **Platform** to target channels (e.g., Instagram, Facebook, LinkedIn)
+- [ ] Set **Platform** to all four channels: Instagram, Facebook, LinkedIn, X
 - [ ] Attach Canva PNG to **Asset** field (Phase 4)
 - [ ] Set **Post Date** to a future date (minimum 1 hour ahead)
 - [ ] Set **Status** to `Draft`
@@ -156,9 +156,12 @@ Using test record `rechVm1hmggAvfvXp`:
 |---|---|---|
 | Slack `#content-calendar` | Preview message with title, platform, date, caption | [ ] |
 | Buffer Dashboard | Scheduled post with caption, image, correct date | [ ] |
+| Instagram queue | Post scheduled in Buffer | [ ] |
+| Facebook queue | Post scheduled in Buffer | [ ] |
+| LinkedIn queue | Post scheduled in Buffer | [ ] |
+| X (Twitter) queue | Post scheduled in Buffer | [ ] |
 | Airtable Status | Changed to `Scheduled` | [ ] |
 | Airtable Notes | Contains `Buffer Post ID: <id>` | [ ] |
-| Alignable Alert (if applicable) | Second Slack message: "ALIGNABLE POST READY" | [ ] |
 
 ### 5.4 Reset & Re-Test (if needed)
 
@@ -179,7 +182,7 @@ Using test record `rechVm1hmggAvfvXp`:
 
 ### 6.2 Notify Stakeholders
 
-- [ ] Slack `#content-calendar`: "WF-2 Social Publish pipeline is LIVE"
+- [ ] Slack `#content-calendar`: "WF-2 Social Publish pipeline is LIVE — 4 channels: Instagram, Facebook, LinkedIn, X"
 - [ ] Update MKT division agents on new workflow availability
 - [ ] Brief content team on Status field workflow: Draft → Approved → Scheduled
 

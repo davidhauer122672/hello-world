@@ -2,7 +2,6 @@
 
 **Deployment Tracker Record:** `recBDReVmJrH6dPHg`
 **Owner:** Build Agent (Agent 3)
-**Status:** Pending Build
 **Stack:** Zapier + Airtable + Buffer + Slack
 
 ---
@@ -12,19 +11,22 @@
 WF-2 automates the publishing pipeline for approved social media content. When a Content Calendar record's Status changes to **Approved**, this workflow:
 
 1. Sends a Slack preview to `#content-calendar`
-2. Schedules the post via Buffer (Instagram, Facebook, LinkedIn)
+2. Schedules the post via Buffer (Instagram, Facebook, LinkedIn, X)
 3. Updates Airtable: Status → **Scheduled**, writes Buffer Post ID to Notes
-4. Fires a manual-publish Slack alert for Alignable posts (Buffer unsupported)
+
+All four social channels are fully automated through Buffer. No manual posting required.
 
 ---
 
 ## Prerequisites
 
-Before building WF-2 in Zapier, verify these dependencies are complete:
-
 | Dependency | Status | Notes |
 |---|---|---|
-| Buffer account created at buffer.com | Required | Connect Instagram Business, Facebook Page, LinkedIn Company Page |
+| Buffer account created at buffer.com | Required | Connect all four channels below |
+| Instagram Business connected to Buffer | Required | Via Facebook Business Suite |
+| Facebook Business Page connected to Buffer | Required | Direct page connection |
+| LinkedIn Company Page connected to Buffer | Required | LinkedIn OAuth |
+| X (Twitter) connected to Buffer | Required | X API OAuth |
 | Buffer authorized in Zapier (My Apps) | Required | OAuth flow via Zapier |
 | Airtable authorized in Zapier (My Apps) | Required | Personal access token or OAuth |
 | Slack authorized in Zapier (My Apps) | Required | Workspace-level OAuth |
@@ -43,7 +45,7 @@ Before building WF-2 in Zapier, verify these dependencies are complete:
 | Post Date | `fldFESTOO3wxMT4u2` | Date | Maps to Buffer `scheduled_at` |
 | Notes | `fld0hiWEXsL70GFpS` | Long Text | Buffer Post ID written here |
 | Post Title | — | Single Line | Slack notification display |
-| Platform | — | Multiple Select | Routing logic (Buffer vs Alignable) |
+| Platform | — | Multiple Select | Routes to correct Buffer profiles (Instagram, Facebook, LinkedIn, X) |
 
 ---
 
@@ -94,10 +96,21 @@ Before building WF-2 in Zapier, verify these dependencies are complete:
 | Photo | `{{Asset}}` — use first attachment URL (field `fldlbwkaiT9JBV18E`) |
 | Scheduled At | `{{Post Date}}` (field `fldFESTOO3wxMT4u2`) — format: ISO 8601 |
 
+**Platform → Buffer Profile Mapping:**
+
+| Platform Value | Buffer Service |
+|---|---|
+| Instagram | `instagram` |
+| Facebook | `facebook` |
+| LinkedIn | `linkedin` |
+| X | `twitter` |
+| Twitter | `twitter` |
+
 **Notes:**
 - If Post Date is blank, Buffer queues the post in the default schedule
 - Photo must be a publicly accessible URL
 - Buffer will post to all selected profiles simultaneously
+- X posts are limited to 280 characters — Caption will be truncated by the X API if exceeded
 
 ### Step 4: Action — Airtable Update Record
 
@@ -111,33 +124,6 @@ Before building WF-2 in Zapier, verify these dependencies are complete:
 | Status | `Scheduled` |
 | Notes | `Buffer Post ID: {{Step 3 Update ID}}` |
 
-### Step 5: Filter — Alignable Branch
-
-| Setting | Value |
-|---|---|
-| Type | Filter by Zapier |
-| Condition | Platform field **contains** `Alignable` |
-| Action | Only continue if true |
-
-### Step 6: Action — Slack Alert (Alignable Manual Publish)
-
-| Setting | Value |
-|---|---|
-| App | Slack |
-| Event | Send Channel Message |
-| Channel | `#content-calendar` (`C0ALCM1E5E2`) |
-| Message Text | See template below |
-
-**Message Template:**
-```
-*ALIGNABLE POST READY*
-*Title:* {{Post Title}}
-*Post Date:* {{Post Date}}
-*Manual publish required.* Alignable does not support Buffer API.
-*Caption:*
-{{Caption}}
-```
-
 ---
 
 ## Testing Procedure
@@ -145,15 +131,16 @@ Before building WF-2 in Zapier, verify these dependencies are complete:
 **Test Record:** `rechVm1hmggAvfvXp`
 
 1. Ensure test record exists in Content Calendar with Caption, Platform, Post Date, and Asset populated
-2. Update `Post Date` to a future date (at least 1 hour ahead)
-3. Set `Status` to `Draft`
-4. Change `Status` to `Approved`
-5. Verify:
+2. Set **Platform** to include target channels (Instagram, Facebook, LinkedIn, X)
+3. Update **Post Date** to a future date (at least 1 hour ahead)
+4. Set **Status** to `Draft`
+5. Change **Status** to `Approved`
+6. Verify:
    - [ ] Slack message appears in `#content-calendar` with post preview
    - [ ] Buffer shows scheduled post with correct caption, image, and date
+   - [ ] Posts queued for all selected platforms (Instagram, Facebook, LinkedIn, X)
    - [ ] Airtable `Status` updates to `Scheduled`
    - [ ] Airtable `Notes` contains Buffer Post ID
-   - [ ] If Platform includes Alignable: second Slack alert with manual-publish notice
 
 ---
 
@@ -164,7 +151,7 @@ Before building WF-2 in Zapier, verify these dependencies are complete:
 | Trigger not firing | Verify Status field changed from non-Approved to Approved (not just re-saved) |
 | Buffer "Invalid profile" | Re-authorize Buffer in Zapier My Apps; verify social channels connected |
 | Image not attaching | Ensure Asset field contains a valid attachment with public URL |
-| Alignable alert not firing | Verify Platform field contains exactly "Alignable" (case-sensitive) |
+| X post truncated | X enforces 280-character limit; shorten Caption or use thread mode |
 | Duplicate triggers | Add Zapier filter: only trigger if Status was NOT previously Approved |
 
 ---
