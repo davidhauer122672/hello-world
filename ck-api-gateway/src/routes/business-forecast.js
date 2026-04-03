@@ -34,6 +34,16 @@ const FORECAST_ZONES = [
 
 // ── Service tiers and their 18-month demand signals ─────────────────────────
 
+// ── CKPM current operating state (ground truth) ────────────────────────────
+
+const CKPM_CURRENT_STATE = {
+  clients: 0,
+  properties: 0,
+  monthlyRevenue: 0,
+  launchDate: '2026-04-03',
+  phase: 'pre-revenue',
+};
+
 const SERVICE_TIERS = [
   {
     tier: 'home-watch',
@@ -42,7 +52,10 @@ const SERVICE_TIERS = [
     projectedGrowth18mo: 14.3,
     seasonalPeakMonths: ['nov', 'dec', 'jan', 'feb', 'mar'],
     avgRevenuePerAccount: 3600,
-    marketPenetration: 0.12,
+    marketPenetration: 0.00,
+    ckpmCurrentClients: 0,
+    ckpmCurrentRevenue: 0,
+    acquisitionTarget18mo: 25,
   },
   {
     tier: 'full-management',
@@ -51,7 +64,10 @@ const SERVICE_TIERS = [
     projectedGrowth18mo: 11.8,
     seasonalPeakMonths: ['oct', 'nov', 'dec', 'jan', 'feb', 'mar', 'apr'],
     avgRevenuePerAccount: 18000,
-    marketPenetration: 0.08,
+    marketPenetration: 0.00,
+    ckpmCurrentClients: 0,
+    ckpmCurrentRevenue: 0,
+    acquisitionTarget18mo: 10,
   },
   {
     tier: 'concierge',
@@ -60,7 +76,10 @@ const SERVICE_TIERS = [
     projectedGrowth18mo: 22.6,
     seasonalPeakMonths: ['nov', 'dec', 'jan', 'feb', 'mar'],
     avgRevenuePerAccount: 42000,
-    marketPenetration: 0.04,
+    marketPenetration: 0.00,
+    ckpmCurrentClients: 0,
+    ckpmCurrentRevenue: 0,
+    acquisitionTarget18mo: 3,
   },
   {
     tier: 'seasonal-care',
@@ -69,7 +88,10 @@ const SERVICE_TIERS = [
     projectedGrowth18mo: 9.2,
     seasonalPeakMonths: ['may', 'jun', 'jul', 'aug', 'sep'],
     avgRevenuePerAccount: 7200,
-    marketPenetration: 0.15,
+    marketPenetration: 0.00,
+    ckpmCurrentClients: 0,
+    ckpmCurrentRevenue: 0,
+    acquisitionTarget18mo: 15,
   },
 ];
 
@@ -140,6 +162,7 @@ export function handleForecastDashboard() {
     agentCount: BFR_AGENTS.length,
     statusBreakdown,
     tierBreakdown,
+    currentState: CKPM_CURRENT_STATE,
     forecastHorizon: '18 months',
     qualityStandard: 'Ferrari',
     accuracyFloor: '±5% MAPE',
@@ -194,18 +217,21 @@ export function handleMarketPulse() {
       snowbirdMigrationIndex: { current: 74, trend: 'rising', impact: 'positive' },
       newConstructionPermits: { yoyChange: 12.1, trend: 'rising', impact: 'positive' },
     },
+    ckpmCurrentState: CKPM_CURRENT_STATE,
     competitiveLandscape: {
       activeCompetitors: 47,
       marketConcentration: 'fragmented',
-      coastalKeyPosition: 'top-5',
-      threatLevel: 'moderate',
+      coastalKeyPosition: 'new-entrant',
+      threatLevel: 'low-to-ckpm',
+      note: 'CKPM is pre-revenue. Competitors are not yet aware of our entry.',
     },
     keyInsights: [
+      'CKPM launches with 0 clients, 0 revenue — all projections model ramp from zero',
       'Snowbird corridor migration accelerating — Treasure Coast absorption rate +16% YoY',
-      'Concierge tier shows highest growth potential at 22.6% projected 18mo increase',
-      'Insurance premium inflation creating service-cost pressure; margin watch required',
-      'Three new competitors entered Vero Beach market in Q1 — monitor pricing pressure',
-      'Smart home IoT adoption creating differentiation opportunity for tech-forward operators',
+      'Concierge tier shows highest growth potential at 22.6% projected 18mo market increase',
+      'Fragmented market (47+ operators, no dominant player) favors aggressive new entrant with technology moat',
+      'CKPM 310-agent AI fleet is an unmatched differentiator — zero competitors use AI operations',
+      'First-mover window for AI-powered property management on Treasure Coast estimated at 12-18 months',
     ],
   });
 }
@@ -227,30 +253,52 @@ export async function handleForecastGenerate(request, env, ctx) {
 
   const systemPrompt = `You are BFR-017 CEO Synthesizer, the executive briefing agent for Coastal Key Property Management's Business Forecast Division. You produce Ferrari-quality strategic forecasts.
 
-CONTEXT:
+CRITICAL CONTEXT — STARTING FROM ZERO:
 - Company: Coastal Key Property Management (CKPM)
 - Region: Treasure Coast, Florida (Vero Beach to North Palm Beach)
 - Services: Home Watch, Full Property Management, Concierge & Luxury, Seasonal Care
+- CURRENT CLIENTS: 0 (zero)
+- CURRENT REVENUE: $0/month
+- CURRENT PROPERTIES: 0
+- COMPANY PHASE: Pre-revenue launch
+- Launch Date: April 2026
 - Forecast Horizon: 18 months (${new Date().toISOString().slice(0, 7)} to ${new Date(Date.now() + 18 * 30.44 * 86400000).toISOString().slice(0, 7)})
 - Quality Standard: Ferrari-grade — precise, substantiated, actionable
 
+COMPETITIVE ADVANTAGE:
+- 310-agent AI operations fleet (no competitor has AI)
+- Integrated Retell AI voice, Claude API inference, Airtable CRM
+- 10-zone Treasure Coast coverage planned
+- Technology moat estimated at 12-18 months vs. competitors
+
 MARKET DATA:
-${JSON.stringify({ zones: FORECAST_ZONES, tiers: SERVICE_TIERS }, null, 2)}
+${JSON.stringify({ currentState: CKPM_CURRENT_STATE, zones: FORECAST_ZONES, tiers: SERVICE_TIERS }, null, 2)}
+
+KNOWN COMPETITORS:
+1. House Check International — Port St. Lucie / PGA Village (largest on TC)
+2. Oceanside Home Watch — Vero Beach (premium segment leader)
+3. Island Home & Estate Management — Jupiter Island (ultra-luxury niche)
+4. Argos Homewatch — Stuart / Martin County (most tech-forward, GPS reporting)
+5. First Mate Home Watch — PSL / Stuart (owner-operated, personal touch)
+None use AI. Market is fragmented with 47+ operators.
 
 OUTPUT FORMAT: ${outputFormat}
 SCOPE: ${scope}
 SCENARIOS: ${scenarios.join(', ')}
 
-Deliver a structured 18-month business forecast that includes:
-1. EXECUTIVE SUMMARY — 3 decisive takeaways
-2. MARKET OUTLOOK — Demand trajectory by service tier and zone
-3. REVENUE PROJECTIONS — Monthly/quarterly with scenario bands
-4. COMPETITIVE POSITION — Threats, opportunities, moat analysis
-5. RISK MATRIX — Top 5 risks with probability, impact, mitigation
-6. STRATEGIC IMPERATIVES — Prioritized actions for the next 90 days
-7. 18-MONTH ROADMAP — Quarter-by-quarter milestones
-8. CEO ACTION ITEMS — What needs a decision this week
+Deliver a structured 18-month RAMP-FROM-ZERO business forecast that includes:
+1. EXECUTIVE SUMMARY — 3 decisive takeaways for a company launching from $0
+2. MARKET ENTRY STRATEGY — Which zones and tiers to attack first, in what sequence
+3. CLIENT ACQUISITION RAMP — Month-by-month client count projection from 0
+4. REVENUE PROJECTIONS — Monthly/quarterly with scenario bands (starting from $0)
+5. COMPETITIVE POSITION — How to win clients from established operators
+6. COST STRUCTURE — What must be invested before revenue arrives
+7. RISK MATRIX — Top 5 risks with probability, impact, mitigation
+8. BREAK-EVEN ANALYSIS — When does monthly revenue exceed monthly operating cost
+9. 18-MONTH ROADMAP — Quarter-by-quarter milestones from zero to scale
+10. CEO ACTION ITEMS — What needs a decision this week to start generating revenue
 
+This is a LAUNCH forecast, not a growth forecast. Every number starts at zero.
 Be precise. Use numbers. Cite assumptions. No filler. Every sentence earns its place.`;
 
   const userMessage = body.additionalContext
@@ -370,8 +418,11 @@ HISTORICAL BASIS: ${scenarioConfig.historicalBasis}
 
 COMPANY CONTEXT:
 - Treasure Coast property management (Vero Beach to North Palm Beach)
-- Current portfolio: ~200 managed properties
-- Revenue mix: Home Watch (35%), Full Management (30%), Concierge (20%), Seasonal (15%)
+- CURRENT CLIENTS: 0 — company is pre-revenue, launching April 2026
+- CURRENT REVENUE: $0/month
+- Target portfolio at 18 months: 53 managed properties
+- Target revenue mix: Home Watch (35%), Full Management (30%), Concierge (20%), Seasonal (15%)
+- Competitive advantage: 310-agent AI fleet, zero competitors use AI
 
 Produce a structured stress-test analysis:
 1. SCENARIO DESCRIPTION — What exactly happens, over what timeline
