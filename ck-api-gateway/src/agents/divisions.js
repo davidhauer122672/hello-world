@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Division Definitions
  *
- * 8 operational divisions that map to the org chart.
+ * 10 operational divisions that map to the org chart.
  * Each division has a color, icon, and description used by the Command Center UI.
  */
 
@@ -39,7 +39,7 @@ export const DIVISIONS = [
     name: 'Marketing',
     color: '#8b5cf6',
     icon: 'megaphone',
-    description: 'Content creation, social media, email campaigns, brand management, and SEO.',
+    description: 'Content creation, social media, email campaigns, brand management, SEO, and the Design & Luxury Brand creative strategy team (MKT-041 through MKT-060).',
   },
   {
     id: 'FIN',
