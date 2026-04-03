@@ -8,7 +8,7 @@
  *   POST /v1/leads/enrich       — AI-enrich an existing lead (battle plan, segment analysis)
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
- *   POST /v1/content/generate   — Generate content (social, email, script) via Claude
+ *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
  *   GET  /v1/agents             — List/search agents with filtering
  *   GET  /v1/agents/metrics     — Aggregate agent metrics
  *   GET  /v1/agents/:id         — Get single agent details

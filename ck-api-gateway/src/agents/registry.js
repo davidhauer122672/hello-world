@@ -10,12 +10,12 @@
  *   SEN  Sentinel Sales      — 40 agents
  *   OPS  Operations          — 45 agents
  *   INT  Intelligence        — 30 agents
- *   MKT  Marketing           — 40 agents
+ *   MKT  Marketing           — 47 agents (includes YouTube MKT-041–047)
  *   FIN  Finance             — 25 agents
  *   VEN  Vendor Management   — 25 agents
  *   TEC  Technology          — 25 agents
  *   WEB  Website Development — 40 agents
- *                       Total: 290 agents
+ *                       Total: 297 agents
  */
 
 import { DIVISIONS } from './divisions.js';
