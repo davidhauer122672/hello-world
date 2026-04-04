@@ -41,7 +41,10 @@
 | **LinkedIn** | 7:30 AM ET | 12:00 PM ET | 5:30 PM ET | 21 |
 | **YouTube** | 12:00 PM ET | 3:00 PM ET | 8:00 PM ET | 21 |
 | **TikTok** | 8:00 AM ET | 1:00 PM ET | 8:00 PM ET | 21 |
-| **TOTAL** | | | | **105/week** |
+| **X (Twitter)** | 7:30 AM ET | 12:30 PM ET | 7:00 PM ET | 21 |
+| **Mighty Networks** | 8:00 AM ET | 1:00 PM ET | 6:00 PM ET | 21 |
+| **Alignable** | 8:30 AM ET | 12:30 PM ET | 5:30 PM ET | 21 |
+| **TOTAL** | | | | **168/week** |
 
 ### Why These Times
 
@@ -167,6 +170,30 @@ Daily cron job at 6:00 AM ET syncs previous day's metrics:
 - **Duets/Stitches:** Flag competitor content for strategic duet opportunities.
 - **Hashtag optimization:** Real-time hashtag performance tracking.
 
+### X (Twitter)
+- **Thread automation:** Long-form LinkedIn articles auto-converted to 5-8 tweet threads. First tweet is a standalone hook optimized for retweets.
+- **Data drop scheduling:** Market stats auto-pulled from INT Division Airtable data and formatted as single-tweet data drops with sharp commentary.
+- **Quote-tweet monitoring:** Flag competitor and industry tweets for strategic quote-tweet responses with Treasure Coast-specific data.
+- **Poll automation:** Weekly poll auto-generated from community engagement data. Results feed back into content strategy.
+- **Hashtag discipline:** Auto-limit to 2-3 hashtags per tweet. Strip excess tags from cross-posted content.
+- **Engagement rules:** Auto-reply to mentions within 15 minutes. Like all genuine @mentions. Retweet client testimonials.
+
+### Mighty Networks
+- **Community post scheduling:** Discussion prompts, market insights, and exclusive content auto-posted at peak community engagement times.
+- **Drip content:** New member welcome sequence (5 posts over 7 days) introducing Coastal Key's fleet, Tracey's credentials, service zones, and how to access premium intelligence.
+- **Live event automation:** Monthly "Command Center Live" auto-scheduled. Reminders sent 24h, 1h, and 15min before event.
+- **Member segmentation:** Tag members by interest (investor, owner, relocator, STR) and deliver segment-specific content automatically.
+- **Premium gating:** Gazette full reports, DELTA Squad revenue data, and portfolio review scheduling locked behind premium tier.
+- **Engagement tracking:** Member activity scores tracked weekly. Low-engagement members get re-engagement nudge content.
+
+### Alignable
+- **Business update automation:** Operational milestones auto-posted from Airtable events (new vendors added, fleet milestones, service zone expansions).
+- **Referral network building:** Auto-connect with Treasure Coast businesses in target categories (HVAC, plumbing, landscaping, cleaning, insurance).
+- **Recommendation cycle:** Auto-prompt for recommendations from vendors after successful project completion. Reciprocate within 48 hours.
+- **Local market content:** Condensed versions of LinkedIn market intelligence auto-formatted for Alignable's business audience.
+- **Event posting:** Local Chamber of Commerce events, networking meetups, and Coastal Key community events auto-posted.
+- **Vendor recruitment pipeline:** New Alignable connections in contractor/service categories auto-flagged for VEN Division vendor intake process.
+
 ---
 
 ## VI. CONTENT TEMPLATES
@@ -275,11 +302,14 @@ Every piece of content gets repurposed across the ecosystem:
   → 3 TikToks (native captions)
   → 1 LinkedIn Article (transcript + insights)
   → 1 Facebook Post (key takeaway)
+  → 1 X Thread (5-8 tweets, standalone hook)
+  → 1 Mighty Networks Discussion Post (member-exclusive extended cut)
+  → 1 Alignable Business Update (key insight for local business audience)
   → 5 Instagram Stories (behind-the-scenes)
   → 1 Email Newsletter segment
   → 1 Gazette excerpt
 
-Total: 1 production → 18 content pieces
+Total: 1 production → 21 content pieces
 ```
 
 ### Repurposing Rules
@@ -292,4 +322,4 @@ Total: 1 production → 18 content pieces
 ---
 
 *Coastal Key Property Management — Automated Content Operations*
-*MKT Division | 40 AI Agents | 105 Posts/Week | Zero Manual Publishing*
+*MKT Division | 40 AI Agents | 168 Posts/Week | 8 Platforms | Zero Manual Publishing*
