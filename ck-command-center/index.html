@@ -173,6 +173,10 @@ a{color:var(--accent);text-decoration:none}
         <span>Property Intel</span>
         <span class="count" id="propertyCount">—</span>
       </div>
+      <div class="nav-item" data-view="thinking-coach" onclick="switchView('thinking-coach')">
+        <span>Thinking Coach</span>
+        <span class="count">7</span>
+      </div>
     </div>
     <div class="sidebar-section">
       <h3>Divisions</h3>
@@ -306,6 +310,7 @@ function switchView(view) {
   if (view === 'dashboard') renderDashboard();
   else if (view === 'all-agents') renderAllAgents();
   else if (view === 'property-intel') renderPropertyIntel();
+  else if (view === 'thinking-coach') renderThinkingCoach();
   else if (view.startsWith('div-')) renderDivisionView(view.replace('div-', ''));
 }
 
@@ -657,6 +662,113 @@ function propertyCardHTML(p) {
       <span class="property-status-badge">${p.status || 'New'}</span>
     </div>
   </div>`;
+}
+
+// ── Thinking Coach ──
+let thinkingData = null;
+
+async function fetchThinkingData() {
+  try {
+    thinkingData = await api('/v1/thinking/dashboard');
+    return thinkingData;
+  } catch (err) {
+    console.error('Failed to fetch thinking coach data:', err);
+    thinkingData = null;
+    return null;
+  }
+}
+
+async function renderThinkingCoach() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div> Loading Thinking Coach frameworks...</div>';
+
+  if (!thinkingData) await fetchThinkingData();
+  const d = thinkingData || {};
+  const fws = d.frameworks?.list || [];
+  const caps = d.capabilities || {};
+
+  main.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.5px">Thinking Coach <span style="font-weight:400;font-size:18px;color:var(--text2)">&mdash; Expert Frameworks Engine</span></h1>
+      <span class="status-badge active">Ferrari-Standard</span>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Frameworks</div><div class="stat-value blue">${fws.length || 7}</div></div>
+      <div class="stat-card"><div class="stat-label">Advanced</div><div class="stat-value green">${d.frameworks?.by_complexity?.advanced || 5}</div></div>
+      <div class="stat-card"><div class="stat-label">Standard</div><div class="stat-value yellow">${d.frameworks?.by_complexity?.standard || 2}</div></div>
+      <div class="stat-card"><div class="stat-label">Domains Covered</div><div class="stat-value blue">${Object.keys(d.domain_coverage || {}).length || 20}</div></div>
+    </div>
+
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Expert Frameworks</h2>
+    <div class="agent-grid" style="margin-bottom:24px">
+      ${fws.map(f => `
+        <div class="agent-card" style="border-top:3px solid ${f.complexity === 'advanced' ? '#7c5cfc' : '#4f8fff'};cursor:default">
+          <div class="agent-header">
+            <span class="agent-id">${f.codename}</span>
+            <span class="status-badge active">${f.complexity}</span>
+          </div>
+          <div class="agent-name">${f.name}</div>
+          <div class="agent-role">${f.id}</div>
+          <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">
+            ${f.domains.map(d => `<span style="background:var(--bg);padding:2px 8px;border-radius:4px;font-size:11px;color:var(--text2)">${d}</span>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Run Thinking Session</h2>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px">
+      <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+        <select id="thinkFramework" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-size:13px;min-width:200px">
+          ${fws.map(f => `<option value="${f.id}">${f.name} (${f.codename})</option>`).join('')}
+        </select>
+        <button onclick="runThinkingSession()" style="background:var(--accent2);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600">Analyze</button>
+        <button onclick="runDailyModels()" style="background:var(--accent);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600">Daily Mental Models</button>
+      </div>
+      <textarea id="thinkProblem" placeholder="Describe the problem, decision, or skill to analyze..." style="width:100%;min-height:100px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;border-radius:8px;font-size:13px;font-family:inherit;resize:vertical"></textarea>
+    </div>
+    <div id="thinkingResult"></div>
+
+    <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Inspired By</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+      ${(d.inspired_by || ['Elon Musk','Charlie Munger','Naval Ravikant','Jeff Bezos','Ray Dalio','Richard Feynman','Peter Thiel','Sun Tzu','Nassim Taleb','Andy Grove','Warren Buffett','Peter Senge']).map(name =>
+        `<span style="background:var(--bg2);border:1px solid var(--border);padding:6px 14px;border-radius:20px;font-size:13px;color:var(--text)">${name}</span>`
+      ).join('')}
+    </div>
+  `;
+}
+
+async function runThinkingSession() {
+  const framework = document.getElementById('thinkFramework')?.value;
+  const problem = document.getElementById('thinkProblem')?.value;
+  if (!problem) return alert('Enter a problem or question to analyze.');
+  const resultDiv = document.getElementById('thinkingResult');
+  resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Running analysis...</div>';
+  try {
+    const result = await apiPost('/v1/thinking/session', { framework, problem });
+    resultDiv.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+      <h3 style="margin-bottom:12px;font-size:16px">${result.framework?.name || framework} — Analysis Complete</h3>
+      <pre style="background:var(--bg);padding:16px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;color:var(--text);line-height:1.6">${JSON.stringify(result.analysis, null, 2)}</pre>
+      <div style="margin-top:12px;font-size:12px;color:var(--text2)">Model: ${result.model || '—'} | Cached: ${result.cached || false}</div>
+    </div>`;
+  } catch (err) {
+    resultDiv.innerHTML = `<div class="empty"><div class="empty-icon">&#9888;</div><p>Analysis failed: ${err.message}</p></div>`;
+  }
+}
+
+async function runDailyModels() {
+  const resultDiv = document.getElementById('thinkingResult');
+  resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Generating daily mental models briefing...</div>';
+  try {
+    const result = await apiPost('/v1/thinking/daily-models', { focus: 'property-management' });
+    resultDiv.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+      <h3 style="margin-bottom:12px;font-size:16px">Daily Mental Models Briefing — ${result.date || 'Today'}</h3>
+      <pre style="background:var(--bg);padding:16px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;color:var(--text);line-height:1.6">${JSON.stringify(result.analysis, null, 2)}</pre>
+      <div style="margin-top:12px;font-size:12px;color:var(--text2)">Model: ${result.model || '—'} | Cached: ${result.cached || false}</div>
+    </div>`;
+  } catch (err) {
+    resultDiv.innerHTML = `<div class="empty"><div class="empty-icon">&#9888;</div><p>Failed: ${err.message}</p></div>`;
+  }
 }
 
 // ── Keyboard shortcuts ──

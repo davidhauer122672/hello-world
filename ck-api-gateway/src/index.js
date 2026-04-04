@@ -63,6 +63,13 @@
  *   POST /v1/atlas/campaigns              — Create a new Atlas campaign
  *   GET  /v1/atlas/audit                  — Audit required CKPM campaigns
  *   GET  /v1/atlas/health                 — Atlas AI connectivity check
+ *   GET  /v1/thinking/frameworks          — List all 7 expert thinking frameworks
+ *   GET  /v1/thinking/frameworks/:id      — Get single framework details
+ *   POST /v1/thinking/session             — Run thinking session (single framework)
+ *   POST /v1/thinking/multi               — Multi-framework analysis (2-7 frameworks)
+ *   POST /v1/thinking/learning-blueprint  — Generate 90-day neuro-optimized learning blueprint
+ *   POST /v1/thinking/daily-models        — CEO daily mental models briefing
+ *   GET  /v1/thinking/dashboard           — Thinking Coach operational dashboard
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -83,6 +90,7 @@ import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerD
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
+import { handleListFrameworks, handleGetFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -456,6 +464,36 @@ export default {
       if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+$/) && method === 'GET') {
         const campaignId = path.split('/v1/atlas/campaigns/')[1];
         return await handleAtlasCampaignById(campaignId, env);
+      }
+
+      // ── Thinking Coach — Expert Frameworks ──
+      if (path === '/v1/thinking/frameworks' && method === 'GET') {
+        return handleListFrameworks(url);
+      }
+
+      if (path === '/v1/thinking/dashboard' && method === 'GET') {
+        return handleThinkingDashboard();
+      }
+
+      if (path === '/v1/thinking/session' && method === 'POST') {
+        return await handleThinkingSession(request, env, ctx);
+      }
+
+      if (path === '/v1/thinking/multi' && method === 'POST') {
+        return await handleMultiFramework(request, env, ctx);
+      }
+
+      if (path === '/v1/thinking/learning-blueprint' && method === 'POST') {
+        return await handleLearningBlueprint(request, env, ctx);
+      }
+
+      if (path === '/v1/thinking/daily-models' && method === 'POST') {
+        return await handleDailyModels(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/thinking\/frameworks\/[^/]+$/) && method === 'GET') {
+        const frameworkId = path.split('/v1/thinking/frameworks/')[1];
+        return handleGetFramework(frameworkId);
       }
 
       return errorResponse('Not found', 404);
