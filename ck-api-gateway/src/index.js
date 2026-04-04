@@ -109,8 +109,14 @@
  *   POST /v1/trader/trade                — Log a trade execution
  *   GET  /v1/trader/history              — Trade execution history
  *   GET  /v1/trader/capital-tiers        — Capital investment tier definitions
+ *   POST /v1/slack/commands    — Slack slash command dispatcher (10 commands)
+ *   POST /v1/slack/interactions — Slack interactive component callbacks
+ *   POST /v1/slack/events      — Slack event subscription handler
+ *   GET  /v1/slack/channels    — Slack channel architecture
+ *   GET  /v1/slack/apps        — Slack app registry
+ *   GET  /v1/slack/audit       — Slack platform audit record
  *
- * Auth: Bearer token via WORKER_AUTH_TOKEN secret
+ * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  */
 
 import { authenticate } from './middleware/auth.js';
@@ -143,6 +149,7 @@ import {
   handleCommandChain, handleFleetStatusEndpoint, handleChainOfCommand, handleDirectReports, handleDivisionHierarchyEndpoint,
 } from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
+import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -245,6 +252,17 @@ export default {
     // ── Public routes (no auth) ──
     if (path === '/v1/leads/public' && method === 'POST') {
       return await handlePublicLead(request, env, ctx);
+    }
+
+    // ── Slack routes (use signature verification, not Bearer token) ──
+    if (path === '/v1/slack/commands' && method === 'POST') {
+      return await handleSlackCommand(request, env, ctx);
+    }
+    if (path === '/v1/slack/interactions' && method === 'POST') {
+      return await handleSlackInteraction(request, env, ctx);
+    }
+    if (path === '/v1/slack/events' && method === 'POST') {
+      return await handleSlackEvent(request, env, ctx);
     }
 
     // ── Auth gate ──
@@ -677,6 +695,17 @@ export default {
       if (path.match(/^\/v1\/hierarchy\/division\/[^/]+$/) && method === 'GET') {
         const divisionCode = path.split('/v1/hierarchy/division/')[1];
         return handleDivisionHierarchyEndpoint(divisionCode);
+      }
+
+      // ── Slack (auth-protected read-only) ──
+      if (path === '/v1/slack/channels' && method === 'GET') {
+        return handleSlackChannels();
+      }
+      if (path === '/v1/slack/apps' && method === 'GET') {
+        return handleSlackApps();
+      }
+      if (path === '/v1/slack/audit' && method === 'GET') {
+        return handleSlackAudit();
       }
 
       return errorResponse('Not found', 404);
