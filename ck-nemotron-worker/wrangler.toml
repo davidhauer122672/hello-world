@@ -1,0 +1,11 @@
+name = "ck-nemotron-worker"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+
+[vars]
+ENVIRONMENT = "production"
+MODEL_ID = "nvidia/nemotron-4-340b-instruct"
+
+# ── Secrets (set via dashboard or `wrangler secret put`) ──
+# WORKER_AUTH_TOKEN  — Auth token for external callers
+# NVIDIA_API_KEY     — NVIDIA NIM API key for Nemotron inference
