@@ -1,0 +1,88 @@
+{
+  "airtable_base": {
+    "base_id": "appUSnNgpDkcEOzhN",
+    "base_name": "Coastal Key Master Orchestrator (contains TH Sentinel tables)"
+  },
+  "tables": {
+    "lead_contacts": {
+      "table_id": "tbl0XVTVz3qambhog",
+      "table_name": "TH Sentinel - Lead Contacts",
+      "fields": {
+        "fldSgZWM1EZtB3BKF": {"name": "Contact Name", "type": "singleLineText"},
+        "fld7H0skjutZI88pC": {"name": "Phone Number", "type": "phoneNumber"},
+        "fld6UGYzGY0MWTADC": {"name": "Email", "type": "email"},
+        "fldGDKld7aqLbkvMu": {"name": "Property Address", "type": "singleLineText"},
+        "fldEPGrs1tAD2F9CZ": {"name": "City", "type": "singleLineText"},
+        "fldQ4OdkjwGffWSEx": {"name": "State", "type": "singleLineText"},
+        "fldSfdHm4nNWTgLOo": {"name": "Zip Code", "type": "singleLineText"},
+        "fldmbMNwfiNeXGvUP": {"name": "Lead Source", "type": "singleSelect"},
+        "fld2KAZ5Q3ENtZDnA": {"name": "Lead Type", "type": "singleSelect"},
+        "fldmttPb6DanORNdA": {"name": "Lead Status", "type": "singleSelect"},
+        "fld4mo9vwCbmCzqFg": {"name": "Estimated Property Value", "type": "currency"},
+        "fldV3QUiFnFRH4iR2": {"name": "Timeline to Buy/Sell", "type": "singleSelect"},
+        "fldwTs1KYRLdojOZj": {"name": "Motivation Level", "type": "rating"},
+        "fldn42G11l7MmfjFF": {"name": "Notes", "type": "multilineText"},
+        "fldxZzHIhI0p0Qlfm": {"name": "Date Added", "type": "date"}
+      }
+    },
+    "call_log": {
+      "table_id": "tbl1a2YPUpZvnRKbi",
+      "table_name": "TH Sentinel - Call Log",
+      "fields": {
+        "fldytiOMEXOagDWiL": {"name": "Call ID", "type": "singleLineText"},
+        "fldNMtIlLMVisHg0y": {"name": "Agent ID", "type": "singleLineText"},
+        "fldcTOwscMd4yvWon": {"name": "Contact Name", "type": "singleLineText"},
+        "fldRjqPst2HULsyVP": {"name": "Phone Dialed", "type": "phoneNumber"},
+        "fld3comNJAjlaNBGm": {"name": "Call Date", "type": "date"},
+        "fldidrP1oIhL9vPoT": {"name": "Call Start Time", "type": "singleLineText"},
+        "fldJCuBVTtcFeA8lk": {"name": "Call Duration (sec)", "type": "number"},
+        "fldATWrpqWeVzu8I4": {"name": "Call Outcome", "type": "singleSelect"},
+        "fldXdfzvLDJJAOdnV": {"name": "Transfer Completed", "type": "checkbox"},
+        "flduQnQ40YLlDEDE6": {"name": "Qualification Score", "type": "rating"},
+        "fldE4XqCsGeMNI7Jq": {"name": "Buyer or Seller", "type": "singleSelect"},
+        "fldjGWo1rGMAXmhDM": {"name": "Call Summary", "type": "multilineText"},
+        "fldr1ANuigoF6mfKV": {"name": "Follow-Up Required", "type": "checkbox"},
+        "fldiO8efJu8YYLR1m": {"name": "Follow-Up Date", "type": "date"}
+      }
+    },
+    "agent_performance": {
+      "table_id": "tblzTUg9QXQnZmA4I",
+      "table_name": "TH Sentinel - Agent Performance",
+      "fields": {
+        "fldVKzQoBt6SUDoPT": {"name": "Agent Name", "type": "singleLineText"},
+        "fldlzj5xCA9eUQHgj": {"name": "Agent ID", "type": "singleLineText"},
+        "fldXsBADTEQ7Y0C87": {"name": "Agent Status", "type": "singleSelect"},
+        "fld89coKF6SUGPHWa": {"name": "Total Calls Made", "type": "number"},
+        "fldsnckTH2USYiI0I": {"name": "Total Connections", "type": "number"},
+        "fldxxx50UNOq9RgkZ": {"name": "Total Qualified Leads", "type": "number"},
+        "fldDzFKk6nW9U3rDV": {"name": "Total Transfers to Tracey", "type": "number"},
+        "fldXNtSe7BziGacjx": {"name": "Connection Rate", "type": "percent"},
+        "fldeq2ZTiLd5BmlUK": {"name": "Qualification Rate", "type": "percent"},
+        "fldBsZTmaYf19BxMO": {"name": "Transfer Rate", "type": "percent"},
+        "fld5XgBCbn6grHQub": {"name": "Avg Call Duration (sec)", "type": "number"},
+        "fldLzpLalTPMcY6NN": {"name": "Calls Today", "type": "number"},
+        "fld9PUEQzk9gblzxs": {"name": "Last Active", "type": "dateTime"}
+      }
+    },
+    "campaign_analytics": {
+      "table_id": "tblSkigMl8YSYN16u",
+      "table_name": "TH Sentinel - Campaign Analytics",
+      "fields": {
+        "fld0z5EcPwp3iG6V1": {"name": "Report Date", "type": "date"},
+        "fldlZIh7hwrlJa7RE": {"name": "Day of Week", "type": "singleSelect"},
+        "fldAZnQqa1M6iiHek": {"name": "Total Calls Made", "type": "number"},
+        "fldwbz2Y8Q99TloK6": {"name": "Total Connections", "type": "number"},
+        "fldfOhkAgHIXFGuNk": {"name": "New Leads Generated", "type": "number"},
+        "fldtuV3puE2IXHmjR": {"name": "Qualified Leads", "type": "number"},
+        "fldBrSh4YkUe53pQj": {"name": "Transfers to Tracey", "type": "number"},
+        "fldQDKhDYMr2v4Gzi": {"name": "Appointments Set", "type": "number"},
+        "fld4953Xw5cXjLU54": {"name": "Connection Rate", "type": "percent"},
+        "fldkxboNbf3dLqw2h": {"name": "Qualification Rate", "type": "percent"},
+        "fldxh0nTPg6tq0i3Z": {"name": "Active Agents", "type": "number"},
+        "fldipokvu6LWmpVii": {"name": "Campaign Week", "type": "number"},
+        "fldNL9tyP3iWSpNDj": {"name": "Cumulative Leads", "type": "number"},
+        "fldJST0aPtITe4Klg": {"name": "Notes", "type": "multilineText"}
+      }
+    }
+  }
+}

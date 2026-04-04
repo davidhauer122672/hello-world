@@ -1,0 +1,50 @@
+{
+  "project": "coastalkey-pm",
+  "domain": "coastalkey-pm.com",
+  "architecture": {
+    "website": "Cloudflare Pages (ck-website/)",
+    "api": "Cloudflare Workers (ck-api-gateway/)",
+    "nemotron": "Cloudflare Workers (ck-nemotron-worker/)",
+    "webhook": "Cloudflare Workers (sentinel-webhook/)",
+    "dashboard": "Cloudflare Pages (ck-command-center/)"
+  },
+  "deployment": {
+    "website": {
+      "steps": [
+        { "step": 1, "action": "Deploy website to Cloudflare Pages", "command": "wrangler pages deploy ./ck-website --project-name=coastalkey-pm" },
+        { "step": 2, "action": "Purge Cloudflare cache", "command": "curl -X POST 'https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache' -H 'Authorization: Bearer {token}' -d '{\"purge_everything\":true}'" }
+      ]
+    },
+    "api_gateway": {
+      "steps": [
+        { "step": 1, "action": "Deploy API gateway Worker", "command": "cd ck-api-gateway && wrangler deploy" }
+      ]
+    },
+    "sentinel_webhook": {
+      "steps": [
+        { "step": 1, "action": "Deploy sentinel webhook Worker", "command": "cd sentinel-webhook && wrangler deploy" }
+      ]
+    },
+    "nemotron_worker": {
+      "steps": [
+        { "step": 1, "action": "Deploy Nemotron inference Worker", "command": "cd ck-nemotron-worker && wrangler deploy" }
+      ]
+    },
+    "command_center": {
+      "steps": [
+        { "step": 1, "action": "Deploy Command Center to Cloudflare Pages", "command": "wrangler pages deploy ck-command-center --project-name=ck-command-center" }
+      ]
+    }
+  },
+  "subdomain_consolidation": {
+    "policy": "All subdomains redirect to coastalkey-pm.com via _redirects",
+    "eliminated": ["www", "app", "dashboard", "agents", "api", "admin", "old", "staging", "dev", "beta"],
+    "active_domain": "coastalkey-pm.com",
+    "portal_path": "/portal"
+  },
+  "agents": {
+    "total": 290,
+    "divisions": 9,
+    "web_dev_agents": 40
+  }
+}

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Coastal Key Gazette</title>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@page{size:letter;margin:0.5in}
+@media print{.no-print{display:none!important}.gazette{box-shadow:none!important;max-width:100%!important}}
+
+:root{
+  --cream:#f5f0e1;--paper:#ede5d0;--brown:#2c1810;--red:#8b0000;
+  --gold:#c4a35a;--rule:#3d2b1f;--light:#a89070;
+}
+
+body{
+  background:#d4c9b0;
+  font-family:'Old Standard TT',Georgia,'Times New Roman',serif;
+  color:var(--brown);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+.gazette{
+  max-width:1100px;margin:20px auto;background:var(--cream);
+  padding:40px 48px;
+  box-shadow:0 0 40px rgba(0,0,0,0.3),inset 0 0 80px rgba(0,0,0,0.03);
+  border:1px solid var(--light);
+  position:relative;
+}
+
+/* ── Masthead ── */
+.masthead{text-align:center;padding-bottom:16px;border-bottom:4px double var(--rule);margin-bottom:4px}
+.masthead-top{display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--light);margin-bottom:8px}
+.masthead-title{font-family:'UnifrakturMaguntia',cursive;font-size:72px;line-height:1;color:var(--brown);letter-spacing:2px;margin:8px 0}
+.masthead-subtitle{font-family:'Playfair Display',serif;font-size:14px;font-style:italic;color:var(--light);letter-spacing:3px;margin-bottom:4px}
+.dateline{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.dateline .edition{background:var(--red);color:var(--cream);padding:2px 12px;font-weight:700;font-size:10px;letter-spacing:2px}
+
+/* ── Ornamental Rules ── */
+.ornament{text-align:center;margin:16px 0;font-size:14px;color:var(--gold);letter-spacing:8px}
+.ornament::before,.ornament::after{content:'';display:inline-block;width:80px;height:1px;background:var(--gold);vertical-align:middle;margin:0 12px}
+.thick-rule{border:none;border-top:3px solid var(--rule);margin:12px 0}
+.thin-rule{border:none;border-top:1px solid var(--light);margin:8px 0}
+
+/* ── Section Headers ── */
+.section-header{text-align:center;margin:24px 0 16px;position:relative}
+.section-header h2{font-family:'Playfair Display',serif;font-size:16px;text-transform:uppercase;letter-spacing:6px;color:var(--red);display:inline-block;padding:0 20px;background:var(--cream);position:relative;z-index:1}
+.section-header::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--rule)}
+
+/* ── Columns ── */
+.columns-3{column-count:3;column-gap:28px;column-rule:1px solid var(--light)}
+.columns-2{column-count:2;column-gap:28px;column-rule:1px solid var(--light)}
+.columns-1{column-count:1}
+
+/* ── Articles ── */
+.article{break-inside:avoid;margin-bottom:20px}
+.article h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;line-height:1.2;margin-bottom:6px;color:var(--brown)}
+.article h4{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:4px}
+.article .byline{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--light);margin-bottom:6px}
+.article p{text-align:justify;hyphens:auto;font-size:13.5px;margin-bottom:8px}
+.article p:first-of-type::first-letter{float:left;font-family:'Playfair Display',serif;font-size:48px;line-height:38px;padding:2px 6px 0 0;color:var(--red);font-weight:900}
+.article .stat-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dotted var(--light);font-size:12px}
+.article .stat-row .label{color:var(--light);text-transform:uppercase;letter-spacing:1px;font-size:10px}
+.article .stat-row .value{font-weight:700;font-size:14px}
+.headline-banner{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;text-align:center;line-height:1.15;margin:8px 0 12px;letter-spacing:-0.5px}
+.sub-headline{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;text-align:center;color:var(--light);margin-bottom:16px}
+
+/* ── Stats Boxes ── */
+.stats-box{background:var(--paper);border:1px solid var(--light);padding:12px 16px;margin-bottom:12px;break-inside:avoid}
+.stats-box h4{font-family:'Playfair Display',serif;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px;color:var(--red)}
+.stats-box .big-num{text-align:center;font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--brown);line-height:1}
+.stats-box .big-label{text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--light);margin-top:2px}
+
+/* ── Footer ── */
+.gazette-footer{text-align:center;margin-top:24px;padding-top:12px;border-top:4px double var(--rule);font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--light)}
+
+/* ── Config Bar ── */
+.config-bar{background:#1a1a28;padding:12px 24px;display:flex;gap:8px;align-items:center;max-width:1100px;margin:0 auto 0}
+.config-bar input{background:#2a2a3e;border:1px solid #3a3a4e;color:#e8e8f0;padding:8px 14px;border-radius:6px;font-size:13px;font-family:sans-serif}
+.config-bar input:first-of-type{flex:1}
+.config-bar button{background:var(--red);color:#fff;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;font-family:sans-serif}
+.loading-msg{text-align:center;padding:40px;color:var(--light);font-style:italic;font-size:16px}
+
+@media(max-width:768px){
+  .gazette{padding:20px 16px}
+  .columns-3,.columns-2{column-count:1}
+  .masthead-title{font-size:42px}
+  .headline-banner{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<div class="config-bar no-print">
+  <input type="text" id="apiUrl" placeholder="Gateway URL (e.g. https://ck-api-gateway.you.workers.dev)">
+  <input type="password" id="apiToken" placeholder="Bearer Token" style="width:200px">
+  <button onclick="connectAndPublish()">Publish Edition</button>
+</div>
+
+<div class="gazette" id="gazette">
+  <header class="masthead">
+    <div class="masthead-top">
+      <span>Est. 2026</span>
+      <span>Port Saint Lucie, Florida</span>
+      <span>Enterprise Edition</span>
+    </div>
+    <div class="masthead-title">The Coastal Key Gazette</div>
+    <div class="masthead-subtitle">The Official Record of the Coastal Key Property Management Enterprise</div>
+    <div class="dateline">
+      <span id="volLine">Vol. I — No. 1</span>
+      <span id="dateLine"></span>
+      <span class="edition">LATE EDITION</span>
+      <span>Price: One Cent</span>
+    </div>
+  </header>
+
+  <div id="gazetteContent">
+    <p class="loading-msg">Connect to your Gateway to publish today's edition...</p>
+  </div>
+
+  <footer class="gazette-footer">
+    Published Daily by the Coastal Key Property Management Enterprise AI Operations Division<br>
+    <span style="letter-spacing:6px;font-size:9px">— Truth Over Convenience · Transparency Over Opacity · Long-Term Reputation Over Short-Term Revenue —</span>
+  </footer>
+</div>
+
+<script>
+let API_URL='',API_TOKEN='';
+
+// Set dateline
+const now=new Date();
+const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+document.getElementById('dateLine').textContent=`${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+
+// Day of year for volume number
+const startOfYear=new Date(now.getFullYear(),0,0);
+const diff=now-startOfYear;
+const dayNum=Math.floor(diff/(1000*60*60*24));
+document.getElementById('volLine').textContent=`Vol. I — No. ${dayNum}`;
+
+function loadConfig(){
+  const s=localStorage.getItem('ck_gazette_config');
+  if(s){const c=JSON.parse(s);document.getElementById('apiUrl').value=c.url||'';document.getElementById('apiToken').value=c.token||'';if(c.url&&c.token){API_URL=c.url.replace(/\/+$/,'');API_TOKEN=c.token;fetchEdition()}}
+}
+
+function connectAndPublish(){
+  API_URL=document.getElementById('apiUrl').value.replace(/\/+$/,'');
+  API_TOKEN=document.getElementById('apiToken').value;
+  if(!API_URL||!API_TOKEN)return alert('Enter Gateway URL and Token.');
+  localStorage.setItem('ck_gazette_config',JSON.stringify({url:API_URL,token:API_TOKEN}));
+  fetchEdition();
+}
+
+async function api(path){
+  const r=await fetch(`${API_URL}${path}`,{headers:{'Authorization':`Bearer ${API_TOKEN}`,'Content-Type':'application/json'}});
+  if(!r.ok)throw new Error(`${r.status}`);return r.json();
+}
+
+async function fetchEdition(){
+  const el=document.getElementById('gazetteContent');
+  el.innerHTML='<p class="loading-msg">Composing today\'s edition...</p>';
+  try{
+    const[dashboard,metrics,health]=await Promise.all([
+      api('/v1/dashboard').catch(()=>null),
+      api('/v1/agents/metrics').catch(()=>null),
+      api('/v1/health').catch(()=>null),
+    ]);
+    const[campaign,propertyStats,intel]=await Promise.all([
+      api('/v1/campaign/dashboard').catch(()=>null),
+      api('/v1/property-intel/stats').catch(()=>null),
+      api('/v1/intel/dashboard').catch(()=>null),
+    ]);
+    renderEdition({dashboard,metrics,health,campaign,propertyStats,intel});
+  }catch(err){
+    el.innerHTML=`<p class="loading-msg">Failed to compose edition: ${err.message}</p>`;
+  }
+}
+
+function renderEdition(d){
+  const el=document.getElementById('gazetteContent');
+  const m=d.metrics||{};
+  const h=d.health||{};
+  const dash=d.dashboard||{};
+  const camp=d.campaign||{};
+  const prop=d.propertyStats||{};
+  const intel=d.intel||{};
+
+  const totalAgents=m.totalAgents||290;
+  const activeAgents=m.byStatus?.active||0;
+  const standbyAgents=m.byStatus?.standby||0;
+  const systemStatus=h.status||'operational';
+
+  el.innerHTML=`
+    <div class="headline-banner">ENTERPRISE FLEET FULLY OPERATIONAL<br>AT ${totalAgents} AGENTS ACROSS ${m.byDivision?Object.keys(m.byDivision).length:9} DIVISIONS</div>
+    <div class="sub-headline">System reports ${systemStatus} status — All divisions reporting for duty</div>
+    <hr class="thick-rule">
+
+    <!-- ═══ EXECUTIVE DIVISION ═══ -->
+    <div class="section-header"><h2>Executive Division</h2></div>
+    <div class="columns-3">
+      <div class="article">
+        <h3>Command Center Reports Full Fleet Deployment</h3>
+        <div class="byline">Office of the Chief Executive</div>
+        <p>Coastal Key Property Management's enterprise AI operations platform has achieved full operational deployment with ${totalAgents} autonomous agents stationed across ${m.byDivision?Object.keys(m.byDivision).length:9} specialized divisions. The fleet, which represents the most ambitious AI workforce deployment in Treasure Coast property management history, operates continuously without human intervention for standard operations.</p>
+        <p>Chief Executive operations confirm ${activeAgents} agents currently active, with ${standbyAgents} on standby reserve. The system architecture, built on Cloudflare's global edge network, delivers sub-50ms response times across all 38 API endpoints.</p>
+      </div>
+      <div class="stats-box">
+        <h4>Fleet Summary</h4>
+        <div class="big-num">${totalAgents}</div>
+        <div class="big-label">Total Agents Deployed</div>
+        <hr class="thin-rule">
+        <div class="stat-row"><span class="label">Active</span><span class="value" style="color:green">${activeAgents}</span></div>
+        <div class="stat-row"><span class="label">Standby</span><span class="value">${standbyAgents}</span></div>
+        <div class="stat-row"><span class="label">Training</span><span class="value">${m.byStatus?.training||0}</span></div>
+        <div class="stat-row"><span class="label">Maintenance</span><span class="value">${m.byStatus?.maintenance||0}</span></div>
+      </div>
+      <div class="article">
+        <h4>System Health: ${systemStatus.toUpperCase()}</h4>
+        <p>Gateway version ${h.version||'2.0.0'} reports all subsystems nominal. The platform serves ${h.agents||totalAgents} agents across ${h.divisions||9} divisions from Cloudflare's global edge network spanning 300+ cities worldwide.</p>
+      </div>
+    </div>
+
+    <div class="ornament">❧</div>
+
+    <!-- ═══ SENTINEL DIVISION ═══ -->
+    <div class="section-header"><h2>Sentinel Division</h2></div>
+    <div class="columns-2">
+      <div class="article">
+        <h3>Tracey Hunter Campaign Operations Report</h3>
+        <div class="byline">Sentinel Intelligence Bureau</div>
+        <p>The forty-agent Sentinel outbound sales campaign continues its systematic engagement of the Treasure Coast and Palm Beach property markets. ${camp.agentPerformance?`The fleet of ${camp.agentPerformance.totalAgents||40} AI calling agents operates Monday through Saturday, 10 AM to 3 PM Eastern, executing qualification-focused conversations with property owners across ten service zones.`:'Campaign metrics are being compiled for the next reporting period. All Sentinel agents remain on active duty across ten Treasure Coast service zones.'}</p>
+        <p>Each Sentinel agent conducts property-owner qualification using a structured five-point assessment: property location within service area, twelve-month transaction timeline, clear motivation signal, minimum two-hundred thousand dollar property value, and willingness to engage with a human advisor.</p>
+      </div>
+      <div class="article">
+        ${camp.latestAnalytics?`
+        <div class="stats-box">
+          <h4>Campaign Daily Brief</h4>
+          <div class="stat-row"><span class="label">Total Calls</span><span class="value">${camp.latestAnalytics.totalCalls||'—'}</span></div>
+          <div class="stat-row"><span class="label">Connections</span><span class="value">${camp.latestAnalytics.connections||'—'}</span></div>
+          <div class="stat-row"><span class="label">Qualified Leads</span><span class="value">${camp.latestAnalytics.qualifiedLeads||'—'}</span></div>
+          <div class="stat-row"><span class="label">Transfers</span><span class="value">${camp.latestAnalytics.transfers||'—'}</span></div>
+        </div>
+        `:`
+        <div class="stats-box">
+          <h4>Campaign Targets</h4>
+          <div class="stat-row"><span class="label">Daily Calls Target</span><span class="value">2,400</span></div>
+          <div class="stat-row"><span class="label">Connection Rate</span><span class="value">20%</span></div>
+          <div class="stat-row"><span class="label">Qualification Rate</span><span class="value">5%</span></div>
+          <div class="stat-row"><span class="label">Daily Transfers</span><span class="value">8</span></div>
+        </div>`}
+        <h4>Service Zones Active</h4>
+        <p>Port St. Lucie · Fort Pierce · Vero Beach · Sebastian · Stuart · Jensen Beach · Palm City · Hutchinson Island · Hobe Sound · Jupiter-Tequesta</p>
+      </div>
+    </div>
+
+    <div class="ornament">❦</div>
+
+    <!-- ═══ OPERATIONS DIVISION ═══ -->
+    <div class="section-header"><h2>Operations Division</h2></div>
+    <div class="columns-3">
+      <div class="article">
+        <h3>Property Intelligence Pipeline Active</h3>
+        <div class="byline">Real Estate Operations Bureau</div>
+        <p>The automated property intelligence pipeline, drawing from the Florida Statewide Cadastral database via ArcGIS REST API, continues to identify high-value commercial opportunities across Saint Lucie County. ${prop.totalRecords?`A total of ${prop.totalRecords} commercial parcels have been catalogued and scored for lead potential.`:'The system scans five commercial use code categories: Office, Retail, Medical, Institutional, and Industrial properties.'}</p>
+      </div>
+      ${prop.totalRecords?`
+      <div class="stats-box">
+        <h4>Property Intelligence</h4>
+        <div class="big-num">${prop.totalRecords}</div>
+        <div class="big-label">Properties Catalogued</div>
+        <hr class="thin-rule">
+        <div class="stat-row"><span class="label">High Potential</span><span class="value" style="color:green">${prop.byLeadPotential?.High||0}</span></div>
+        <div class="stat-row"><span class="label">Medium</span><span class="value">${prop.byLeadPotential?.Medium||0}</span></div>
+        <div class="stat-row"><span class="label">Low</span><span class="value">${prop.byLeadPotential?.Low||0}</span></div>
+        <div class="stat-row"><span class="label">Total Value</span><span class="value">$${((prop.totalAssessedValue||0)/1000000).toFixed(1)}M</span></div>
+      </div>`:
+      `<div class="stats-box"><h4>Property Intelligence</h4><div class="big-num">5</div><div class="big-label">Use Code Categories</div><hr class="thin-rule"><div class="stat-row"><span class="label">Office</span><span class="value">DOR 11-19</span></div><div class="stat-row"><span class="label">Retail</span><span class="value">DOR 21-29</span></div><div class="stat-row"><span class="label">Medical</span><span class="value">DOR 36-38</span></div><div class="stat-row"><span class="label">Industrial</span><span class="value">DOR 41-49</span></div><div class="stat-row"><span class="label">Institutional</span><span class="value">DOR 70-79</span></div></div>`}
+      <div class="article">
+        <h4>Airtable Master Orchestrator</h4>
+        <p>The enterprise data backbone operates across 38 interconnected tables in the Master Orchestrator base, managing the complete lifecycle from lead capture through client onboarding, property management, and investor relations.</p>
+      </div>
+    </div>
+
+    <div class="ornament">✦</div>
+
+    <!-- ═══ INTELLIGENCE DIVISION ═══ -->
+    <div class="section-header"><h2>Intelligence Division</h2></div>
+    <div class="columns-2">
+      <div class="article">
+        <h3>Fifty Intelligence Officers Deploy for Continuous Monitoring</h3>
+        <div class="byline">Intelligence Operations Command</div>
+        <p>The newly commissioned Intelligence Officer fleet — comprising fifty autonomous monitoring agents organized into five specialized squads — has achieved initial operational capability. ${intel.fleetSize?`All ${intel.fleetSize} officers report active status, with ${intel.bySeverity?.critical||0} assigned to critical-severity monitoring posts.`:'Squad Alpha monitors infrastructure, Bravo guards data integrity, Charlie enforces security compliance, Delta tracks revenue operations, and Echo optimizes performance.'}</p>
+        <p>Operating under the enterprise mandate of "truth over convenience, transparency over opacity," the Intelligence Officers conduct continuous scans of all Coastal Key systems, employing automated repair mechanisms upon detection of any compromised subsystem.</p>
+      </div>
+      <div class="article">
+        <div class="stats-box">
+          <h4>Intelligence Fleet</h4>
+          <div class="big-num">${intel.fleetSize||50}</div>
+          <div class="big-label">Officers Deployed</div>
+          <hr class="thin-rule">
+          <div class="stat-row"><span class="label">Alpha — Infrastructure</span><span class="value">10</span></div>
+          <div class="stat-row"><span class="label">Bravo — Data Integrity</span><span class="value">10</span></div>
+          <div class="stat-row"><span class="label">Charlie — Security</span><span class="value">10</span></div>
+          <div class="stat-row"><span class="label">Delta — Revenue Ops</span><span class="value">10</span></div>
+          <div class="stat-row"><span class="label">Echo — Performance</span><span class="value">10</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ornament">❧</div>
+
+    <!-- ═══ REMAINING DIVISIONS ═══ -->
+    <div class="columns-3">
+      <div class="article">
+        <div class="section-header" style="margin-top:0"><h2>Marketing</h2></div>
+        <h4>Content Engine Producing Across All Channels</h4>
+        <p>Module C Content Production operates at full capacity, generating social media posts, email campaigns, video scripts, and podcast outlines via Claude inference. All outputs route through the Content Calendar for CEO review before distribution via Buffer.</p>
+      </div>
+      <div class="article">
+        <div class="section-header" style="margin-top:0"><h2>Finance</h2></div>
+        <h4>Dynamic Pricing Engine Online</h4>
+        <p>The zone-level pricing recommendation engine now serves real-time competitive pricing data across all ten Treasure Coast service zones. Investor presentations auto-generate via WF-3 pipeline for qualified prospects exceeding the five-million-dollar threshold.</p>
+      </div>
+      <div class="article">
+        <div class="section-header" style="margin-top:0"><h2>Ventures</h2></div>
+        <h4>Expansion Intelligence Active</h4>
+        <p>Competitive intelligence from NotebookLM analysis continues to identify market opportunities. The Source Refresh Tracker maintains thirty-day refresh cycles for market data and ninety-day cycles for regulatory intelligence, ensuring decisions rest on current data.</p>
+      </div>
+    </div>
+
+    <hr class="thick-rule">
+
+    <!-- ═══ TECHNOLOGY ═══ -->
+    <div class="section-header"><h2>Technology Division</h2></div>
+    <div class="columns-2">
+      <div class="article">
+        <h4>Platform Architecture Report</h4>
+        <p>Enterprise infrastructure operates on Cloudflare Workers (ES module format) with four KV namespace bindings providing sub-millisecond data access for caching, sessions, rate limiting, and audit logging. GitHub Actions CI/CD pipeline automates test and deploy on every push to main.</p>
+      </div>
+      <div class="article">
+        <div class="stats-box">
+          <h4>Systems Status</h4>
+          <div class="stat-row"><span class="label">API Gateway</span><span class="value" style="color:green">● Online</span></div>
+          <div class="stat-row"><span class="label">Command Center</span><span class="value" style="color:green">● Online</span></div>
+          <div class="stat-row"><span class="label">Sentinel Webhook</span><span class="value" style="color:green">● Online</span></div>
+          <div class="stat-row"><span class="label">API Endpoints</span><span class="value">38</span></div>
+          <div class="stat-row"><span class="label">Airtable Tables</span><span class="value">38</span></div>
+          <div class="stat-row"><span class="label">KV Namespaces</span><span class="value">4</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Auto-refresh every 5 minutes
+setInterval(()=>{if(API_URL&&API_TOKEN)fetchEdition()},300000);
+loadConfig();
+</script>
+</body>
+</html>

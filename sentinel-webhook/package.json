@@ -1,0 +1,16 @@
+{
+  "name": "sentinel-webhook",
+  "version": "1.0.0",
+  "description": "Coastal Key Sentinel Sales Campaign — Retell-to-Airtable-to-Slack webhook service",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node --test src/__tests__/transform.test.js"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
