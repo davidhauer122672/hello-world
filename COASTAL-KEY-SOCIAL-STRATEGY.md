@@ -308,32 +308,40 @@ Every component of the 360-unit fleet serves this flywheel. Marketing creates de
 ### Days 1-30: Foundation
 
 - [ ] Finalize visual brand kit (color palette, typography, templates for each content type)
-- [ ] Set up and optimize all platform profiles with consistent branding
-- [ ] Produce 30 days of content in advance (batch production)
-- [ ] Launch Instagram and Facebook with 5x/week and 4x/week cadence
+- [ ] Set up and optimize all 8 platform profiles with consistent branding (Instagram, Facebook, LinkedIn, YouTube, TikTok, X, Mighty Networks, Alignable)
+- [ ] Produce 30 days of content in advance (batch production — 168 posts/week)
+- [ ] Launch all 8 platforms at 3x/day cadence from day one
 - [ ] Publish first LinkedIn long-form: "Why I Built a 360-Unit AI Fleet for a Property Management Company"
 - [ ] Create YouTube channel, publish first Market Report and Fleet Spotlight
 - [ ] Build "Treasure Coast Property Owners" Facebook Group
+- [ ] Launch Mighty Networks community ("Coastal Key Inner Circle") with welcome sequence
+- [ ] Establish Alignable profile and begin vendor network connections across Treasure Coast
+- [ ] Pin first X thread introducing the 360-unit fleet
 - [ ] Install tracking: UTM parameters on every link, pixel on website, conversion events on contact form
 
 ### Days 31-60: Amplification
 
 - [ ] Analyze first 30 days: identify top-performing content types, hooks, and platforms
 - [ ] Double down on what works. Cut what doesn't. No sentiment, only data.
-- [ ] Launch TikTok with repurposed top-performing Reels
+- [ ] Scale X engagement: quote-tweet strategy, poll cadence, thread series
 - [ ] Begin LinkedIn engagement strategy: comment on 10 posts/day in target communities
 - [ ] First paid campaign: boost top 3 organic Reels to Treasure Coast homeowner demographics
-- [ ] Publish first Gazette excerpt as a LinkedIn article
+- [ ] Publish first Gazette excerpt as a LinkedIn article and Mighty Networks exclusive
 - [ ] Guest appearances: local podcasts, real estate YouTube channels, Chamber of Commerce events
 - [ ] Launch STR revenue audit as lead magnet with dedicated landing page
+- [ ] Alignable: complete 50+ local business connections, initiate vendor referral pipeline
+- [ ] Mighty Networks: host first live "Command Center Walkthrough" event
 
 ### Days 61-90: Optimization & Scale
 
-- [ ] Full platform audit: follower growth rate, engagement rate, website traffic from social, leads generated, cost per lead
-- [ ] Establish content-to-lead attribution: which pillars drive the most qualified inbound
+- [ ] Full platform audit: follower growth rate, engagement rate, website traffic from social, leads generated, cost per lead — across all 8 platforms
+- [ ] Establish content-to-lead attribution: which pillars and platforms drive the most qualified inbound
 - [ ] Scale paid spend on proven content (target: $3-5 CPL for property owner leads)
 - [ ] Launch YouTube Shorts strategy (repurpose top Reels)
 - [ ] Begin email nurture sequence for social-captured leads (20 Email AI agents)
+- [ ] Mighty Networks: launch premium tier with DELTA Squad revenue reports and portfolio review scheduling
+- [ ] Alignable: vendor network target 100+ connections, active referral exchange
+- [ ] X: evaluate thread series performance, launch weekly poll cadence
 - [ ] Plan Q3 content calendar based on 90 days of performance data
 - [ ] Evaluate app development timeline based on portfolio size and client demand
 
@@ -344,13 +352,20 @@ Every component of the 360-unit fleet serves this flywheel. Marketing creates de
 | Metric | 90-Day Target | 6-Month Target |
 |---|---|---|
 | Instagram followers | 2,500 | 10,000 |
+| Facebook page followers | 1,500 | 6,000 |
 | LinkedIn connections (Tracey) | 1,000 | 3,000 |
 | YouTube subscribers | 500 | 2,000 |
-| Monthly website visits from social | 1,500 | 5,000 |
-| Social-sourced leads/month | 30 | 100 |
+| TikTok followers | 2,000 | 8,000 |
+| X (Twitter) followers | 1,500 | 5,000 |
+| Mighty Networks members | 200 | 1,000 |
+| Alignable connections | 100 | 300 |
+| Monthly website visits from social | 2,500 | 8,000 |
+| Social-sourced leads/month | 50 | 150 |
 | Cost per lead (paid) | < $10 | < $5 |
 | Content-to-consultation rate | 2% | 4% |
-| New PM contracts from social pipeline | 5 | 20 |
+| New PM contracts from social pipeline | 8 | 30 |
+| Mighty Networks premium conversion | 10% | 20% |
+| Alignable vendor partnerships | 15 | 50 |
 
 ---
 
