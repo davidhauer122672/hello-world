@@ -139,11 +139,14 @@ No competitor will replicate a 360-unit fleet, 43-endpoint API gateway, 38-table
 
 | Platform | Frequency | Primary Format | Objective |
 |---|---|---|---|
-| **Instagram** | 5x/week | Reels (60-90s), carousels, stories daily | Brand awareness, lifestyle, visual authority |
-| **Facebook** | 4x/week | Video, market updates, community posts | Local engagement, homeowner demographics |
-| **LinkedIn** | 3x/week | Long-form articles, tech breakdowns, case studies | B2B credibility, investor audience, recruiting |
-| **YouTube** | 2x/week | Market reports (5-8 min), property tours, tech deep dives | SEO, long-form authority, education |
-| **TikTok** | 4x/week | Short-form (15-60s), behind-the-scenes, hot takes | Reach expansion, younger investor audience |
+| **Instagram** | 3x/day, 7 days | Reels (60-90s), carousels, stories daily | Brand awareness, lifestyle, visual authority |
+| **Facebook** | 3x/day, 7 days | Video, market updates, community posts | Local engagement, homeowner demographics |
+| **LinkedIn** | 3x/day, 7 days | Long-form articles, tech breakdowns, case studies | B2B credibility, investor audience, recruiting |
+| **YouTube** | 3x/day, 7 days | Market reports (5-8 min), property tours, tech deep dives | SEO, long-form authority, education |
+| **TikTok** | 3x/day, 7 days | Short-form (15-60s), behind-the-scenes, hot takes | Reach expansion, younger investor audience |
+| **X (Twitter)** | 3x/day, 7 days | Threads, data drops, hot takes, polls | Real-time market authority, proptech community |
+| **Mighty Networks** | 3x/day, 7 days | Community posts, discussions, live events, courses | Owned community, member retention, premium intel |
+| **Alignable** | 3x/day, 7 days | Business updates, referrals, recommendations | Local B2B networking, vendor pipeline, referrals |
 
 ### Content That Converts (Bottom-of-Funnel)
 
@@ -197,6 +200,52 @@ Every piece of content ends with one CTA. Never two. The CTA matches the content
 - Community content: local events, business spotlights, Stuart downtown, Jensen Beach pineapple festival
 - Client testimonials and closing celebrations
 - Facebook Groups: "Treasure Coast Property Owners" — owned community for long-term nurture
+
+### X / Twitter (Real-Time Market Authority)
+
+**Bio:** `Coastal Key Property Management | 360-unit AI fleet managing Florida's Treasure Coast | Market data. Fleet ops. Coastal life. | Your property. Our obsession.`
+
+**Strategy:**
+- X is the real-time intelligence feed. Every post earns attention in under 2 seconds or gets scrolled past.
+- **Threads** are the power format: 5-8 tweet threads breaking down Treasure Coast market data, AI fleet operations, and investor strategy. Thread openers must be standalone hooks — they get retweeted independently.
+- **Data drops:** Single-tweet market stats with sharp commentary. "$485K median in Martin County. 42 days on market. 4.2 months inventory. That is a market that rewards precision and punishes delay." One data point. One insight. Done.
+- **Hot takes:** Contrarian or forward-leaning market observations. "Most property managers on the Treasure Coast are running 2019 operations in a 2026 market. The ones who survive the next 3 years will not be the ones who resisted AI."
+- **Engagement mechanics:** Quote-tweet competitors' generic content with specific Treasure Coast data. Reply to Florida RE conversations with actual numbers. Use polls sparingly but strategically ("Which Treasure Coast county has the best cap rate potential? Martin / St. Lucie / Indian River").
+- **Hashtag discipline:** Maximum 2-3 per tweet. #TreasureCoast #FloridaRealEstate and one rotating tag. Never hashtag-stuff.
+- **Frequency:** 3x/day — morning data drop (7:30 AM ET), midday thread (12:30 PM ET), evening hot take or lifestyle (7:00 PM ET).
+- Target: real estate investors, proptech community, Florida market watchers, relocators researching online
+
+### Mighty Networks (Inner Circle Community Platform)
+
+**Network Name:** `Coastal Key Inner Circle` or `Treasure Coast Property Intelligence Network`
+
+**Strategy:**
+- Mighty Networks is the owned community — no algorithm between Coastal Key and its members. This is where casual followers become committed community members.
+- **Membership tiers:**
+  - **Free tier:** Weekly Gazette excerpts, monthly market snapshots, community discussion access
+  - **Premium tier:** Full Gazette access, DELTA Squad revenue reports, quarterly portfolio review scheduling, direct Q&A with Tracey's team
+- **Content format — Discussion posts:** Long-form, value-dense posts that invite member response. "Q2 2026 opens next week. Here is what our INT Division is watching across all three counties. What are YOU watching? What questions do you want our Intelligence Officers to prioritize?"
+- **Content format — Polls & surveys:** "Which service zone are you most invested in?" / "What is your biggest property management frustration right now?" — data collection disguised as engagement.
+- **Content format — Live events:** Monthly "Command Center Live" sessions where Tracey walks through the Gazette, takes questions, and previews upcoming market intelligence.
+- **Content format — Courses/Guides:** "Treasure Coast Investor Playbook" — modular guide covering each county, each service zone, each property type. Delivered as a Mighty Networks course.
+- **Community moderation tone:** Peer-to-peer. Coastal Key facilitates and provides data. Members share experiences, ask questions, refer each other. The network effect compounds.
+- **Frequency:** 3x/day — morning market insight (8:00 AM ET), midday community discussion prompt (1:00 PM ET), evening exclusive content or event promo (6:00 PM ET).
+- Target: serious investors, current PM clients, high-intent prospects, Treasure Coast property owners who want ongoing intelligence
+
+### Alignable (Local Business Network & Referral Engine)
+
+**Profile:** `Coastal Key Property Management — AI-Powered Luxury Property Management | Stuart, FL | Serving Vero Beach to Jupiter`
+
+**Strategy:**
+- Alignable is the local B2B referral network. The audience is Treasure Coast business owners, contractors, real estate professionals, and service providers. This is where vendor relationships, referral partnerships, and local business credibility are built.
+- **Content format — Business updates:** Operational milestones, new service announcements, hiring updates. "Coastal Key's AI fleet now operates 360 units across 9 divisions. We are actively expanding our vendor network in Martin and St. Lucie counties."
+- **Content format — Referral requests:** Direct and professional. "We are looking for licensed HVAC contractors in the Jensen Beach / Stuart corridor. If you are one or know one, let us connect. Our VEN Division manages vendor relationships across the Treasure Coast."
+- **Content format — Recommendations & endorsements:** Proactively recommend vendors, contractors, and local businesses that Coastal Key works with. Reciprocity drives the Alignable algorithm.
+- **Content format — Local market insights:** Shorter, more conversational versions of the market intelligence shared on LinkedIn. "Treasure Coast business owners: Martin County median just hit $485K. That impacts commercial lease rates, retail foot traffic patterns, and residential investment decisions. Here is what to watch."
+- **Content format — Community questions:** "Treasure Coast business owners: what is your biggest challenge heading into Q2 2026?" — engagement + market research.
+- **Vendor network building:** Use Alignable to identify, vet, and recruit contractors, cleaning services, landscapers, and maintenance providers into Coastal Key's vendor network. Every connection is a potential operational asset.
+- **Frequency:** 3x/day — morning business update (8:30 AM ET), midday referral or recommendation (12:30 PM ET), evening community question or market insight (5:30 PM ET).
+- Target: Treasure Coast small business owners, contractors, real estate professionals, property service vendors, local Chamber of Commerce members
 
 ---
 
