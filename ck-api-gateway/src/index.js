@@ -50,6 +50,8 @@
  *   GET  /v1/atlas/campaigns/:id/bookings — Bookings for campaign
  *   GET  /v1/atlas/kb/files               — List knowledge base files
  *   POST /v1/atlas/speed-to-lead          — Trigger speed-to-lead call
+ *   POST /v1/atlas/campaigns              — Create a new Atlas campaign
+ *   GET  /v1/atlas/audit                  — Audit required CKPM campaigns
  *   GET  /v1/atlas/health                 — Atlas AI connectivity check
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
@@ -69,7 +71,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
-import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasHealth } from './routes/atlas.js';
+import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -341,6 +343,14 @@ export default {
 
       if (path === '/v1/atlas/campaigns' && method === 'GET') {
         return await handleAtlasCampaigns(env);
+      }
+
+      if (path === '/v1/atlas/campaigns' && method === 'POST') {
+        return await handleAtlasCreateCampaign(request, env, ctx);
+      }
+
+      if (path === '/v1/atlas/audit' && method === 'GET') {
+        return await handleAtlasAudit(env);
       }
 
       if (path === '/v1/atlas/statistics' && method === 'GET') {

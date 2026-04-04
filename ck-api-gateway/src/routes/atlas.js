@@ -13,12 +13,15 @@
  *   GET  /v1/atlas/campaigns/:id/bookings — Bookings for a campaign
  *   GET  /v1/atlas/kb/files               — List all knowledge base files
  *   POST /v1/atlas/speed-to-lead          — Trigger speed-to-lead call for new lead
+ *   POST /v1/atlas/campaigns              — Create a new campaign
+ *   GET  /v1/atlas/audit                  — Audit all campaigns and check for required CKPM campaigns
  *   GET  /v1/atlas/health                 — Atlas API connectivity check
  */
 
 import {
   listCampaigns,
   getCampaign,
+  createCampaign,
   setCampaignStatus,
   getCampaignsOverviewStats,
   getCampaignStats,
@@ -146,6 +149,116 @@ export async function handleAtlasSpeedToLead(request, env, ctx) {
   });
 
   return jsonResponse({ success: true, triggered: result });
+}
+
+// ── Create Campaign ──
+
+export async function handleAtlasCreateCampaign(request, env, ctx) {
+  const body = await request.json();
+
+  if (!body.name) {
+    return errorResponse('name is required', 400);
+  }
+
+  const result = await createCampaign(env, body);
+
+  writeAudit(env, ctx, {
+    route: '/v1/atlas/campaigns',
+    action: 'create_campaign',
+    name: body.name,
+  });
+
+  return jsonResponse({ success: true, campaign: result });
+}
+
+// ── Campaign Audit ──
+
+/**
+ * Required CKPM campaigns that should exist in Atlas.
+ * Names are matched case-insensitively as substrings.
+ */
+const REQUIRED_CAMPAIGNS = [
+  { key: 'speed_to_lead', search: 'speed', label: 'Speed-to-Lead', env_var: null },
+  { key: 'dead_lead_revival', search: 'revival', label: 'Dead Lead Revival', env_var: 'ATLAS_REVIVAL_CAMPAIGN_ID' },
+  { key: 'appointment_confirmation', search: 'confirm', label: 'Appointment Confirmation', env_var: 'ATLAS_CONFIRMATION_CAMPAIGN_ID' },
+  { key: 'inbound_receptionist', search: 'receptionist', label: 'AI Receptionist (Inbound)', env_var: null },
+  { key: 'outbound_prospecting', search: 'sentinel', label: 'Outbound Prospecting (TH-SENTINEL)', env_var: null },
+];
+
+export async function handleAtlasAudit(env) {
+  if (!env.ATLAS_API_KEY) {
+    return jsonResponse({
+      status: 'not_configured',
+      message: 'ATLAS_API_KEY not set.',
+    });
+  }
+
+  try {
+    const campaignsResponse = await listCampaigns(env);
+    const campaigns = Array.isArray(campaignsResponse)
+      ? campaignsResponse
+      : (campaignsResponse?.data || campaignsResponse?.campaigns || []);
+
+    // Build inventory of all existing campaigns
+    const inventory = campaigns.map(c => ({
+      id: c.id || c._id,
+      name: c.name || c.title,
+      status: c.status,
+      type: c.type || c.campaign_type,
+      created: c.created_at || c.createdAt,
+    }));
+
+    // Check which required CKPM campaigns exist
+    const audit = REQUIRED_CAMPAIGNS.map(req => {
+      const match = inventory.find(c =>
+        c.name && c.name.toLowerCase().includes(req.search.toLowerCase())
+      );
+
+      const envConfigured = req.env_var ? !!env[req.env_var] : null;
+
+      return {
+        key: req.key,
+        label: req.label,
+        found: !!match,
+        campaign_id: match?.id || null,
+        campaign_name: match?.name || null,
+        campaign_status: match?.status || null,
+        env_var: req.env_var,
+        env_configured: envConfigured,
+        action_needed: !match
+          ? `CREATE campaign in Atlas dashboard → https://app.youratlas.com/dashboard/campaigns`
+          : (req.env_var && !envConfigured)
+            ? `SET secret: wrangler secret put ${req.env_var} --name ck-api-gateway (value: ${match.id})`
+            : 'none',
+      };
+    });
+
+    const missing = audit.filter(a => !a.found);
+    const unconfigured = audit.filter(a => a.found && a.env_var && !a.env_configured);
+
+    return jsonResponse({
+      success: true,
+      platform: 'Atlas AI (youratlas.com)',
+      dashboard: 'https://app.youratlas.com/dashboard/campaigns',
+      total_campaigns: inventory.length,
+      all_campaigns: inventory,
+      required_campaigns_audit: audit,
+      summary: {
+        total_required: REQUIRED_CAMPAIGNS.length,
+        found: REQUIRED_CAMPAIGNS.length - missing.length,
+        missing: missing.length,
+        missing_campaigns: missing.map(m => m.label),
+        unconfigured_secrets: unconfigured.map(u => u.env_var),
+      },
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    return jsonResponse({
+      status: 'error',
+      message: err.message,
+      timestamp: new Date().toISOString(),
+    }, 503);
+  }
 }
 
 // ── Health Check ──
