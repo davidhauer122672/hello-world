@@ -1,0 +1,16 @@
+{
+  "name": "ck-nemotron-worker",
+  "version": "1.0.0",
+  "description": "Coastal Key Nemotron Worker — NVIDIA Nemotron inference endpoint",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node --test src/__tests__/*.test.js"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

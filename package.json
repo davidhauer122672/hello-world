@@ -5,18 +5,21 @@
   "description": "Coastal Key Enterprise AI Operations Platform — Monorepo",
   "workspaces": [
     "ck-api-gateway",
-    "sentinel-webhook"
+    "sentinel-webhook",
+    "ck-nemotron-worker"
   ],
   "scripts": {
     "dev:gateway": "cd ck-api-gateway && npm run dev",
     "dev:sentinel": "cd sentinel-webhook && npm run dev",
-    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc",
+    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc && npm run deploy:nemotron",
     "deploy:gateway": "cd ck-api-gateway && npm run deploy",
     "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
     "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
-    "test": "npm run test:gateway && npm run test:sentinel",
+    "deploy:nemotron": "cd ck-nemotron-worker && npm run deploy",
+    "test": "npm run test:gateway && npm run test:sentinel && npm run test:nemotron",
     "test:gateway": "cd ck-api-gateway && npm test",
-    "test:sentinel": "cd sentinel-webhook && npm test"
+    "test:sentinel": "cd sentinel-webhook && npm test",
+    "test:nemotron": "cd ck-nemotron-worker && npm test"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"
