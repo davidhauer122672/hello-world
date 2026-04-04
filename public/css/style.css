@@ -282,7 +282,7 @@ nav .nav-links a:hover {
 }
 
 .calendar-grid .day.past {
-  color: #cbd5e1;
+  color: #94a3b8;
   cursor: default;
 }
 
@@ -333,7 +333,7 @@ nav .nav-links a:hover {
 
 .slot-btn.booked {
   background: #f1f5f9;
-  color: #cbd5e1;
+  color: #64748b;
   cursor: not-allowed;
   text-decoration: line-through;
 }
@@ -462,7 +462,7 @@ nav .nav-links a:hover {
 /* Footer */
 footer {
   background: var(--text);
-  color: #94a3b8;
+  color: #cbd5e1;
   text-align: center;
   padding: 32px 20px;
   margin-top: 64px;

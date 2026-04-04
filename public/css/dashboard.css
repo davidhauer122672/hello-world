@@ -78,7 +78,7 @@ body {
 .topbar-label {
   font-size: .8rem;
   font-weight: 500;
-  opacity: .7;
+  opacity: .88;
   text-transform: uppercase;
   letter-spacing: .08em;
 }
@@ -263,7 +263,7 @@ body {
 .empty-state {
   text-align: center;
   padding: 32px 16px;
-  color: var(--text-3);
+  color: var(--text-2);
   font-size: .85rem;
 }
 

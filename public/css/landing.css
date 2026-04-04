@@ -243,10 +243,10 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   /* Engraved into gold */
-  color: var(--gold-deep);
+  color: #2E1F00;
   text-shadow:
-    0 1px 0 rgba(255, 242, 178, 0.5),
-    0 -0.5px 0 rgba(107, 79, 14, 0.4);
+    0 1px 0 rgba(255, 242, 178, 0.6),
+    0 -0.5px 0 rgba(107, 79, 14, 0.5);
   transform: translateZ(5px);
   white-space: nowrap;
   user-select: none;
@@ -292,8 +292,8 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
-  color: rgba(255,255,255,0.8);
-  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.95);
+  border: 1px solid rgba(255,255,255,0.5);
   border-radius: 2px;
   transition: all 0.3s;
 }
@@ -441,8 +441,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 24px;
+  color: rgba(255,255,255,0.88);
 }
 
 .hero-headline {
@@ -460,7 +459,7 @@ body {
   font-size: clamp(0.95rem, 1.4vw, 1.15rem);
   font-weight: 300;
   line-height: 1.7;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.92);
   max-width: 640px;
   margin: 0 auto 44px;
 }
@@ -744,7 +743,7 @@ body {
 
 .why-item p {
   font-size: 0.9rem;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.78);
   line-height: 1.7;
 }
 
@@ -834,7 +833,7 @@ body {
 
 .footer-brand p {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.68);
   line-height: 1.6;
 }
 
@@ -846,7 +845,7 @@ body {
 
 .footer-links a {
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.72);
   text-decoration: none;
   letter-spacing: 0.03em;
   transition: color 0.2s;
@@ -860,7 +859,7 @@ body {
 
 .footer-legal p {
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.62);
 }
 
 .footer-license {
@@ -873,7 +872,7 @@ body {
 }
 
 .footer-contact-line a {
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.72);
   text-decoration: none;
   transition: color 0.2s;
 }
