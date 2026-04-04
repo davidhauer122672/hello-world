@@ -241,8 +241,30 @@
     "call-logs.json": {"purpose": "Sales call transcripts and objections", "protection": "file_serialized"},
     "backups/": {"purpose": "Daily snapshots", "retention": "7_days"}
   },
+  "workflow_engine": {
+    "status": "operational",
+    "replaces": "Zapier (removed from tech stack)",
+    "files": ["lib/workflows.js", "routes/workflows.js"],
+    "workflows": {
+      "wf1": {"name": "New Lead Nurture", "trigger": "POST /api/workflows/wf1", "actions": ["generate_battle_plan", "email_ceo", "sms_alert", "drip_enrollment"]},
+      "wf2": {"name": "Social Approval", "trigger": "POST /api/workflows/wf2", "actions": ["buffer_push_or_manual", "sms_notify"]},
+      "wf3": {"name": "Investor Escalation", "trigger": "POST /api/workflows/wf3", "actions": ["sms_urgent", "email_ceo_investor_brief"]},
+      "wf4": {"name": "Buffer Published", "trigger": "POST /api/workflows/wf4", "actions": ["mark_published"]},
+      "wf5": {"name": "Video Production", "trigger": "POST /api/workflows/wf5", "actions": ["generate_thumbnail", "generate_social_briefs", "email_production_brief", "sms_notify"]},
+      "wf6": {"name": "Podcast Publish", "trigger": "POST /api/workflows/wf6", "actions": ["create_social_drafts", "sms_notify"]},
+      "wf7": {"name": "AI Log Write", "trigger": "POST /api/workflows/wf7", "actions": ["log_to_file"]}
+    },
+    "endpoints": [
+      "GET /api/workflows",
+      "POST /api/workflows/:name",
+      "GET /api/workflows/log",
+      "GET /api/workflows/ai-log"
+    ],
+    "data_stores": ["data/ai-log.json"],
+    "integration_method": "Airtable automations POST to workflow endpoints. No external orchestration platform required."
+  },
   "api_surface": {
-    "total_endpoints": 24,
+    "total_endpoints": 28,
     "categories": {
       "appointments": 3,
       "payments": 3,
@@ -251,6 +273,7 @@
       "visuals": 6,
       "drip": 4,
       "objections": 4,
+      "workflows": 4,
       "reports": 2,
       "health": 1,
       "backup": 1
@@ -275,7 +298,8 @@
       "stripe": "Payment processing",
       "twilio": "SMS delivery"
     },
-    "zero_dependency_additions": ["mutex", "rate_limiter", "security_headers", "cors", "error_handler", "health_check", "backup_system", "graceful_shutdown"]
+    "zero_dependency_additions": ["mutex", "rate_limiter", "security_headers", "cors", "error_handler", "health_check", "backup_system", "graceful_shutdown", "workflow_engine"],
+    "removed_platforms": ["Zapier — replaced by native workflow engine (lib/workflows.js)"]
   },
   "environment_variables": {
     "required": ["PORT", "STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_WEBHOOK_SECRET", "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER", "OWNER_PHONE_NUMBER", "GOOGLE_SERVICE_ACCOUNT_KEY", "GOOGLE_SHEET_ID", "SITE_URL", "BUSINESS_NAME", "ANTHROPIC_API_KEY"],

@@ -16,6 +16,7 @@ const dripRouter = require('./routes/drip');
 const objectionsRouter = require('./routes/objections');
 const healthRouter = require('./routes/health');
 const dashboardRouter = require('./routes/dashboard');
+const workflowsRouter = require('./routes/workflows');
 
 // Services
 const { startDailyReport, buildReport } = require('./lib/daily-report');
@@ -57,6 +58,7 @@ app.use('/api/social', socialRouter);
 app.use('/api/visuals', visualsRouter);
 app.use('/api/drip', dripRouter);
 app.use('/api/objections', objectionsRouter);
+app.use('/api/workflows', workflowsRouter);
 
 // Manual report trigger
 app.post('/api/report/send', async (req, res) => {
