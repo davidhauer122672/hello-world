@@ -13,7 +13,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, and Cla
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 53 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 60 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Dashboard UI for 312-agent fleet + Coastal Key Gazette (Cloudflare Pages)
 - **ck-website**: Public-facing website with contact form (Cloudflare Pages)
@@ -68,6 +68,26 @@ POST /v1/mcco/positioning       — Generate authority positioning strategy
 POST /v1/mcco/monetization      — Generate monetization plan
 POST /v1/mcco/post              — Generate high-engagement social post
 ```
+
+### Thinking Coach API Endpoints (Expert Frameworks)
+```
+GET  /v1/thinking/frameworks          — List all 7 expert thinking frameworks
+GET  /v1/thinking/frameworks/:id      — Get single framework details
+POST /v1/thinking/session             — Run thinking session (single framework)
+POST /v1/thinking/multi               — Multi-framework analysis (2-7 frameworks)
+POST /v1/thinking/learning-blueprint  — Generate 90-day neuro-optimized learning blueprint
+POST /v1/thinking/daily-models        — CEO daily mental models briefing
+GET  /v1/thinking/dashboard           — Thinking Coach operational dashboard
+```
+
+#### 7 Expert Frameworks
+- **First Principles** (GROUND TRUTH) — Elon Musk, Aristotle, Feynman — Deconstruct & rebuild from ground truth
+- **Mental Models** (LATTICE MIND) — Charlie Munger, Naval Ravikant — 100+ cross-domain decision models
+- **Systems Thinking** (FEEDBACK LOOP) — Peter Senge, Donella Meadows, Ray Dalio — Feedback loops & leverage points
+- **Asymmetric Outcomes** (OPTIONALITY) — Jeff Bezos, Nassim Taleb, Peter Thiel — Capped downside, uncapped upside
+- **Neuro-Optimized Learning** (SKILL FORGE) — Richard Feynman, Barbara Oakley — 10x faster skill acquisition
+- **Competitive Warfare** (WAR ROOM) — Sun Tzu, Michael Porter, Hamilton Helmer — Strategic moats & market dominance
+- **CEO Decision Framework** (SOVEREIGN MIND) — Jeff Bezos, Ray Dalio, Andy Grove — Billionaire-level prioritization
 
 ## Key Patterns
 - All workers use ES module format (`export default { fetch() }`)
