@@ -1,9 +1,9 @@
 Property Reference,Service Zone,Assessed Value,Service Tier,Monthly Revenue,Inspection Frequency,Risk Score,Notes
-PCB-001,Panama City Beach,485000,Premium,425,Weekly,2,Beachfront condo; high rental income; hurricane shutters installed
-PCB-002,Panama City Beach,312000,Standard,275,Bi-Weekly,4,Second-row townhome; aging HVAC system flagged for replacement
-DST-001,Destin,725000,Premium,550,Weekly,3,Luxury harbor-view home; pool and dock maintenance included
-30A-001,30A / Santa Rosa Beach,920000,Premium,650,Weekly,1,High-end 30A beachfront; gated community; low risk
-BAY-001,Bay County,198000,Basic,125,Monthly,6,Inland single-family; older roof; flood zone adjacent
-PCB-003,Panama City Beach,265000,Standard,225,Bi-Weekly,3,Mid-rise condo unit; HOA handles exterior; interior only
-DST-002,Destin,410000,Standard,300,Bi-Weekly,5,Near harbor; salt air corrosion issues; needs frequent pressure washing
-BAY-002,Bay County,155000,Basic,100,Quarterly,7,Seasonal-only owner; vacant 8 months/year; higher vandalism risk
+STU-001,Stuart,685000,Premium,395,Weekly,2,Waterfront estate on St Lucie River; hurricane shutters installed
+STU-002,Stuart,312000,Standard,295,Bi-Weekly,4,Townhome in Willoughby; aging HVAC flagged for replacement
+JEN-001,Jensen Beach,525000,Premium,395,Weekly,3,Oceanfront condo; salt air corrosion monitoring required
+JUP-001,Jupiter,920000,Premium,395,Weekly,1,Gated community on Loxahatchee River; low risk; high value
+PSL-001,Port Saint Lucie,198000,Basic,195,Monthly,6,Inland single-family; older roof; flood zone adjacent
+VER-001,Vero Beach,465000,Standard,295,Bi-Weekly,3,Barrier island property; seasonal owner Nov-Apr
+HOB-001,Hobe Sound,410000,Standard,295,Bi-Weekly,5,Near Jonathan Dickinson State Park; wildlife intrusion risk
+SEB-001,Sebastian,155000,Basic,195,Monthly,7,Seasonal-only owner; vacant 8 months/year; higher vandalism risk

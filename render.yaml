@@ -13,7 +13,7 @@ services:
       - key: SITE_URL
         sync: false
       - key: BUSINESS_NAME
-        value: CKPM Enterprise
+        value: Coastal Key Treasure Coast Asset Management
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: STRIPE_PUBLISHABLE_KEY

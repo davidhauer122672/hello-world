@@ -22,6 +22,7 @@ const DATA_FILES = [
   'drip-sequences.json',
   'visual-briefs.json',
   'call-logs.json',
+  'ai-log.json',
 ];
 
 router.get('/', (req, res) => {

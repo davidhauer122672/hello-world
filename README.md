@@ -1,6 +1,6 @@
-# CKPM Enterprise - Client Website
+# Coastal Key Treasure Coast Asset Management — Unified Operations Platform
 
-A full-featured client website with appointment booking, Stripe payments, and automatic confirmation emails.
+Institutional-grade property oversight platform with appointment booking, Stripe payments, workflow automation, and AI-powered sales enablement.
 
 ## Features
 
