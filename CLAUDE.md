@@ -13,9 +13,9 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, and Cla
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 43 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 53 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
-- **ck-command-center**: Dashboard UI for 290-agent fleet + Coastal Key Gazette (Cloudflare Pages)
+- **ck-command-center**: Dashboard UI for 312-agent fleet + Coastal Key Gazette (Cloudflare Pages)
 - **ck-website**: Public-facing website with contact form (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
 - **th-sentinel-campaign**: Campaign config, Retell prompts, Airtable field reference
@@ -32,10 +32,42 @@ npm run test:nemotron   # Test Nemotron worker only
 npm run deploy          # Deploy all services
 ```
 
-## Autonomous Fleet (360 units)
-- **290 AI Agents** across 9 divisions: EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB
+## Autonomous Fleet (382 units)
+- **15 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
+- **297 AI Agents** across 9 operational divisions: EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB
 - **50 Intelligence Officers** in 5 squads: ALPHA (Infrastructure), BRAVO (Data), CHARLIE (Security), DELTA (Revenue), ECHO (Performance)
 - **20 Email AI Agents** in 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
+
+## MCCO Command Structure (Sovereign Governance)
+- **MCCO-000** MCCO Sovereign — Master Chief Commanding Officer (reports to CEO)
+- **MCCO-001** Psyche Decoder — Audience Psychology Architect
+- **MCCO-002** Authority Forge — Authority & Personal Branding Strategist
+- **MCCO-003** Pillar Command — Content Pillar Architect (5 pillars)
+- **MCCO-004** Calendar Command — 30-Day Content Calendar Commander
+- **MCCO-005** Scroll Breaker — High-Engagement Social Media Post Commander
+- **MCCO-006** Revenue Architect — Audience Monetization Strategist
+- **MCCO-007** War Room Intel — Competitive Marketing Warfare Analyst
+- **MCCO-008** Campaign Blitz — Multi-Platform Campaign Commander
+- **MCCO-009** Pipeline Fusion — Sales-Marketing Alignment Commander
+- **MCCO-010** Trust Engine — Trust & Social Proof Commander
+- **MCCO-011** Narrative Forge — CEO Story & Brand Narrative Commander
+- **MCCO-012** Performance Command — Content Performance Intelligence Officer
+- **MCCO-013** Timing Strike — Seasonal & Market Timing Commander
+- **MCCO-014** Quality Shield — Fleet Inspection & Quality Assurance Commander
+
+### MCCO API Endpoints
+```
+GET  /v1/mcco/command           — Sovereign command dashboard
+GET  /v1/mcco/agents            — List all 15 MCCO agents
+GET  /v1/mcco/agents/:id        — Get single MCCO agent
+POST /v1/mcco/directive         — Issue sovereign directive
+GET  /v1/mcco/fleet-status      — Ferrari-standard fleet inspection
+POST /v1/mcco/content-calendar  — Generate 30-day content calendar
+POST /v1/mcco/audience-profile  — Generate audience psychology profile
+POST /v1/mcco/positioning       — Generate authority positioning strategy
+POST /v1/mcco/monetization      — Generate monetization plan
+POST /v1/mcco/post              — Generate high-engagement social post
+```
 
 ## Key Patterns
 - All workers use ES module format (`export default { fetch() }`)

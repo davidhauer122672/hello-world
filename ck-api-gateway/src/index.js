@@ -39,6 +39,16 @@
  *   POST /v1/email/compose     — AI-compose email via Claude
  *   POST /v1/email/classify    — Classify/score inbound email
  *   GET  /v1/email/dashboard   — Email operations dashboard
+ *   GET  /v1/mcco/command        — MCCO Sovereign command dashboard
+ *   GET  /v1/mcco/agents         — List all 15 MCCO agents
+ *   GET  /v1/mcco/agents/:id     — Get single MCCO agent
+ *   POST /v1/mcco/directive      — Issue sovereign directive to MKT/SEN
+ *   GET  /v1/mcco/fleet-status   — Fleet inspection across governed divisions
+ *   POST /v1/mcco/content-calendar — Generate 30-day content calendar
+ *   POST /v1/mcco/audience-profile — Generate audience psychology profile
+ *   POST /v1/mcco/positioning    — Generate authority positioning strategy
+ *   POST /v1/mcco/monetization   — Generate audience monetization plan
+ *   POST /v1/mcco/post           — Generate high-engagement social media post
  *   GET  /v1/atlas/campaigns              — List Atlas AI campaigns (youratlas.com)
  *   GET  /v1/atlas/campaigns/:id          — Get single Atlas campaign
  *   PUT  /v1/atlas/campaigns/:id/status   — Set campaign status
@@ -71,6 +81,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
+import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -94,8 +105,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 250,
-          divisions: 8,
+          agents: 312,
+          divisions: 10,
           timestamp: new Date().toISOString(),
         });
       }
@@ -164,8 +175,8 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 290,
-        divisions: 9,
+        agents: 312,
+        divisions: 10,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -334,6 +345,48 @@ export default {
 
       if (path === '/v1/audit' && method === 'GET') {
         return await handleAuditLog(url, env);
+      }
+
+      // ── MCCO — Master Chief Commanding Officer (Sovereign Governance) ──
+      if (path === '/v1/mcco/command' && method === 'GET') {
+        return handleMCCOCommand();
+      }
+
+      if (path === '/v1/mcco/agents' && method === 'GET') {
+        return handleListMCCOAgents(url);
+      }
+
+      if (path === '/v1/mcco/fleet-status' && method === 'GET') {
+        return handleMCCOFleetStatus();
+      }
+
+      if (path === '/v1/mcco/directive' && method === 'POST') {
+        return await handleMCCODirective(request, env, ctx);
+      }
+
+      if (path === '/v1/mcco/content-calendar' && method === 'POST') {
+        return await handleMCCOContentCalendar(request, env, ctx);
+      }
+
+      if (path === '/v1/mcco/audience-profile' && method === 'POST') {
+        return await handleMCCOAudienceProfile(request, env, ctx);
+      }
+
+      if (path === '/v1/mcco/positioning' && method === 'POST') {
+        return await handleMCCOPositioning(request, env, ctx);
+      }
+
+      if (path === '/v1/mcco/monetization' && method === 'POST') {
+        return await handleMCCOMonetization(request, env, ctx);
+      }
+
+      if (path === '/v1/mcco/post' && method === 'POST') {
+        return await handleMCCOPost(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/mcco\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/mcco/agents/')[1];
+        return handleGetMCCOAgent(agentId);
       }
 
       // ── Atlas AI Campaign Platform (youratlas.com) ──

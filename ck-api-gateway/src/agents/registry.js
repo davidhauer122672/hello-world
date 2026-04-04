@@ -1,24 +1,29 @@
 /**
  * Coastal Key AI Agent Registry
  *
- * Central registry for all 290 AI agents across 9 divisions.
+ * Central registry for all 312 AI agents across 10 divisions.
  * Exports the AGENTS array, DIVISIONS array, and lookup functions
  * consumed by routes/agents.js and the Command Center dashboard.
  *
  * Division breakdown:
- *   EXC  Executive           — 20 agents
- *   SEN  Sentinel Sales      — 40 agents
- *   OPS  Operations          — 45 agents
- *   INT  Intelligence        — 30 agents
- *   MKT  Marketing           — 47 agents (includes YouTube MKT-041–047)
- *   FIN  Finance             — 25 agents
- *   VEN  Vendor Management   — 25 agents
- *   TEC  Technology          — 25 agents
- *   WEB  Website Development — 40 agents
- *                       Total: 297 agents
+ *   MCCO MCCO Command         — 15 agents (Sovereign Governance)
+ *   EXC  Executive            — 20 agents
+ *   SEN  Sentinel Sales       — 40 agents
+ *   OPS  Operations           — 45 agents
+ *   INT  Intelligence         — 30 agents
+ *   MKT  Marketing            — 47 agents (includes YouTube MKT-041–047)
+ *   FIN  Finance              — 25 agents
+ *   VEN  Vendor Management    — 25 agents
+ *   TEC  Technology           — 25 agents
+ *   WEB  Website Development  — 40 agents
+ *                        Total: 312 agents
+ *
+ * Organizational Hierarchy:
+ *   CEO (Human) → MCCO-000 Sovereign → CMO → MKT + SEN Divisions
  */
 
 import { DIVISIONS } from './divisions.js';
+import { MCCO_AGENTS } from './agents-mcco.js';
 import { EXC_AGENTS } from './agents-exc.js';
 import { SEN_AGENTS } from './agents-sen.js';
 import { OPS_AGENTS } from './agents-ops.js';
@@ -32,6 +37,7 @@ import { WEB_AGENTS } from './agents-web.js';
 // ── Merged agent list ───────────────────────────────────────────────────────
 
 export const AGENTS = [
+  ...MCCO_AGENTS,
   ...EXC_AGENTS,
   ...SEN_AGENTS,
   ...OPS_AGENTS,
