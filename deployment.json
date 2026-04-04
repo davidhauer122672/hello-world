@@ -4,8 +4,9 @@
   "architecture": {
     "website": "Cloudflare Pages (ck-website/)",
     "api": "Cloudflare Workers (ck-api-gateway/)",
+    "nemotron": "Cloudflare Workers (ck-nemotron-worker/)",
     "webhook": "Cloudflare Workers (sentinel-webhook/)",
-    "dashboard": "Integrated into website at /portal/*"
+    "dashboard": "Cloudflare Pages (ck-command-center/)"
   },
   "deployment": {
     "website": {
@@ -22,6 +23,16 @@
     "sentinel_webhook": {
       "steps": [
         { "step": 1, "action": "Deploy sentinel webhook Worker", "command": "cd sentinel-webhook && wrangler deploy" }
+      ]
+    },
+    "nemotron_worker": {
+      "steps": [
+        { "step": 1, "action": "Deploy Nemotron inference Worker", "command": "cd ck-nemotron-worker && wrangler deploy" }
+      ]
+    },
+    "command_center": {
+      "steps": [
+        { "step": 1, "action": "Deploy Command Center to Cloudflare Pages", "command": "wrangler pages deploy ck-command-center --project-name=ck-command-center" }
       ]
     }
   },

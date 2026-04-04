@@ -44,6 +44,14 @@ jobs:
         working-directory: sentinel-webhook
         run: npm test
 
+      - name: Install nemotron dependencies
+        working-directory: ck-nemotron-worker
+        run: npm install
+
+      - name: Test Nemotron Worker
+        working-directory: ck-nemotron-worker
+        run: npm test
+
   deploy-gateway:
     name: Deploy API Gateway
     needs: test

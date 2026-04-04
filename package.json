@@ -11,6 +11,7 @@
   "scripts": {
     "dev:gateway": "cd ck-api-gateway && npm run dev",
     "dev:sentinel": "cd sentinel-webhook && npm run dev",
+    "dev:nemotron": "cd ck-nemotron-worker && npm run dev",
     "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc && npm run deploy:nemotron",
     "deploy:gateway": "cd ck-api-gateway && npm run deploy",
     "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
@@ -22,6 +23,6 @@
     "test:nemotron": "cd ck-nemotron-worker && npm test"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "wrangler": "^4.0.0"
   }
 }
