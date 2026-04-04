@@ -86,6 +86,14 @@ export async function getCampaign(env, campaignId) {
 }
 
 /**
+ * Create a new campaign.
+ * @param {object} campaignData — Campaign configuration
+ */
+export async function createCampaign(env, campaignData) {
+  return atlasRequest(env, 'POST', '/campaigns', campaignData);
+}
+
+/**
  * Update a campaign.
  */
 export async function updateCampaign(env, campaignId, updates) {
