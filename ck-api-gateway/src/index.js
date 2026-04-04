@@ -63,6 +63,13 @@
  *   POST /v1/atlas/campaigns              — Create a new Atlas campaign
  *   GET  /v1/atlas/audit                  — Audit required CKPM campaigns
  *   GET  /v1/atlas/health                 — Atlas AI connectivity check
+ *   GET  /v1/frameworks                   — List all Peak Performance Frameworks
+ *   GET  /v1/frameworks/category/:cat     — Get frameworks by category
+ *   GET  /v1/frameworks/:id               — Get single framework
+ *   POST /v1/frameworks/apply             — AI-apply framework to business scenario
+ *   POST /v1/frameworks/content           — Generate content using framework principles
+ *   POST /v1/frameworks/sales-playbook    — Generate sales playbook from framework rules
+ *   POST /v1/frameworks/productivity-plan — Generate agent/team productivity plan
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -82,6 +89,7 @@ import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js'
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
+import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan } from './routes/frameworks.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -105,7 +113,7 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 312,
+          agents: 382,
           divisions: 10,
           timestamp: new Date().toISOString(),
         });
@@ -456,6 +464,37 @@ export default {
       if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+$/) && method === 'GET') {
         const campaignId = path.split('/v1/atlas/campaigns/')[1];
         return await handleAtlasCampaignById(campaignId, env);
+      }
+
+      // ── Peak Performance Frameworks ──
+      if (path === '/v1/frameworks' && method === 'GET') {
+        return handleListFrameworks(url);
+      }
+
+      if (path === '/v1/frameworks/apply' && method === 'POST') {
+        return await handleFrameworkApply(request, env, ctx);
+      }
+
+      if (path === '/v1/frameworks/content' && method === 'POST') {
+        return await handleFrameworkContent(request, env, ctx);
+      }
+
+      if (path === '/v1/frameworks/sales-playbook' && method === 'POST') {
+        return await handleFrameworkSalesPlaybook(request, env, ctx);
+      }
+
+      if (path === '/v1/frameworks/productivity-plan' && method === 'POST') {
+        return await handleFrameworkProductivityPlan(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/frameworks\/category\/[^/]+$/) && method === 'GET') {
+        const category = path.split('/v1/frameworks/category/')[1];
+        return handleGetFrameworksByCategory(category);
+      }
+
+      if (path.match(/^\/v1\/frameworks\/[^/]+$/) && method === 'GET') {
+        const frameworkId = path.split('/v1/frameworks/')[1];
+        return handleGetFramework(frameworkId);
       }
 
       return errorResponse('Not found', 404);
