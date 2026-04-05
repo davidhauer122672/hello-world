@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key — AI Trader Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810;--bg2:#0e0e1a;--bg3:#161625;--bg4:#1e1e32;
+  --text:#e8e8f0;--text2:#9898b0;--text3:#585870;
+  --accent:#4f8fff;--accent2:#7c5cfc;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;--cyan:#06b6d4;
+  --border:#1e1e35;--radius:10px;--shadow:0 4px 24px rgba(0,0,0,0.5);
+}
+body{font-family:'SF Mono',Monaco,'Cascadia Code',monospace;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+
+/* ── Layout ── */
+.app{display:grid;grid-template-rows:56px 1fr;min-height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:10}
+.logo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;letter-spacing:-0.5px}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.market-status{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:16px;font-size:12px;font-weight:600}
+.market-status.open{background:rgba(34,197,94,0.15);color:var(--green)}
+.market-status.closed{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.refresh-time{font-size:11px;color:var(--text3)}
+.main{padding:16px;overflow-y:auto;display:grid;gap:16px;grid-template-columns:1fr;grid-template-rows:auto auto auto 1fr}
+
+/* ── Cards ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.card-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.card-title .badge{font-size:10px;padding:2px 8px;border-radius:10px;text-transform:none;letter-spacing:0}
+
+/* ── Indices Bar ── */
+.indices-bar{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px}
+.index-card{flex:0 0 auto;min-width:160px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.index-name{font-size:11px;color:var(--text2);margin-bottom:2px}
+.index-price{font-size:18px;font-weight:700;margin-bottom:2px}
+.index-change{font-size:12px;font-weight:600}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--text3)}
+
+/* ── Capital Calls ── */
+.capital-calls{display:grid;gap:10px}
+.capital-call{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;transition:border-color 0.2s}
+.capital-call.high{border-left:3px solid var(--green)}
+.capital-call.medium{border-left:3px solid var(--yellow)}
+.cc-signal{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
+.cc-signal.STRONG_BUY{background:var(--green)}.cc-signal.BUY{background:#4ade80}
+.cc-info h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.cc-info p{font-size:11px;color:var(--text2);line-height:1.4}
+.cc-amount{text-align:right}
+.cc-amount .amount{font-size:18px;font-weight:700;color:var(--green)}
+.cc-amount .shares{font-size:11px;color:var(--text2)}
+.cc-amount .tier{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--bg4);color:var(--accent);margin-top:4px;display:inline-block}
+
+/* ── Sector Grid ── */
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.sector-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px}
+.sector-name{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.sector-perf{font-size:20px;font-weight:700;margin-bottom:4px}
+.sector-meta{font-size:10px;color:var(--text3)}
+
+/* ── Stock Table ── */
+.stock-tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.stock-tab{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;background:var(--bg3);border:1px solid var(--border);color:var(--text2);transition:all 0.2s}
+.stock-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.stock-table{width:100%;border-collapse:collapse;font-size:12px}
+.stock-table th{text-align:left;padding:8px 10px;color:var(--text3);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border)}
+.stock-table td{padding:8px 10px;border-bottom:1px solid rgba(30,30,53,0.5)}
+.stock-table tr:hover{background:var(--bg3)}
+.symbol-cell{font-weight:700;color:var(--accent)}
+.signal-badge{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;color:#fff;display:inline-block}
+.signal-STRONG_BUY{background:var(--green)}.signal-BUY{background:#4ade80}
+.signal-HOLD{background:var(--yellow);color:#000}.signal-SELL{background:var(--orange)}
+.signal-STRONG_SELL{background:var(--red)}
+.confidence-bar{width:60px;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
+.confidence-fill{height:100%;border-radius:3px;transition:width 0.5s}
+
+/* ── News Feed ── */
+.news-list{display:grid;gap:8px;max-height:400px;overflow-y:auto}
+.news-item{background:var(--bg3);border-radius:6px;padding:10px 12px;border-left:3px solid var(--border)}
+.news-item.bullish{border-left-color:var(--green)}.news-item.bearish{border-left-color:var(--red)}.news-item.neutral{border-left-color:var(--text3)}
+.news-headline{font-size:12px;font-weight:600;margin-bottom:3px}
+.news-meta{font-size:10px;color:var(--text3);display:flex;gap:8px}
+
+/* ── Portfolio Summary ── */
+.portfolio-header{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
+.port-stat{background:var(--bg3);border-radius:8px;padding:10px 12px}
+.port-stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.port-stat-value{font-size:20px;font-weight:700;margin-top:2px}
+
+/* ── Breadth Bar ── */
+.breadth-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-top:8px}
+.breadth-adv{background:var(--green)}.breadth-dec{background:var(--red)}.breadth-unc{background:var(--text3)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .indices-bar{flex-wrap:nowrap}
+  .sector-grid{grid-template-columns:1fr 1fr}
+  .portfolio-header{grid-template-columns:1fr 1fr}
+}
+
+/* ── Pulse Animation ── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.pulse{animation:pulse 2s infinite}
+
+/* ── Loading ── */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text3);font-size:13px}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-right:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-icon">AT</div>
+      <span>Apex Trader &mdash; AI Trading Intelligence</span>
+    </div>
+    <div class="topbar-right">
+      <div id="marketStatus" class="market-status closed">MARKET CLOSED</div>
+      <div class="refresh-time">Updated: <span id="lastUpdate">--</span></div>
+      <a href="index.html" style="font-size:12px;color:var(--text2)">Command Center</a>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Row 1: Indices Ticker -->
+    <div class="card">
+      <div class="card-title">Market Indices <span class="badge pulse" style="background:rgba(34,197,94,0.15);color:var(--green)">LIVE</span></div>
+      <div id="indicesBar" class="indices-bar"><div class="loading"><div class="spinner"></div>Loading market data...</div></div>
+      <div id="breadthBar" style="margin-top:10px"></div>
+    </div>
+
+    <!-- Row 2: Capital Call Prompts + Portfolio -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card">
+        <div class="card-title">Capital Call Prompts <span id="ccCount" class="badge" style="background:rgba(34,197,94,0.15);color:var(--green)">0</span></div>
+        <div id="capitalCalls" class="capital-calls"><div class="loading"><div class="spinner"></div>Scanning opportunities...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Portfolio Summary</div>
+        <div id="portfolio"></div>
+      </div>
+    </div>
+
+    <!-- Row 3: Sector Performance -->
+    <div class="card">
+      <div class="card-title">Sector Performance</div>
+      <div id="sectorGrid" class="sector-grid"><div class="loading"><div class="spinner"></div>Analyzing sectors...</div></div>
+    </div>
+
+    <!-- Row 4: Stock Table + News -->
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+      <div class="card">
+        <div class="card-title">Watchlist & Signals</div>
+        <div id="stockTabs" class="stock-tabs"></div>
+        <div style="overflow-x:auto">
+          <table class="stock-table" id="stockTable">
+            <thead><tr><th>Symbol</th><th>Name</th><th>Price</th><th>Change</th><th>Signal</th><th>Confidence</th></tr></thead>
+            <tbody id="stockBody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div>Loading watchlist...</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Market News & Sentiment</div>
+        <div id="newsFeed" class="news-list"><div class="loading"><div class="spinner"></div>Fetching news...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://ck-api-gateway.david-e59.workers.dev';
+const AUTH_TOKEN = localStorage.getItem('ck_token') || '';
+const REFRESH_INTERVAL = 15000; // 15 seconds
+
+let dashboardData = null;
+let activeTab = 'reits';
+
+async function fetchAPI(endpoint) {
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      headers: AUTH_TOKEN ? { 'Authorization': `Bearer ${AUTH_TOKEN}` } : {}
+    });
+    if (!res.ok) throw new Error(`${res.status}`);
+    return await res.json();
+  } catch (e) {
+    console.error(`API error ${endpoint}:`, e);
+    return null;
+  }
+}
+
+function fmt(n, decimals = 2) {
+  if (n == null) return '--';
+  return Number(n).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function fmtMoney(n) {
+  if (n == null) return '--';
+  return '$' + fmt(n);
+}
+
+function changeClass(n) {
+  if (n > 0) return 'up';
+  if (n < 0) return 'down';
+  return 'flat';
+}
+
+function renderIndices(indices) {
+  const el = document.getElementById('indicesBar');
+  if (!indices || !indices.length) { el.innerHTML = '<span style="color:var(--text3)">No index data</span>'; return; }
+  el.innerHTML = indices.map(idx => `
+    <div class="index-card">
+      <div class="index-name">${idx.name}</div>
+      <div class="index-price">${fmt(idx.price)}</div>
+      <div class="index-change ${changeClass(idx.change)}">
+        ${idx.change > 0 ? '+' : ''}${fmt(idx.change)} (${idx.change > 0 ? '+' : ''}${fmt(idx.changePercent)}%)
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderBreadth(breadth) {
+  if (!breadth) return;
+  const total = breadth.total || 1;
+  const el = document.getElementById('breadthBar');
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px">
+      <span class="up">Advancing: ${breadth.advancing}</span>
+      <span>Unchanged: ${breadth.unchanged}</span>
+      <span class="down">Declining: ${breadth.declining}</span>
+    </div>
+    <div class="breadth-bar">
+      <div class="breadth-adv" style="width:${(breadth.advancing/total)*100}%"></div>
+      <div class="breadth-unc" style="width:${(breadth.unchanged/total)*100}%"></div>
+      <div class="breadth-dec" style="width:${(breadth.declining/total)*100}%"></div>
+    </div>
+  `;
+}
+
+function renderCapitalCalls(calls) {
+  const el = document.getElementById('capitalCalls');
+  document.getElementById('ccCount').textContent = calls ? calls.length : 0;
+  if (!calls || !calls.length) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:20px;text-align:center">No active capital calls. All signals are HOLD or below threshold.</div>';
+    return;
+  }
+  el.innerHTML = calls.slice(0, 6).map(cc => `
+    <div class="capital-call ${cc.urgency === 'HIGH' ? 'high' : 'medium'}">
+      <div class="cc-signal ${cc.signal}">${cc.signal.replace('_', ' ')}</div>
+      <div class="cc-info">
+        <h4>${cc.symbol} @ ${fmtMoney(cc.currentPrice)}</h4>
+        <p>${cc.rationale}</p>
+      </div>
+      <div class="cc-amount">
+        <div class="amount">${fmtMoney(cc.suggestedInvestment)}</div>
+        <div class="shares">${cc.suggestedShares} shares</div>
+        <div class="tier">${cc.tier}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSectors(sectors) {
+  const el = document.getElementById('sectorGrid');
+  if (!sectors) { el.innerHTML = ''; return; }
+  const labels = { reits: 'REITs', proptech: 'PropTech', ai_tech: 'AI / Tech', etfs: 'ETFs' };
+  el.innerHTML = Object.entries(sectors).map(([key, sec]) => `
+    <div class="sector-card">
+      <div class="sector-name">${labels[key] || key}</div>
+      <div class="sector-perf ${changeClass(sec.avgChange)}">${sec.avgChange > 0 ? '+' : ''}${fmt(sec.avgChange)}%</div>
+      <div class="sector-meta">Best: ${sec.bestPerformer?.symbol || '--'} | Worst: ${sec.worstPerformer?.symbol || '--'}</div>
+    </div>
+  `).join('');
+}
+
+function renderPortfolio(data) {
+  const el = document.getElementById('portfolio');
+  // Demo portfolio using watchlist
+  const quotes = data.quotes || {};
+  const samplePositions = [
+    { symbol: 'NVDA', shares: 50, avgCost: 420 },
+    { symbol: 'O', shares: 200, avgCost: 52 },
+    { symbol: 'SPY', shares: 100, avgCost: 480 },
+    { symbol: 'PLD', shares: 80, avgCost: 115 },
+    { symbol: 'MSFT', shares: 30, avgCost: 380 },
+    { symbol: 'VNQ', shares: 150, avgCost: 82 },
+  ];
+  let totalValue = 0, totalCost = 0, dayChange = 0;
+  const holdings = [];
+  for (const pos of samplePositions) {
+    const q = quotes[pos.symbol];
+    if (!q) continue;
+    const val = pos.shares * q.price;
+    const cost = pos.shares * pos.avgCost;
+    const dc = pos.shares * (q.change || 0);
+    totalValue += val;
+    totalCost += cost;
+    dayChange += dc;
+    holdings.push({ ...pos, price: q.price, value: val, cost, dayChange: dc, totalReturn: val - cost, totalReturnPct: ((val - cost) / cost) * 100 });
+  }
+  const totalReturn = totalValue - totalCost;
+  const totalReturnPct = totalCost > 0 ? (totalReturn / totalCost) * 100 : 0;
+  const dayPct = totalValue > 0 ? (dayChange / totalValue) * 100 : 0;
+
+  el.innerHTML = `
+    <div class="portfolio-header">
+      <div class="port-stat">
+        <div class="port-stat-label">Portfolio Value</div>
+        <div class="port-stat-value">${fmtMoney(totalValue)}</div>
+      </div>
+      <div class="port-stat">
+        <div class="port-stat-label">Day P&L</div>
+        <div class="port-stat-value ${changeClass(dayChange)}">${dayChange >= 0 ? '+' : ''}${fmtMoney(dayChange)} (${dayPct >= 0 ? '+' : ''}${fmt(dayPct)}%)</div>
+      </div>
+      <div class="port-stat">
+        <div class="port-stat-label">Total Return</div>
+        <div class="port-stat-value ${changeClass(totalReturn)}">${totalReturn >= 0 ? '+' : ''}${fmtMoney(totalReturn)} (${totalReturnPct >= 0 ? '+' : ''}${fmt(totalReturnPct)}%)</div>
+      </div>
+      <div class="port-stat">
+        <div class="port-stat-label">Positions</div>
+        <div class="port-stat-value">${holdings.length}</div>
+      </div>
+    </div>
+    <table class="stock-table" style="font-size:11px">
+      <thead><tr><th>Symbol</th><th>Shares</th><th>Price</th><th>Value</th><th>Day P&L</th><th>Total Return</th></tr></thead>
+      <tbody>
+        ${holdings.map(h => `
+          <tr>
+            <td class="symbol-cell">${h.symbol}</td>
+            <td>${h.shares}</td>
+            <td>${fmtMoney(h.price)}</td>
+            <td>${fmtMoney(h.value)}</td>
+            <td class="${changeClass(h.dayChange)}">${h.dayChange >= 0 ? '+' : ''}${fmtMoney(h.dayChange)}</td>
+            <td class="${changeClass(h.totalReturn)}">${h.totalReturn >= 0 ? '+' : ''}${fmt(h.totalReturnPct)}%</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderStockTabs(categories) {
+  const el = document.getElementById('stockTabs');
+  const labels = { indices: 'Indices', reits: 'REITs', proptech: 'PropTech', ai_tech: 'AI/Tech', etfs: 'ETFs' };
+  el.innerHTML = (categories || ['reits','proptech','ai_tech','etfs','indices']).map(cat =>
+    `<div class="stock-tab ${cat === activeTab ? 'active' : ''}" onclick="switchTab('${cat}')">${labels[cat] || cat}</div>`
+  ).join('');
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  renderStockTabs(dashboardData?.watchlistCategories);
+  renderStockTable();
+}
+
+function renderStockTable() {
+  const body = document.getElementById('stockBody');
+  if (!dashboardData) return;
+  const watchlist = {
+    indices: dashboardData.indices?.map(i => ({ symbol: i.symbol, name: i.name })) || [],
+    reits: [{ symbol:'O', name:'Realty Income' },{ symbol:'AMT', name:'American Tower' },{ symbol:'PLD', name:'Prologis' },{ symbol:'SPG', name:'Simon Property' },{ symbol:'WELL', name:'Welltower' },{ symbol:'AVB', name:'AvalonBay' },{ symbol:'EQR', name:'Equity Residential' },{ symbol:'DLR', name:'Digital Realty' }],
+    proptech: [{ symbol:'ZG', name:'Zillow' },{ symbol:'RDFN', name:'Redfin' },{ symbol:'COMP', name:'Compass' },{ symbol:'OPEN', name:'Opendoor' },{ symbol:'EXPI', name:'eXp Realty' }],
+    ai_tech: [{ symbol:'NVDA', name:'NVIDIA' },{ symbol:'MSFT', name:'Microsoft' },{ symbol:'GOOGL', name:'Alphabet' },{ symbol:'META', name:'Meta' },{ symbol:'AMZN', name:'Amazon' },{ symbol:'PLTR', name:'Palantir' },{ symbol:'CRM', name:'Salesforce' },{ symbol:'NOW', name:'ServiceNow' }],
+    etfs: [{ symbol:'SPY', name:'S&P 500 ETF' },{ symbol:'QQQ', name:'NASDAQ 100 ETF' },{ symbol:'VNQ', name:'Vanguard RE' },{ symbol:'ARKK', name:'ARK Innovation' },{ symbol:'XLF', name:'Financial Select' },{ symbol:'SCHD', name:'Schwab Dividend' }],
+  };
+  const items = watchlist[activeTab] || [];
+  const quotes = dashboardData.quotes || {};
+  const signals = dashboardData.signals || {};
+
+  body.innerHTML = items.map(item => {
+    const q = quotes[item.symbol] || {};
+    const s = signals[item.symbol] || {};
+    const conf = s.confidence || 0;
+    const confColor = conf >= 70 ? 'var(--green)' : conf >= 40 ? 'var(--yellow)' : 'var(--red)';
+    return `
+      <tr>
+        <td class="symbol-cell">${item.symbol}</td>
+        <td>${item.name}</td>
+        <td>${fmtMoney(q.price)}</td>
+        <td class="${changeClass(q.change)}">
+          ${q.change > 0 ? '+' : ''}${fmt(q.change)} (${q.changePercent > 0 ? '+' : ''}${fmt(q.changePercent)}%)
+        </td>
+        <td><span class="signal-badge signal-${s.signal || 'HOLD'}">${(s.signal || 'HOLD').replace('_', ' ')}</span></td>
+        <td>
+          ${conf}%
+          <div class="confidence-bar"><div class="confidence-fill" style="width:${conf}%;background:${confColor}"></div></div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderNews(news) {
+  const el = document.getElementById('newsFeed');
+  if (!news || !news.length) { el.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:20px">No news available</div>'; return; }
+  el.innerHTML = news.map(n => `
+    <div class="news-item ${n.sentiment?.label || 'neutral'}">
+      <div class="news-headline">${n.headline}</div>
+      <div class="news-meta">
+        <span>${n.source}</span>
+        <span>${n.sentiment?.label || 'neutral'}</span>
+        <span>${new Date(n.datetime).toLocaleTimeString()}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function refreshDashboard() {
+  const data = await fetchAPI('/v1/trader/dashboard');
+  if (!data) return;
+  dashboardData = data;
+
+  // Market status
+  const statusEl = document.getElementById('marketStatus');
+  if (data.marketStatus === 'OPEN') {
+    statusEl.textContent = 'MARKET OPEN';
+    statusEl.className = 'market-status open';
+  } else {
+    statusEl.textContent = 'MARKET CLOSED';
+    statusEl.className = 'market-status closed';
+  }
+
+  document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+
+  renderIndices(data.indices);
+  renderBreadth(data.breadth);
+  renderCapitalCalls(data.capitalCalls);
+  renderSectors(data.sectorPerformance);
+  renderStockTabs(data.watchlistCategories);
+  renderStockTable();
+  renderNews(data.news);
+  renderPortfolio(data);
+}
+
+// Initial load
+refreshDashboard();
+
+// Auto-refresh every 15 seconds
+setInterval(refreshDashboard, REFRESH_INTERVAL);
+
+// Auth token prompt
+if (!AUTH_TOKEN) {
+  const t = prompt('Enter API auth token (or leave blank for demo mode):');
+  if (t) { localStorage.setItem('ck_token', t); location.reload(); }
+}
+</script>
+</body>
+</html>

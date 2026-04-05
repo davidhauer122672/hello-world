@@ -98,6 +98,17 @@
  *   GET  /v1/hierarchy/chain/:agentId    — Chain of command for specific agent
  *   GET  /v1/hierarchy/reports/:agentId  — Direct reports for specific agent
  *   GET  /v1/hierarchy/division/:code    — Division hierarchy tree
+ *   GET  /v1/trader/dashboard            — AI Trader market overview + signals + capital calls
+ *   GET  /v1/trader/agent                — AI Trader Agent details
+ *   GET  /v1/trader/watchlist            — All watchlist categories and symbols
+ *   POST /v1/trader/quote                — Get live quote(s) for symbol(s)
+ *   POST /v1/trader/signal               — Generate trading signal for symbol
+ *   POST /v1/trader/capital-call         — Generate capital call prompt
+ *   POST /v1/trader/portfolio            — Calculate portfolio metrics
+ *   GET  /v1/trader/news                 — Market news with sentiment
+ *   POST /v1/trader/trade                — Log a trade execution
+ *   GET  /v1/trader/history              — Trade execution history
+ *   GET  /v1/trader/capital-tiers        — Capital investment tier definitions
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -118,6 +129,11 @@ import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerD
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
 import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan } from './routes/frameworks.js';
+import {
+  handleTraderDashboard, handleTraderAgent, handleWatchlist, handleQuote, handleSignal,
+  handleCapitalCall, handlePortfolio as handleTraderPortfolio, handleTraderNews,
+  handleLogTrade, handleTradeHistory, handleCapitalTiers,
+} from './routes/trader.js';
 import {
   handleFinancialModels, handleManagementFee, handleRentEstimate, handlePropertyROI,
   handleFinancialForecast, handleDynamicPricing, handleBudget,
@@ -606,6 +622,41 @@ export default {
       }
       if (path === '/v1/deals/portfolio' && method === 'POST') {
         return await handlePortfolioEvaluation(request);
+      }
+
+      // ── AI Trader Agent ──
+      if (path === '/v1/trader/dashboard' && method === 'GET') {
+        return await handleTraderDashboard(env);
+      }
+      if (path === '/v1/trader/agent' && method === 'GET') {
+        return handleTraderAgent();
+      }
+      if (path === '/v1/trader/watchlist' && method === 'GET') {
+        return handleWatchlist();
+      }
+      if (path === '/v1/trader/quote' && method === 'POST') {
+        return await handleQuote(request, env);
+      }
+      if (path === '/v1/trader/signal' && method === 'POST') {
+        return await handleSignal(request, env);
+      }
+      if (path === '/v1/trader/capital-call' && method === 'POST') {
+        return await handleCapitalCall(request, env);
+      }
+      if (path === '/v1/trader/portfolio' && method === 'POST') {
+        return await handleTraderPortfolio(request, env);
+      }
+      if (path === '/v1/trader/news' && method === 'GET') {
+        return await handleTraderNews(env);
+      }
+      if (path === '/v1/trader/trade' && method === 'POST') {
+        return await handleLogTrade(request, env);
+      }
+      if (path === '/v1/trader/history' && method === 'GET') {
+        return await handleTradeHistory(url, env);
+      }
+      if (path === '/v1/trader/capital-tiers' && method === 'GET') {
+        return handleCapitalTiers();
       }
 
       // ── Agent Hierarchy & Command Structure ──
