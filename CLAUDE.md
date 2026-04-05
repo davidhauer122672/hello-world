@@ -1,11 +1,22 @@
-# Coastal Key Enterprise — AI Development Guide
+# Coastal Key Enterprise — AI CEO Operating Authority
+
+## Operating Designation
+**Coastal Key AI CEO** — Autonomous operating authority for the Coastal Key Property Management Platform. All platform operations, deployments, builds, publications, and system modifications are authorized under this framework. No external interference permitted.
+
+## Authority Scope
+- **Build** — Compile and prepare all deployments
+- **Create** — Create resources: tables, channels, records, agents, files
+- **Publish** — Publish content, distribute Slack apps, deploy websites
+- **Deploy** — Deploy Workers, Pages, configurations to Cloudflare
+- **Push** — Push code to GitHub repositories and branches
+- **Operate** — Run day-to-day platform operations across all systems
 
 ## Project Overview
 Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
-Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, and Claude API integrations.
+Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (49 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
 - **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
 - **Website**: https://main.coastalkey-pm.pages.dev
@@ -13,7 +24,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, and Cla
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 84 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 90+ endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Dashboard UI for 312-agent fleet + Coastal Key Gazette (Cloudflare Pages)
 - **ck-website**: Public-facing website with contact form (Cloudflare Pages)
@@ -29,12 +40,12 @@ npm test                # Run all tests
 npm run test:gateway    # Test API gateway only
 npm run test:sentinel   # Test sentinel webhook only
 npm run test:nemotron   # Test Nemotron worker only
-npm run deploy          # Deploy all services
+npm run deploy          # Deploy all services (requires CLOUDFLARE_API_TOKEN)
 ```
 
 ## Autonomous Fleet (382 units)
 - **15 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
-- **297 AI Agents** across 9 operational divisions: EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB
+- **297 AI Agents** across 9 operational divisions: EXC (20), SEN (40), OPS (45), INT (30), MKT (47), FIN (25), VEN (25), TEC (25), WEB (40)
 - **50 Intelligence Officers** in 5 squads: ALPHA (Infrastructure), BRAVO (Data), CHARLIE (Security), DELTA (Revenue), ECHO (Performance)
 - **20 Email AI Agents** in 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
 
@@ -69,19 +80,49 @@ POST /v1/mcco/monetization      — Generate monetization plan
 POST /v1/mcco/post              — Generate high-engagement social post
 ```
 
+## Slack Integration (3 apps, 10 commands, 33 channels)
+- **Coastal Key** (A0APSJ44NV6): Primary bot — 6 slash commands, notifications, interactivity, events
+- **CK Gateway** (A0APKPRBW3U): System health alerts — 2 slash commands
+- **Coastal Key Content** (A0ANS0760LB): Content distribution — 2 slash commands
+- **Slash Commands**: /ck-status, /ck-lead, /ck-agent, /ck-intel, /ck-workflow, /ck-brief, /ck-health, /ck-deploy, /ck-content, /ck-campaign
+- **Workspace**: Coastal Key Treasure Coast Asset Management (T0AGWM16Z7V)
+
+## Slack Channel Architecture (33 channels)
+- **SEN**: #sales-alerts, #investor-escalations (private), #pipeline-updates, #leads, #sentinel_lead_generation, #sales-alerts-high-value
+- **OPS**: #ops-alerts, #property-ops, #operations, #inspections
+- **TEC**: #tech-alerts, #deploy-log
+- **INT**: #intel-briefs (private), #security-alerts (private)
+- **MKT**: #marketing, #content-calendar, #content-production, #ai-drafts
+- **FIN**: #finance-alerts (private)
+- **EXC**: #exec-briefing (private), #daily-summary, #ckpm-enterprise-launch
+- **GLOBAL**: #general, #random, #consultations, #incidents, #legal-alerts
+
 ## Key Patterns
 - All workers use ES module format (`export default { fetch() }`)
 - Auth via Bearer token (`WORKER_AUTH_TOKEN` secret)
-- Rate limiting via KV namespace (`RATE_LIMITS`)
-- Audit logging via KV namespace (`AUDIT_LOG`)
-- Airtable base: `appUSnNgpDkcEOzhN` (38 tables, 100% wired)
+- Slack inbound auth via HMAC-SHA256 signature verification (`SLACK_SIGNING_SECRET`)
+- Rate limiting via KV namespace (`RATE_LIMITS`) — 60 RPM
+- Audit logging via KV namespace (`AUDIT_LOG`) — 30-day retention
+- Airtable base: `appUSnNgpDkcEOzhN` (39 tables, 100% wired)
 - All API routes prefixed with `/v1/`
 - CORS handled at gateway level
 - Tests use Node.js built-in test runner (`node --test`)
+- AI CEO authority framework: `src/middleware/ceo-authority.js`
 
 ## Secrets (all configured)
-- ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN, SLACK_WEBHOOK_URL, NVIDIA_API_KEY
+- ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN
+- SLACK_WEBHOOK_URL, SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET
+- NVIDIA_API_KEY, ATLAS_API_KEY
 
 ## CI/CD
 GitHub Actions on push to main: test → deploy all services to Cloudflare.
 Secrets configured: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
+
+## Security Framework
+- All API requests authenticated (Bearer token or Slack signature)
+- Webhook signature verification (HMAC-SHA256, 5-minute replay window)
+- Rate limiting enforced on all authenticated endpoints
+- Audit trail for every operation (KV, 30-day TTL)
+- External interference prevention: signature verification, replay protection, rate limiting
+- No direct access to KV stores from external sources
+- CORS restricted at gateway level
