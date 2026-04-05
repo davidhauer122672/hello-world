@@ -10,11 +10,25 @@
  */
 
 export const SLACK_AUDIT_RECORD = {
-  auditId: 'SLACK-AUDIT-2026-04-04',
-  auditDate: '2026-04-04',
+  auditId: 'SLACK-AUDIT-2026-04-05',
+  auditDate: '2026-04-05',
   auditor: 'TEC-008 Slack Integrator',
   workspace: 'Coastal Key Treasure Coast Asset Management',
-  status: 'remediated',
+  workspaceId: 'T0AGWM16Z7V',
+  status: 'production',
+
+  // ── Airtable Integration ──────────────────────────────────────────────────
+  airtable: {
+    tableId: 'tbluSdmSXReoqcROr',
+    tableName: 'Slack Integrations',
+    totalRecords: 54,
+    recordBreakdown: {
+      apps: 3,
+      channels: 23,
+      slashCommands: 10,
+      eventRoutes: 18,
+    },
+  },
 
   // ── Slack Apps ──────────────────────────────────────────────────────────────
 
