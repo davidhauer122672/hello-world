@@ -151,6 +151,7 @@ import {
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handleThinkingDashboard } from './routes/thinking-coach.js';
+import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -731,6 +732,12 @@ export default {
       }
       if (path === '/v1/thinking/dashboard' && method === 'GET') {
         return handleThinkingDashboard();
+      }
+
+      // ── Agent Manifest ──
+      if (path === '/v1/manifest' && method === 'GET') {
+        const summary = url.searchParams.get('summary') === 'true';
+        return jsonResponse(summary ? getManifestSummary() : getFullManifest());
       }
 
       return errorResponse('Not found', 404);
