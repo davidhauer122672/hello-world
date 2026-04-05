@@ -150,6 +150,7 @@ import {
 } from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
+import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -706,6 +707,12 @@ export default {
       }
       if (path === '/v1/slack/audit' && method === 'GET') {
         return handleSlackAudit();
+      }
+
+      // ── Agent Manifest ──
+      if (path === '/v1/manifest' && method === 'GET') {
+        const summary = url.searchParams.get('summary') === 'true';
+        return jsonResponse(summary ? getManifestSummary() : getFullManifest());
       }
 
       return errorResponse('Not found', 404);
