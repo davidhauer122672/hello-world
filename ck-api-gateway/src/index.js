@@ -70,6 +70,34 @@
  *   POST /v1/frameworks/content           — Generate content using framework principles
  *   POST /v1/frameworks/sales-playbook    — Generate sales playbook from framework rules
  *   POST /v1/frameworks/productivity-plan — Generate agent/team productivity plan
+ *   GET  /v1/financial/models            — Revenue models, expense categories, benchmarks
+ *   POST /v1/financial/management-fee    — Calculate management fee
+ *   POST /v1/financial/rent-estimate     — Estimate optimal rent for property
+ *   POST /v1/financial/roi              — Analyze property ROI (cap rate, cash-on-cash, IRR)
+ *   POST /v1/financial/forecast         — Generate 12-month financial forecast
+ *   POST /v1/financial/pricing-strategy — Dynamic pricing strategy for zone
+ *   POST /v1/financial/budget           — Generate annual property budget
+ *   POST /v1/analysis/agent             — Analyze agent performance
+ *   POST /v1/analysis/fleet             — Generate fleet analytics
+ *   POST /v1/analysis/market-trends     — Analyze market trends by zone
+ *   POST /v1/analysis/competitive-intel — Generate competitive intelligence
+ *   POST /v1/analysis/lead-pipeline     — Analyze lead pipeline health
+ *   POST /v1/analysis/operational-report — Generate division operational report
+ *   GET  /v1/analysis/templates         — List analysis report templates
+ *   POST /v1/analysis/property-health   — Score property health
+ *   POST /v1/analysis/churn-prediction  — Predict tenant churn
+ *   GET  /v1/deals/stages               — Deal pipeline stages & scoring weights
+ *   POST /v1/deals/score                — Score a potential deal
+ *   POST /v1/deals/strategy             — Generate deal strategy
+ *   POST /v1/deals/comparables          — Analyze comparable properties
+ *   POST /v1/deals/closing-costs        — Calculate FL closing costs
+ *   POST /v1/deals/investor-package     — Generate investor package
+ *   POST /v1/deals/portfolio            — Evaluate property portfolio
+ *   GET  /v1/hierarchy/command-chain     — Full org command chain & escalation matrix
+ *   GET  /v1/hierarchy/fleet-status      — 382-agent fleet status summary
+ *   GET  /v1/hierarchy/chain/:agentId    — Chain of command for specific agent
+ *   GET  /v1/hierarchy/reports/:agentId  — Direct reports for specific agent
+ *   GET  /v1/hierarchy/division/:code    — Division hierarchy tree
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret
  */
@@ -90,6 +118,14 @@ import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerD
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
 import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan } from './routes/frameworks.js';
+import {
+  handleFinancialModels, handleManagementFee, handleRentEstimate, handlePropertyROI,
+  handleFinancialForecast, handleDynamicPricing, handleBudget,
+  handleAgentAnalysis, handleFleetAnalytics, handleMarketTrends, handleCompetitiveIntel,
+  handleLeadPipeline, handleOperationalReport, handleAnalysisTemplates, handlePropertyHealth, handleChurnPrediction,
+  handleDealStages, handleScoreDeal, handleDealStrategy, handleComparables, handleClosingCosts, handleInvestorPackage, handlePortfolioEvaluation,
+  handleCommandChain, handleFleetStatusEndpoint, handleChainOfCommand, handleDirectReports, handleDivisionHierarchyEndpoint,
+} from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -495,6 +531,101 @@ export default {
       if (path.match(/^\/v1\/frameworks\/[^/]+$/) && method === 'GET') {
         const frameworkId = path.split('/v1/frameworks/')[1];
         return handleGetFramework(frameworkId);
+      }
+
+      // ── Financial Engine ──
+      if (path === '/v1/financial/models' && method === 'GET') {
+        return handleFinancialModels();
+      }
+      if (path === '/v1/financial/management-fee' && method === 'POST') {
+        return await handleManagementFee(request);
+      }
+      if (path === '/v1/financial/rent-estimate' && method === 'POST') {
+        return await handleRentEstimate(request);
+      }
+      if (path === '/v1/financial/roi' && method === 'POST') {
+        return await handlePropertyROI(request);
+      }
+      if (path === '/v1/financial/forecast' && method === 'POST') {
+        return await handleFinancialForecast(request);
+      }
+      if (path === '/v1/financial/pricing-strategy' && method === 'POST') {
+        return await handleDynamicPricing(request);
+      }
+      if (path === '/v1/financial/budget' && method === 'POST') {
+        return await handleBudget(request);
+      }
+
+      // ── Analysis Suite ──
+      if (path === '/v1/analysis/agent' && method === 'POST') {
+        return await handleAgentAnalysis(request);
+      }
+      if (path === '/v1/analysis/fleet' && method === 'POST') {
+        return await handleFleetAnalytics(request);
+      }
+      if (path === '/v1/analysis/market-trends' && method === 'POST') {
+        return await handleMarketTrends(request);
+      }
+      if (path === '/v1/analysis/competitive-intel' && method === 'POST') {
+        return await handleCompetitiveIntel(request);
+      }
+      if (path === '/v1/analysis/lead-pipeline' && method === 'POST') {
+        return await handleLeadPipeline(request);
+      }
+      if (path === '/v1/analysis/operational-report' && method === 'POST') {
+        return await handleOperationalReport(request);
+      }
+      if (path === '/v1/analysis/templates' && method === 'GET') {
+        return handleAnalysisTemplates();
+      }
+      if (path === '/v1/analysis/property-health' && method === 'POST') {
+        return await handlePropertyHealth(request);
+      }
+      if (path === '/v1/analysis/churn-prediction' && method === 'POST') {
+        return await handleChurnPrediction(request);
+      }
+
+      // ── Trading / Deal Engine ──
+      if (path === '/v1/deals/stages' && method === 'GET') {
+        return handleDealStages();
+      }
+      if (path === '/v1/deals/score' && method === 'POST') {
+        return await handleScoreDeal(request);
+      }
+      if (path === '/v1/deals/strategy' && method === 'POST') {
+        return await handleDealStrategy(request);
+      }
+      if (path === '/v1/deals/comparables' && method === 'POST') {
+        return await handleComparables(request);
+      }
+      if (path === '/v1/deals/closing-costs' && method === 'POST') {
+        return await handleClosingCosts(request);
+      }
+      if (path === '/v1/deals/investor-package' && method === 'POST') {
+        return await handleInvestorPackage(request);
+      }
+      if (path === '/v1/deals/portfolio' && method === 'POST') {
+        return await handlePortfolioEvaluation(request);
+      }
+
+      // ── Agent Hierarchy & Command Structure ──
+      if (path === '/v1/hierarchy/command-chain' && method === 'GET') {
+        return handleCommandChain();
+      }
+      if (path === '/v1/hierarchy/fleet-status' && method === 'GET') {
+        return handleFleetStatusEndpoint();
+      }
+      if (path.match(/^\/v1\/hierarchy\/chain\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/hierarchy/chain/')[1];
+        return handleChainOfCommand(agentId);
+      }
+      if (path.match(/^\/v1\/hierarchy\/reports\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/hierarchy/reports/')[1];
+        return handleDirectReports(agentId);
+      }
+      if (path.match(/^\/v1\/hierarchy\/division\/[^/]+$/) && method === 'GET') {
+        const divisionCode = path.split('/v1/hierarchy/division/')[1];
+        return handleDivisionHierarchyEndpoint(divisionCode);
       }
 
       return errorResponse('Not found', 404);
