@@ -41,5 +41,8 @@
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
+  },
+  "dependencies": {
+    "pdfkit": "^0.18.0"
   }
 }
