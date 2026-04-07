@@ -1,10 +1,11 @@
 # ══════════════════════════════════════════════════════════════════════════
 # Coastal Key Website — Cloudflare Pages Configuration
 #
-# Architecture: _worker.js reverse proxy to Manus-hosted site
+# Architecture: _worker.js reverse proxy to Manus-hosted production site
 # Origin: https://coastalkey-awfopuqz.manus.space
+# Domain: coastalkey-pm.com
+#
 # Deploy: wrangler pages deploy ./ck-website --project-name=coastalkey-pm
-# Domain: coastalkey-pm.com (all subdomains redirect here)
 # ══════════════════════════════════════════════════════════════════════════
 
 name = "coastalkey-pm"
