@@ -159,6 +159,66 @@ img { max-width: 100%; height: auto; }
 .filter-select { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--surface); }
 .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 
+/* ── Portal Components ────────────────────────────────────────────────── */
+.portal-badge { font-size: 14px; font-weight: 600; background: var(--accent-light); color: var(--accent); padding: 2px 10px; border-radius: 12px; vertical-align: middle; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; text-align: center; }
+.stat-card .stat-num { display: block; font-size: 28px; font-weight: 800; }
+.stat-card .stat-num.green { color: var(--green); } .stat-card .stat-num.blue { color: var(--accent); }
+.stat-card .stat-num.yellow { color: var(--yellow); } .stat-card .stat-num.red { color: var(--red); }
+.loading-placeholder { color: var(--text-secondary); text-align: center; padding: 32px; font-size: 14px; }
+.empty-state { color: var(--text-secondary); text-align: center; padding: 32px; font-style: italic; }
+.error-msg { color: var(--red); font-size: 13px; }
+
+/* ── Agent Cards (Mini) ──────────────────────────────────────────────── */
+.agent-card-mini { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; transition: box-shadow 0.2s; }
+.agent-card-mini:hover { box-shadow: var(--shadow); }
+.agent-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.agent-id-badge { font-size: 11px; font-family: monospace; background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); }
+.status-dot { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 10px; }
+.status-dot.active { background: rgba(5,150,105,0.12); color: var(--green); }
+.status-dot.standby { background: rgba(37,99,235,0.12); color: var(--accent); }
+.status-dot.training { background: rgba(217,119,6,0.12); color: var(--yellow); }
+.status-dot.maintenance { background: rgba(220,38,38,0.12); color: var(--red); }
+.agent-card-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.agent-card-role { font-size: 12px; color: var(--accent); margin-bottom: 6px; }
+.agent-card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.agent-card-meta { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── Portal Actions Grid ─────────────────────────────────────────────── */
+.portal-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 600px) { .portal-actions-grid { grid-template-columns: 1fr; } }
+
+/* ── Pipeline Stages ─────────────────────────────────────────────────── */
+.pipeline-stages { display: flex; flex-direction: column; gap: 8px; }
+.pipeline-stage { padding: 8px 12px; border-radius: 6px; background: var(--bg); font-size: 13px; }
+.stage-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.stage-dot.new { background: #94a3b8; } .stage-dot.contacted { background: var(--accent); }
+.stage-dot.qualified { background: var(--yellow); } .stage-dot.proposal { background: #f97316; }
+.stage-dot.negotiation { background: #8b5cf6; } .stage-dot.closed { background: var(--green); }
+
+/* ── Workflow & Compliance Items ──────────────────────────────────────── */
+.workflow-list, .compliance-grid { display: flex; flex-direction: column; gap: 10px; }
+.workflow-item, .compliance-item { padding: 10px 12px; background: var(--bg); border-radius: 6px; font-size: 13px; line-height: 1.5; }
+
+/* ── Content Pillars ─────────────────────────────────────────────────── */
+.pillar-list { display: flex; flex-direction: column; gap: 10px; }
+.pillar-item { padding: 10px 12px; background: var(--bg); border-radius: 6px; font-size: 13px; line-height: 1.6; }
+.content-output pre { overflow-x: auto; }
+
+/* ── Report List ─────────────────────────────────────────────────────── */
+.report-list { display: flex; flex-direction: column; gap: 8px; }
+.report-list .btn { text-align: left; justify-content: flex-start; }
+
+/* ── Intel Squads ────────────────────────────────────────────────────── */
+.intel-squads { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.intel-squad { padding: 10px 12px; background: var(--bg); border-radius: 6px; font-size: 12px; line-height: 1.6; }
+.scan-output { background: var(--bg); padding: 12px; border-radius: 6px; font-size: 13px; }
+
+/* ── Form Status ─────────────────────────────────────────────────────── */
+.form-status { margin-top: 12px; font-size: 14px; font-weight: 500; }
+.form-status.success { color: var(--green); }
+.form-status.error { color: var(--red); }
+
 /* ── 404 ──────────────────────────────────────────────────────────────── */
 .not-found { text-align: center; padding: 100px 24px; }
 .not-found h1 { font-size: 80px; font-weight: 800; color: var(--accent); }
