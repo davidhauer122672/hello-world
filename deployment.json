@@ -2,7 +2,7 @@
   "project": "coastalkey-pm",
   "domain": "coastalkey-pm.com",
   "architecture": {
-    "website": "Cloudflare Pages (ck-website/)",
+    "website": "Cloudflare Pages (ck-website/ — reverse proxy to Manus)",
     "api": "Cloudflare Workers (ck-api-gateway/)",
     "nemotron": "Cloudflare Workers (ck-nemotron-worker/)",
     "webhook": "Cloudflare Workers (sentinel-webhook/)",
