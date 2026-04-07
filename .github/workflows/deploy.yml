@@ -24,10 +24,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
-      - name: Install all workspace dependencies
-        run: npm ci
+      - name: Install all dependencies
+        run: npm install
 
       - name: Test API Gateway
         run: npm run test:gateway
@@ -37,6 +36,36 @@ jobs:
 
       - name: Test Nemotron Worker
         run: npm run test:nemotron
+
+  deploy-website:
+    name: Deploy Website
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install wrangler
+        run: npm install -g wrangler@latest
+
+      - name: Verify credentials
+        run: |
+          echo "Account ID length: ${#CLOUDFLARE_ACCOUNT_ID}"
+          echo "API Token length: ${#CLOUDFLARE_API_TOKEN}"
+          wrangler whoami
+
+      - name: List directory contents
+        run: ls -la ck-website/
+
+      - name: Create Pages project if needed
+        run: wrangler pages project create coastalkey-pm --production-branch=main 2>&1 || echo "Project may already exist — continuing"
+
+      - name: Deploy to Cloudflare Pages
+        run: wrangler pages deploy ck-website --project-name=coastalkey-pm --branch=main --commit-dirty=true
 
   deploy-gateway:
     name: Deploy API Gateway
@@ -49,10 +78,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
-      - name: Install all workspace dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm install
 
       - name: Deploy to Cloudflare
         working-directory: ck-api-gateway
@@ -69,10 +97,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
-      - name: Install all workspace dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm install
 
       - name: Deploy to Cloudflare
         working-directory: sentinel-webhook
@@ -89,36 +116,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
-      - name: Install all workspace dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm install
 
       - name: Deploy to Cloudflare
         working-directory: ck-nemotron-worker
         run: npx wrangler deploy
-
-  deploy-website:
-    name: Deploy Website
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Ensure Pages project exists
-        run: npx wrangler pages project create coastalkey-pm --production-branch=main 2>/dev/null || true
-
-      - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy ck-website --project-name=coastalkey-pm --branch=main
 
   deploy-command-center:
     name: Deploy Command Center
@@ -131,13 +135,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install wrangler
+        run: npm install -g wrangler@latest
 
-      - name: Ensure Pages project exists
-        run: npx wrangler pages project create ck-command-center --production-branch=main 2>/dev/null || true
+      - name: Create Pages project if needed
+        run: wrangler pages project create ck-command-center --production-branch=main 2>&1 || echo "Project may already exist — continuing"
 
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy ck-command-center --project-name=ck-command-center --branch=main
+        run: wrangler pages deploy ck-command-center --project-name=ck-command-center --branch=main --commit-dirty=true
