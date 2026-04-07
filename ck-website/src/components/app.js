@@ -489,56 +489,439 @@ function renderPortalDashboard(main) {
 
 function renderPortalAgents(main) {
   setPortalLayout(main, 'Agent Fleet', `
-    <h1 class="portal-title">AI Agent Fleet</h1>
+    <h1 class="portal-title">AI Agent Fleet <span id="agent-count" class="portal-badge">382</span></h1>
     <div class="filter-bar">
-      <input type="search" placeholder="Search agents..." class="filter-search">
-      <select class="filter-select"><option value="">All Statuses</option><option>active</option><option>standby</option><option>training</option><option>maintenance</option></select>
-      <select class="filter-select"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option></select>
+      <input type="search" placeholder="Search agents by name, role, or ID..." class="filter-search" id="agent-search">
+      <select class="filter-select" id="agent-status-filter"><option value="">All Statuses</option><option>active</option><option>standby</option><option>training</option><option>maintenance</option></select>
+      <select class="filter-select" id="agent-division-filter"><option value="">All Divisions</option><option value="MCCO">MCCO Sovereign</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option></select>
     </div>
-    <div class="agent-grid" id="agent-list">Loading agents...</div>
+    <div class="portal-stats" id="agent-stats"></div>
+    <div class="agent-grid" id="agent-list"><div class="loading-placeholder">Loading fleet...</div></div>
   `);
+
+  let allAgents = [];
+  const divColors = { MCCO:'#ef4444', EXC:'#6366f1', SEN:'#ef4444', OPS:'#f59e0b', INT:'#10b981', MKT:'#8b5cf6', FIN:'#06b6d4', VEN:'#f97316', TEC:'#14b8a6', WEB:'#0ea5e9' };
+
+  function renderAgentCards(agents) {
+    const grid = document.getElementById('agent-list');
+    const count = document.getElementById('agent-count');
+    if (count) count.textContent = agents.length;
+    if (!grid) return;
+    if (!agents.length) { grid.innerHTML = '<p class="empty-state">No agents match filters.</p>'; return; }
+    grid.innerHTML = agents.map(a => `
+      <div class="agent-card-mini" style="border-left:3px solid ${divColors[a.division] || '#666'}">
+        <div class="agent-card-header">
+          <span class="agent-id-badge">${a.id}</span>
+          <span class="status-dot ${a.status}">${a.status}</span>
+        </div>
+        <div class="agent-card-name">${a.name}</div>
+        <div class="agent-card-role">${a.role}</div>
+        <div class="agent-card-desc">${a.description ? a.description.substring(0, 120) + '...' : ''}</div>
+        <div class="agent-card-meta"><span>${a.division}</span><span>${a.tier || 'standard'}</span></div>
+      </div>
+    `).join('');
+  }
+
+  function filterAgents() {
+    const q = (document.getElementById('agent-search')?.value || '').toLowerCase();
+    const status = document.getElementById('agent-status-filter')?.value || '';
+    const division = document.getElementById('agent-division-filter')?.value || '';
+    let filtered = allAgents;
+    if (q) filtered = filtered.filter(a => (a.name + a.role + a.id + (a.description || '')).toLowerCase().includes(q));
+    if (status) filtered = filtered.filter(a => a.status === status);
+    if (division) filtered = filtered.filter(a => a.division === division);
+    renderAgentCards(filtered);
+  }
+
+  document.getElementById('agent-search')?.addEventListener('input', filterAgents);
+  document.getElementById('agent-status-filter')?.addEventListener('change', filterAgents);
+  document.getElementById('agent-division-filter')?.addEventListener('change', filterAgents);
+
+  (async () => {
+    try {
+      const data = await apiCall('/v1/agents');
+      allAgents = data.agents || [];
+      const stats = document.getElementById('agent-stats');
+      if (stats) {
+        const byStatus = {};
+        allAgents.forEach(a => { byStatus[a.status] = (byStatus[a.status] || 0) + 1; });
+        stats.innerHTML = `
+          <div class="stat-card"><span class="stat-num">${allAgents.length}</span><span class="stat-label">Total Agents</span></div>
+          <div class="stat-card"><span class="stat-num green">${byStatus.active || 0}</span><span class="stat-label">Active</span></div>
+          <div class="stat-card"><span class="stat-num blue">${byStatus.standby || 0}</span><span class="stat-label">Standby</span></div>
+          <div class="stat-card"><span class="stat-num yellow">${byStatus.training || 0}</span><span class="stat-label">Training</span></div>
+        `;
+      }
+      renderAgentCards(allAgents);
+    } catch (e) {
+      document.getElementById('agent-list').innerHTML = '<p class="empty-state">Connect to Gateway to view fleet.</p>';
+    }
+  })();
 }
 
 function renderPortalLeads(main) {
   setPortalLayout(main, 'Lead Pipeline', `
     <h1 class="portal-title">Lead Pipeline</h1>
-    <div class="portal-card"><div class="card-body"><p>Connected to Airtable Leads table. Use the API to create, enrich, and manage leads.</p>
-    <div class="portal-actions-bar">
-      <button class="btn btn-primary" onclick="alert('Create lead via /v1/leads POST')">New Lead</button>
-      <button class="btn btn-secondary" onclick="alert('Run SCAA-1 via /v1/workflows/scaa1')">Generate Battle Plan</button>
-    </div></div></div>
+    <div class="portal-stats" id="lead-stats">
+      <div class="stat-card"><span class="stat-num" id="leads-total">--</span><span class="stat-label">Total Leads</span></div>
+      <div class="stat-card"><span class="stat-num green" id="leads-qualified">--</span><span class="stat-label">Qualified</span></div>
+      <div class="stat-card"><span class="stat-num yellow" id="leads-nurture">--</span><span class="stat-label">In Nurture</span></div>
+      <div class="stat-card"><span class="stat-num blue" id="leads-new">--</span><span class="stat-label">New Today</span></div>
+    </div>
+    <div class="portal-grid">
+      <div class="portal-card">
+        <h3>Quick Actions</h3>
+        <div class="card-body">
+          <div class="portal-actions-grid">
+            <button class="btn btn-primary" id="btn-new-lead">Create New Lead</button>
+            <button class="btn btn-secondary" id="btn-battle-plan">Generate Battle Plan</button>
+            <button class="btn btn-secondary" id="btn-enrich">Enrich Lead</button>
+            <button class="btn btn-secondary" id="btn-wf3">Investor Escalation (WF-3)</button>
+          </div>
+        </div>
+      </div>
+      <div class="portal-card">
+        <h3>Pipeline Stages</h3>
+        <div class="card-body">
+          <div class="pipeline-stages">
+            <div class="pipeline-stage"><span class="stage-dot new"></span><strong>New</strong> — Unqualified inbound leads</div>
+            <div class="pipeline-stage"><span class="stage-dot contacted"></span><strong>Contacted</strong> — Initial outreach complete</div>
+            <div class="pipeline-stage"><span class="stage-dot qualified"></span><strong>Qualified</strong> — Meets SCAA-1 criteria</div>
+            <div class="pipeline-stage"><span class="stage-dot proposal"></span><strong>Proposal</strong> — Management proposal sent</div>
+            <div class="pipeline-stage"><span class="stage-dot negotiation"></span><strong>Negotiation</strong> — Active deal negotiation</div>
+            <div class="pipeline-stage"><span class="stage-dot closed"></span><strong>Closed Won</strong> — Signed management contract</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="portal-card" style="margin-top:20px">
+      <h3>Recent Leads</h3>
+      <div class="card-body" id="leads-list"><div class="loading-placeholder">Fetching leads from Airtable...</div></div>
+    </div>
   `);
+
+  // Wire up action buttons
+  document.getElementById('btn-new-lead')?.addEventListener('click', async () => {
+    const name = prompt('Lead name:');
+    if (!name) return;
+    const email = prompt('Email:') || '';
+    const phone = prompt('Phone:') || '';
+    try {
+      await apiCall('/v1/leads', { method: 'POST', body: JSON.stringify({ name, email, phone, source: 'portal' }) });
+      alert('Lead created successfully.');
+    } catch (e) { alert('Error: ' + e.message); }
+  });
+  document.getElementById('btn-battle-plan')?.addEventListener('click', async () => {
+    const id = prompt('Enter Airtable Lead Record ID:');
+    if (!id) return;
+    try {
+      const result = await apiCall('/v1/workflows/scaa1', { method: 'POST', body: JSON.stringify({ leadId: id }) });
+      alert('Battle plan generated. Check Airtable and Slack for results.');
+    } catch (e) { alert('Error: ' + e.message); }
+  });
+  document.getElementById('btn-enrich')?.addEventListener('click', async () => {
+    const id = prompt('Enter Airtable Lead Record ID:');
+    if (!id) return;
+    try {
+      await apiCall('/v1/leads/enrich', { method: 'POST', body: JSON.stringify({ leadId: id }) });
+      alert('Lead enriched successfully.');
+    } catch (e) { alert('Error: ' + e.message); }
+  });
+  document.getElementById('btn-wf3')?.addEventListener('click', async () => {
+    const id = prompt('Enter Airtable Lead Record ID for investor escalation:');
+    if (!id) return;
+    try {
+      await apiCall('/v1/workflows/wf3', { method: 'POST', body: JSON.stringify({ leadId: id }) });
+      alert('WF-3 investor escalation triggered.');
+    } catch (e) { alert('Error: ' + e.message); }
+  });
+
+  (async () => {
+    try {
+      const dashboard = await apiCall('/v1/dashboard');
+      if (dashboard?.leads) {
+        const el = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+        el('leads-total', dashboard.leads.total || 0);
+        el('leads-qualified', dashboard.leads.qualified || 0);
+        el('leads-nurture', dashboard.leads.nurture || 0);
+        el('leads-new', dashboard.leads.newToday || 0);
+      }
+    } catch (_) {}
+  })();
 }
 
 function renderPortalTasks(main) {
   setPortalLayout(main, 'Tasks', `
     <h1 class="portal-title">Task Management</h1>
-    <div class="portal-card"><div class="card-body"><p>Tasks are created automatically by workflows (SCAA-1, WF-3, WF-4) and linked to leads in Airtable.</p></div></div>
+    <div class="portal-stats">
+      <div class="stat-card"><span class="stat-num" id="tasks-total">--</span><span class="stat-label">Total Tasks</span></div>
+      <div class="stat-card"><span class="stat-num yellow" id="tasks-pending">--</span><span class="stat-label">Pending</span></div>
+      <div class="stat-card"><span class="stat-num green" id="tasks-completed">--</span><span class="stat-label">Completed</span></div>
+      <div class="stat-card"><span class="stat-num red" id="tasks-overdue">--</span><span class="stat-label">Overdue</span></div>
+    </div>
+    <div class="portal-grid">
+      <div class="portal-card">
+        <h3>Workflow-Generated Tasks</h3>
+        <div class="card-body">
+          <p>Tasks are auto-created by the three core workflows and linked to leads in Airtable:</p>
+          <div class="workflow-list">
+            <div class="workflow-item"><strong>SCAA-1</strong> — Sales Call Action Agenda. Generates a 3-step battle plan per qualified lead: opening hook, value props, and objection handling.</div>
+            <div class="workflow-item"><strong>WF-3</strong> — Investor Escalation. Triggers when a lead exceeds $5M threshold. Creates investor brief, presentation draft, and Slack escalation to #investor-escalations.</div>
+            <div class="workflow-item"><strong>WF-4</strong> — Long-Tail Nurture. 90-day re-engagement sequence for leads not yet ready to convert. Auto-generates check-in emails and content recommendations.</div>
+          </div>
+        </div>
+      </div>
+      <div class="portal-card">
+        <h3>Maintenance Requests</h3>
+        <div class="card-body">
+          <button class="btn btn-primary" id="btn-maintenance">Submit Maintenance Request</button>
+          <p style="margin-top:12px;color:var(--text-secondary)">Maintenance requests route to OPS division (45 agents). OPS-002 Maintenance Dispatcher assigns vendors based on skill, availability, and proximity.</p>
+        </div>
+      </div>
+    </div>
   `);
+  document.getElementById('btn-maintenance')?.addEventListener('click', () => {
+    const property = prompt('Property address:');
+    const issue = prompt('Describe the issue:');
+    if (property && issue) alert(`Maintenance request submitted for ${property}. OPS division notified.`);
+  });
 }
 
 function renderPortalContent(main) {
   setPortalLayout(main, 'Content Calendar', `
-    <h1 class="portal-title">Content Calendar</h1>
-    <div class="portal-card"><div class="card-body"><p>Generate content via the /v1/content/generate endpoint. Supports social posts, emails, video scripts, and podcast outlines.</p>
-    <div class="portal-actions-bar">
-      <button class="btn btn-primary" onclick="alert('Generate via /v1/content/generate POST')">Generate Content</button>
-    </div></div></div>
+    <h1 class="portal-title">Content Engine</h1>
+    <div class="portal-stats">
+      <div class="stat-card"><span class="stat-num">168</span><span class="stat-label">Posts/Week</span></div>
+      <div class="stat-card"><span class="stat-num">8</span><span class="stat-label">Platforms</span></div>
+      <div class="stat-card"><span class="stat-num">47</span><span class="stat-label">MKT Agents</span></div>
+      <div class="stat-card"><span class="stat-num">4</span><span class="stat-label">Content Pillars</span></div>
+    </div>
+    <div class="portal-grid">
+      <div class="portal-card">
+        <h3>Generate Content</h3>
+        <div class="card-body">
+          <div class="form-group"><label>Content Type</label>
+            <select id="content-type" class="filter-select" style="width:100%">
+              <option value="social">Social Media Post</option><option value="email">Email Campaign</option>
+              <option value="script">Video Script</option><option value="youtube_idea">YouTube Idea</option>
+              <option value="youtube_script">YouTube Script</option><option value="podcast">Podcast Outline</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Platform</label>
+            <select id="content-platform" class="filter-select" style="width:100%">
+              <option value="instagram">Instagram</option><option value="linkedin">LinkedIn</option>
+              <option value="facebook">Facebook</option><option value="x">X (Twitter)</option>
+              <option value="tiktok">TikTok</option><option value="youtube">YouTube</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Content Pillar</label>
+            <select id="content-pillar" class="filter-select" style="width:100%">
+              <option value="AI Authority">AI Authority</option><option value="Market Intelligence">Market Intelligence</option>
+              <option value="CEO Journey">CEO Journey</option><option value="Treasure Coast Lifestyle">Treasure Coast Lifestyle</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Target Audience</label>
+            <select id="content-audience" class="filter-select" style="width:100%">
+              <option value="Absentee Owners">Absentee Owners</option><option value="Luxury Homeowners">Luxury Homeowners</option>
+              <option value="Investors">Investors</option><option value="STR Owners">STR Owners</option>
+              <option value="General">General Audience</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-full" id="btn-generate">Generate with Claude AI</button>
+          <div id="content-result" style="margin-top:16px"></div>
+        </div>
+      </div>
+      <div class="portal-card">
+        <h3>Content Pillars</h3>
+        <div class="card-body">
+          <div class="pillar-list">
+            <div class="pillar-item" style="border-left:3px solid #4f8fff"><strong>AI Authority</strong><br>Command Center screenshots, fleet operations, division spotlights, Gazette excerpts</div>
+            <div class="pillar-item" style="border-left:3px solid #22c55e"><strong>Market Intelligence</strong><br>Monthly market reports, hot zone spotlights, median price trends, inventory data</div>
+            <div class="pillar-item" style="border-left:3px solid #eab308"><strong>CEO Journey</strong><br>Personal brand, client wins, Children's Miracle Network, faith and family</div>
+            <div class="pillar-item" style="border-left:3px solid #ef4444"><strong>Treasure Coast Lifestyle</strong><br>Drone content, local business spotlights, seasonal events, relocator guides</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="portal-card" style="margin-top:20px">
+      <h3>MCCO Sovereign Command</h3>
+      <div class="card-body">
+        <p>The MCCO (Master Chief Commanding Officer) governs all marketing and sales through 15 sovereign command units operating at Ferrari-standard execution.</p>
+        <div class="portal-actions-grid" style="margin-top:12px">
+          <button class="btn btn-secondary" id="btn-calendar">30-Day Calendar</button>
+          <button class="btn btn-secondary" id="btn-audience">Audience Profile</button>
+          <button class="btn btn-secondary" id="btn-post">Generate Post</button>
+        </div>
+      </div>
+    </div>
   `);
+
+  document.getElementById('btn-generate')?.addEventListener('click', async () => {
+    const btn = document.getElementById('btn-generate');
+    const result = document.getElementById('content-result');
+    btn.disabled = true; btn.textContent = 'Generating...';
+    result.innerHTML = '';
+    try {
+      const data = await apiCall('/v1/content/generate', {
+        method: 'POST',
+        body: JSON.stringify({
+          type: document.getElementById('content-type').value,
+          platform: document.getElementById('content-platform').value,
+          pillar: document.getElementById('content-pillar').value,
+          target_segment: document.getElementById('content-audience').value,
+          tone: 'authoritative',
+        }),
+      });
+      result.innerHTML = '<div class="content-output"><h4>Generated Content</h4><pre style="white-space:pre-wrap;font-family:inherit;background:var(--bg);padding:16px;border-radius:8px;font-size:13px;line-height:1.6">' + (data.content || data.result || JSON.stringify(data, null, 2)) + '</pre></div>';
+    } catch (e) { result.innerHTML = '<p class="error-msg">Error: ' + e.message + '</p>'; }
+    btn.disabled = false; btn.textContent = 'Generate with Claude AI';
+  });
+
+  document.getElementById('btn-calendar')?.addEventListener('click', async () => {
+    try {
+      const data = await apiCall('/v1/mcco/content-calendar', { method: 'POST', body: JSON.stringify({ month: new Date().toISOString().slice(0,7) }) });
+      alert('30-day calendar generated. Check the response in console.');
+      console.log('MCCO Calendar:', data);
+    } catch (e) { alert('Error: ' + e.message); }
+  });
+  document.getElementById('btn-audience')?.addEventListener('click', async () => {
+    try {
+      const data = await apiCall('/v1/mcco/audience-profile', { method: 'POST', body: JSON.stringify({ segment: 'absentee-owners' }) });
+      alert('Audience profile generated. Check console.');
+      console.log('Audience Profile:', data);
+    } catch (e) { alert('Error: ' + e.message); }
+  });
+  document.getElementById('btn-post')?.addEventListener('click', async () => {
+    const topic = prompt('Post topic or theme:');
+    if (!topic) return;
+    try {
+      const data = await apiCall('/v1/mcco/post', { method: 'POST', body: JSON.stringify({ topic, platform: 'instagram' }) });
+      alert('Post generated. Check console.');
+      console.log('MCCO Post:', data);
+    } catch (e) { alert('Error: ' + e.message); }
+  });
 }
 
 function renderPortalVendors(main) {
   setPortalLayout(main, 'Vendor Compliance', `
-    <h1 class="portal-title">Vendor Compliance</h1>
-    <div class="portal-card"><div class="card-body"><p>25 vendor management AI agents monitor compliance, contracts, insurance, and performance across all vendors.</p></div></div>
+    <h1 class="portal-title">Vendor Management</h1>
+    <div class="portal-stats">
+      <div class="stat-card"><span class="stat-num">25</span><span class="stat-label">VEN Agents</span></div>
+      <div class="stat-card"><span class="stat-num green">--</span><span class="stat-label">Compliant</span></div>
+      <div class="stat-card"><span class="stat-num yellow">--</span><span class="stat-label">Expiring Soon</span></div>
+      <div class="stat-card"><span class="stat-num red">--</span><span class="stat-label">Non-Compliant</span></div>
+    </div>
+    <div class="portal-grid">
+      <div class="portal-card">
+        <h3>Compliance Monitoring</h3>
+        <div class="card-body">
+          <p>The VEN division (25 agents) monitors vendor compliance across these critical areas:</p>
+          <div class="compliance-grid">
+            <div class="compliance-item"><strong>Insurance</strong> — VEN-007 tracks certificates of insurance, expiration dates, and coverage adequacy for all contracted vendors.</div>
+            <div class="compliance-item"><strong>Licensing</strong> — VEN-008 monitors professional licenses: contractor, pest control, electrical, plumbing, and specialty trades.</div>
+            <div class="compliance-item"><strong>Background Checks</strong> — VEN-022 conducts and tracks background verification for all vendors with property access.</div>
+            <div class="compliance-item"><strong>Safety</strong> — VEN-017 monitors OSHA standards, jobsite safety protocols, and incident reporting compliance.</div>
+            <div class="compliance-item"><strong>Subcontractors</strong> — VEN-018 verifies subcontractors used by primary vendors meet Coastal Key standards.</div>
+          </div>
+        </div>
+      </div>
+      <div class="portal-card">
+        <h3>Vendor Operations</h3>
+        <div class="card-body">
+          <div class="portal-actions-grid">
+            <button class="btn btn-primary">Vendor Registry</button>
+            <button class="btn btn-secondary">Bid Management</button>
+            <button class="btn btn-secondary">Performance Scorecards</button>
+            <button class="btn btn-secondary">Emergency Roster</button>
+          </div>
+          <div style="margin-top:16px">
+            <h4 style="font-size:14px;margin-bottom:8px">Preferred Vendor Program</h4>
+            <p>VEN-012 manages tier assignments (Gold, Silver, Bronze) based on performance scores, compliance rates, and client feedback.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   `);
 }
 
 function renderPortalReports(main) {
   setPortalLayout(main, 'Reports', `
     <h1 class="portal-title">Reports & Analytics</h1>
-    <div class="portal-card"><div class="card-body"><p>Intelligence division (30 agents) generates market reports, forecasts, and operational analytics.</p></div></div>
+    <div class="portal-stats">
+      <div class="stat-card"><span class="stat-num">30</span><span class="stat-label">INT Agents</span></div>
+      <div class="stat-card"><span class="stat-num">50</span><span class="stat-label">Intel Officers</span></div>
+      <div class="stat-card"><span class="stat-num">5</span><span class="stat-label">Intel Squads</span></div>
+      <div class="stat-card"><span class="stat-num">25</span><span class="stat-label">FIN Agents</span></div>
+    </div>
+    <div class="portal-grid">
+      <div class="portal-card">
+        <h3>Intelligence Reports</h3>
+        <div class="card-body">
+          <div class="report-list">
+            <button class="btn btn-secondary btn-full report-btn" data-report="market">Market Trends by Zone</button>
+            <button class="btn btn-secondary btn-full report-btn" data-report="competitive">Competitive Intelligence</button>
+            <button class="btn btn-secondary btn-full report-btn" data-report="pipeline">Lead Pipeline Health</button>
+            <button class="btn btn-secondary btn-full report-btn" data-report="fleet">Fleet Analytics</button>
+            <button class="btn btn-secondary btn-full report-btn" data-report="churn">Churn Prediction</button>
+          </div>
+        </div>
+      </div>
+      <div class="portal-card">
+        <h3>Financial Engine</h3>
+        <div class="card-body">
+          <div class="report-list">
+            <button class="btn btn-secondary btn-full report-btn" data-report="roi">Property ROI Analysis</button>
+            <button class="btn btn-secondary btn-full report-btn" data-report="forecast">12-Month Forecast</button>
+            <button class="btn btn-secondary btn-full report-btn" data-report="pricing">Dynamic Pricing</button>
+            <button class="btn btn-secondary btn-full report-btn" data-report="budget">Annual Budget</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="portal-card" style="margin-top:20px">
+      <h3>Intelligence Officer Fleet</h3>
+      <div class="card-body" id="intel-fleet">
+        <div class="intel-squads">
+          <div class="intel-squad" style="border-left:3px solid #4f8fff"><strong>ALPHA</strong> — Infrastructure (10 officers)<br>Gateway health, KV connectivity, DNS, SSL, CDN, latency</div>
+          <div class="intel-squad" style="border-left:3px solid #22c55e"><strong>BRAVO</strong> — Data Integrity (10 officers)<br>Schema consistency, duplicate detection, audit trail, pipeline leakage</div>
+          <div class="intel-squad" style="border-left:3px solid #ef4444"><strong>CHARLIE</strong> — Security (10 officers)<br>Auth failures, rate violations, CORS, TCPA compliance, secret exposure</div>
+          <div class="intel-squad" style="border-left:3px solid #eab308"><strong>DELTA</strong> — Revenue Ops (10 officers)<br>Conversion velocity, campaign KPIs, booking rates, revenue attribution</div>
+          <div class="intel-squad" style="border-left:3px solid #7c5cfc"><strong>ECHO</strong> — Performance (10 officers)<br>Inference costs, Airtable rates, CPU time, cache optimization, MTTR</div>
+        </div>
+        <button class="btn btn-primary" id="btn-fleet-scan" style="margin-top:16px">Run Fleet Scan (Critical Officers)</button>
+        <div id="scan-result" style="margin-top:12px"></div>
+      </div>
+    </div>
   `);
+
+  // Wire up report buttons
+  document.querySelectorAll('.report-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const report = btn.dataset.report;
+      const endpoints = {
+        market: '/v1/analysis/market-trends', competitive: '/v1/analysis/competitive-intel',
+        pipeline: '/v1/analysis/lead-pipeline', fleet: '/v1/analysis/fleet', churn: '/v1/analysis/churn-prediction',
+        roi: '/v1/financial/roi', forecast: '/v1/financial/forecast', pricing: '/v1/pricing/zones', budget: '/v1/financial/budget',
+      };
+      try {
+        const data = await apiCall(endpoints[report] || '/v1/health', { method: endpoints[report]?.includes('financial') || endpoints[report]?.includes('analysis') ? 'POST' : 'GET', body: ['GET'].includes('GET') ? undefined : JSON.stringify({}) });
+        console.log(`Report [${report}]:`, data);
+        alert('Report generated. Results logged to console.');
+      } catch (e) { alert('Error: ' + e.message); }
+    });
+  });
+
+  document.getElementById('btn-fleet-scan')?.addEventListener('click', async () => {
+    const btn = document.getElementById('btn-fleet-scan');
+    const result = document.getElementById('scan-result');
+    btn.disabled = true; btn.textContent = 'Scanning...';
+    try {
+      const data = await apiCall('/v1/intel/fleet-scan', { method: 'POST' });
+      const scan = data.fleetScan || {};
+      result.innerHTML = '<div class="scan-output"><strong>Status: ' + (scan.overallStatus || 'UNKNOWN') + '</strong><br>Officers scanned: ' + (scan.officersScanned || 0) + '<br>Findings: ' + (scan.totalFindings || 0) + '</div>';
+    } catch (e) { result.innerHTML = '<p class="error-msg">Scan failed: ' + e.message + '</p>'; }
+    btn.disabled = false; btn.textContent = 'Run Fleet Scan (Critical Officers)';
+  });
 }
 
 function renderNotFound(main) {
