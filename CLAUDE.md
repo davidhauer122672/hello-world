@@ -19,7 +19,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 - **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (49 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
 - **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
-- **Website**: https://main.coastalkey-pm.pages.dev
+- **Website**: https://coastalkey-pm.com (reverse proxy → Manus origin)
 - **Command Center**: https://ck-command-center.pages.dev
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
@@ -27,7 +27,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 - **ck-api-gateway**: Central API — 90+ endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Dashboard UI for 312-agent fleet + Coastal Key Gazette (Cloudflare Pages)
-- **ck-website**: Public-facing website with contact form (Cloudflare Pages)
+- **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
 - **th-sentinel-campaign**: Campaign config, Retell prompts, Airtable field reference
 
