@@ -3,6 +3,7 @@
 **Document:** CK-STRAT-2026-Q2
 **Classification:** Executive — CTO Office
 **Effective Date:** 2026-04-03
+**Last Updated:** 2026-04-08
 **Review Cycle:** Monthly
 
 ---
@@ -23,7 +24,7 @@ Coastal Key Property Management operates the most technically advanced AI-powere
 | Sentinel Webhook | Cloudflare Worker | Production | Retell → Airtable → Slack |
 | Command Center | Cloudflare Pages | Production | 290-agent fleet dashboard |
 | Website | Cloudflare Pages | Production | coastalkey-pm.com |
-| CI/CD | GitHub Actions | Hardened | Test → Deploy (3 services) |
+| CI/CD | GitHub Actions | Hardened (npm ci, lockfile, cache) | Test → Deploy (3 services) |
 
 ### AI Agent Fleet: 290 Agents, 9 Divisions
 
@@ -44,7 +45,7 @@ Coastal Key Property Management operates the most technically advanced AI-powere
 | Workflow | Name | Status | Automation Level |
 |---|---|---|---|
 | SCAA-1 | Battle Plan Pipeline | Live | Full (AI inference → Airtable → Slack) |
-| WF-2 | Social Approval → Buffer | Code complete, pending Buffer account | Full (4-channel: IG, FB, LI, X) |
+| WF-2 | Social Approval → Buffer | Code complete, CI/CD hardened, PR created, test record primed (Approved), Canva asset attached, Deployment Tracker Complete. Pending: Buffer account + `BUFFER_ACCESS_TOKEN` secret. | Full (4-channel: IG, FB, LI, X) |
 | WF-3 | Investor Escalation | Live | Full (AI → presentation → task → email payload) |
 | WF-4 | Long-Tail Nurture | Live | Partial (Constant Contact payload prepared, not sent) |
 | WF-1 | Not built | Gap | — |
