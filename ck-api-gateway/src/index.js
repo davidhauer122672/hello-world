@@ -133,7 +133,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
-import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
+import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost, handleMasterPlan, handleMasterPlanPhase, handleDivisionPlan, handleSovereignDirectiveIssue, handleActivationStatus } from './routes/mcco.js';
 import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan } from './routes/frameworks.js';
 import {
   handleTraderDashboard, handleTraderAgent, handleWatchlist, handleQuote, handleSignal,
@@ -467,6 +467,28 @@ export default {
       if (path.match(/^\/v1\/mcco\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/mcco/agents/')[1];
         return handleGetMCCOAgent(agentId);
+      }
+
+      if (path === '/v1/mcco/master-plan' && method === 'GET') {
+        return handleMasterPlan();
+      }
+
+      if (path.match(/^\/v1\/mcco\/master-plan\/phase\/[^/]+$/) && method === 'GET') {
+        const phaseId = path.split('/v1/mcco/master-plan/phase/')[1];
+        return handleMasterPlanPhase(phaseId);
+      }
+
+      if (path.match(/^\/v1\/mcco\/master-plan\/division\/[^/]+$/) && method === 'GET') {
+        const divisionId = path.split('/v1/mcco/master-plan/division/')[1];
+        return handleDivisionPlan(divisionId);
+      }
+
+      if (path === '/v1/mcco/sovereign-directive' && method === 'POST') {
+        return await handleSovereignDirectiveIssue(request, env, ctx);
+      }
+
+      if (path === '/v1/mcco/activation-status' && method === 'GET') {
+        return handleActivationStatus();
       }
 
       // ── Atlas AI Campaign Platform (youratlas.com) ──
