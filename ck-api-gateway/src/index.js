@@ -151,6 +151,7 @@ import {
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
+import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -747,6 +748,20 @@ export default {
       }
       if (path === '/v1/thinking/dashboard' && method === 'GET') {
         return handleThinkingDashboard();
+      }
+
+      // ── CEO Sovereign Directives ──
+      if (path === '/v1/ceo/directive' && method === 'POST') {
+        return await handleCeoDirective(request, env, ctx);
+      }
+      if (path === '/v1/ceo/operations-review' && method === 'POST') {
+        return await handleOperationsReview(request, env, ctx);
+      }
+      if (path === '/v1/ceo/operating-state' && method === 'GET') {
+        return handleOperatingState();
+      }
+      if (path === '/v1/ceo/dashboard' && method === 'GET') {
+        return handleCeoDashboard();
       }
 
       // ── Agent Manifest ──
