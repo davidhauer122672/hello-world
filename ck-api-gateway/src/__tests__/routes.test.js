@@ -35,7 +35,7 @@ describe('Agent Routes', async () => {
     const res = handleListAgents(makeURL('/v1/agents', { division: 'MKT' }));
     const b = await body(res);
     assert.ok(b.agents.every(a => a.division === 'MKT'));
-    assert.equal(b.agents.length, 47);
+    assert.equal(b.agents.length, 48);
   });
 
   it('filters agents by status active', async () => {
