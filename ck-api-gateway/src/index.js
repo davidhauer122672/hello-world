@@ -10,6 +10,8 @@
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
  *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
  *   POST /v1/content/publish    — Publish Content Calendar record to Buffer (WF-2 replacement)
+ *   GET  /v1/meta-ads/status    — Meta Ads connector health check & diagnostics
+ *   POST /v1/meta-ads/boost     — Boost high-engagement post via Meta Ads Manager
  *   GET  /v1/agents             — List/search agents with filtering
  *   GET  /v1/agents/metrics     — Aggregate agent metrics
  *   GET  /v1/agents/:id         — Get single agent details
@@ -154,6 +156,7 @@ import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatu
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
+import { handleMetaAdsStatus, handleMetaAdsBoost } from './routes/meta-ads.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -790,6 +793,14 @@ export default {
       }
       if (path === '/v1/ceo/dashboard' && method === 'GET') {
         return handleCeoDashboard();
+      }
+
+      // ── Meta Ads ──
+      if (path === '/v1/meta-ads/status' && method === 'GET') {
+        return await handleMetaAdsStatus(request, env, ctx);
+      }
+      if (path === '/v1/meta-ads/boost' && method === 'POST') {
+        return await handleMetaAdsBoost(request, env, ctx);
       }
 
       // ── Agent Manifest ──
