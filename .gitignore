@@ -1,8 +1,16 @@
 node_modules/
 .env
+.env.local
+.env.*.local
 data/
 .wrangler/
 .dev.vars
 *.log
 dist/
 .DS_Store
+coverage/
+*.key
+*.pem
+.idea/
+*.swp
+*.swo

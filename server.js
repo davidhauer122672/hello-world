@@ -4,7 +4,7 @@ const path = require('path');
 
 // Security & error handling middleware
 const { securityHeaders, rateLimiter, cors } = require('./middleware/security');
-const { errorHandler, notFoundHandler } = require('./middleware/error-handler');
+const { errorHandler, notFoundHandler, asyncWrap } = require('./middleware/error-handler');
 
 // Route handlers
 const { router: paymentsRouter, webhookHandler } = require('./routes/payments');
@@ -28,7 +28,16 @@ const { startBackupScheduler, runBackup } = require('./lib/backup');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Global security middleware
+// ── Admin auth middleware ─────────────────────────────────────────────────
+function requireAdminToken(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token || token !== process.env.ADMIN_TOKEN) {
+    return res.status(401).json({ error: 'Unauthorized — admin token required' });
+  }
+  next();
+}
+
+// ── Global security middleware ────────────────────────────────────────────
 app.use(securityHeaders());
 app.use(cors());
 app.use(rateLimiter(100));
@@ -40,41 +49,32 @@ app.post(
   webhookHandler
 );
 
-// Parse JSON for all other routes (1MB limit)
-app.use(express.json({ limit: '1mb' }));
+// Parse JSON for all other routes (50KB limit — sufficient for all API payloads)
+app.use(express.json({ limit: '50kb' }));
 
 // Serve static frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Health check (no rate limit)
+// ── Public routes ─────────────────────────────────────────────────────────
 app.use('/api/health', healthRouter);
-
-// API routes
-app.use('/api/dashboard', dashboardRouter);
-app.use('/api/payments', paymentsRouter);
 app.use('/api/appointments', appointmentsRouter);
-app.use('/api/email', emailRouter);
-app.use('/api/social', socialRouter);
-app.use('/api/visuals', visualsRouter);
-app.use('/api/drip', dripRouter);
+app.use('/api/payments', paymentsRouter);
 app.use('/api/objections', objectionsRouter);
-app.use('/api/workflows', workflowsRouter);
 
-// Admin auth middleware — protects sensitive operations
-function requireAdminToken(req, res, next) {
-  const token = req.headers.authorization?.replace('Bearer ', '');
-  if (!token || token !== process.env.ADMIN_TOKEN) {
-    return res.status(401).json({ error: 'Unauthorized — admin token required' });
-  }
-  next();
-}
+// ── Protected routes (admin token required) ───────────────────────────────
+app.use('/api/dashboard', requireAdminToken, dashboardRouter);
+app.use('/api/email', requireAdminToken, emailRouter);
+app.use('/api/social', requireAdminToken, socialRouter);
+app.use('/api/visuals', requireAdminToken, visualsRouter);
+app.use('/api/drip', requireAdminToken, dripRouter);
+app.use('/api/workflows', requireAdminToken, workflowsRouter);
 
 // Manual report trigger (protected)
-app.post('/api/report/send', requireAdminToken, async (req, res) => {
+app.post('/api/report/send', requireAdminToken, asyncWrap(async (req, res) => {
   const report = buildReport();
   await sendSMS(report);
   res.json({ success: true, report });
-});
+}));
 
 // Preview report without sending (protected)
 app.get('/api/report/preview', requireAdminToken, (req, res) => {
@@ -88,11 +88,11 @@ app.post('/api/backup/run', requireAdminToken, (req, res) => {
   res.json({ success: true, ...result });
 });
 
-// Catch-all 404 and centralized error handler
+// ── Error handling ────────────────────────────────────────────────────────
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Graceful shutdown
+// ── Graceful shutdown ─────────────────────────────────────────────────────
 let server;
 function shutdown(signal) {
   console.log(`\n[${signal}] Shutting down gracefully...`);

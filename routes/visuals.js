@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const visualGenerator = require('../lib/visual-generator');
 
+const VALID_PLATFORMS = ['instagram', 'facebook', 'linkedin', 'alignable'];
+
 // POST /api/visuals/social-brief
 router.post('/social-brief', (req, res) => {
   const { caption, platform, contentPillar, associatedPostId } = req.body;
@@ -10,16 +12,16 @@ router.post('/social-brief', (req, res) => {
     return res.status(400).json({ error: 'caption is required' });
   }
 
+  if (platform && !VALID_PLATFORMS.includes(platform)) {
+    return res.status(400).json({ error: `Invalid platform. Valid: ${VALID_PLATFORMS.join(', ')}` });
+  }
+
   try {
-    const brief = visualGenerator.generateSocialBrief(
-      caption,
-      platform,
-      contentPillar,
-      associatedPostId
-    );
+    const brief = visualGenerator.generateSocialBrief(caption, platform, contentPillar, associatedPostId);
     res.status(201).json(brief);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to generate social brief', details: err.message });
+    console.error('[visuals] social-brief error:', err.message);
+    res.status(500).json({ error: 'Failed to generate social brief' });
   }
 });
 
@@ -32,15 +34,11 @@ router.post('/thumbnail-brief', (req, res) => {
   }
 
   try {
-    const brief = visualGenerator.generateThumbnailBrief(
-      videoTitle,
-      targetSegment,
-      contentType,
-      associatedPostId
-    );
+    const brief = visualGenerator.generateThumbnailBrief(videoTitle, targetSegment, contentType, associatedPostId);
     res.status(201).json(brief);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to generate thumbnail brief', details: err.message });
+    console.error('[visuals] thumbnail-brief error:', err.message);
+    res.status(500).json({ error: 'Failed to generate thumbnail brief' });
   }
 });
 
@@ -52,16 +50,16 @@ router.post('/carousel-brief', (req, res) => {
     return res.status(400).json({ error: 'topic is required' });
   }
 
+  if (platform && !VALID_PLATFORMS.includes(platform)) {
+    return res.status(400).json({ error: `Invalid platform. Valid: ${VALID_PLATFORMS.join(', ')}` });
+  }
+
   try {
-    const briefs = visualGenerator.generateCarouselBrief(
-      topic,
-      slideCount,
-      platform,
-      associatedPostId
-    );
+    const briefs = visualGenerator.generateCarouselBrief(topic, slideCount, platform, associatedPostId);
     res.status(201).json({ slideCount: briefs.length, slides: briefs });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to generate carousel brief', details: err.message });
+    console.error('[visuals] carousel-brief error:', err.message);
+    res.status(500).json({ error: 'Failed to generate carousel brief' });
   }
 });
 
@@ -71,7 +69,8 @@ router.get('/pending', (_req, res) => {
     const pending = visualGenerator.getPendingBriefs();
     res.json({ count: pending.length, briefs: pending });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to retrieve pending briefs', details: err.message });
+    console.error('[visuals] pending error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve pending briefs' });
   }
 });
 
@@ -91,7 +90,8 @@ router.post('/mark-generated/:id', (req, res) => {
     }
     res.json(updated);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to mark brief as generated', details: err.message });
+    console.error('[visuals] mark-generated error:', err.message);
+    res.status(500).json({ error: 'Failed to mark brief as generated' });
   }
 });
 
@@ -103,7 +103,8 @@ router.get('/by-post/:postId', (req, res) => {
     const briefs = visualGenerator.getBriefsByPost(postId);
     res.json({ count: briefs.length, briefs });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to retrieve briefs for post', details: err.message });
+    console.error('[visuals] by-post error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve briefs for post' });
   }
 });
 

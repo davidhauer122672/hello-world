@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { asyncWrap } = require('../middleware/error-handler');
 const {
   createDraft,
   approvePost,
@@ -7,6 +8,8 @@ const {
   markPublished,
   getPostsByStatus,
 } = require('../lib/social-publisher');
+
+const VALID_PLATFORMS = ['instagram', 'facebook', 'linkedin', 'alignable'];
 
 // POST /api/social/draft – create a draft post
 router.post('/draft', (req, res) => {
@@ -16,6 +19,10 @@ router.post('/draft', (req, res) => {
     return res.status(400).json({ error: 'platform, caption, and contentPillar are required' });
   }
 
+  if (!VALID_PLATFORMS.includes(platform)) {
+    return res.status(400).json({ error: `Invalid platform. Valid: ${VALID_PLATFORMS.join(', ')}` });
+  }
+
   const result = createDraft(platform, caption, mediaPath, contentPillar, scheduledFor);
   if (result.error) return res.status(400).json(result);
 
@@ -23,16 +30,11 @@ router.post('/draft', (req, res) => {
 });
 
 // POST /api/social/approve/:id – approve a post
-router.post('/approve/:id', async (req, res) => {
-  try {
-    const result = await approvePost(req.params.id);
-    if (result.error) return res.status(400).json(result);
-    res.json(result);
-  } catch (err) {
-    console.error('Social route: approve failed:', err.message);
-    res.status(500).json({ error: 'Failed to approve post' });
-  }
-});
+router.post('/approve/:id', asyncWrap(async (req, res) => {
+  const result = await approvePost(req.params.id);
+  if (result.error) return res.status(400).json(result);
+  res.json(result);
+}));
 
 // GET /api/social/calendar – list posts with optional filters
 router.get('/calendar', (req, res) => {
