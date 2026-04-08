@@ -6,7 +6,8 @@
     "api": "Cloudflare Workers (ck-api-gateway/)",
     "nemotron": "Cloudflare Workers (ck-nemotron-worker/)",
     "webhook": "Cloudflare Workers (sentinel-webhook/)",
-    "dashboard": "Cloudflare Pages (ck-command-center/)"
+    "dashboard": "Cloudflare Pages (ck-command-center/)",
+    "trading_desk": "Electron Desktop App (ck-trading-desk/)"
   },
   "deployment": {
     "website": {
@@ -43,8 +44,14 @@
     "portal_path": "/portal"
   },
   "agents": {
-    "total": 290,
-    "divisions": 9,
-    "web_dev_agents": 40
+    "total": 479,
+    "property_management": 382,
+    "trading_desk": 97,
+    "divisions_pm": 10,
+    "divisions_td": 6,
+    "intelligence_officers": 50,
+    "email_agents": 20,
+    "mcco_agents": 15,
+    "financial_engines": 10
   }
 }
