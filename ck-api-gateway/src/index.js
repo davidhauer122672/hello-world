@@ -150,6 +150,7 @@ import {
 } from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
+import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -706,6 +707,30 @@ export default {
       }
       if (path === '/v1/slack/audit' && method === 'GET') {
         return handleSlackAudit();
+      }
+
+      // ── Thinking Coach ──
+      if (path === '/v1/thinking/frameworks' && method === 'GET') {
+        return handleListThinkingFrameworks(url);
+      }
+      if (path.startsWith('/v1/thinking/frameworks/') && method === 'GET') {
+        const frameworkId = path.split('/')[4];
+        return handleGetThinkingFramework(frameworkId);
+      }
+      if (path === '/v1/thinking/session' && method === 'POST') {
+        return await handleThinkingSession(request, env, ctx);
+      }
+      if (path === '/v1/thinking/multi' && method === 'POST') {
+        return await handleMultiFramework(request, env, ctx);
+      }
+      if (path === '/v1/thinking/learning-blueprint' && method === 'POST') {
+        return await handleLearningBlueprint(request, env, ctx);
+      }
+      if (path === '/v1/thinking/daily-models' && method === 'POST') {
+        return await handleDailyModels(request, env, ctx);
+      }
+      if (path === '/v1/thinking/dashboard' && method === 'GET') {
+        return handleThinkingDashboard();
       }
 
       return errorResponse('Not found', 404);
