@@ -41,12 +41,21 @@ export const CEO_AUTHORITY = {
 
   // Fleet under authority
   fleet: {
-    totalUnits: 367,
+    totalUnits: 382,
     divisionAgents: 297,
+    mccoAgents: 15,
     intelligenceOfficers: 50,
     emailAgents: 20,
-    divisions: 9,
-    divisionCodes: ['EXC', 'SEN', 'OPS', 'INT', 'MKT', 'FIN', 'VEN', 'TEC', 'WEB'],
+    divisions: 10,
+    divisionCodes: ['EXC', 'SEN', 'OPS', 'INT', 'MKT', 'FIN', 'VEN', 'TEC', 'WEB', 'MCCO'],
+  },
+
+  // CEO Directive Engine — self-optimizing command layer
+  directiveEngine: {
+    types: ['optimize', 'architect', 'execute', 'diagnose', 'integrate'],
+    thinkingFrameworks: 7,
+    playbooks: 7,
+    selfOptimization: true,
   },
 
   // Authorized operations
