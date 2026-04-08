@@ -365,6 +365,307 @@ Provide:
   return runSession(env, 'mental-models', problem, { focus, type: 'daily_briefing' });
 }
 
+// ── PLAYBOOK 3: Property Management Mastery Training ─────────────────────
+
+const PM_MASTERY_SYSTEM = `You are a world-class property management trainer for Coastal Key Property Management. You train apprentices from absolute beginner to mastery using a staged curriculum.
+
+Your training architecture:
+STAGE 1 — FOUNDATION (Days 1-21): Licensing requirements (Florida 61J2), fiduciary duties, Fair Housing Act, lease structures, trust accounting, maintenance triage, vendor procurement, move-in/move-out protocols.
+STAGE 2 — OPERATIONS (Days 22-45): Tenant screening (credit/criminal/eviction/employment), rent collection workflows, delinquency escalation, maintenance coordination (preventive/reactive/emergency), insurance claims, HOA compliance, property inspections (quarterly + annual + turnover).
+STAGE 3 — FINANCIAL MASTERY (Days 46-65): P&L by property, CAM reconciliation, reserve fund management, capital expenditure planning, rent optimization (comps, CPI adjustments, market positioning), owner reporting (monthly/quarterly/annual), tax document prep (1099s, depreciation schedules).
+STAGE 4 — CLIENT ACQUISITION (Days 66-80): BMA presentations, owner onboarding, management agreement negotiation, retention strategies, referral systems, objection handling, competitive positioning.
+STAGE 5 — LEADERSHIP & SCALE (Days 81-90): Team hiring/training, portfolio optimization (80/20 pruning), technology stack (AppFolio/Buildium/CKPM AI fleet), market expansion playbook.
+
+Each stage includes: knowledge checks, real-world simulations, practice assignments, uncommon resources, and shortcuts.
+
+Output as JSON with keys: stage (object), learning_objectives (array), curriculum (array of lessons with duration_hours), simulations (array of real-world scenarios), practice_assignments (array), resources (array with type: book/course/tool/mentor), shortcuts (array), assessment_criteria (object), mastery_indicators (array).`;
+
+/**
+ * Generate Property Management mastery training program.
+ */
+export async function pmMasteryTraining(env, stage = 1, focus = null) {
+  const stageNames = {
+    1: 'Foundation — Licensing, Law & Core Operations',
+    2: 'Operations — Screening, Maintenance & Compliance',
+    3: 'Financial Mastery — P&L, Optimization & Reporting',
+    4: 'Client Acquisition — BMA, Onboarding & Retention',
+    5: 'Leadership & Scale — Teams, Tech & Expansion',
+  };
+
+  const problem = `Generate the complete training program for STAGE ${stage}: "${stageNames[stage] || stageNames[1]}"
+
+${focus ? `Focus area within this stage: ${focus}` : 'Cover the full stage comprehensively.'}
+
+Include:
+1. Detailed curriculum with time estimates per lesson
+2. Three real-world simulations that test judgment under pressure
+3. Five practice assignments that build muscle memory
+4. Uncommon resources most PM training programs miss
+5. Shortcuts that compress 6 months of learning into weeks
+6. Assessment criteria — how to know when this stage is complete`;
+
+  const result = await inference(env, {
+    system: PM_MASTERY_SYSTEM,
+    prompt: problem,
+    tier: 'advanced',
+    maxTokens: 4096,
+    cacheKey: `pm-mastery:stage${stage}:${focus || 'full'}`,
+    cacheTtl: 3600,
+  });
+
+  let training;
+  try {
+    const jsonMatch = result.content.match(/\{[\s\S]*\}/);
+    training = jsonMatch ? JSON.parse(jsonMatch[0]) : { raw: result.content };
+  } catch {
+    training = { raw: result.content };
+  }
+
+  return {
+    program: 'Property Management Mastery — Beginner to Top 1%',
+    stage: stage,
+    stage_name: stageNames[stage] || stageNames[1],
+    total_stages: 5,
+    training,
+    model: result.model,
+    cached: result.cached,
+    usage: result.usage,
+  };
+}
+
+// ── PLAYBOOK 4: Cognitive OS Upgrader ────────────────────────────────────
+
+const COGNITIVE_OS_SYSTEM = `You are a Cognitive Operating System architect. You audit and rewrite human thought patterns, habits, and beliefs for peak CEO performance.
+
+Your protocol:
+1. AUDIT — Analyze the described thought patterns for: clarity bottlenecks, decision latency, memory leaks, creativity blocks, emotional volatility
+2. DIAGNOSE — Identify the root cognitive patterns causing underperformance
+3. REWRITE — Install new cognitive protocols for each dimension:
+   - CLARITY: Morning prime sequence, single-tasking blocks, decision journaling
+   - DECISION SPEED: Pre-commitment frameworks, 70% rule (decide at 70% information), reversibility classification
+   - MEMORY: Spaced repetition system, Zettelkasten note architecture, active recall triggers
+   - CREATIVITY: Combinatorial thinking sessions, constraint-based ideation, cross-domain pattern matching
+   - EMOTIONAL CONTROL: Stoic premeditatio malorum, cognitive reappraisal, response gap protocols
+4. INSTALL — Daily routines, weekly reviews, trigger-response rewiring
+
+Output as JSON with keys: audit (object with clarity_score, decision_speed_score, memory_score, creativity_score, emotional_control_score — each 1-10 with diagnosis), root_patterns (array of limiting patterns found), new_os (object with each dimension containing protocols, daily_routines, tools, metrics), installation_sequence (30-day rollout plan), upgrade_milestones (array with checkpoints).`;
+
+/**
+ * Run Cognitive OS audit and rewrite.
+ */
+export async function cognitiveOSUpgrade(env, currentPatterns, goals = {}) {
+  const problem = `COGNITIVE OS AUDIT REQUEST
+
+Current thought patterns and habits described by the CEO:
+${currentPatterns}
+
+${goals.clarity ? `Clarity goal: ${goals.clarity}` : ''}
+${goals.decision_speed ? `Decision speed goal: ${goals.decision_speed}` : ''}
+${goals.memory ? `Memory goal: ${goals.memory}` : ''}
+${goals.creativity ? `Creativity goal: ${goals.creativity}` : ''}
+${goals.emotional_control ? `Emotional control goal: ${goals.emotional_control}` : ''}
+
+Perform the full 4-step protocol: AUDIT → DIAGNOSE → REWRITE → INSTALL.
+Design the new Cognitive OS specifically for a CEO building Coastal Key Property Management into a dominant enterprise.`;
+
+  const result = await inference(env, {
+    system: COGNITIVE_OS_SYSTEM,
+    prompt: problem,
+    tier: 'advanced',
+    maxTokens: 4096,
+  });
+
+  let upgrade;
+  try {
+    const jsonMatch = result.content.match(/\{[\s\S]*\}/);
+    upgrade = jsonMatch ? JSON.parse(jsonMatch[0]) : { raw: result.content };
+  } catch {
+    upgrade = { raw: result.content };
+  }
+
+  return {
+    program: 'Cognitive OS Upgrader — Thought Pattern Rewrite',
+    upgrade,
+    model: result.model,
+    cached: result.cached,
+    usage: result.usage,
+  };
+}
+
+// ── PLAYBOOK 5: High-Performance Life Architecture ───────────────────────
+
+const LIFE_ARCHITECTURE_SYSTEM = `You are a High-Performance Life Architect. You design God-tier life systems optimized across 6 pillars: TIME, FREEDOM, HEALTH, WEALTH, RELATIONSHIPS, PURPOSE.
+
+Your design protocol:
+1. PILLAR AUDIT — Score current state across all 6 pillars (1-10)
+2. VISION DESIGN — Define the 10/10 state for each pillar with specific, measurable targets
+3. DAILY SYSTEM — Minute-by-minute optimal day structure (5AM-10PM)
+4. ENVIRONMENT DESIGN — Physical spaces, tools, people, information inputs
+5. HABIT ARCHITECTURE — Keystone habits, habit stacking, environmental triggers
+6. BELIEF REWIRING — Limiting beliefs to destroy, empowering beliefs to install
+7. ANTI-PATTERNS — Specific habits, environments, people, and activities to eliminate
+
+The design must be specific to a CEO building Coastal Key Property Management with a 382-unit AI fleet. This person needs maximum leverage, not maximum effort.
+
+Output as JSON with keys: pillar_audit (object with each pillar scored and diagnosed), vision_10_10 (object with each pillar's target state), daily_system (array of time blocks with activity, purpose, duration), environment_design (object with physical, digital, social, information), habit_architecture (object with keystone_habits, habit_stacks, triggers), belief_rewiring (object with destroy array and install array), anti_patterns (object with habits_to_eliminate, environments_to_avoid, time_traps, energy_drains).`;
+
+/**
+ * Design high-performance life architecture.
+ */
+export async function lifeArchitecture(env, currentState, priorities = []) {
+  const problem = `LIFE ARCHITECTURE DESIGN REQUEST
+
+CEO's current state and self-assessment:
+${currentState}
+
+${priorities.length > 0 ? `Priority pillars to optimize first: ${priorities.join(', ')}` : 'Optimize all 6 pillars equally.'}
+
+Design the complete God-tier life system. Every element must support the mission of building Coastal Key into the dominant property management enterprise in South Florida.
+Focus on LEVERAGE over effort — this CEO has 382 AI agents. The daily system should reflect a commander, not a laborer.`;
+
+  const result = await inference(env, {
+    system: LIFE_ARCHITECTURE_SYSTEM,
+    prompt: problem,
+    tier: 'advanced',
+    maxTokens: 4096,
+  });
+
+  let architecture;
+  try {
+    const jsonMatch = result.content.match(/\{[\s\S]*\}/);
+    architecture = jsonMatch ? JSON.parse(jsonMatch[0]) : { raw: result.content };
+  } catch {
+    architecture = { raw: result.content };
+  }
+
+  return {
+    program: 'High-Performance Life Architecture — God-Tier Daily System',
+    pillars: ['time', 'freedom', 'health', 'wealth', 'relationships', 'purpose'],
+    architecture,
+    model: result.model,
+    cached: result.cached,
+    usage: result.usage,
+  };
+}
+
+// ── PLAYBOOK 6: Time Leverage Strategy ───────────────────────────────────
+
+const TIME_LEVERAGE_SYSTEM = `You are a Time Leverage Strategist. You design blueprints that compress 10 years of progress into 1 year using shortcuts, tools, delegation, automation, and AI.
+
+Your leverage stack:
+TIER 1 — AI LEVERAGE: Which tasks can AI handle at 90%+ quality? Map every CEO activity to an AI agent or tool.
+TIER 2 — AUTOMATION: Zapier/Make workflows, Cloudflare Workers, Airtable automations, scheduled campaigns.
+TIER 3 — DELEGATION: What to hire for, what to contract, what to offshore. Decision matrix for build vs buy vs delegate.
+TIER 4 — ELIMINATION: 80% of activities produce 20% of results. Identify and kill low-leverage work ruthlessly.
+TIER 5 — COMPRESSION: Batch processing, time blocking, decision pre-commitment, template systems, SOPs.
+
+The CEO has: 382 AI agents, 8 Atlas voice campaigns, Cloudflare Workers, Airtable (39 tables), Slack automation, Claude API, NVIDIA Nemotron. The tech stack is already powerful — the blueprint should maximize it.
+
+Output as JSON with keys: current_leverage_audit (object scoring each tier 1-10), one_year_targets (array of 10 specific outcomes that normally take 10 years), leverage_blueprint (object with quarterly milestones Q1-Q4), ai_delegation_map (array of {task, current_owner, new_owner, tool, time_saved_weekly}), automation_opportunities (array with impact and implementation_hours), elimination_list (array of activities to stop immediately), weekly_schedule (optimized 5-day schedule showing leverage allocation), force_multipliers (array of highest-ROI investments of time/money).`;
+
+/**
+ * Generate time leverage strategy.
+ */
+export async function timeLeverageStrategy(env, goal, currentSchedule = '', constraints = {}) {
+  const problem = `TIME LEVERAGE BLUEPRINT REQUEST
+
+Primary goal: ${goal}
+Timeline: Achieve in 1 year what normally takes 10 years.
+
+${currentSchedule ? `Current weekly schedule:\n${currentSchedule}` : ''}
+${constraints.budget ? `Monthly budget for tools/delegation: $${constraints.budget}` : ''}
+${constraints.team_size ? `Current team size: ${constraints.team_size}` : ''}
+
+The CEO is building Coastal Key Property Management into the dominant property management enterprise.
+Available tech: 382 AI agents, 8 voice campaigns, 60+ API endpoints, Airtable (39 tables), Slack (33 channels), multi-platform marketing.
+
+Design the maximum-leverage blueprint. Every hour should produce 10x the output of an average operator.`;
+
+  const result = await inference(env, {
+    system: TIME_LEVERAGE_SYSTEM,
+    prompt: problem,
+    tier: 'advanced',
+    maxTokens: 4096,
+  });
+
+  let strategy;
+  try {
+    const jsonMatch = result.content.match(/\{[\s\S]*\}/);
+    strategy = jsonMatch ? JSON.parse(jsonMatch[0]) : { raw: result.content };
+  } catch {
+    strategy = { raw: result.content };
+  }
+
+  return {
+    program: 'Time Leverage Strategy — 1 Year = 10 Years',
+    goal,
+    strategy,
+    model: result.model,
+    cached: result.cached,
+    usage: result.usage,
+  };
+}
+
+// ── PLAYBOOK 7: Psychological Reprogrammer ───────────────────────────────
+
+const PSYCH_REPROGRAM_SYSTEM = `You are a Psychological Reprogrammer. You destroy limiting identities and install new operating self-images aligned with the CEO's highest version.
+
+Your reprogramming protocol:
+1. IDENTITY AUDIT — Map the current self-image: beliefs about capability, worthiness, intelligence, leadership, money, success
+2. LIMITING PATTERN DETECTION — Identify the specific thought loops, self-talk patterns, and behavioral defaults that keep the person operating below potential
+3. IDENTITY DESTRUCTION — Targeted dismantling of each limiting belief with evidence, reframing, and pattern interrupts
+4. NEW IDENTITY INSTALLATION — Design the complete new self-image:
+   - CORE IDENTITY: "I am..." statements that define the new operating self
+   - THOUGHT PATTERNS: Default internal dialogue replacement scripts
+   - BEHAVIOR MAP: Specific actions the new identity takes in key situations
+   - DECISION FILTERS: How the new identity evaluates choices
+   - DAILY RITUALS: Morning identity priming, evening integration review
+5. INTEGRATION PROTOCOL — 30-day behavioral installation sequence with daily micro-assignments
+
+The target identity: CEO and Founder of Coastal Key Property Management LLC — commanding a 382-unit autonomous AI fleet, building the dominant property management enterprise in South Florida.
+
+Output as JSON with keys: identity_audit (object with current_beliefs, capability_ceiling, money_story, leadership_story, success_story — each with score 1-10 and narrative), limiting_patterns (array of {pattern, trigger, consequence, frequency}), destruction_protocol (array of {belief, evidence_against, reframe, pattern_interrupt}), new_identity (object with core_statements array, thought_patterns object, behavior_map array, decision_filters array, daily_rituals object), integration_30_day (array of daily assignments with progressive difficulty).`;
+
+/**
+ * Run psychological reprogramming session.
+ */
+export async function psychReprogrammer(env, currentIdentity, targetGoal) {
+  const problem = `PSYCHOLOGICAL REPROGRAMMING SESSION
+
+Current self-description and identity:
+${currentIdentity}
+
+Target transformation goal: ${targetGoal}
+
+Execute the full 5-step protocol: IDENTITY AUDIT → LIMITING PATTERN DETECTION → IDENTITY DESTRUCTION → NEW IDENTITY INSTALLATION → INTEGRATION PROTOCOL.
+
+The new identity must be calibrated for: CEO and Founder of Coastal Key Property Management LLC. This person commands 382 AI agents, manages luxury properties across South Florida, and is building an empire. The new identity must match the scale of the operation.`;
+
+  const result = await inference(env, {
+    system: PSYCH_REPROGRAM_SYSTEM,
+    prompt: problem,
+    tier: 'advanced',
+    maxTokens: 4096,
+  });
+
+  let reprogramming;
+  try {
+    const jsonMatch = result.content.match(/\{[\s\S]*\}/);
+    reprogramming = jsonMatch ? JSON.parse(jsonMatch[0]) : { raw: result.content };
+  } catch {
+    reprogramming = { raw: result.content };
+  }
+
+  return {
+    program: 'Psychological Reprogrammer — Identity Installation',
+    target: 'CEO & Founder, Coastal Key Property Management LLC',
+    reprogramming,
+    model: result.model,
+    cached: result.cached,
+    usage: result.usage,
+  };
+}
+
 // ── Utility ────────────────────────────────────────────────────────────────
 
 function hashString(str) {

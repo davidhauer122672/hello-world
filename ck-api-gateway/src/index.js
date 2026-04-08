@@ -150,7 +150,7 @@ import {
 } from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
-import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handleThinkingDashboard } from './routes/thinking-coach.js';
+import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -729,6 +729,21 @@ export default {
       }
       if (path === '/v1/thinking/daily-models' && method === 'POST') {
         return await handleDailyModels(request, env, ctx);
+      }
+      if (path === '/v1/thinking/pm-mastery' && method === 'POST') {
+        return await handlePMMastery(request, env, ctx);
+      }
+      if (path === '/v1/thinking/cognitive-os' && method === 'POST') {
+        return await handleCognitiveOS(request, env, ctx);
+      }
+      if (path === '/v1/thinking/life-architecture' && method === 'POST') {
+        return await handleLifeArchitecture(request, env, ctx);
+      }
+      if (path === '/v1/thinking/time-leverage' && method === 'POST') {
+        return await handleTimeLeverage(request, env, ctx);
+      }
+      if (path === '/v1/thinking/reprogram' && method === 'POST') {
+        return await handleReprogram(request, env, ctx);
       }
       if (path === '/v1/thinking/dashboard' && method === 'GET') {
         return handleThinkingDashboard();
