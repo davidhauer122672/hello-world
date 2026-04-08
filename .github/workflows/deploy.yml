@@ -24,8 +24,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
 
-      - name: Install all dependencies
+      - name: Install dependencies
         run: npm install
 
       - name: Test API Gateway
@@ -37,8 +38,8 @@ jobs:
       - name: Test Nemotron Worker
         run: npm run test:nemotron
 
-  deploy-website:
-    name: Deploy Website
+  deploy:
+    name: Deploy All Services
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -48,99 +49,52 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@latest
-
-      - name: Verify credentials
-        run: |
-          echo "Account ID length: ${#CLOUDFLARE_ACCOUNT_ID}"
-          echo "API Token length: ${#CLOUDFLARE_API_TOKEN}"
-          wrangler whoami
-
-      - name: List directory contents
-        run: ls -la ck-website/
-
-      - name: Create Pages project if needed
-        run: wrangler pages project create coastalkey-pm --production-branch=main 2>&1 || echo "Project may already exist — continuing"
-
-      - name: Deploy to Cloudflare Pages
-        run: wrangler pages deploy ck-website --project-name=coastalkey-pm --branch=main --commit-dirty=true
-
-  deploy-gateway:
-    name: Deploy API Gateway
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Deploy to Cloudflare
+      - name: Verify Cloudflare credentials
+        run: npx wrangler whoami
+
+      # ── Website (Cloudflare Pages) ──
+      - name: Deploy Website to Cloudflare Pages
+        run: |
+          npx wrangler pages project create coastalkey-pm --production-branch=main 2>&1 || true
+          npx wrangler pages deploy ck-website \
+            --project-name=coastalkey-pm \
+            --branch=main \
+            --commit-dirty=true
+
+      # ── API Gateway (Cloudflare Worker) ──
+      - name: Deploy API Gateway
         working-directory: ck-api-gateway
         run: npx wrangler deploy
 
-  deploy-sentinel:
-    name: Deploy Sentinel Webhook
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy to Cloudflare
+      # ── Sentinel Webhook (Cloudflare Worker) ──
+      - name: Deploy Sentinel Webhook
         working-directory: sentinel-webhook
         run: npx wrangler deploy
 
-  deploy-nemotron:
-    name: Deploy Nemotron Worker
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy to Cloudflare
+      # ── Nemotron Worker (Cloudflare Worker) ──
+      - name: Deploy Nemotron Worker
         working-directory: ck-nemotron-worker
         run: npx wrangler deploy
 
-  deploy-command-center:
-    name: Deploy Command Center
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      # ── Command Center (Cloudflare Pages) ──
+      - name: Deploy Command Center
+        run: |
+          npx wrangler pages project create ck-command-center --production-branch=main 2>&1 || true
+          npx wrangler pages deploy ck-command-center \
+            --project-name=ck-command-center \
+            --branch=main \
+            --commit-dirty=true
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@latest
-
-      - name: Create Pages project if needed
-        run: wrangler pages project create ck-command-center --production-branch=main 2>&1 || echo "Project may already exist — continuing"
-
-      - name: Deploy to Cloudflare Pages
-        run: wrangler pages deploy ck-command-center --project-name=ck-command-center --branch=main --commit-dirty=true
+      - name: Deploy complete
+        run: |
+          echo "All services deployed successfully"
+          echo "  Website:        coastalkey-pm.com"
+          echo "  API Gateway:    ck-api-gateway.david-e59.workers.dev"
+          echo "  Sentinel:       sentinel-webhook.david-e59.workers.dev"
+          echo "  Nemotron:       ck-nemotron-worker.david-e59.workers.dev"
+          echo "  Command Center: ck-command-center.pages.dev"
