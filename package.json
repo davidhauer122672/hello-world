@@ -24,7 +24,8 @@
           "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
           "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
           "deploy:nemotron": "cd ck-nemotron-worker && npm run deploy",
-          "test": "npm run test:gateway && npm run test:sentinel && npm run test:nemotron",
+          "test": "npm run test:server && npm run test:gateway && npm run test:sentinel && npm run test:nemotron",
+          "test:server": "node --test tests/*.test.js",
           "test:gateway": "cd ck-api-gateway && npm test",
           "test:sentinel": "cd sentinel-webhook && npm test",
           "test:nemotron": "cd ck-nemotron-worker && npm test"

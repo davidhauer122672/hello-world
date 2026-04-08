@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const { asyncWrap } = require('../middleware/error-handler');
 const { executeWorkflow, getExecutionLog, getAILog, WORKFLOW_MAP } = require('../lib/workflows');
 
 // POST /api/workflows/:name — Execute a workflow by name
 // Airtable automations POST here to trigger workflows
-router.post('/:name', async (req, res) => {
+router.post('/:name', asyncWrap(async (req, res) => {
   const { name } = req.params;
 
   if (!WORKFLOW_MAP[name]) {
@@ -14,15 +15,10 @@ router.post('/:name', async (req, res) => {
     });
   }
 
-  try {
-    const result = await executeWorkflow(name, req.body);
-    const status = result.status === 'error' ? 400 : 200;
-    res.status(status).json(result);
-  } catch (err) {
-    console.error(`[workflows] ${name} failed:`, err.message);
-    res.status(500).json({ error: 'Workflow execution failed', detail: err.message });
-  }
-});
+  const result = await executeWorkflow(name, req.body);
+  const status = result.status === 'error' ? 400 : 200;
+  res.status(status).json(result);
+}));
 
 // GET /api/workflows — List available workflows
 router.get('/', (_req, res) => {

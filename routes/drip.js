@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { asyncWrap } = require('../middleware/error-handler');
 const {
   enrollContact,
   processScheduledDrips,
@@ -13,6 +14,10 @@ router.post('/enroll', (req, res) => {
 
   if (!email || !name) {
     return res.status(400).json({ error: 'email and name are required' });
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
   }
 
   try {
@@ -58,13 +63,9 @@ router.get('/status/:email', (req, res) => {
 });
 
 // POST /api/drip/process
-router.post('/process', async (req, res) => {
-  try {
-    const result = await processScheduledDrips();
-    res.json({ success: true, ...result });
-  } catch (err) {
-    res.status(500).json({ error: 'Drip processing failed: ' + err.message });
-  }
-});
+router.post('/process', asyncWrap(async (req, res) => {
+  const result = await processScheduledDrips();
+  res.json({ success: true, ...result });
+}));
 
 module.exports = router;
