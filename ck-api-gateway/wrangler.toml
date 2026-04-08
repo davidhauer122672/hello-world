@@ -38,3 +38,8 @@ id = "3d722426db4241209fd0444b42f84904"
 # ATLAS_API_KEY              — Atlas AI (youratlas.com) API key
 # ATLAS_REVIVAL_CAMPAIGN_ID  — Atlas campaign ID for dead-lead-revival follow-ups
 # ATLAS_CONFIRMATION_CAMPAIGN_ID — Atlas campaign ID for appointment confirmation calls
+# BUFFER_ACCESS_TOKEN          — Buffer API access token (enables /v1/content/publish)
+# BUFFER_PROFILE_INSTAGRAM     — Buffer profile ID for Instagram
+# BUFFER_PROFILE_FACEBOOK      — Buffer profile ID for Facebook
+# BUFFER_PROFILE_LINKEDIN      — Buffer profile ID for LinkedIn
+# BUFFER_PROFILE_X             — Buffer profile ID for X (Twitter)
