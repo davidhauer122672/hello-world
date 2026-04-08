@@ -42,6 +42,9 @@ router.post('/unsubscribe', (req, res) => {
 // GET /api/drip/status/:email
 router.get('/status/:email', (req, res) => {
   const { email } = req.params;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
 
   try {
     const status = getDripStatus(email);

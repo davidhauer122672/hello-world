@@ -60,21 +60,30 @@ app.use('/api/drip', dripRouter);
 app.use('/api/objections', objectionsRouter);
 app.use('/api/workflows', workflowsRouter);
 
-// Manual report trigger
-app.post('/api/report/send', async (req, res) => {
+// Admin auth middleware — protects sensitive operations
+function requireAdminToken(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token || token !== process.env.ADMIN_TOKEN) {
+    return res.status(401).json({ error: 'Unauthorized — admin token required' });
+  }
+  next();
+}
+
+// Manual report trigger (protected)
+app.post('/api/report/send', requireAdminToken, async (req, res) => {
   const report = buildReport();
   await sendSMS(report);
   res.json({ success: true, report });
 });
 
-// Preview report without sending
-app.get('/api/report/preview', (req, res) => {
+// Preview report without sending (protected)
+app.get('/api/report/preview', requireAdminToken, (req, res) => {
   const report = buildReport();
   res.json({ report });
 });
 
-// Manual backup trigger
-app.post('/api/backup/run', (req, res) => {
+// Manual backup trigger (protected)
+app.post('/api/backup/run', requireAdminToken, (req, res) => {
   const result = runBackup();
   res.json({ success: true, ...result });
 });

@@ -16,7 +16,7 @@ Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (49 endpoints)
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (147 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
 - **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
 - **Website**: https://coastalkey-pm.com (reverse proxy → Manus origin)
@@ -24,9 +24,9 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 90+ endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 147 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
-- **ck-command-center**: Dashboard UI for 312-agent fleet + Coastal Key Gazette (Cloudflare Pages)
+- **ck-command-center**: Dashboard UI for 383-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
 - **th-sentinel-campaign**: Campaign config, Retell prompts, Airtable field reference
@@ -43,11 +43,12 @@ npm run test:nemotron   # Test Nemotron worker only
 npm run deploy          # Deploy all services (requires CLOUDFLARE_API_TOKEN)
 ```
 
-## Autonomous Fleet (382 units)
+## Autonomous Fleet (383 units)
 - **15 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
 - **297 AI Agents** across 9 operational divisions: EXC (20), SEN (40), OPS (45), INT (30), MKT (47), FIN (25), VEN (25), TEC (25), WEB (40)
 - **50 Intelligence Officers** in 5 squads: ALPHA (Infrastructure), BRAVO (Data), CHARLIE (Security), DELTA (Revenue), ECHO (Performance)
 - **20 Email AI Agents** in 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
+- **1 AI Trader Agent** — FIN-TRADER-001 Apex Trader (direct CEO report, capital calls, market intelligence)
 
 ## MCCO Command Structure (Sovereign Governance)
 - **MCCO-000** MCCO Sovereign — Master Chief Commanding Officer (reports to CEO)
@@ -80,22 +81,21 @@ POST /v1/mcco/monetization      — Generate monetization plan
 POST /v1/mcco/post              — Generate high-engagement social post
 ```
 
-## Slack Integration (3 apps, 10 commands, 33 channels)
+## Slack Integration (3 apps, 10 commands, 12 programmatic channels)
 - **Coastal Key** (A0APSJ44NV6): Primary bot — 6 slash commands, notifications, interactivity, events
 - **CK Gateway** (A0APKPRBW3U): System health alerts — 2 slash commands
 - **Coastal Key Content** (A0ANS0760LB): Content distribution — 2 slash commands
 - **Slash Commands**: /ck-status, /ck-lead, /ck-agent, /ck-intel, /ck-workflow, /ck-brief, /ck-health, /ck-deploy, /ck-content, /ck-campaign
 - **Workspace**: Coastal Key Treasure Coast Asset Management (T0AGWM16Z7V)
 
-## Slack Channel Architecture (33 channels)
-- **SEN**: #sales-alerts, #investor-escalations (private), #pipeline-updates, #leads, #sentinel_lead_generation, #sales-alerts-high-value
-- **OPS**: #ops-alerts, #property-ops, #operations, #inspections
+## Slack Channel Architecture (12 programmatic channels)
+- **SEN**: #sales-alerts, #investor-escalations (private), #pipeline-updates
+- **OPS**: #ops-alerts, #property-ops
 - **TEC**: #tech-alerts, #deploy-log
 - **INT**: #intel-briefs (private), #security-alerts (private)
-- **MKT**: #marketing, #content-calendar, #content-production, #ai-drafts
+- **MKT**: #marketing-ops
 - **FIN**: #finance-alerts (private)
-- **EXC**: #exec-briefing (private), #daily-summary, #ckpm-enterprise-launch
-- **GLOBAL**: #general, #random, #consultations, #incidents, #legal-alerts
+- **EXC**: #exec-briefing (private)
 
 ## Key Patterns
 - All workers use ES module format (`export default { fetch() }`)
@@ -115,7 +115,9 @@ POST /v1/mcco/post              — Generate high-engagement social post
 - NVIDIA_API_KEY, ATLAS_API_KEY
 
 ## CI/CD
-GitHub Actions on push to main: test → deploy all services to Cloudflare.
+GitHub Actions on push to main: test → preflight token check → deploy all services to Cloudflare.
+Preflight validates Cloudflare API token before any deploy job runs.
+Deploy jobs parallelized: website, gateway, command-center run concurrently; sentinel and nemotron wait for gateway.
 Secrets configured: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
 
 ## Security Framework

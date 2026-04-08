@@ -47,10 +47,13 @@ function securityHeaders() {
 }
 
 function cors() {
-  const allowedOrigin = process.env.CORS_ORIGIN || null;
+  const allowedOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
+    : [];
   return (req, res, next) => {
-    if (allowedOrigin) {
-      res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+    const origin = req.get('origin');
+    if (origin && allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
       res.setHeader('Access-Control-Max-Age', '86400');

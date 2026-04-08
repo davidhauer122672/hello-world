@@ -76,15 +76,17 @@ async function webhookHandler(req, res) {
   const sig = req.headers['stripe-signature'];
   let event;
 
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error('STRIPE_WEBHOOK_SECRET not configured');
+    return res.status(500).json({ error: 'Webhook not configured' });
+  }
+
   try {
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    return res.status(400).json({ error: 'Webhook signature verification failed' });
   }
 
   if (event.type === 'checkout.session.completed') {
