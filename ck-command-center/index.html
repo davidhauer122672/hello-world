@@ -2,8 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Coastal Key — Agent Command Center</title>
+
+<!-- iOS Home Screen App -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CK Command">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0a0f">
+
+<!-- Web App Manifest -->
+<link rel="manifest" href="/manifest.json">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -12,7 +22,7 @@
   --accent:#4f8fff;--accent2:#7c5cfc;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;
   --border:#2a2a3e;--radius:10px;--shadow:0 4px 24px rgba(0,0,0,0.4);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 a{color:var(--accent);text-decoration:none}
 
 /* ── Layout ── */
@@ -173,11 +183,6 @@ a{color:var(--accent);text-decoration:none}
         <span>Property Intel</span>
         <span class="count" id="propertyCount">—</span>
       </div>
-      <div class="nav-item" data-view="mcco" onclick="switchView('mcco')" style="border-left-color:#dc2626">
-        <div class="div-dot" style="background:#dc2626"></div>
-        <span>MCCO Command</span>
-        <span class="count" style="background:rgba(220,38,38,0.2);color:#dc2626">SOV</span>
-      </div>
     </div>
     <div class="sidebar-section">
       <h3>Divisions</h3>
@@ -209,11 +214,11 @@ let propertyStats = null;
 
 // ── Division colors from registry ──
 const DIV_COLORS = {
-  SOV:'#dc2626', EXC:'#1a1a2e', SEN:'#e94560', OPS:'#0f3460', INT:'#16213e',
+  MCCO:'#d4af37', EXC:'#1a1a2e', SEN:'#e94560', OPS:'#0f3460', INT:'#16213e',
   MKT:'#533483', FIN:'#c9485b', VEN:'#e07c24', TEC:'#2d6a4f', WEB:'#0ea5e9'
 };
 const DIV_ICONS = {
-  SOV:'\u2666', EXC:'E', SEN:'S', OPS:'O', INT:'I', MKT:'M', FIN:'F', VEN:'V', TEC:'T', WEB:'W'
+  MCCO:'MC', EXC:'E', SEN:'S', OPS:'O', INT:'I', MKT:'M', FIN:'F', VEN:'V', TEC:'T', WEB:'W'
 };
 
 // ── Persist config ──
@@ -311,7 +316,6 @@ function switchView(view) {
   if (view === 'dashboard') renderDashboard();
   else if (view === 'all-agents') renderAllAgents();
   else if (view === 'property-intel') renderPropertyIntel();
-  else if (view === 'mcco') renderMCCODashboard();
   else if (view.startsWith('div-')) renderDivisionView(view.replace('div-', ''));
 }
 
@@ -663,130 +667,6 @@ function propertyCardHTML(p) {
       <span class="property-status-badge">${p.status || 'New'}</span>
     </div>
   </div>`;
-}
-
-// ── MCCO Sovereign Command Dashboard ──
-let mccoData = null;
-
-async function renderMCCODashboard() {
-  const main = document.getElementById('mainContent');
-  main.innerHTML = '<div class="loading"><div class="spinner"></div> Loading MCCO Sovereign Command...</div>';
-
-  try {
-    if (!mccoData) mccoData = await api('/v1/mcco/dashboard');
-    const d = mccoData;
-
-    main.innerHTML = `
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
-        <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#dc2626,#991b1b);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:22px;box-shadow:0 4px 20px rgba(220,38,38,0.4)">\u2666</div>
-        <div>
-          <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.5px">MCCO Sovereign Command</h1>
-          <p style="font-size:14px;color:var(--text2)">Master Chief Commanding Officer of Marketing & Sales \u2014 Sovereign Governance</p>
-        </div>
-        <span class="status-badge active" style="margin-left:auto;font-size:14px;padding:6px 16px">SOVEREIGN ACTIVE</span>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card" style="border-top:3px solid #dc2626"><div class="stat-label">Governance Level</div><div class="stat-value" style="color:#dc2626">SOVEREIGN</div></div>
-        <div class="stat-card" style="border-top:3px solid var(--green)"><div class="stat-label">Content Pillars</div><div class="stat-value green">${(d.contentPillars || []).length}</div></div>
-        <div class="stat-card" style="border-top:3px solid var(--accent)"><div class="stat-label">Revenue Streams</div><div class="stat-value blue">${(d.revenueStreams || []).length}</div></div>
-        <div class="stat-card" style="border-top:3px solid var(--accent2)"><div class="stat-label">Audience Segments</div><div class="stat-value" style="color:var(--accent2)">${(d.audienceSegments || []).length}</div></div>
-        <div class="stat-card" style="border-top:3px solid var(--yellow)"><div class="stat-label">Growth Phases</div><div class="stat-value yellow">${(d.growthPhases || []).length}</div></div>
-        <div class="stat-card" style="border-top:3px solid var(--orange)"><div class="stat-label">Total KPIs</div><div class="stat-value" style="color:var(--orange)">${(d.kpis || []).length}</div></div>
-      </div>
-
-      <h2 style="font-size:18px;font-weight:600;margin:24px 0 14px">Chain of Command</h2>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px">
-        ${Object.entries(d.chainOfCommand || {}).map(([k, v]) => `
-          <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;gap:12px">
-            <span style="color:var(--text2);min-width:80px;font-weight:600">${k.replace('level','L')}</span>
-            <span>${v}</span>
-          </div>
-        `).join('')}
-      </div>
-
-      <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Content Pillars</h2>
-      <div class="agent-grid" style="margin-bottom:24px">
-        ${(d.contentPillars || []).map((p, i) => `
-          <div class="agent-card" style="border-top:3px solid ${['#dc2626','#f59e0b','#22c55e','#4f8fff','#7c5cfc'][i] || '#666'}">
-            <div class="agent-name">${p.name}</div>
-            <div style="font-size:13px;color:var(--text2);margin-top:4px">${p.frequency}</div>
-          </div>
-        `).join('')}
-      </div>
-
-      <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Conversion Pipeline</h2>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
-        ${(d.conversionPipeline || []).map((s, i) => `
-          <div style="flex:1;min-width:140px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center">
-            <div style="font-size:24px;font-weight:700;color:var(--accent)">${s.stage}</div>
-            <div style="font-size:12px;font-weight:600;margin:4px 0">${s.name}</div>
-            <div style="font-size:11px;color:var(--text2)">${s.targetConversion}</div>
-          </div>
-        `).join('')}
-      </div>
-
-      <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Revenue Streams</h2>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px">
-        ${(d.revenueStreams || []).map(r => `
-          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px;display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <span style="font-weight:600">${r.name}</span>
-              <span class="tier-badge" style="margin-left:8px">${r.type}</span>
-            </div>
-            <span style="font-weight:700;color:var(--green)">${r.priceRange}</span>
-          </div>
-        `).join('')}
-      </div>
-
-      <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Audience Segments</h2>
-      <div class="agent-grid" style="margin-bottom:24px">
-        ${(d.audienceSegments || []).map(s => `
-          <div class="agent-card" style="border-top:3px solid var(--accent2)">
-            <div class="agent-name">${s.name}</div>
-            <div style="font-size:12px;color:var(--text2);margin-top:4px">${s.demographics}</div>
-          </div>
-        `).join('')}
-      </div>
-
-      <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Competitive Analysis</h2>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px">
-        ${(d.competitorAnalysis || []).map(c => `
-          <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
-            <div style="font-weight:600;font-size:14px;margin-bottom:6px">${c.segment}</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
-              <div><span style="color:var(--red);font-weight:600">Weakness:</span> <span style="color:var(--text2)">${c.weakness}</span></div>
-              <div><span style="color:var(--green);font-weight:600">CK Advantage:</span> <span style="color:var(--text2)">${c.ckAdvantage}</span></div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-
-      <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">Growth Strategy Phases</h2>
-      <div class="agent-grid" style="margin-bottom:24px">
-        ${(d.growthPhases || []).map((p, i) => `
-          <div class="agent-card" style="border-top:3px solid ${['#f59e0b','#22c55e','#dc2626'][i] || '#666'}">
-            <div class="agent-name">${p.phase}</div>
-            <ul style="font-size:12px;color:var(--text2);margin-top:8px;padding-left:16px">
-              ${(p.goals || []).map(g => '<li style="margin-bottom:4px">' + g + '</li>').join('')}
-            </ul>
-          </div>
-        `).join('')}
-      </div>
-
-      <h2 style="font-size:18px;font-weight:600;margin-bottom:14px">MCCO API Endpoints</h2>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px">
-        ${Object.entries(d.capabilities || {}).map(([k, v]) => `
-          <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;display:flex;justify-content:space-between">
-            <span style="font-weight:600;color:var(--text)">${k}</span>
-            <code style="font-size:12px;color:var(--accent);background:var(--bg);padding:2px 8px;border-radius:4px">${v}</code>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  } catch (err) {
-    main.innerHTML = '<div class="empty"><div class="empty-icon">&#9888;</div><p>Failed to load MCCO dashboard: ' + err.message + '</p><p style="margin-top:8px;font-size:13px">Ensure your gateway is connected and MCCO routes are deployed.</p></div>';
-  }
 }
 
 // ── Keyboard shortcuts ──
