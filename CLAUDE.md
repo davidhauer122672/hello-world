@@ -6,7 +6,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Electron Desktop App, Airtab
 Two operational divisions: Property Management (382 agents) and CK Trading Desk (97 agents).
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (53 endpoints, Bearer auth)
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (68 endpoints, Bearer auth)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
 - **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
 - **Website**: https://main.coastalkey-pm.pages.dev
@@ -15,7 +15,7 @@ Two operational divisions: Property Management (382 agents) and CK Trading Desk 
 - **Gazette**: https://ck-command-center.pages.dev/gazette.html
 
 ## Architecture
-- **ck-api-gateway**: Central API — 53 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 68 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Agent Command Center + Enterprise Dashboard + Gazette (Cloudflare Pages)
 - **ck-website**: Public-facing website with contact form (Cloudflare Pages)
