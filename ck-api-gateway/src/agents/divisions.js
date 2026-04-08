@@ -3,17 +3,15 @@
  *
  * 10 operational divisions that map to the org chart.
  * Each division has a color, icon, and description used by the Command Center UI.
- *
- * MCCO (Sovereign Governance) sits above MKT and SEN in the org hierarchy.
  */
 
 export const DIVISIONS = [
   {
-    id: 'MCCO',
-    name: 'MCCO Command',
-    color: '#d4af37',
-    icon: 'shield-star',
-    description: 'Master Chief Commanding Officer — Sovereign-level governance over all Marketing & Sales operations. Ferrari-Standard execution. Commands MKT (47 agents) and SEN (40 agents) divisions. CMO reports directly to MCCO.',
+    id: 'SOV',
+    name: 'Sovereign Command',
+    color: '#dc2626',
+    icon: 'shield-check',
+    description: 'Sovereign-level governance. MCCO (Master Chief Commanding Officer) of Marketing & Sales. Highest authority tier commanding MKT and SEN divisions. Ferrari-standard execution, Tesla-grade automation.',
   },
   {
     id: 'EXC',
