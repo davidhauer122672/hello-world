@@ -9,6 +9,7 @@
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
  *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
+ *   POST /v1/content/publish    — Publish Content Calendar record to Buffer (WF-2 replacement)
  *   GET  /v1/agents             — List/search agents with filtering
  *   GET  /v1/agents/metrics     — Aggregate agent metrics
  *   GET  /v1/agents/:id         — Get single agent details
@@ -125,6 +126,7 @@ import { handleInference } from './routes/inference.js';
 import { handleCreateLead, handleGetLead, handleEnrichLead, handlePublicLead } from './routes/leads.js';
 import { handleRetellWebhook } from './routes/retell.js';
 import { handleContentGenerate } from './routes/content.js';
+import { handleContentPublish } from './routes/content-publish.js';
 import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
@@ -301,6 +303,10 @@ export default {
 
       if (path === '/v1/content/generate' && method === 'POST') {
         return await handleContentGenerate(request, env, ctx);
+      }
+
+      if (path === '/v1/content/publish' && method === 'POST') {
+        return await handleContentPublish(request, env, ctx);
       }
 
       if (path === '/v1/agents' && method === 'GET') {
