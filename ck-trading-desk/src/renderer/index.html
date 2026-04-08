@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://ck-api-gateway.david-e59.workers.dev wss://stream.data.alpaca.markets" />
+  <title>CK Trading Desk — Coastal Key Enterprise</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0f; color: #e0e0e0; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; overflow: hidden; }
+    #root { width: 100vw; height: 100vh; }
+    .app-loading { display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; gap: 16px; }
+    .app-loading h1 { font-size: 24px; color: #00ff88; letter-spacing: 4px; text-transform: uppercase; }
+    .app-loading .pulse { width: 60px; height: 4px; background: linear-gradient(90deg, transparent, #00ff88, transparent); animation: pulse 1.5s ease-in-out infinite; border-radius: 2px; }
+    @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scaleX(0.5); } 50% { opacity: 1; transform: scaleX(1); } }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="app-loading">
+      <h1>CK Trading Desk</h1>
+      <div class="pulse"></div>
+      <p style="color: #666; font-size: 12px; letter-spacing: 2px;">INITIALIZING AUTONOMOUS SYSTEMS</p>
+    </div>
+  </div>
+  <script type="module" src="./main.jsx"></script>
+</body>
+</html>
