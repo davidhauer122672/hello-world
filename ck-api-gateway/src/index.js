@@ -133,7 +133,7 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
-import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
+import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost, handleMasterPlan, handleMasterPlanPhase, handleDivisionPlan, handleSovereignDirectiveIssue, handleActivationStatus } from './routes/mcco.js';
 import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan } from './routes/frameworks.js';
 import {
   handleTraderDashboard, handleTraderAgent, handleWatchlist, handleQuote, handleSignal,
@@ -151,6 +151,7 @@ import {
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
+import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -469,6 +470,28 @@ export default {
         return handleGetMCCOAgent(agentId);
       }
 
+      if (path === '/v1/mcco/master-plan' && method === 'GET') {
+        return handleMasterPlan();
+      }
+
+      if (path.match(/^\/v1\/mcco\/master-plan\/phase\/[^/]+$/) && method === 'GET') {
+        const phaseId = path.split('/v1/mcco/master-plan/phase/')[1];
+        return handleMasterPlanPhase(phaseId);
+      }
+
+      if (path.match(/^\/v1\/mcco\/master-plan\/division\/[^/]+$/) && method === 'GET') {
+        const divisionId = path.split('/v1/mcco/master-plan/division/')[1];
+        return handleDivisionPlan(divisionId);
+      }
+
+      if (path === '/v1/mcco/sovereign-directive' && method === 'POST') {
+        return await handleSovereignDirectiveIssue(request, env, ctx);
+      }
+
+      if (path === '/v1/mcco/activation-status' && method === 'GET') {
+        return handleActivationStatus();
+      }
+
       // ── Atlas AI Campaign Platform (youratlas.com) ──
       if (path === '/v1/atlas/health' && method === 'GET') {
         return await handleAtlasHealth(env);
@@ -747,6 +770,20 @@ export default {
       }
       if (path === '/v1/thinking/dashboard' && method === 'GET') {
         return handleThinkingDashboard();
+      }
+
+      // ── CEO Sovereign Directives ──
+      if (path === '/v1/ceo/directive' && method === 'POST') {
+        return await handleCeoDirective(request, env, ctx);
+      }
+      if (path === '/v1/ceo/operations-review' && method === 'POST') {
+        return await handleOperationsReview(request, env, ctx);
+      }
+      if (path === '/v1/ceo/operating-state' && method === 'GET') {
+        return handleOperatingState();
+      }
+      if (path === '/v1/ceo/dashboard' && method === 'GET') {
+        return handleCeoDashboard();
       }
 
       // ── Agent Manifest ──

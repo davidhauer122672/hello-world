@@ -242,3 +242,100 @@ describe('Social Platform Validation', () => {
     assert.ok(!VALID_PLATFORMS.includes(''));
   });
 });
+
+// ── Tests for lib/ceo-standup.js ──────────────────────────────────────────
+
+describe('CEO Daily Standup', () => {
+  const { buildStandup, getStandupHistory } = require('../lib/ceo-standup');
+
+  before(() => {
+    ensureDataDir();
+    resetDataFile('appointments.json');
+  });
+
+  it('generates a complete standup briefing', () => {
+    const standup = buildStandup();
+    assert.ok(standup.generatedAt);
+    assert.ok(standup.date);
+    assert.equal(standup.type, 'CEO_DAILY_STANDUP');
+    assert.equal(standup.authority, 'Coastal Key AI CEO');
+  });
+
+  it('fleet status shows 383 total units', () => {
+    const standup = buildStandup();
+    assert.equal(standup.fleetStatus.totalUnits, 383);
+    assert.equal(standup.fleetStatus.active, 383);
+    assert.equal(standup.fleetStatus.standby, 0);
+    assert.equal(standup.fleetStatus.operationalReadiness, '100%');
+  });
+
+  it('includes all 10 divisions', () => {
+    const standup = buildStandup();
+    assert.equal(standup.divisions.length, 10);
+    const codes = standup.divisions.map(d => d.code);
+    assert.ok(codes.includes('MCCO'));
+    assert.ok(codes.includes('EXC'));
+    assert.ok(codes.includes('SEN'));
+    assert.ok(codes.includes('OPS'));
+    assert.ok(codes.includes('INT'));
+    assert.ok(codes.includes('MKT'));
+    assert.ok(codes.includes('FIN'));
+    assert.ok(codes.includes('VEN'));
+    assert.ok(codes.includes('TEC'));
+    assert.ok(codes.includes('WEB'));
+  });
+
+  it('division agent counts sum to 312', () => {
+    const standup = buildStandup();
+    const total = standup.divisions.reduce((sum, d) => sum + d.agentCount, 0);
+    assert.equal(total, 312);
+  });
+
+  it('includes 3 special units', () => {
+    const standup = buildStandup();
+    assert.equal(standup.specialUnits.length, 3);
+    const names = standup.specialUnits.map(u => u.name);
+    assert.ok(names.some(n => n.includes('Intelligence')));
+    assert.ok(names.some(n => n.includes('Email')));
+    assert.ok(names.some(n => n.includes('Apex Trader')));
+  });
+
+  it('system health includes all 6 services', () => {
+    const standup = buildStandup();
+    const services = Object.keys(standup.systemHealth.services);
+    assert.equal(services.length, 6);
+    assert.ok(services.includes('dailyReport'));
+    assert.ok(services.includes('dripEngine'));
+    assert.ok(services.includes('publishTracker'));
+    assert.ok(services.includes('backupScheduler'));
+    assert.ok(services.includes('workflowEngine'));
+    assert.ok(services.includes('sentinelWebhook'));
+  });
+
+  it('generates text summary', () => {
+    const standup = buildStandup();
+    assert.ok(standup.summary.includes('CEO DAILY STANDUP'));
+    assert.ok(standup.summary.includes('FLEET: 383/383 ACTIVE'));
+    assert.ok(standup.summary.includes('DIVISION SUMMARY'));
+    assert.ok(standup.summary.includes('Coastal Key AI CEO'));
+  });
+
+  it('action items is an array', () => {
+    const standup = buildStandup();
+    assert.ok(Array.isArray(standup.actionItems));
+    for (const item of standup.actionItems) {
+      assert.ok(item.priority);
+      assert.ok(item.action);
+      assert.ok(item.division);
+    }
+  });
+
+  it('standup history returns entries', () => {
+    buildStandup(); // Generate at least one entry
+    const history = getStandupHistory(10);
+    assert.ok(Array.isArray(history));
+    assert.ok(history.length >= 1);
+    assert.ok(history[0].generatedAt);
+    assert.ok(history[0].date);
+  });
+});

@@ -17,6 +17,7 @@ const objectionsRouter = require('./routes/objections');
 const healthRouter = require('./routes/health');
 const dashboardRouter = require('./routes/dashboard');
 const workflowsRouter = require('./routes/workflows');
+const standupRouter = require('./routes/standup');
 
 // Services
 const { startDailyReport, buildReport } = require('./lib/daily-report');
@@ -24,6 +25,7 @@ const { sendSMS } = require('./lib/sms');
 const { startDripScheduler } = require('./lib/drip-engine');
 const { startPublishTracker } = require('./lib/social-publisher');
 const { startBackupScheduler, runBackup } = require('./lib/backup');
+const { startCeoStandup } = require('./lib/ceo-standup');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -68,6 +70,7 @@ app.use('/api/social', requireAdminToken, socialRouter);
 app.use('/api/visuals', requireAdminToken, visualsRouter);
 app.use('/api/drip', requireAdminToken, dripRouter);
 app.use('/api/workflows', requireAdminToken, workflowsRouter);
+app.use('/api/standup', requireAdminToken, standupRouter);
 
 // Manual report trigger (protected)
 app.post('/api/report/send', requireAdminToken, asyncWrap(async (req, res) => {
@@ -119,4 +122,5 @@ server = app.listen(PORT, () => {
   startDripScheduler();
   startPublishTracker();
   startBackupScheduler();
+  startCeoStandup();
 });

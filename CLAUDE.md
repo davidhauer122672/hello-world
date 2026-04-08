@@ -36,7 +36,8 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 npm run dev:gateway     # Local dev for API gateway
 npm run dev:sentinel    # Local dev for sentinel webhook
 npm run dev:nemotron    # Local dev for Nemotron worker
-npm test                # Run all tests
+npm test                # Run all tests (server + gateway + sentinel + nemotron)
+npm run test:server     # Test Express server only
 npm run test:gateway    # Test API gateway only
 npm run test:sentinel   # Test sentinel webhook only
 npm run test:nemotron   # Test Nemotron worker only
@@ -119,12 +120,59 @@ GitHub Actions on push to main: test → preflight token check → deploy all se
 Preflight validates Cloudflare API token before any deploy job runs.
 Deploy jobs parallelized: website, gateway, command-center run concurrently; sentinel and nemotron wait for gateway.
 Secrets configured: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
+Token updated: 2026-04-08 — IP restriction removed.
+
+## CEO Daily Standup (Sovereign Operations Briefing)
+Daily at 6:00 AM EST (11:00 UTC) — automatic, no exceptions.
+
+### Standup API Endpoints (admin token required)
+```
+GET  /api/standup          — Full JSON briefing (fleet, divisions, accomplishments, audit, action items)
+GET  /api/standup/text     — Plain text summary for SMS/Slack
+GET  /api/standup/history  — Previous standup entries (up to 90 days)
+```
+
+### Briefing Contents
+- Fleet status (383/383 active, operational readiness)
+- Division-by-division 24h accomplishment summary (all 10 divisions + special units)
+- Agent health audit (data integrity, backup recency, service uptime)
+- Automatic triage with priority classification for inactive agents
+- CEO action items requiring human review
+
+## Express Server Endpoints (admin token required)
+```
+GET  /api/health              — System health check (public)
+GET  /api/dashboard           — Revenue, schedule, drip, social, calls
+POST /api/appointments        — Book appointment (public)
+POST /api/payments/*          — Stripe checkout + webhook (public)
+POST /api/report/send         — Trigger daily SMS report
+GET  /api/report/preview      — Preview report
+POST /api/backup/run          — Trigger data backup
+POST /api/drip/enroll         — Enroll contact in nurture sequence
+POST /api/workflows/:name     — Execute Airtable workflow (WF-1 through WF-7)
+POST /api/social/draft        — Create social media draft
+POST /api/visuals/social-brief — Generate visual brief
+POST /api/objections/classify  — Classify call objection (public)
+GET  /api/standup              — CEO daily standup briefing
+```
+
+## Operational Schedulers
+- **Daily Report**: 9:00 AM UTC — SMS revenue + schedule summary
+- **Drip Engine**: Every hour — process 90-day email nurture sequences
+- **Publish Tracker**: Every 30 min — poll Buffer for publish confirmations
+- **Backup**: 2:00 AM UTC — JSON data backup with 7-day retention
+- **CEO Standup**: 6:00 AM EST (11:00 UTC) — sovereign operations briefing
 
 ## Security Framework
-- All API requests authenticated (Bearer token or Slack signature)
+- All API requests authenticated (Bearer token, Slack signature, or admin token)
 - Webhook signature verification (HMAC-SHA256, 5-minute replay window)
-- Rate limiting enforced on all authenticated endpoints
+- Rate limiting enforced on all endpoints (100 req/15min global)
+- Content-Security-Policy header (frame-ancestors 'none', strict sources)
+- CORS origin allowlist validation (no default open access)
+- JSON body limit 50KB on all endpoints
+- Async error handling via asyncWrap (zero unhandled rejections)
+- Input validation: date, time, email, service type, platform whitelists
 - Audit trail for every operation (KV, 30-day TTL)
 - External interference prevention: signature verification, replay protection, rate limiting
 - No direct access to KV stores from external sources
-- CORS restricted at gateway level
+- Admin token required for dashboard, drip, social, visuals, email, workflows, standup

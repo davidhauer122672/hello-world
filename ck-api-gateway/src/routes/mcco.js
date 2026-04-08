@@ -17,6 +17,7 @@
 
 import { MCCO_AGENTS } from '../agents/agents-mcco.js';
 import { getAgentsByDivision } from '../agents/registry.js';
+import { getMasterPlanStatus, getDivisionExecutionPlan, generateSovereignDirective, GROWTH_PHASES, DIVISION_ACTIVATION, ENTERPRISE_VISION } from '../services/master-plan.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 
@@ -659,4 +660,113 @@ Format the post for ${platform} specifically (character limits, formatting conve
   } catch (err) {
     return errorResponse(`Post generation failed: ${err.message}`, 500);
   }
+}
+
+// ── GET /v1/mcco/master-plan ───────────────────────────────────────────────
+
+export function handleMasterPlan() {
+  return jsonResponse(getMasterPlanStatus());
+}
+
+// ── GET /v1/mcco/master-plan/phase/:id ─────────────────────────────────────
+
+export function handleMasterPlanPhase(phaseId) {
+  const phase = GROWTH_PHASES.find(p => p.phase === Number(phaseId));
+  if (!phase) {
+    return errorResponse(`Phase "${phaseId}" not found. Valid phases: 1, 2, 3.`, 404);
+  }
+  return jsonResponse({
+    phase,
+    governance: 'sovereign',
+    executionStandard: 'ferrari',
+    timestamp: new Date().toISOString(),
+  });
+}
+
+// ── GET /v1/mcco/master-plan/division/:id ──────────────────────────────────
+
+export function handleDivisionPlan(divisionId) {
+  const plan = getDivisionExecutionPlan(divisionId.toUpperCase());
+  if (!plan) {
+    return errorResponse(`Division "${divisionId}" not found.`, 404);
+  }
+  return jsonResponse(plan);
+}
+
+// ── POST /v1/mcco/sovereign-directive ──────────────────────────────────────
+
+export async function handleSovereignDirectiveIssue(request, env, ctx) {
+  try {
+    let directiveNumber = Date.now() % 100000;
+    let targetDivisions = Object.keys(DIVISION_ACTIVATION);
+    let orders = 'Execute Master Plan Phase 1 immediately. All divisions report status within 24 hours.';
+
+    try {
+      const body = await request.json();
+      if (body.directiveNumber) directiveNumber = body.directiveNumber;
+      if (body.targetDivisions) targetDivisions = body.targetDivisions;
+      if (body.orders) orders = body.orders;
+    } catch {
+      // Use defaults
+    }
+
+    const directive = generateSovereignDirective(directiveNumber, targetDivisions, orders);
+
+    writeAudit(env, ctx, {
+      route: '/v1/mcco/sovereign-directive',
+      action: 'issue-directive',
+      agent: 'MCCO-000',
+      directiveId: directive.directiveId,
+      targetDivisions,
+    });
+
+    return jsonResponse({
+      directive,
+      activatedDivisions: targetDivisions.map(id => {
+        const div = DIVISION_ACTIVATION[id];
+        return div ? { id: div.divisionId, name: div.name, lead: div.lead, agents: div.agentCount, status: 'DIRECTIVE RECEIVED' } : { id, status: 'UNKNOWN DIVISION' };
+      }),
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    return errorResponse(`Sovereign directive failed: ${err.message}`, 500);
+  }
+}
+
+// ── GET /v1/mcco/activation-status ─────────────────────────────────────────
+
+export function handleActivationStatus() {
+  const divisions = Object.values(DIVISION_ACTIVATION);
+  const totalAgents = divisions.reduce((sum, d) => sum + d.agentCount, 0);
+  const totalActions = divisions.reduce((sum, d) => sum + d.immediateActions.length, 0);
+
+  return jsonResponse({
+    status: 'ALL DIVISIONS ACTIVATED',
+    governance: 'sovereign',
+    executionStandard: 'ferrari',
+    vision: ENTERPRISE_VISION,
+    summary: {
+      totalDivisions: divisions.length,
+      totalAgents,
+      totalImmediateActions: totalActions,
+      ferrariCompliance: '100%',
+    },
+    divisions: divisions.map(d => ({
+      id: d.divisionId,
+      name: d.name,
+      lead: d.lead,
+      agents: d.agentCount,
+      status: d.status,
+      ferrariScore: d.ferrariScore,
+      immediateActions: d.immediateActions,
+      reportsTo: d.reportsTo || 'CEO (Human)',
+    })),
+    currentPhase: {
+      phase: GROWTH_PHASES[0].phase,
+      name: GROWTH_PHASES[0].name,
+      timeline: GROWTH_PHASES[0].timeline,
+      objective: GROWTH_PHASES[0].objective,
+    },
+    timestamp: new Date().toISOString(),
+  });
 }
