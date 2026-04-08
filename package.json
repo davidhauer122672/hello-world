@@ -2,26 +2,33 @@
   "name": "coastal-key-platform",
   "version": "2.0.0",
   "description": "Coastal Key Treasure Coast Asset Management - Unified Operations Platform",
+  "private": true,
   "main": "server.js",
   "engines": {
     "node": ">=18.0.0"
   },
-  "directories": {
-    "lib": "lib"
-  },
+  "workspaces": [
+    "ck-api-gateway",
+    "sentinel-webhook",
+    "ck-nemotron-worker"
+  ],
   "scripts": {
     "start": "node server.js",
     "health": "curl -s http://localhost:3000/api/health | node -e \"process.stdin.on('data',d=>{const h=JSON.parse(d);console.log(h.status);process.exit(h.status==='healthy'?0:1)})\"",
     "backup": "node -e \"require('./lib/backup').runBackup()\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:gateway": "cd ck-api-gateway && npm run dev",
+    "dev:sentinel": "cd sentinel-webhook && npm run dev",
+    "dev:nemotron": "cd ck-nemotron-worker && npm run dev",
+    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc && npm run deploy:nemotron",
+    "deploy:gateway": "cd ck-api-gateway && npm run deploy",
+    "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
+    "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
+    "deploy:nemotron": "cd ck-nemotron-worker && npm run deploy",
+    "test": "npm run test:gateway && npm run test:sentinel && npm run test:nemotron",
+    "test:gateway": "cd ck-api-gateway && npm test",
+    "test:sentinel": "cd sentinel-webhook && npm test",
+    "test:nemotron": "cd ck-nemotron-worker && npm test"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://local_proxy@127.0.0.1:46851/git/davidhauer122672/hello-world"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
     "dotenv": "^17.3.1",
@@ -31,5 +38,8 @@
     "nodemailer": "^8.0.3",
     "stripe": "^20.4.1",
     "twilio": "^5.13.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
   }
 }
