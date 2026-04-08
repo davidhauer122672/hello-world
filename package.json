@@ -1,32 +1,46 @@
 {
-  "name": "coastalkey-enterprise",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Coastal Key Enterprise AI Operations Platform — Monorepo",
-  "workspaces": [
-    "ck-api-gateway",
-    "sentinel-webhook",
-    "ck-nemotron-worker",
-    "ck-trading-desk"
-  ],
-  "scripts": {
-    "dev:gateway": "cd ck-api-gateway && npm run dev",
-    "dev:sentinel": "cd sentinel-webhook && npm run dev",
-    "dev:nemotron": "cd ck-nemotron-worker && npm run dev",
-    "dev:trading": "cd ck-trading-desk && npm run dev",
-    "build:trading": "cd ck-trading-desk && npm run build",
-    "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc && npm run deploy:website && npm run deploy:nemotron",
-    "deploy:gateway": "cd ck-api-gateway && npm run deploy",
-    "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
-    "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
-    "deploy:website": "npx wrangler pages deploy ck-website --project-name=coastalkey-pm",
-    "deploy:nemotron": "cd ck-nemotron-worker && npm run deploy",
-    "test": "npm run test:gateway && npm run test:sentinel && npm run test:nemotron",
-    "test:gateway": "cd ck-api-gateway && npm test",
-    "test:sentinel": "cd sentinel-webhook && npm test",
-    "test:nemotron": "cd ck-nemotron-worker && npm test"
-  },
-  "devDependencies": {
-    "wrangler": "^4.0.0"
-  }
+    "name": "coastal-key-platform",
+    "version": "2.1.0",
+    "description": "Coastal Key Treasure Coast Asset Management — Unified Operations Platform",
+    "private": true,
+    "main": "server.js",
+    "engines": {
+          "node": ">=18.0.0"
+    },
+    "workspaces": [
+          "ck-api-gateway",
+          "sentinel-webhook",
+          "ck-nemotron-worker"
+    ],
+    "scripts": {
+          "start": "node server.js",
+          "health": "curl -s http://localhost:3000/api/health | node -e \"process.stdin.on('data',d=>{const h=JSON.parse(d);console.log(h.status);process.exit(h.status==='healthy'?0:1)})\"",
+          "backup": "node -e \"require('./lib/backup').runBackup()\"",
+          "dev:gateway": "cd ck-api-gateway && npm run dev",
+          "dev:sentinel": "cd sentinel-webhook && npm run dev",
+          "dev:nemotron": "cd ck-nemotron-worker && npm run dev",
+          "deploy": "npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc && npm run deploy:nemotron",
+          "deploy:gateway": "cd ck-api-gateway && npm run deploy",
+          "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
+          "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
+          "deploy:nemotron": "cd ck-nemotron-worker && npm run deploy",
+          "test": "npm run test:gateway && npm run test:sentinel && npm run test:nemotron",
+          "test:gateway": "cd ck-api-gateway && npm test",
+          "test:sentinel": "cd sentinel-webhook && npm test",
+          "test:nemotron": "cd ck-nemotron-worker && npm test"
+    },
+    "dependencies": {
+          "@anthropic-ai/sdk": "^0.85.0",
+          "dotenv": "^17.3.1",
+          "express": "^5.2.1",
+          "googleapis": "^171.4.0",
+          "node-cron": "^4.2.1",
+          "nodemailer": "^8.0.3",
+          "pdfkit": "^0.18.0",
+          "stripe": "^20.4.1",
+          "twilio": "^5.13.0"
+    },
+    "devDependencies": {
+          "wrangler": "^4.0.0"
+    }
 }

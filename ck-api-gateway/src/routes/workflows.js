@@ -11,6 +11,7 @@
 
 import { inference } from '../services/anthropic.js';
 import { createRecord, getRecord, updateRecord, listRecords, TABLES } from '../services/airtable.js';
+import { sendMessageAsync, buildWorkflowNotification } from '../services/slack.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 
@@ -37,22 +38,16 @@ function addDays(dateStr, days) {
 }
 
 /**
- * Send a Slack webhook message. Non-blocking — failures are logged, not thrown.
+ * Send a Slack notification. Uses the enterprise Slack service with
+ * Bot Token API (preferred) and webhook fallback. Supports intelligent
+ * event-based channel routing and rich Block Kit formatting.
  * @param {object} env
  * @param {object} ctx
  * @param {string} channel — Slack channel name (e.g. "#sales-alerts")
  * @param {string} text — Message text
  */
 function sendSlack(env, ctx, channel, text) {
-  if (!env.SLACK_WEBHOOK_URL) return;
-
-  ctx.waitUntil(
-    fetch(env.SLACK_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ channel, text }),
-    }).catch(err => console.error('Slack notification failed:', err))
-  );
+  sendMessageAsync(env, ctx, { channel, text });
 }
 
 /**
@@ -163,15 +158,19 @@ export async function handleScaa1BattlePlan(request, env, ctx) {
     aiLogRecord = null;
   }
 
-  // ── 6. Slack notification ──
+  // ── 6. Slack notification (rich Block Kit with intelligent routing) ──
   const airtableLink = `https://airtable.com/${env.AIRTABLE_BASE_ID}/${TABLES.LEADS}/${recordId}`;
-  sendSlack(env, ctx, '#sales-alerts', [
-    `*SCAA-1 Battle Plan Generated*`,
-    `*Lead:* ${leadName}`,
-    `*Segment:* ${segment}`,
-    `*Battle Plan:*\n${battlePlan.slice(0, 1000)}${battlePlan.length > 1000 ? '…' : ''}`,
-    `*Airtable:* ${airtableLink}`,
-  ].join('\n'));
+  const wfNotification = buildWorkflowNotification('scaa1', {
+    leadName,
+    segment,
+    summary: battlePlan,
+    airtableLink,
+  });
+  sendMessageAsync(env, ctx, {
+    event: 'workflow.scaa1',
+    text: wfNotification.text,
+    blocks: wfNotification.blocks,
+  });
 
   // ── 7. Create follow-up task ──
   let taskRecord;
@@ -342,10 +341,18 @@ export async function handleWf3InvestorEscalation(request, env, ctx) {
     aiLogRecord = null;
   }
 
-  // ── 9. Slack notification ──
-  sendSlack(env, ctx, '#sales-alerts',
-    `*INVESTOR ESCALATION:* ${leadName} — Property Value: ${propertyValue} — Presentation created`
-  );
+  // ── 9. Slack notification (routed to #investor-escalations) ──
+  const wf3Notification = buildWorkflowNotification('wf3', {
+    leadName,
+    propertyValue,
+    taskId: taskRecord?.id,
+    airtableLink: `https://airtable.com/${env.AIRTABLE_BASE_ID}/${TABLES.LEADS}/${recordId}`,
+  });
+  sendMessageAsync(env, ctx, {
+    event: 'workflow.wf3',
+    text: wf3Notification.text,
+    blocks: wf3Notification.blocks,
+  });
 
   // ── 10. Prepare email payload (returned, not sent) ──
   const firstName = leadName.split(' ')[0] || leadName;
@@ -476,10 +483,18 @@ export async function handleWf4LongTailNurture(request, env, ctx) {
     }).catch(err => console.error('Lead update failed:', err))
   );
 
-  // ── 7. Slack notification ──
-  sendSlack(env, ctx, '#sales-alerts',
-    `*LONG-TAIL NURTURE:* ${leadName} enrolled in 90-day drip. Re-engagement task set for ${reEngagementDate}.`
-  );
+  // ── 7. Slack notification (routed to #pipeline-updates) ──
+  const wf4Notification = buildWorkflowNotification('wf4', {
+    leadName,
+    reEngagementDate,
+    taskId: taskRecord?.id,
+    airtableLink: `https://airtable.com/${env.AIRTABLE_BASE_ID}/${TABLES.LEADS}/${recordId}`,
+  });
+  sendMessageAsync(env, ctx, {
+    event: 'workflow.wf4',
+    text: wf4Notification.text,
+    blocks: wf4Notification.blocks,
+  });
 
   // ── 8. Prepare Constant Contact payload (returned, not sent) ──
   const nameParts = leadName.trim().split(/\s+/);

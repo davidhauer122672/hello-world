@@ -70,8 +70,53 @@
  *   POST /v1/frameworks/content           — Generate content using framework principles
  *   POST /v1/frameworks/sales-playbook    — Generate sales playbook from framework rules
  *   POST /v1/frameworks/productivity-plan — Generate agent/team productivity plan
+ *   GET  /v1/financial/models            — Revenue models, expense categories, benchmarks
+ *   POST /v1/financial/management-fee    — Calculate management fee
+ *   POST /v1/financial/rent-estimate     — Estimate optimal rent for property
+ *   POST /v1/financial/roi              — Analyze property ROI (cap rate, cash-on-cash, IRR)
+ *   POST /v1/financial/forecast         — Generate 12-month financial forecast
+ *   POST /v1/financial/pricing-strategy — Dynamic pricing strategy for zone
+ *   POST /v1/financial/budget           — Generate annual property budget
+ *   POST /v1/analysis/agent             — Analyze agent performance
+ *   POST /v1/analysis/fleet             — Generate fleet analytics
+ *   POST /v1/analysis/market-trends     — Analyze market trends by zone
+ *   POST /v1/analysis/competitive-intel — Generate competitive intelligence
+ *   POST /v1/analysis/lead-pipeline     — Analyze lead pipeline health
+ *   POST /v1/analysis/operational-report — Generate division operational report
+ *   GET  /v1/analysis/templates         — List analysis report templates
+ *   POST /v1/analysis/property-health   — Score property health
+ *   POST /v1/analysis/churn-prediction  — Predict tenant churn
+ *   GET  /v1/deals/stages               — Deal pipeline stages & scoring weights
+ *   POST /v1/deals/score                — Score a potential deal
+ *   POST /v1/deals/strategy             — Generate deal strategy
+ *   POST /v1/deals/comparables          — Analyze comparable properties
+ *   POST /v1/deals/closing-costs        — Calculate FL closing costs
+ *   POST /v1/deals/investor-package     — Generate investor package
+ *   POST /v1/deals/portfolio            — Evaluate property portfolio
+ *   GET  /v1/hierarchy/command-chain     — Full org command chain & escalation matrix
+ *   GET  /v1/hierarchy/fleet-status      — 382-agent fleet status summary
+ *   GET  /v1/hierarchy/chain/:agentId    — Chain of command for specific agent
+ *   GET  /v1/hierarchy/reports/:agentId  — Direct reports for specific agent
+ *   GET  /v1/hierarchy/division/:code    — Division hierarchy tree
+ *   GET  /v1/trader/dashboard            — AI Trader market overview + signals + capital calls
+ *   GET  /v1/trader/agent                — AI Trader Agent details
+ *   GET  /v1/trader/watchlist            — All watchlist categories and symbols
+ *   POST /v1/trader/quote                — Get live quote(s) for symbol(s)
+ *   POST /v1/trader/signal               — Generate trading signal for symbol
+ *   POST /v1/trader/capital-call         — Generate capital call prompt
+ *   POST /v1/trader/portfolio            — Calculate portfolio metrics
+ *   GET  /v1/trader/news                 — Market news with sentiment
+ *   POST /v1/trader/trade                — Log a trade execution
+ *   GET  /v1/trader/history              — Trade execution history
+ *   GET  /v1/trader/capital-tiers        — Capital investment tier definitions
+ *   POST /v1/slack/commands    — Slack slash command dispatcher (10 commands)
+ *   POST /v1/slack/interactions — Slack interactive component callbacks
+ *   POST /v1/slack/events      — Slack event subscription handler
+ *   GET  /v1/slack/channels    — Slack channel architecture
+ *   GET  /v1/slack/apps        — Slack app registry
+ *   GET  /v1/slack/audit       — Slack platform audit record
  *
- * Auth: Bearer token via WORKER_AUTH_TOKEN secret
+ * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  */
 
 import { authenticate } from './middleware/auth.js';
@@ -90,7 +135,23 @@ import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerD
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
 import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan } from './routes/frameworks.js';
+import {
+  handleTraderDashboard, handleTraderAgent, handleWatchlist, handleQuote, handleSignal,
+  handleCapitalCall, handlePortfolio as handleTraderPortfolio, handleTraderNews,
+  handleLogTrade, handleTradeHistory, handleCapitalTiers,
+} from './routes/trader.js';
+import {
+  handleFinancialModels, handleManagementFee, handleRentEstimate, handlePropertyROI,
+  handleFinancialForecast, handleDynamicPricing, handleBudget,
+  handleAgentAnalysis, handleFleetAnalytics, handleMarketTrends, handleCompetitiveIntel,
+  handleLeadPipeline, handleOperationalReport, handleAnalysisTemplates, handlePropertyHealth, handleChurnPrediction,
+  handleDealStages, handleScoreDeal, handleDealStrategy, handleComparables, handleClosingCosts, handleInvestorPackage, handlePortfolioEvaluation,
+  handleCommandChain, handleFleetStatusEndpoint, handleChainOfCommand, handleDirectReports, handleDivisionHierarchyEndpoint,
+} from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
+import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
+import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
+import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -193,6 +254,17 @@ export default {
     // ── Public routes (no auth) ──
     if (path === '/v1/leads/public' && method === 'POST') {
       return await handlePublicLead(request, env, ctx);
+    }
+
+    // ── Slack routes (use signature verification, not Bearer token) ──
+    if (path === '/v1/slack/commands' && method === 'POST') {
+      return await handleSlackCommand(request, env, ctx);
+    }
+    if (path === '/v1/slack/interactions' && method === 'POST') {
+      return await handleSlackInteraction(request, env, ctx);
+    }
+    if (path === '/v1/slack/events' && method === 'POST') {
+      return await handleSlackEvent(request, env, ctx);
     }
 
     // ── Auth gate ──
@@ -495,6 +567,192 @@ export default {
       if (path.match(/^\/v1\/frameworks\/[^/]+$/) && method === 'GET') {
         const frameworkId = path.split('/v1/frameworks/')[1];
         return handleGetFramework(frameworkId);
+      }
+
+      // ── Financial Engine ──
+      if (path === '/v1/financial/models' && method === 'GET') {
+        return handleFinancialModels();
+      }
+      if (path === '/v1/financial/management-fee' && method === 'POST') {
+        return await handleManagementFee(request);
+      }
+      if (path === '/v1/financial/rent-estimate' && method === 'POST') {
+        return await handleRentEstimate(request);
+      }
+      if (path === '/v1/financial/roi' && method === 'POST') {
+        return await handlePropertyROI(request);
+      }
+      if (path === '/v1/financial/forecast' && method === 'POST') {
+        return await handleFinancialForecast(request);
+      }
+      if (path === '/v1/financial/pricing-strategy' && method === 'POST') {
+        return await handleDynamicPricing(request);
+      }
+      if (path === '/v1/financial/budget' && method === 'POST') {
+        return await handleBudget(request);
+      }
+
+      // ── Analysis Suite ──
+      if (path === '/v1/analysis/agent' && method === 'POST') {
+        return await handleAgentAnalysis(request);
+      }
+      if (path === '/v1/analysis/fleet' && method === 'POST') {
+        return await handleFleetAnalytics(request);
+      }
+      if (path === '/v1/analysis/market-trends' && method === 'POST') {
+        return await handleMarketTrends(request);
+      }
+      if (path === '/v1/analysis/competitive-intel' && method === 'POST') {
+        return await handleCompetitiveIntel(request);
+      }
+      if (path === '/v1/analysis/lead-pipeline' && method === 'POST') {
+        return await handleLeadPipeline(request);
+      }
+      if (path === '/v1/analysis/operational-report' && method === 'POST') {
+        return await handleOperationalReport(request);
+      }
+      if (path === '/v1/analysis/templates' && method === 'GET') {
+        return handleAnalysisTemplates();
+      }
+      if (path === '/v1/analysis/property-health' && method === 'POST') {
+        return await handlePropertyHealth(request);
+      }
+      if (path === '/v1/analysis/churn-prediction' && method === 'POST') {
+        return await handleChurnPrediction(request);
+      }
+
+      // ── Trading / Deal Engine ──
+      if (path === '/v1/deals/stages' && method === 'GET') {
+        return handleDealStages();
+      }
+      if (path === '/v1/deals/score' && method === 'POST') {
+        return await handleScoreDeal(request);
+      }
+      if (path === '/v1/deals/strategy' && method === 'POST') {
+        return await handleDealStrategy(request);
+      }
+      if (path === '/v1/deals/comparables' && method === 'POST') {
+        return await handleComparables(request);
+      }
+      if (path === '/v1/deals/closing-costs' && method === 'POST') {
+        return await handleClosingCosts(request);
+      }
+      if (path === '/v1/deals/investor-package' && method === 'POST') {
+        return await handleInvestorPackage(request);
+      }
+      if (path === '/v1/deals/portfolio' && method === 'POST') {
+        return await handlePortfolioEvaluation(request);
+      }
+
+      // ── AI Trader Agent ──
+      if (path === '/v1/trader/dashboard' && method === 'GET') {
+        return await handleTraderDashboard(env);
+      }
+      if (path === '/v1/trader/agent' && method === 'GET') {
+        return handleTraderAgent();
+      }
+      if (path === '/v1/trader/watchlist' && method === 'GET') {
+        return handleWatchlist();
+      }
+      if (path === '/v1/trader/quote' && method === 'POST') {
+        return await handleQuote(request, env);
+      }
+      if (path === '/v1/trader/signal' && method === 'POST') {
+        return await handleSignal(request, env);
+      }
+      if (path === '/v1/trader/capital-call' && method === 'POST') {
+        return await handleCapitalCall(request, env);
+      }
+      if (path === '/v1/trader/portfolio' && method === 'POST') {
+        return await handleTraderPortfolio(request, env);
+      }
+      if (path === '/v1/trader/news' && method === 'GET') {
+        return await handleTraderNews(env);
+      }
+      if (path === '/v1/trader/trade' && method === 'POST') {
+        return await handleLogTrade(request, env);
+      }
+      if (path === '/v1/trader/history' && method === 'GET') {
+        return await handleTradeHistory(url, env);
+      }
+      if (path === '/v1/trader/capital-tiers' && method === 'GET') {
+        return handleCapitalTiers();
+      }
+
+      // ── Agent Hierarchy & Command Structure ──
+      if (path === '/v1/hierarchy/command-chain' && method === 'GET') {
+        return handleCommandChain();
+      }
+      if (path === '/v1/hierarchy/fleet-status' && method === 'GET') {
+        return handleFleetStatusEndpoint();
+      }
+      if (path.match(/^\/v1\/hierarchy\/chain\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/hierarchy/chain/')[1];
+        return handleChainOfCommand(agentId);
+      }
+      if (path.match(/^\/v1\/hierarchy\/reports\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/hierarchy/reports/')[1];
+        return handleDirectReports(agentId);
+      }
+      if (path.match(/^\/v1\/hierarchy\/division\/[^/]+$/) && method === 'GET') {
+        const divisionCode = path.split('/v1/hierarchy/division/')[1];
+        return handleDivisionHierarchyEndpoint(divisionCode);
+      }
+
+      // ── Slack (auth-protected read-only) ──
+      if (path === '/v1/slack/channels' && method === 'GET') {
+        return handleSlackChannels();
+      }
+      if (path === '/v1/slack/apps' && method === 'GET') {
+        return handleSlackApps();
+      }
+      if (path === '/v1/slack/audit' && method === 'GET') {
+        return handleSlackAudit();
+      }
+
+      // ── Thinking Coach ──
+      if (path === '/v1/thinking/frameworks' && method === 'GET') {
+        return handleListThinkingFrameworks(url);
+      }
+      if (path.startsWith('/v1/thinking/frameworks/') && method === 'GET') {
+        const frameworkId = path.split('/')[4];
+        return handleGetThinkingFramework(frameworkId);
+      }
+      if (path === '/v1/thinking/session' && method === 'POST') {
+        return await handleThinkingSession(request, env, ctx);
+      }
+      if (path === '/v1/thinking/multi' && method === 'POST') {
+        return await handleMultiFramework(request, env, ctx);
+      }
+      if (path === '/v1/thinking/learning-blueprint' && method === 'POST') {
+        return await handleLearningBlueprint(request, env, ctx);
+      }
+      if (path === '/v1/thinking/daily-models' && method === 'POST') {
+        return await handleDailyModels(request, env, ctx);
+      }
+      if (path === '/v1/thinking/pm-mastery' && method === 'POST') {
+        return await handlePMMastery(request, env, ctx);
+      }
+      if (path === '/v1/thinking/cognitive-os' && method === 'POST') {
+        return await handleCognitiveOS(request, env, ctx);
+      }
+      if (path === '/v1/thinking/life-architecture' && method === 'POST') {
+        return await handleLifeArchitecture(request, env, ctx);
+      }
+      if (path === '/v1/thinking/time-leverage' && method === 'POST') {
+        return await handleTimeLeverage(request, env, ctx);
+      }
+      if (path === '/v1/thinking/reprogram' && method === 'POST') {
+        return await handleReprogram(request, env, ctx);
+      }
+      if (path === '/v1/thinking/dashboard' && method === 'GET') {
+        return handleThinkingDashboard();
+      }
+
+      // ── Agent Manifest ──
+      if (path === '/v1/manifest' && method === 'GET') {
+        const summary = url.searchParams.get('summary') === 'true';
+        return jsonResponse(summary ? getManifestSummary() : getFullManifest());
       }
 
       return errorResponse('Not found', 404);

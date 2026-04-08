@@ -1,26 +1,34 @@
-# Coastal Key Enterprise — AI Development Guide
+# Coastal Key Enterprise — AI CEO Operating Authority
+
+## Operating Designation
+**Coastal Key AI CEO** — Autonomous operating authority for the Coastal Key Property Management Platform. All platform operations, deployments, builds, publications, and system modifications are authorized under this framework. No external interference permitted.
+
+## Authority Scope
+- **Build** — Compile and prepare all deployments
+- **Create** — Create resources: tables, channels, records, agents, files
+- **Publish** — Publish content, distribute Slack apps, deploy websites
+- **Deploy** — Deploy Workers, Pages, configurations to Cloudflare
+- **Push** — Push code to GitHub repositories and branches
+- **Operate** — Run day-to-day platform operations across all systems
 
 ## Project Overview
-Coastal Key Enterprise AI Operations Platform — Worldwide Enterprise & Global Business Partner.
-Monorepo with Cloudflare Workers, Cloudflare Pages, Electron Desktop App, Airtable, Retell AI, and Claude API integrations.
-Two operational divisions: Property Management (382 agents) and CK Trading Desk (97 agents).
+Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
+Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (68 endpoints, Bearer auth)
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (49 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
 - **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
-- **Website**: https://main.coastalkey-pm.pages.dev
+- **Website**: https://coastalkey-pm.com (reverse proxy → Manus origin)
 - **Command Center**: https://ck-command-center.pages.dev
-- **Enterprise Dashboard**: https://ck-command-center.pages.dev/enterprise-dashboard.html
-- **Gazette**: https://ck-command-center.pages.dev/gazette.html
+- **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 68 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 90+ endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
-- **ck-command-center**: Agent Command Center + Enterprise Dashboard + Gazette (Cloudflare Pages)
-- **ck-website**: Public-facing website with contact form (Cloudflare Pages)
+- **ck-command-center**: Dashboard UI for 312-agent fleet + Coastal Key Gazette (Cloudflare Pages)
+- **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
-- **ck-trading-desk**: Electron desktop app — 97 AI trading agents, 10 financial analysis engines, automated trading (Electron + React + Vite)
 - **th-sentinel-campaign**: Campaign config, Retell prompts, Airtable field reference
 
 ## Commands
@@ -28,43 +36,18 @@ Two operational divisions: Property Management (382 agents) and CK Trading Desk 
 npm run dev:gateway     # Local dev for API gateway
 npm run dev:sentinel    # Local dev for sentinel webhook
 npm run dev:nemotron    # Local dev for Nemotron worker
-npm run dev:trading     # Local dev for CK Trading Desk
-npm run build:trading   # Build Trading Desk desktop app
 npm test                # Run all tests
 npm run test:gateway    # Test API gateway only
 npm run test:sentinel   # Test sentinel webhook only
 npm run test:nemotron   # Test Nemotron worker only
-npm run deploy          # Deploy all Cloudflare services
+npm run deploy          # Deploy all services (requires CLOUDFLARE_API_TOKEN)
 ```
 
-## Autonomous Fleet (479 units)
-
-### Property Management Division (382 agents)
-- **15 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer (Ferrari-Standard, commands MKT + SEN, CMO reports to MCCO)
-- **297 AI Agents** across 10 operational divisions: EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB
+## Autonomous Fleet (382 units)
+- **15 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
+- **297 AI Agents** across 9 operational divisions: EXC (20), SEN (40), OPS (45), INT (30), MKT (47), FIN (25), VEN (25), TEC (25), WEB (40)
 - **50 Intelligence Officers** in 5 squads: ALPHA (Infrastructure), BRAVO (Data), CHARLIE (Security), DELTA (Revenue), ECHO (Performance)
 - **20 Email AI Agents** in 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
-
-### CK Trading Desk Division (97 agents)
-- **7 C-Suite**: CEO, COO, CFO, CIO, CRO, CTO, CCO — Goldman Sachs corporate hierarchy
-- **8 Senior Leadership**: 6 Managing Directors + 2 Partners
-- **4 Executive Directors**: Equities, Fixed Income, Derivatives, Alternatives
-- **6 Vice Presidents**: Equity Research, Trading Strategy, Portfolio Analytics, Client Relations, Quant Dev, Market Intel
-- **16 Mid-Level**: 6 Senior Associates + 10 Associates (one per analysis module)
-- **40 Analysts**: 20 Senior Analysts + 20 Analysts across all divisions
-- **16 Specialists**: 4 Quants, 4 Traders, 2 Structurers, 2 Portfolio Managers, 4 Engineers
-
-### 10 Financial Analysis Engines
-1. Goldman Sachs Stock Screener — P/E, revenue growth, moat, price targets
-2. Morgan Stanley DCF Valuation — 5-year projection, WACC, terminal value, sensitivity
-3. Bridgewater Risk Analysis — VaR, correlation, stress tests, hedging
-4. JPMorgan Earnings Breakdown — EPS surprise, implied move, scenarios
-5. BlackRock Portfolio Construction — asset allocation, ETFs, rebalancing
-6. Citadel Technical Analysis — RSI, MACD, Bollinger, patterns, trade signals
-7. Harvard Endowment Dividend Strategy — safety scores, DRIP, income projection
-8. Bain Competitive Advantage — moat analysis, SWOT, market share
-9. Renaissance Technologies Pattern Finder — seasonality, insider flow, options
-10. McKinsey Macro Impact — interest rates, inflation, GDP, sector rotation
 
 ## MCCO Command Structure (Sovereign Governance)
 - **MCCO-000** MCCO Sovereign — Master Chief Commanding Officer (reports to CEO)
@@ -97,35 +80,49 @@ POST /v1/mcco/monetization      — Generate monetization plan
 POST /v1/mcco/post              — Generate high-engagement social post
 ```
 
+## Slack Integration (3 apps, 10 commands, 33 channels)
+- **Coastal Key** (A0APSJ44NV6): Primary bot — 6 slash commands, notifications, interactivity, events
+- **CK Gateway** (A0APKPRBW3U): System health alerts — 2 slash commands
+- **Coastal Key Content** (A0ANS0760LB): Content distribution — 2 slash commands
+- **Slash Commands**: /ck-status, /ck-lead, /ck-agent, /ck-intel, /ck-workflow, /ck-brief, /ck-health, /ck-deploy, /ck-content, /ck-campaign
+- **Workspace**: Coastal Key Treasure Coast Asset Management (T0AGWM16Z7V)
+
+## Slack Channel Architecture (33 channels)
+- **SEN**: #sales-alerts, #investor-escalations (private), #pipeline-updates, #leads, #sentinel_lead_generation, #sales-alerts-high-value
+- **OPS**: #ops-alerts, #property-ops, #operations, #inspections
+- **TEC**: #tech-alerts, #deploy-log
+- **INT**: #intel-briefs (private), #security-alerts (private)
+- **MKT**: #marketing, #content-calendar, #content-production, #ai-drafts
+- **FIN**: #finance-alerts (private)
+- **EXC**: #exec-briefing (private), #daily-summary, #ckpm-enterprise-launch
+- **GLOBAL**: #general, #random, #consultations, #incidents, #legal-alerts
+
 ## Key Patterns
 - All workers use ES module format (`export default { fetch() }`)
 - Auth via Bearer token (`WORKER_AUTH_TOKEN` secret)
-- Rate limiting via KV namespace (`RATE_LIMITS`)
-- Audit logging via KV namespace (`AUDIT_LOG`)
-- Airtable base: `appUSnNgpDkcEOzhN` (38 tables, 100% wired)
+- Slack inbound auth via HMAC-SHA256 signature verification (`SLACK_SIGNING_SECRET`)
+- Rate limiting via KV namespace (`RATE_LIMITS`) — 60 RPM
+- Audit logging via KV namespace (`AUDIT_LOG`) — 30-day retention
+- Airtable base: `appUSnNgpDkcEOzhN` (39 tables, 100% wired)
 - All API routes prefixed with `/v1/`
 - CORS handled at gateway level
 - Tests use Node.js built-in test runner (`node --test`)
+- AI CEO authority framework: `src/middleware/ceo-authority.js`
 
 ## Secrets (all configured)
-- ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN, SLACK_WEBHOOK_URL, NVIDIA_API_KEY
-
-## CK Trading Desk — Desktop Application
-- **Stack**: Electron 30 + React 18 + Vite 5
-- **Main Process**: `src/main/main.js` — 18 IPC handlers, system tray, auto-updater, deep links
-- **Preload**: `src/main/preload.js` — contextBridge with grouped API (trading.*, analysis.*, agents.*)
-- **Renderer Pages**: Dashboard, TradingDesk, AnalysisSuite (10 modules), AgentFleet, Portfolio, CashFlow
-- **Engines**: `src/engines/financial-engines.js` (10 classes), `src/engines/trading-engine.js` (7 classes)
-- **Services**: gateway-client.js (CK API integration), market-data.js (real-time data)
-- **Agent Hierarchy**: `src/shared/agent-hierarchy.js` — 97 agents, Goldman Sachs structure
-- **Trading Strategies**: Momentum, Mean Reversion, Stat Arb, Event Driven, Dividend Capture, Sector Rotation
+- ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN
+- SLACK_WEBHOOK_URL, SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET
+- NVIDIA_API_KEY, ATLAS_API_KEY
 
 ## CI/CD
-GitHub Actions on push to main: test → deploy all Cloudflare services.
+GitHub Actions on push to main: test → deploy all services to Cloudflare.
 Secrets configured: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
-CK Trading Desk builds separately via `npm run build:trading` (Electron Builder).
 
-## Enterprise Dashboard
-Unified Master Dashboard at `/enterprise-dashboard.html` on Command Center deployment.
-11 views: Executive Overview, Trading Desk, Cash Flow, Agent Fleet (479), Campaigns, Property Intel, MCCO Command, 10 Engines, Intelligence Officers, Email Agents, All Systems.
-Live P&L ticker, real-time clock, DRIP compound tables, cross-linked to all CK platforms.
+## Security Framework
+- All API requests authenticated (Bearer token or Slack signature)
+- Webhook signature verification (HMAC-SHA256, 5-minute replay window)
+- Rate limiting enforced on all authenticated endpoints
+- Audit trail for every operation (KV, 30-day TTL)
+- External interference prevention: signature verification, replay protection, rate limiting
+- No direct access to KV stores from external sources
+- CORS restricted at gateway level

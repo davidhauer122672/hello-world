@@ -2,17 +2,39 @@
   "project": "coastalkey-pm",
   "domain": "coastalkey-pm.com",
   "architecture": {
-    "website": "Cloudflare Pages (ck-website/)",
+    "website": "Cloudflare Pages _worker.js reverse proxy → Manus origin (coastalkey-awfopuqz.manus.space)",
     "api": "Cloudflare Workers (ck-api-gateway/)",
     "nemotron": "Cloudflare Workers (ck-nemotron-worker/)",
     "webhook": "Cloudflare Workers (sentinel-webhook/)",
-    "dashboard": "Cloudflare Pages (ck-command-center/)",
-    "trading_desk": "Electron Desktop App (ck-trading-desk/)"
+    "dashboard": "Cloudflare Pages (ck-command-center/)"
+  },
+  "website_proxy": {
+    "origin": "https://coastalkey-awfopuqz.manus.space",
+    "domain": "coastalkey-pm.com",
+    "features": [
+      "URL rewriting (HTML, CSS, JS, JSON)",
+      "Edge caching (static 30d, fonts 1y, HTML 5m)",
+      "SEO canonical injection",
+      "Retry with backoff on upstream failures",
+      "Custom robots.txt for canonical domain",
+      "HSTS + security headers",
+      "Set-Cookie domain rewriting",
+      "Graceful 503 maintenance fallback"
+    ],
+    "pages": [
+      "/",
+      "/services",
+      "/agents",
+      "/dashboard",
+      "/eliza",
+      "/portal",
+      "/admin"
+    ]
   },
   "deployment": {
     "website": {
       "steps": [
-        { "step": 1, "action": "Deploy website to Cloudflare Pages", "command": "wrangler pages deploy ./ck-website --project-name=coastalkey-pm" },
+        { "step": 1, "action": "Deploy reverse proxy to Cloudflare Pages", "command": "wrangler pages deploy ./ck-website --project-name=coastalkey-pm" },
         { "step": 2, "action": "Purge Cloudflare cache", "command": "curl -X POST 'https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache' -H 'Authorization: Bearer {token}' -d '{\"purge_everything\":true}'" }
       ]
     },
@@ -40,18 +62,11 @@
   "subdomain_consolidation": {
     "policy": "All subdomains redirect to coastalkey-pm.com via _redirects",
     "eliminated": ["www", "app", "dashboard", "agents", "api", "admin", "old", "staging", "dev", "beta"],
-    "active_domain": "coastalkey-pm.com",
-    "portal_path": "/portal"
+    "active_domain": "coastalkey-pm.com"
   },
   "agents": {
-    "total": 479,
-    "property_management": 382,
-    "trading_desk": 97,
-    "divisions_pm": 10,
-    "divisions_td": 6,
-    "intelligence_officers": 50,
-    "email_agents": 20,
-    "mcco_agents": 15,
-    "financial_engines": 10
+    "total": 382,
+    "divisions": 9,
+    "web_dev_agents": 40
   }
 }
