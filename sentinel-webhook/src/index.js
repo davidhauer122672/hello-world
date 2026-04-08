@@ -55,8 +55,9 @@ export default {
         const failedRecord = await createMissedCallRecord(env, call, fields);
         // Also create lead for pipeline completeness
         const leadRecord = await createAirtableRecord(env, fields);
-        // Slack alert for QA
-        await sendSlackFailedCallNotification(env, call, failedRecord);
+        // Slack alert for QA — non-fatal so Airtable records are never lost
+        try { await sendSlackFailedCallNotification(env, call, failedRecord); }
+        catch (slackErr) { console.error('Slack QA notification failed (non-fatal):', slackErr.message); }
 
         return json({
           success: true,
@@ -70,8 +71,9 @@ export default {
       // ── Standard path: engaged calls → Leads ──
       const record = await createAirtableRecord(env, fields);
 
-      // ── Step 4: Slack notification ──
-      await sendSlackNotification(env, fields, record, call);
+      // ── Step 4: Slack notification — non-fatal so lead records are never lost ──
+      try { await sendSlackNotification(env, fields, record, call); }
+      catch (slackErr) { console.error('Slack lead notification failed (non-fatal):', slackErr.message); }
 
       return json({
         success: true,
