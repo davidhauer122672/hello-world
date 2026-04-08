@@ -1,50 +1,63 @@
-# Coastal Key — Enterprise Platform
+# Coastal Key Treasure Coast Asset Management — Unified Operations Platform
 
-Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
+Institutional-grade property oversight platform with appointment booking, Stripe payments, workflow automation, and AI-powered sales enablement.
 
-## Architecture
+## Features
 
-| Service | Description | Runtime |
-|---------|------------|---------|
-| `ck-api-gateway` | Central inference router, lead management, agent orchestration | Cloudflare Worker |
-| `ck-command-center` | Agent Command Center dashboard UI | Cloudflare Pages |
-| `sentinel-webhook` | Retell call → Airtable → Slack pipeline | Cloudflare Worker |
-| `th-sentinel-campaign` | Campaign configuration and Retell agent prompts | Config/Docs |
+- **Calendar Booking** - Interactive month-view calendar with time slot selection and double-booking prevention
+- **Stripe Payments** - Secure checkout via Stripe Checkout Sessions (PCI compliant)
+- **Confirmation Emails** - Automatic email sent upon successful payment via Nodemailer
+- **Responsive Design** - Clean, mobile-friendly UI
 
-## Quick Start
+## Setup
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Copy `.env.example` to `.env` and fill in your keys:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Start the server:
+   ```bash
+   npm start
+   ```
+
+4. Open `http://localhost:3000` in your browser.
+
+## Stripe Webhook (Local Development)
+
+To receive payment confirmations locally, use the Stripe CLI:
 
 ```bash
-# Install dependencies
-npm install
-
-# Dev — API Gateway
-npm run dev:gateway
-
-# Dev — Sentinel Webhook
-npm run dev:sentinel
-
-# Run tests
-npm test
-
-# Deploy all workers
-npm run deploy
+stripe listen --forward-to localhost:3000/api/payments/webhook
 ```
 
-## Environment Secrets
+Copy the webhook signing secret to your `.env` file as `STRIPE_WEBHOOK_SECRET`.
 
-Set via `wrangler secret put <NAME>` or Cloudflare dashboard:
+## Services & Pricing
 
-- `ANTHROPIC_API_KEY` — Claude API key
-- `AIRTABLE_API_KEY` — Airtable personal access token
-- `WORKER_AUTH_TOKEN` — Bearer token for external callers
-- `SLACK_WEBHOOK_URL` — Slack incoming webhook
-- `RETELL_WEBHOOK_SECRET` — Retell signature verification (optional)
+| Service         | Duration | Price |
+|-----------------|----------|-------|
+| Consultation    | 1 hour   | $50   |
+| Follow-up       | 30 min   | $30   |
+| Premium Session | 2 hours  | $100  |
 
-## CI/CD
+## How It Works
 
-GitHub Actions automatically deploys on push to `main`:
-- Runs tests for all workers
-- Deploys `ck-api-gateway` and `sentinel-webhook` to Cloudflare
-- Deploys `ck-command-center` to Cloudflare Pages
+1. Client selects a date and time on the calendar
+2. Fills in their details and selects a service
+3. Clicks "Book & Pay" to be redirected to Stripe Checkout
+4. After payment, Stripe webhook marks the appointment as paid
+5. A confirmation email is automatically sent to the client
 
-Set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as GitHub repository secrets.
+## Tech Stack
+
+- **Backend**: Node.js, Express
+- **Payments**: Stripe
+- **Email**: Nodemailer (SMTP)
+- **Storage**: JSON file (easily swappable for a database)
+- **Frontend**: Vanilla HTML/CSS/JS
