@@ -1,141 +1,173 @@
 /**
- * CK Trading Desk — Autonomous Trading Engine
- * Works 24/7/365 — Ferrari-Standard Execution
- * Independent financial operations for Coastal Key Enterprise
- * THE TRADING DESK NEVER SLEEPS
+ * CK Trading Desk - Autonomous Revenue Engine
+ * Works 24/7/365 - Ferrari-Standard Execution
  */
 
-// ─── Market Data Processor ───────────────────────────────────────
+// ============================================================
+// MarketDataProcessor
+// ============================================================
 export class MarketDataProcessor {
-  constructor() { this.ticks = []; this.ohlcv = {}; }
-
   processTickData(tick) {
-    this.ticks.push({ ...tick, receivedAt: Date.now() });
-    if (this.ticks.length > 100000) this.ticks = this.ticks.slice(-50000);
-    return tick;
+    return {
+      symbol: tick.symbol,
+      price: +tick.price.toFixed(4),
+      volume: tick.volume,
+      timestamp: tick.timestamp || Date.now(),
+      bid: tick.bid || null,
+      ask: tick.ask || null,
+      spread: tick.bid && tick.ask ? +(tick.ask - tick.bid).toFixed(4) : null,
+    };
   }
 
   calculateVWAP(ticks) {
-    if (!ticks.length) return 0;
-    let cumPV = 0, cumVol = 0;
-    ticks.forEach(t => { cumPV += t.price * t.volume; cumVol += t.volume; });
-    return cumVol === 0 ? 0 : +(cumPV / cumVol).toFixed(4);
+    if (!ticks || ticks.length === 0) return null;
+    let cumulativeTPV = 0;
+    let cumulativeVolume = 0;
+    const vwapSeries = ticks.map(t => {
+      const tp = (t.high + t.low + t.close) / 3;
+      cumulativeTPV += tp * t.volume;
+      cumulativeVolume += t.volume;
+      return {
+        timestamp: t.timestamp,
+        vwap: +(cumulativeTPV / cumulativeVolume).toFixed(4),
+        cumulativeVolume,
+      };
+    });
+    return {
+      currentVWAP: vwapSeries[vwapSeries.length - 1].vwap,
+      totalVolume: cumulativeVolume,
+      series: vwapSeries,
+    };
   }
 
   detectPriceAnomaly(ticks, threshold = 2) {
-    if (ticks.length < 20) return [];
-    const prices = ticks.map(t => t.price);
-    const mean = prices.reduce((s, p) => s + p, 0) / prices.length;
-    const stdDev = Math.sqrt(prices.reduce((s, p) => s + Math.pow(p - mean, 2), 0) / prices.length);
-    return ticks.filter(t => Math.abs(t.price - mean) > threshold * stdDev)
-      .map(t => ({ ...t, zScore: +((t.price - mean) / stdDev).toFixed(2) }));
+    if (ticks.length < 20) return { anomalies: [], message: 'Insufficient data' };
+    const prices = ticks.map(t => t.price || t.close);
+    const mean = prices.reduce((s, v) => s + v, 0) / prices.length;
+    const std = Math.sqrt(prices.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / prices.length);
+    const anomalies = ticks.filter(t => {
+      const p = t.price || t.close;
+      return Math.abs(p - mean) > threshold * std;
+    }).map(t => ({
+      ...t, zScore: +(((t.price || t.close) - mean) / std).toFixed(2),
+      direction: (t.price || t.close) > mean ? 'ABOVE' : 'BELOW',
+    }));
+    return { mean: +mean.toFixed(4), std: +std.toFixed(4), threshold, anomalies };
   }
 
-  aggregateOHLCV(ticks, interval = '1m') {
-    if (!ticks.length) return [];
-    const intervals = { '1m': 60000, '5m': 300000, '15m': 900000, '1h': 3600000, '4h': 14400000, '1d': 86400000 };
-    const ms = intervals[interval] || 60000;
-    const candles = {};
+  aggregateOHLCV(ticks, intervalMinutes = 5) {
+    if (!ticks || ticks.length === 0) return [];
+    const intervalMs = intervalMinutes * 60 * 1000;
+    const bars = new Map();
     ticks.forEach(t => {
-      const bucket = Math.floor(t.timestamp / ms) * ms;
-      if (!candles[bucket]) candles[bucket] = { time: bucket, open: t.price, high: t.price, low: t.price, close: t.price, volume: 0 };
-      const c = candles[bucket];
-      c.high = Math.max(c.high, t.price);
-      c.low = Math.min(c.low, t.price);
-      c.close = t.price;
-      c.volume += t.volume || 0;
+      const ts = t.timestamp || Date.now();
+      const barKey = Math.floor(ts / intervalMs) * intervalMs;
+      const price = t.price || t.close;
+      if (!bars.has(barKey)) {
+        bars.set(barKey, { timestamp: barKey, open: price, high: price, low: price, close: price, volume: t.volume || 0 });
+      } else {
+        const bar = bars.get(barKey);
+        bar.high = Math.max(bar.high, price);
+        bar.low = Math.min(bar.low, price);
+        bar.close = price;
+        bar.volume += t.volume || 0;
+      }
     });
-    return Object.values(candles).sort((a, b) => a.time - b.time);
+    return Array.from(bars.values()).sort((a, b) => a.timestamp - b.timestamp);
   }
 }
 
-// ─── Order Manager ───────────────────────────────────────────────
+// ============================================================
+// OrderManager
+// ============================================================
 export class OrderManager {
-  constructor() { this.orders = new Map(); this.orderCounter = 0; }
+  constructor() {
+    this.orders = new Map();
+    this.orderCounter = 0;
+  }
 
-  generateOrderId() { return `CK-${Date.now()}-${++this.orderCounter}`; }
+  generateOrderId() {
+    this.orderCounter++;
+    return `ORD-${Date.now()}-${String(this.orderCounter).padStart(6, '0')}`;
+  }
 
   createOrder(params) {
+    const validation = this.validateOrder(params);
+    if (!validation.valid) return { success: false, error: validation.errors };
     const order = {
       id: this.generateOrderId(),
       symbol: params.symbol,
-      side: params.side,
-      type: params.type || 'MARKET',
+      side: params.side.toUpperCase(),
+      type: (params.type || 'MARKET').toUpperCase(),
       quantity: params.quantity,
       price: params.price || null,
-      timeInForce: params.timeInForce || 'DAY',
-      strategy: params.strategy || 'MANUAL',
+      stopPrice: params.stopPrice || null,
       status: 'PENDING',
       createdAt: Date.now(),
+      updatedAt: Date.now(),
       fills: [],
-      agentId: params.agentId || null,
+      filledQty: 0,
+      avgFillPrice: 0,
     };
     this.orders.set(order.id, order);
-    return order;
+    return { success: true, order };
   }
 
-  validateOrder(order, portfolio = {}) {
+  validateOrder(order) {
     const errors = [];
-    if (!order.symbol) errors.push('Symbol required');
-    if (!order.quantity || order.quantity <= 0) errors.push('Invalid quantity');
-    if (!['BUY', 'SELL'].includes(order.side)) errors.push('Invalid side');
-    if (order.type === 'LIMIT' && !order.price) errors.push('Limit price required');
-    if (portfolio.buyingPower && order.side === 'BUY') {
-      const cost = (order.price || 0) * order.quantity;
-      if (cost > portfolio.buyingPower) errors.push('Insufficient buying power');
-    }
+    if (!order.symbol) errors.push('Symbol is required');
+    if (!order.side || !['BUY', 'SELL', 'buy', 'sell'].includes(order.side)) errors.push('Side must be BUY or SELL');
+    if (!order.quantity || order.quantity <= 0) errors.push('Quantity must be positive');
+    if (order.type === 'LIMIT' && !order.price) errors.push('Limit price required for LIMIT orders');
+    if (order.quantity > 1000000) errors.push('Quantity exceeds maximum order size');
     return { valid: errors.length === 0, errors };
   }
 
-  submitOrder(order) {
-    const validation = this.validateOrder(order);
-    if (!validation.valid) return { success: false, errors: validation.errors };
-    order.status = 'WORKING';
-    order.submittedAt = Date.now();
-    this.orders.set(order.id, order);
-    return { success: true, orderId: order.id };
+  getOrderStatus(id) {
+    const order = this.orders.get(id);
+    if (!order) return { found: false };
+    return { found: true, order };
   }
 
-  cancelOrder(orderId) {
-    const order = this.orders.get(orderId);
-    if (!order) return { success: false, error: 'Order not found' };
-    if (['FILLED', 'CANCELLED'].includes(order.status)) return { success: false, error: `Cannot cancel ${order.status} order` };
-    order.status = 'CANCELLED';
-    order.cancelledAt = Date.now();
-    return { success: true };
-  }
-
-  getOrderStatus(orderId) { return this.orders.get(orderId) || null; }
   getOrderHistory(filters = {}) {
-    let orders = [...this.orders.values()];
+    let orders = Array.from(this.orders.values());
     if (filters.symbol) orders = orders.filter(o => o.symbol === filters.symbol);
-    if (filters.status) orders = orders.filter(o => o.status === filters.status);
     if (filters.side) orders = orders.filter(o => o.side === filters.side);
+    if (filters.status) orders = orders.filter(o => o.status === filters.status);
+    if (filters.since) orders = orders.filter(o => o.createdAt >= filters.since);
     return orders.sort((a, b) => b.createdAt - a.createdAt);
   }
 
   calculateSlippage(order, fill) {
-    if (!order.price || !fill.price) return 0;
-    return +((fill.price - order.price) / order.price * 10000).toFixed(2); // basis points
+    if (!order.price) return { slippage: 0, slippagePercent: 0, note: 'Market order - no expected price' };
+    const slippage = order.side === 'BUY' ? fill.price - order.price : order.price - fill.price;
+    return {
+      expectedPrice: order.price,
+      fillPrice: fill.price,
+      slippage: +slippage.toFixed(4),
+      slippagePercent: +((slippage / order.price) * 100).toFixed(4),
+      favorable: slippage <= 0,
+    };
   }
 }
 
-// ─── Position Tracker ────────────────────────────────────────────
+// ============================================================
+// PositionTracker
+// ============================================================
 export class PositionTracker {
-  constructor() { this.positions = new Map(); this.closedTrades = []; }
+  constructor() {
+    this.positions = new Map();
+    this.closedTrades = [];
+  }
 
   openPosition(fill) {
     const pos = {
       symbol: fill.symbol,
       side: fill.side,
       quantity: fill.quantity,
-      avgCost: fill.price,
-      totalCost: fill.price * fill.quantity,
+      avgEntry: fill.price,
       openedAt: Date.now(),
-      stopLoss: fill.stopLoss || null,
-      takeProfit: fill.takeProfit || null,
-      strategy: fill.strategy,
-      agentId: fill.agentId,
+      fills: [fill],
     };
     this.positions.set(fill.symbol, pos);
     return pos;
@@ -144,258 +176,424 @@ export class PositionTracker {
   updatePosition(symbol, fill) {
     const pos = this.positions.get(symbol);
     if (!pos) return this.openPosition(fill);
-    const totalQty = pos.quantity + fill.quantity;
-    pos.avgCost = (pos.totalCost + fill.price * fill.quantity) / totalQty;
-    pos.quantity = totalQty;
-    pos.totalCost = pos.avgCost * totalQty;
+    const totalCost = pos.avgEntry * pos.quantity + fill.price * fill.quantity;
+    pos.quantity += fill.quantity;
+    pos.avgEntry = totalCost / pos.quantity;
+    pos.fills.push(fill);
     return pos;
   }
 
   closePosition(symbol, quantity, exitPrice) {
     const pos = this.positions.get(symbol);
-    if (!pos) return null;
-    const closedQty = Math.min(quantity, pos.quantity);
-    const pnl = (exitPrice - pos.avgCost) * closedQty * (pos.side === 'BUY' ? 1 : -1);
-    this.closedTrades.push({ symbol, quantity: closedQty, entryPrice: pos.avgCost, exitPrice, pnl: +pnl.toFixed(2), closedAt: Date.now(), strategy: pos.strategy });
-    pos.quantity -= closedQty;
+    if (!pos) return { success: false, error: 'Position not found' };
+    const closeQty = Math.min(quantity, pos.quantity);
+    const pnl = pos.side === 'BUY'
+      ? (exitPrice - pos.avgEntry) * closeQty
+      : (pos.avgEntry - exitPrice) * closeQty;
+    const trade = {
+      symbol, side: pos.side, quantity: closeQty,
+      entryPrice: pos.avgEntry, exitPrice,
+      pnl: +pnl.toFixed(2),
+      pnlPercent: +((pnl / (pos.avgEntry * closeQty)) * 100).toFixed(2),
+      closedAt: Date.now(),
+    };
+    this.closedTrades.push(trade);
+    pos.quantity -= closeQty;
     if (pos.quantity <= 0) this.positions.delete(symbol);
-    return { closedQty, pnl: +pnl.toFixed(2) };
+    return { success: true, trade };
   }
 
-  getPosition(symbol) { return this.positions.get(symbol) || null; }
-  getAllPositions() { return [...this.positions.values()]; }
+  getAllPositions() {
+    return Array.from(this.positions.values());
+  }
 
   calculateUnrealizedPnL(position, currentPrice) {
-    const multiplier = position.side === 'BUY' ? 1 : -1;
-    return +((currentPrice - position.avgCost) * position.quantity * multiplier).toFixed(2);
+    const pnl = position.side === 'BUY'
+      ? (currentPrice - position.avgEntry) * position.quantity
+      : (position.avgEntry - currentPrice) * position.quantity;
+    return {
+      symbol: position.symbol, unrealizedPnL: +pnl.toFixed(2),
+      pnlPercent: +((pnl / (position.avgEntry * position.quantity)) * 100).toFixed(2),
+      marketValue: +(currentPrice * position.quantity).toFixed(2),
+    };
   }
 
-  calculateRealizedPnL() { return +(this.closedTrades.reduce((s, t) => s + t.pnl, 0)).toFixed(2); }
+  calculateRealizedPnL(trades) {
+    const tradeList = trades || this.closedTrades;
+    const totalPnL = tradeList.reduce((s, t) => s + t.pnl, 0);
+    const winners = tradeList.filter(t => t.pnl > 0);
+    const losers = tradeList.filter(t => t.pnl < 0);
+    return {
+      totalPnL: +totalPnL.toFixed(2),
+      totalTrades: tradeList.length,
+      winners: winners.length,
+      losers: losers.length,
+      winRate: tradeList.length > 0 ? +((winners.length / tradeList.length) * 100).toFixed(1) : 0,
+      avgWin: winners.length > 0 ? +(winners.reduce((s, t) => s + t.pnl, 0) / winners.length).toFixed(2) : 0,
+      avgLoss: losers.length > 0 ? +(losers.reduce((s, t) => s + t.pnl, 0) / losers.length).toFixed(2) : 0,
+      largestWin: winners.length > 0 ? +Math.max(...winners.map(t => t.pnl)).toFixed(2) : 0,
+      largestLoss: losers.length > 0 ? +Math.min(...losers.map(t => t.pnl)).toFixed(2) : 0,
+    };
+  }
 
   calculatePortfolioMetrics() {
-    const trades = this.closedTrades;
-    if (!trades.length) return { winRate: 0, avgWin: 0, avgLoss: 0, sharpe: 0, maxDrawdown: 0, totalPnL: 0 };
-    const wins = trades.filter(t => t.pnl > 0);
-    const losses = trades.filter(t => t.pnl <= 0);
-    const returns = trades.map(t => t.pnl / (t.entryPrice * t.quantity));
-    const avgReturn = returns.reduce((s, r) => s + r, 0) / returns.length;
-    const stdReturn = Math.sqrt(returns.reduce((s, r) => s + Math.pow(r - avgReturn, 2), 0) / returns.length);
-    let peak = 0, maxDD = 0, cumPnL = 0;
-    trades.forEach(t => { cumPnL += t.pnl; peak = Math.max(peak, cumPnL); maxDD = Math.min(maxDD, cumPnL - peak); });
+    const positions = this.getAllPositions();
+    const totalValue = positions.reduce((s, p) => s + p.avgEntry * p.quantity, 0);
     return {
-      winRate: +(wins.length / trades.length * 100).toFixed(1),
-      avgWin: wins.length ? +(wins.reduce((s, t) => s + t.pnl, 0) / wins.length).toFixed(2) : 0,
-      avgLoss: losses.length ? +(losses.reduce((s, t) => s + t.pnl, 0) / losses.length).toFixed(2) : 0,
-      sharpe: stdReturn > 0 ? +(avgReturn / stdReturn * Math.sqrt(252)).toFixed(2) : 0,
-      maxDrawdown: +maxDD.toFixed(2),
-      totalPnL: +cumPnL.toFixed(2),
-      totalTrades: trades.length,
+      openPositions: positions.length,
+      totalMarketValue: +totalValue.toFixed(2),
+      closedTrades: this.closedTrades.length,
+      realizedPnL: this.calculateRealizedPnL(),
     };
   }
 }
 
-// ─── Risk Manager ────────────────────────────────────────────────
+// ============================================================
+// RiskManager
+// ============================================================
 export class RiskManager {
-  constructor(config = {}) {
-    this.maxPositionPct = config.maxPositionPct || 0.05;
-    this.maxDrawdownPct = config.maxDrawdownPct || 0.10;
-    this.maxDailyLossPct = config.maxDailyLossPct || 0.02;
-    this.circuitBreakerTriggered = false;
-  }
-
   checkPreTradeRisk(order, portfolio) {
-    if (this.circuitBreakerTriggered) return { approved: false, reason: 'Circuit breaker active — all trading halted' };
-    const orderValue = (order.price || 0) * order.quantity;
-    if (orderValue > portfolio.totalValue * this.maxPositionPct) return { approved: false, reason: `Position size ${(orderValue / portfolio.totalValue * 100).toFixed(1)}% exceeds ${this.maxPositionPct * 100}% limit` };
-    if (portfolio.dailyPnL < -portfolio.totalValue * this.maxDailyLossPct) return { approved: false, reason: 'Daily loss limit reached' };
-    return { approved: true, reason: 'All risk checks passed' };
+    const checks = [];
+    const posLimit = this.calculatePositionLimit(order.symbol, portfolio);
+    if (order.quantity * (order.price || 0) > posLimit.maxNotional) {
+      checks.push({ check: 'POSITION_SIZE', passed: false, message: `Order exceeds max position size of $${posLimit.maxNotional}` });
+    } else {
+      checks.push({ check: 'POSITION_SIZE', passed: true });
+    }
+    const concentration = portfolio.totalValue > 0
+      ? ((order.quantity * (order.price || 0)) / portfolio.totalValue) * 100 : 0;
+    if (concentration > 10) {
+      checks.push({ check: 'CONCENTRATION', passed: false, message: `${concentration.toFixed(1)}% exceeds 10% concentration limit` });
+    } else {
+      checks.push({ check: 'CONCENTRATION', passed: true });
+    }
+    const allPassed = checks.every(c => c.passed);
+    return { approved: allPassed, checks, timestamp: Date.now() };
   }
 
   calculatePositionLimit(symbol, portfolio) {
-    return +(portfolio.totalValue * this.maxPositionPct).toFixed(2);
+    const maxPercent = 0.10;
+    const maxNotional = portfolio.totalValue * maxPercent;
+    const currentExposure = (portfolio.positions || [])
+      .filter(p => p.symbol === symbol)
+      .reduce((s, p) => s + p.avgEntry * p.quantity, 0);
+    return {
+      symbol, maxNotional: +maxNotional.toFixed(2),
+      currentExposure: +currentExposure.toFixed(2),
+      remaining: +(maxNotional - currentExposure).toFixed(2),
+    };
   }
 
-  calculatePortfolioVaR(returns, confidence = 0.95) {
-    if (!returns.length) return 0;
+  calculatePortfolioVaR(portfolio, confidence = 0.95) {
+    const returns = portfolio.returns || [];
+    if (returns.length < 10) return { var: 0, message: 'Insufficient return history' };
     const sorted = [...returns].sort((a, b) => a - b);
-    const index = Math.floor((1 - confidence) * sorted.length);
-    return +sorted[Math.max(0, index)].toFixed(4);
+    const idx = Math.floor((1 - confidence) * sorted.length);
+    const var95 = sorted[idx];
+    const totalValue = portfolio.totalValue || 0;
+    return {
+      varPercent: +(var95 * 100).toFixed(2),
+      varDollar: +(totalValue * Math.abs(var95)).toFixed(2),
+      confidence,
+      totalValue,
+    };
   }
 
-  monitorDrawdown(currentValue, peakValue) {
-    const drawdown = (currentValue - peakValue) / peakValue;
-    if (drawdown < -this.maxDrawdownPct) {
-      this.circuitBreakerTriggered = true;
-      return { alert: true, drawdown: +(drawdown * 100).toFixed(2), action: 'CIRCUIT BREAKER TRIGGERED' };
-    }
-    return { alert: false, drawdown: +(drawdown * 100).toFixed(2), action: 'MONITORING' };
+  monitorDrawdown(portfolio, maxDrawdownPercent = 10) {
+    const { currentValue, peakValue } = portfolio;
+    const drawdown = peakValue > 0 ? ((peakValue - currentValue) / peakValue) * 100 : 0;
+    const breached = drawdown >= maxDrawdownPercent;
+    return {
+      currentDrawdown: +drawdown.toFixed(2),
+      maxAllowed: maxDrawdownPercent,
+      breached,
+      action: breached ? 'HALT_TRADING' : drawdown > maxDrawdownPercent * 0.8 ? 'REDUCE_RISK' : 'NORMAL',
+      peakValue, currentValue,
+    };
   }
 
   calculateKellyFraction(winRate, avgWin, avgLoss) {
-    const w = winRate / 100;
+    const w = winRate;
     const r = avgWin / Math.abs(avgLoss);
     const kelly = w - (1 - w) / r;
-    return +(Math.max(0, Math.min(0.25, kelly)) * 100).toFixed(2); // Cap at 25%
+    const halfKelly = kelly / 2;
+    return {
+      fullKelly: +Math.max(0, kelly * 100).toFixed(2),
+      halfKelly: +Math.max(0, halfKelly * 100).toFixed(2),
+      recommendation: kelly <= 0 ? 'DO NOT TRADE' : halfKelly > 25 ? 'Cap at 25%' : `Allocate ${halfKelly.toFixed(1)}% per trade`,
+      winRate, avgWin, avgLoss,
+    };
   }
-
-  resetCircuitBreaker() { this.circuitBreakerTriggered = false; }
 }
 
-// ─── Strategy Engine ─────────────────────────────────────────────
+// ============================================================
+// StrategyEngine
+// ============================================================
 export class StrategyEngine {
-  momentumStrategy(prices, shortPeriod = 10, longPeriod = 30) {
-    if (prices.length < longPeriod) return { signal: 'NEUTRAL', reason: 'Insufficient data' };
-    const shortMA = prices.slice(-shortPeriod).reduce((s, p) => s + p, 0) / shortPeriod;
-    const longMA = prices.slice(-longPeriod).reduce((s, p) => s + p, 0) / longPeriod;
-    if (shortMA > longMA * 1.02) return { signal: 'BUY', reason: `Short MA (${shortMA.toFixed(2)}) > Long MA (${longMA.toFixed(2)})`, confidence: 70 };
-    if (shortMA < longMA * 0.98) return { signal: 'SELL', reason: `Short MA below Long MA`, confidence: 70 };
-    return { signal: 'NEUTRAL', reason: 'No clear trend', confidence: 50 };
+  momentumStrategy(signals) {
+    const { prices, smaShort, smaLong, volume, avgVolume } = signals;
+    const currentPrice = prices[prices.length - 1];
+    const shortMA = smaShort[smaShort.length - 1];
+    const longMA = smaLong[smaLong.length - 1];
+    const volumeRatio = volume / avgVolume;
+    let signal = 'NEUTRAL';
+    let strength = 0;
+    if (shortMA > longMA && currentPrice > shortMA) {
+      signal = 'BUY';
+      strength = Math.min(100, Math.round(((shortMA - longMA) / longMA) * 1000 + volumeRatio * 20));
+    } else if (shortMA < longMA && currentPrice < shortMA) {
+      signal = 'SELL';
+      strength = Math.min(100, Math.round(((longMA - shortMA) / longMA) * 1000 + volumeRatio * 20));
+    }
+    return { strategy: 'MOMENTUM', signal, strength, currentPrice, shortMA, longMA, volumeRatio: +volumeRatio.toFixed(2) };
   }
 
-  meanReversionStrategy(prices, period = 20, threshold = 2) {
-    if (prices.length < period) return { signal: 'NEUTRAL', reason: 'Insufficient data' };
-    const mean = prices.slice(-period).reduce((s, p) => s + p, 0) / period;
-    const stdDev = Math.sqrt(prices.slice(-period).reduce((s, p) => s + Math.pow(p - mean, 2), 0) / period);
-    const current = prices[prices.length - 1];
-    const zScore = (current - mean) / stdDev;
-    if (zScore < -threshold) return { signal: 'BUY', reason: `Oversold (z=${zScore.toFixed(2)})`, confidence: 75 };
-    if (zScore > threshold) return { signal: 'SELL', reason: `Overbought (z=${zScore.toFixed(2)})`, confidence: 75 };
-    return { signal: 'NEUTRAL', reason: `Within range (z=${zScore.toFixed(2)})`, confidence: 50 };
+  meanReversionStrategy(signals) {
+    const { prices, sma, bollingerUpper, bollingerLower } = signals;
+    const currentPrice = prices[prices.length - 1];
+    const deviation = (currentPrice - sma) / sma;
+    let signal = 'NEUTRAL';
+    let strength = 0;
+    if (currentPrice <= bollingerLower) {
+      signal = 'BUY';
+      strength = Math.min(100, Math.round(Math.abs(deviation) * 500));
+    } else if (currentPrice >= bollingerUpper) {
+      signal = 'SELL';
+      strength = Math.min(100, Math.round(Math.abs(deviation) * 500));
+    }
+    return { strategy: 'MEAN_REVERSION', signal, strength, currentPrice, sma, deviation: +(deviation * 100).toFixed(2) };
   }
 
-  dividendCaptureStrategy(stocks, lookAheadDays = 5) {
+  dividendCaptureStrategy(schedule) {
     const now = Date.now();
-    const upcoming = stocks.filter(s => {
-      const exDate = new Date(s.exDividendDate).getTime();
-      return exDate > now && exDate < now + lookAheadDays * 86400000;
-    });
-    return upcoming.map(s => ({
-      symbol: s.symbol, exDate: s.exDividendDate, dividend: s.dividendAmount,
-      yield: +((s.dividendAmount / s.price) * 100).toFixed(3),
-      signal: 'BUY', reason: `Ex-dividend in ${Math.ceil((new Date(s.exDividendDate).getTime() - now) / 86400000)} days`,
-    }));
+    const upcoming = schedule
+      .filter(s => s.exDate > now && s.exDate - now < 30 * 24 * 60 * 60 * 1000)
+      .map(s => ({
+        ...s,
+        annualizedYield: +((s.dividend / s.price) * (365 / 90) * 100).toFixed(2),
+        daysUntilEx: Math.ceil((s.exDate - now) / (24 * 60 * 60 * 1000)),
+        buyBefore: new Date(s.exDate - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      }))
+      .sort((a, b) => a.exDate - b.exDate);
+    return { strategy: 'DIVIDEND_CAPTURE', candidates: upcoming, totalCandidates: upcoming.length };
   }
 
-  backtestStrategy(strategyFn, historicalPrices, windowSize = 30) {
-    const trades = [];
+  evaluateSignals(strategy, data) {
+    switch (strategy) {
+      case 'MOMENTUM': return this.momentumStrategy(data);
+      case 'MEAN_REVERSION': return this.meanReversionStrategy(data);
+      case 'DIVIDEND_CAPTURE': return this.dividendCaptureStrategy(data);
+      default: return { strategy, signal: 'UNKNOWN', error: 'Strategy not recognized' };
+    }
+  }
+
+  backtestStrategy(strategy, historicalData, params = {}) {
+    const { initialCapital = 100000, positionSize = 0.1 } = params;
+    let capital = initialCapital;
     let position = null;
-    for (let i = windowSize; i < historicalPrices.length; i++) {
-      const window = historicalPrices.slice(i - windowSize, i);
-      const signal = strategyFn(window);
-      if (signal.signal === 'BUY' && !position) {
-        position = { entry: historicalPrices[i], entryIdx: i };
-      } else if (signal.signal === 'SELL' && position) {
-        trades.push({ entry: position.entry, exit: historicalPrices[i], pnl: +(historicalPrices[i] - position.entry).toFixed(2), holdingPeriod: i - position.entryIdx });
+    const trades = [];
+    for (let i = 50; i < historicalData.length; i++) {
+      const window = historicalData.slice(0, i + 1);
+      const prices = window.map(d => d.close);
+      const smaShort = prices.slice(-10).reduce((s, v) => s + v, 0) / 10;
+      const smaLong = prices.slice(-30).reduce((s, v) => s + v, 0) / 30;
+      const currentPrice = prices[prices.length - 1];
+      if (!position && smaShort > smaLong) {
+        const qty = Math.floor((capital * positionSize) / currentPrice);
+        if (qty > 0) {
+          position = { entry: currentPrice, qty, entryIdx: i };
+          capital -= qty * currentPrice;
+        }
+      } else if (position && smaShort < smaLong) {
+        const pnl = (currentPrice - position.entry) * position.qty;
+        capital += position.qty * currentPrice;
+        trades.push({ entry: position.entry, exit: currentPrice, qty: position.qty, pnl: +pnl.toFixed(2) });
         position = null;
       }
     }
-    const wins = trades.filter(t => t.pnl > 0);
-    return { totalTrades: trades.length, winRate: trades.length ? +(wins.length / trades.length * 100).toFixed(1) : 0, totalPnL: +trades.reduce((s, t) => s + t.pnl, 0).toFixed(2), trades };
+    const totalPnL = trades.reduce((s, t) => s + t.pnl, 0);
+    const winners = trades.filter(t => t.pnl > 0);
+    return {
+      strategy, initialCapital, finalCapital: +capital.toFixed(2),
+      totalReturn: +(((capital - initialCapital) / initialCapital) * 100).toFixed(2),
+      totalTrades: trades.length,
+      winRate: trades.length > 0 ? +((winners.length / trades.length) * 100).toFixed(1) : 0,
+      totalPnL: +totalPnL.toFixed(2),
+      trades: trades.slice(-10),
+    };
   }
 }
 
-// ─── Cash Flow Generator ─────────────────────────────────────────
+// ============================================================
+// CashFlowGenerator
+// ============================================================
 export class CashFlowGenerator {
-  calculateDividendIncome(holdings) {
-    const annual = holdings.reduce((sum, h) => sum + (h.shares * (h.annualDividend || 0)), 0);
-    return { annual: +annual.toFixed(2), monthly: +(annual / 12).toFixed(2), daily: +(annual / 365).toFixed(2) };
+  calculateDividendIncome(portfolio) {
+    const holdings = portfolio.map(p => ({
+      symbol: p.symbol, shares: p.shares, price: p.price,
+      dividendPerShare: p.dividendPerShare || 0,
+      annualDividend: +(p.shares * (p.dividendPerShare || 0)).toFixed(2),
+      quarterlyDividend: +(p.shares * (p.dividendPerShare || 0) / 4).toFixed(2),
+      yield: p.price > 0 ? +((p.dividendPerShare || 0) / p.price * 100).toFixed(2) : 0,
+    }));
+    const totalAnnual = holdings.reduce((s, h) => s + h.annualDividend, 0);
+    return {
+      holdings,
+      totalAnnualDividend: +totalAnnual.toFixed(2),
+      totalMonthlyDividend: +(totalAnnual / 12).toFixed(2),
+      portfolioYield: +((totalAnnual / portfolio.reduce((s, p) => s + p.shares * p.price, 0)) * 100).toFixed(2),
+    };
   }
 
-  calculateOptionsIncome(coveredCalls = [], cashSecuredPuts = []) {
-    const callIncome = coveredCalls.reduce((s, c) => s + (c.premium * c.contracts * 100), 0);
-    const putIncome = cashSecuredPuts.reduce((s, p) => s + (p.premium * p.contracts * 100), 0);
-    return { monthly: +(callIncome + putIncome).toFixed(2), fromCalls: +callIncome.toFixed(2), fromPuts: +putIncome.toFixed(2) };
+  calculateOptionsIncome(coveredCalls, cashSecuredPuts) {
+    const callIncome = (coveredCalls || []).map(c => ({
+      ...c, premium: +(c.premium * c.contracts * 100).toFixed(2),
+      annualized: +((c.premium / c.strikePrice) * (365 / c.daysToExpiry) * 100).toFixed(2),
+    }));
+    const putIncome = (cashSecuredPuts || []).map(p => ({
+      ...p, premium: +(p.premium * p.contracts * 100).toFixed(2),
+      annualized: +((p.premium / p.strikePrice) * (365 / p.daysToExpiry) * 100).toFixed(2),
+    }));
+    return {
+      coveredCalls: callIncome,
+      cashSecuredPuts: putIncome,
+      totalCallPremium: +callIncome.reduce((s, c) => s + c.premium, 0).toFixed(2),
+      totalPutPremium: +putIncome.reduce((s, p) => s + p.premium, 0).toFixed(2),
+      totalMonthlyIncome: +((callIncome.reduce((s, c) => s + c.premium, 0) + putIncome.reduce((s, p) => s + p.premium, 0)) / 12).toFixed(2),
+    };
   }
 
-  projectCashFlow(portfolio, months = 12) {
-    const dividends = this.calculateDividendIncome(portfolio.holdings || []);
-    const options = this.calculateOptionsIncome(portfolio.coveredCalls, portfolio.cashSecuredPuts);
-    const bondIncome = (portfolio.bondValue || 0) * (portfolio.bondYield || 0.04) / 12;
+  projectCashFlow(portfolio, months) {
+    const divIncome = this.calculateDividendIncome(portfolio);
+    const monthlyDiv = divIncome.totalMonthlyDividend;
     const projections = [];
     let cumulative = 0;
     for (let m = 1; m <= months; m++) {
-      const total = dividends.monthly + options.monthly + bondIncome;
-      cumulative += total;
-      projections.push({ month: m, dividends: dividends.monthly, options: options.monthly, bonds: +bondIncome.toFixed(2), total: +total.toFixed(2), cumulative: +cumulative.toFixed(2) });
+      cumulative += monthlyDiv;
+      projections.push({
+        month: m,
+        dividendIncome: +monthlyDiv.toFixed(2),
+        cumulativeIncome: +cumulative.toFixed(2),
+      });
     }
-    return projections;
+    return { monthlyDividend: +monthlyDiv.toFixed(2), projections };
   }
 
-  compoundGrowthProjection(initial, monthlyContribution, annualYield, years) {
-    const monthlyRate = annualYield / 12;
+  compoundGrowthProjection(initialInvestment, monthlyContribution, annualYield, years) {
+    const monthlyRate = annualYield / 100 / 12;
     const projections = [];
-    let balance = initial;
+    let balance = initialInvestment;
+    let totalContributions = initialInvestment;
+    let totalDividends = 0;
     for (let y = 1; y <= years; y++) {
-      const startBalance = balance;
       for (let m = 0; m < 12; m++) {
-        balance = (balance + monthlyContribution) * (1 + monthlyRate);
+        const dividend = balance * monthlyRate;
+        totalDividends += dividend;
+        balance += dividend + monthlyContribution;
+        totalContributions += monthlyContribution;
       }
-      const income = startBalance * annualYield;
-      projections.push({ year: y, startBalance: +startBalance.toFixed(2), contributions: +(monthlyContribution * 12).toFixed(2), income: +income.toFixed(2), endBalance: +balance.toFixed(2) });
+      projections.push({
+        year: y, balance: +balance.toFixed(2),
+        totalContributions: +totalContributions.toFixed(2),
+        totalDividends: +totalDividends.toFixed(2),
+        monthlyIncome: +(balance * monthlyRate).toFixed(2),
+      });
     }
-    return projections;
+    return { initialInvestment, monthlyContribution, annualYield, projections };
   }
 }
 
-// ─── Trading Desk Controller ─────────────────────────────────────
+// ============================================================
+// TradingDeskController
+// ============================================================
 export class TradingDeskController {
   constructor() {
     this.marketData = new MarketDataProcessor();
-    this.orderManager = new OrderManager();
-    this.positionTracker = new PositionTracker();
-    this.riskManager = new RiskManager();
-    this.strategyEngine = new StrategyEngine();
-    this.cashFlowGenerator = new CashFlowGenerator();
-    this.status = 'INITIALIZED';
-    this.tradingActive = false;
-    this.startedAt = null;
+    this.orders = new OrderManager();
+    this.positions = new PositionTracker();
+    this.risk = new RiskManager();
+    this.strategy = new StrategyEngine();
+    this.cashFlow = new CashFlowGenerator();
+    this.status = 'STOPPED';
+    this.config = {};
+    this.tradeLog = [];
   }
 
-  initialize(config = {}) {
-    if (config.risk) this.riskManager = new RiskManager(config.risk);
-    this.status = 'READY';
-    return { status: this.status, engines: 'ALL SYSTEMS GO' };
+  initialize(config) {
+    this.config = {
+      maxPositions: config.maxPositions || 20,
+      maxDrawdown: config.maxDrawdown || 10,
+      defaultStrategy: config.defaultStrategy || 'MOMENTUM',
+      riskPerTrade: config.riskPerTrade || 0.02,
+      ...config,
+    };
+    this.status = 'INITIALIZED';
+    return { status: this.status, config: this.config };
   }
 
   startTrading() {
-    this.tradingActive = true;
-    this.startedAt = Date.now();
-    this.status = 'TRADING';
-    return { status: 'ACTIVE', message: 'CK Trading Desk is LIVE — generating revenue 24/7' };
+    if (this.status !== 'INITIALIZED' && this.status !== 'STOPPED') {
+      return { success: false, error: 'Must initialize before starting' };
+    }
+    this.status = 'ACTIVE';
+    return { success: true, status: this.status, startedAt: Date.now() };
   }
 
   stopTrading() {
-    this.tradingActive = false;
     this.status = 'STOPPED';
-    return { status: 'STOPPED', message: 'Trading halted — emergency only' };
+    return { success: true, status: this.status, stoppedAt: Date.now(), openPositions: this.positions.getAllPositions().length };
   }
 
   getDashboardData() {
-    const metrics = this.positionTracker.calculatePortfolioMetrics();
+    const positions = this.positions.getAllPositions();
+    const metrics = this.positions.calculatePortfolioMetrics();
     return {
       status: this.status,
-      tradingActive: this.tradingActive,
-      uptime: this.startedAt ? Date.now() - this.startedAt : 0,
-      positions: this.positionTracker.getAllPositions().length,
-      openOrders: this.orderManager.getOrderHistory({ status: 'WORKING' }).length,
-      ...metrics,
-      cashFlow: this.cashFlowGenerator.calculateDividendIncome(this.positionTracker.getAllPositions()),
+      positions: positions.length,
+      totalValue: metrics.totalMarketValue,
+      realizedPnL: metrics.realizedPnL.totalPnL,
+      winRate: metrics.realizedPnL.winRate,
+      totalTrades: metrics.realizedPnL.totalTrades,
+      recentTrades: this.tradeLog.slice(-10),
     };
   }
 
   executeTradeDecision(signal) {
-    if (!this.tradingActive) return { success: false, reason: 'Trading not active' };
-    const order = this.orderManager.createOrder({
+    if (this.status !== 'ACTIVE') return { executed: false, reason: 'Trading desk not active' };
+    const portfolio = {
+      totalValue: this.positions.calculatePortfolioMetrics().totalMarketValue || 100000,
+      positions: this.positions.getAllPositions(),
+    };
+    const riskCheck = this.risk.checkPreTradeRisk({
+      symbol: signal.symbol, quantity: signal.quantity, price: signal.price,
+    }, portfolio);
+    if (!riskCheck.approved) return { executed: false, reason: 'Risk check failed', checks: riskCheck.checks };
+    const orderResult = this.orders.createOrder({
       symbol: signal.symbol, side: signal.signal === 'BUY' ? 'BUY' : 'SELL',
-      type: 'MARKET', quantity: signal.quantity || 100, strategy: signal.strategy,
+      type: 'MARKET', quantity: signal.quantity, price: signal.price,
     });
-    const portfolio = { totalValue: 2847563, dailyPnL: 12847, buyingPower: 412850 };
-    const riskCheck = this.riskManager.checkPreTradeRisk(order, portfolio);
-    if (!riskCheck.approved) return { success: false, reason: riskCheck.reason };
-    return this.orderManager.submitOrder(order);
+    if (orderResult.success) {
+      this.tradeLog.push({ ...signal, orderId: orderResult.order.id, timestamp: Date.now() });
+    }
+    return { executed: orderResult.success, order: orderResult.order || null, signal };
   }
 
-  getPerformanceReport(period = 'daily') {
-    return { period, ...this.positionTracker.calculatePortfolioMetrics(), generatedAt: new Date().toISOString(), platform: 'CK Trading Desk', entity: 'Coastal Key Enterprise' };
+  getPerformanceReport(period = 'all') {
+    const metrics = this.positions.calculatePortfolioMetrics();
+    const kelly = metrics.realizedPnL.winRate > 0
+      ? this.risk.calculateKellyFraction(
+          metrics.realizedPnL.winRate / 100,
+          metrics.realizedPnL.avgWin,
+          metrics.realizedPnL.avgLoss
+        )
+      : null;
+    return {
+      period,
+      status: this.status,
+      portfolio: metrics,
+      kelly,
+      tradeCount: this.tradeLog.length,
+      generatedAt: new Date().toISOString(),
+    };
   }
 }
