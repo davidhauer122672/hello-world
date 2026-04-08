@@ -119,6 +119,7 @@ GitHub Actions on push to main: test → preflight token check → deploy all se
 Preflight validates Cloudflare API token before any deploy job runs.
 Deploy jobs parallelized: website, gateway, command-center run concurrently; sentinel and nemotron wait for gateway.
 Secrets configured: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
+Token updated: 2026-04-08 — IP restriction removed.
 
 ## Security Framework
 - All API requests authenticated (Bearer token or Slack signature)
