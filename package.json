@@ -36,13 +36,11 @@
     "googleapis": "^171.4.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.3",
+    "pdfkit": "^0.18.0",
     "stripe": "^20.4.1",
     "twilio": "^5.13.0"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
-  },
-  "dependencies": {
-    "pdfkit": "^0.18.0"
   }
 }
