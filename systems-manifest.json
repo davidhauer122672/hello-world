@@ -243,7 +243,7 @@
   },
   "workflow_engine": {
     "status": "operational",
-    "replaces": "Zapier (removed from tech stack)",
+    "engine": "native",
     "files": ["lib/workflows.js", "routes/workflows.js"],
     "workflows": {
       "wf1": {"name": "New Lead Nurture", "trigger": "POST /api/workflows/wf1", "actions": ["generate_battle_plan", "email_ceo", "sms_alert", "drip_enrollment"]},
@@ -299,7 +299,7 @@
       "twilio": "SMS delivery"
     },
     "zero_dependency_additions": ["mutex", "rate_limiter", "security_headers", "cors", "error_handler", "health_check", "backup_system", "graceful_shutdown", "workflow_engine"],
-    "removed_platforms": ["Zapier — replaced by native workflow engine (lib/workflows.js)"]
+    "platform_note": "All workflows run natively via lib/workflows.js — no external orchestration"
   },
   "environment_variables": {
     "required": ["PORT", "STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_WEBHOOK_SECRET", "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER", "OWNER_PHONE_NUMBER", "GOOGLE_SERVICE_ACCOUNT_KEY", "GOOGLE_SHEET_ID", "SITE_URL", "BUSINESS_NAME", "ANTHROPIC_API_KEY"],

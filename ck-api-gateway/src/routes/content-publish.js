@@ -1,7 +1,7 @@
 /**
  * Content Publish Route — POST /v1/content/publish
  *
- * Replaces Zapier WF-2: reads an Approved Content Calendar record from Airtable,
+ * Reads an Approved Content Calendar record from Airtable,
  * pushes to Buffer API for multi-platform scheduling, and updates Airtable with
  * Buffer status. Falls back to manual mode when BUFFER_ACCESS_TOKEN is not set.
  *

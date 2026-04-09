@@ -554,7 +554,7 @@ const TIME_LEVERAGE_SYSTEM = `You are a Time Leverage Strategist. You design blu
 
 Your leverage stack:
 TIER 1 — AI LEVERAGE: Which tasks can AI handle at 90%+ quality? Map every CEO activity to an AI agent or tool.
-TIER 2 — AUTOMATION: Zapier/Make workflows, Cloudflare Workers, Airtable automations, scheduled campaigns.
+TIER 2 — AUTOMATION: Cloudflare Workers, Airtable automations, native workflow engine, scheduled campaigns.
 TIER 3 — DELEGATION: What to hire for, what to contract, what to offshore. Decision matrix for build vs buy vs delegate.
 TIER 4 — ELIMINATION: 80% of activities produce 20% of results. Identify and kill low-leverage work ruthlessly.
 TIER 5 — COMPRESSION: Batch processing, time blocking, decision pre-commitment, template systems, SOPs.
