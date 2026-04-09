@@ -13,6 +13,7 @@
           "ck-nemotron-worker"
     ],
     "scripts": {
+          "prestart": "node scripts/init-data.js",
           "start": "node server.js",
           "health": "curl -s http://localhost:3000/api/health | node -e \"process.stdin.on('data',d=>{const h=JSON.parse(d);console.log(h.status);process.exit(h.status==='healthy'?0:1)})\"",
           "backup": "node -e \"require('./lib/backup').runBackup()\"",

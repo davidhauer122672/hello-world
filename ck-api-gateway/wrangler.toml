@@ -43,3 +43,7 @@ id = "3d722426db4241209fd0444b42f84904"
 # BUFFER_PROFILE_FACEBOOK      — Buffer profile ID for Facebook
 # BUFFER_PROFILE_LINKEDIN      — Buffer profile ID for LinkedIn
 # BUFFER_PROFILE_X             — Buffer profile ID for X (Twitter)
+# BUFFER_PROFILE_ALIGNABLE     — Buffer profile ID for Alignable
+# META_PAGE_ACCESS_TOKEN        — Meta/Facebook Page access token for ad management
+# META_AD_ACCOUNT_ID            — Meta Ads account ID (act_XXXXXXXXX)
+# META_PAGE_ID                  — Facebook Page ID for post boosting

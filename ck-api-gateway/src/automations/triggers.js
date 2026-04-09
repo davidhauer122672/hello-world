@@ -21,6 +21,67 @@
  */
 
 /**
+ * WF2 - Content Calendar → Buffer Publish
+ *
+ * Triggers when a Content Calendar record's "Status" field changes to "Approved".
+ * Pushes the post to Buffer via the /v1/content/publish endpoint for automated
+ * multi-platform scheduling (Instagram, Facebook, LinkedIn, X, Alignable).
+ *
+ * Airtable Automation Setup (11 steps):
+ *   1. Open Airtable base → Content Calendar table
+ *   2. Click Automations → Create Automation
+ *   3. Trigger: "When a record matches conditions"
+ *      - Table: Content Calendar
+ *      - Condition: Status = "Approved"
+ *   4. Action: "Send webhook"
+ *      - Method: POST
+ *      - URL: https://ck-api-gateway.david-e59.workers.dev/v1/content/publish
+ *      - Headers: Authorization: Bearer {WORKER_AUTH_TOKEN}
+ *      - Headers: Content-Type: application/json
+ *   5. Body: {"recordId": "{{record.id}}"}
+ *   6. Test the automation with a sample record
+ *   7. Enable the automation
+ *   8. Verify Buffer receives the post via GET /v1/health?deep=true
+ *   9. Confirm Airtable record updates with Buffer Status field
+ *  10. Check audit log at GET /v1/audit for publish confirmation
+ *  11. Monitor #marketing-ops Slack channel for publish notifications
+ *
+ * @type {TriggerConfig}
+ */
+export const WF2_CONTENT_PUBLISH = {
+  id: 'wf2-content-publish',
+  description: 'Publish approved Content Calendar records to Buffer for multi-platform scheduling',
+  trigger: {
+    type: 'fieldChange',
+    table: 'Content Calendar',
+    field: 'Status',
+  },
+  conditions: {
+    status: {
+      equals: 'Approved',
+      matchValues: ['Approved'],
+    },
+  },
+  action: {
+    method: 'POST',
+    endpoint: '/v1/content/publish',
+    payload: {
+      recordId: '{{record.id}}',
+    },
+    headers: {
+      'Authorization': 'Bearer {{WORKER_AUTH_TOKEN}}',
+      'Content-Type': 'application/json',
+    },
+  },
+  fallback: {
+    mode: 'manual',
+    description: 'If BUFFER_ACCESS_TOKEN is not set, returns manual posting payload with copy-paste instructions',
+  },
+  platforms: ['instagram', 'facebook', 'linkedin', 'x', 'alignable'],
+  slack_channel: '#marketing-ops',
+};
+
+/**
  * WF3 - Investor Escalation Workflow
  *
  * Triggers when a lead's "Sentinel Segment" field changes to "Investor" or
