@@ -41,7 +41,7 @@ Scanning all systems now.
 - **HeyGen:** Active. 236 credits. Custom avatar "David" is ready. Multiple CEO briefing videos are rendered.
 - **Email/Calendar:** Active. Inbound deal flow is hitting the inbox (e.g., 7,735 SF office in WPB, Mexican Restaurant in Port St. Lucie).
 - **GitHub:** Active. Master deployment repo is private and updated.
-- **Media Automation (Airtable/Zapier/Buffer):** Seeded but stalled. Buffer will reject current payloads due to Canva links in the Image URL field and past-dated schedules.
+- **Media Automation (Airtable/[REDACTED-PLATFORM]/Buffer):** Seeded but stalled. Buffer will reject current payloads due to Canva links in the Image URL field and past-dated schedules.
 - **Meta Ads:** **CRITICAL FAILURE**. The connector token is invalid (OAuthException 190).
 
 **Target Outcome:**
@@ -52,7 +52,7 @@ A fully automated, live-fire media publishing pipeline and restored ad performan
 1. **DELEGATED TO YOU:** Re-authorize the Meta Ads Manager connector immediately. Go to the connectors page on the UI, click configure under the manage button, and complete the OAuth flow.
 2. **DELEGATED TO YOU:** Execute the manual Canva export. Open the Canva link for Airtable record `rechVm1hmggAvfvXp`, download as PNG, and drag-and-drop it into the Airtable `Asset` field.
 3. **OWNED BY ME:** Once you confirm the PNG is attached, I will execute the remediation scripts (`script1_update_date.sh` and `script2_clear_image_url.sh`) to clean the data payload.
-4. **OWNED BY ME:** I will then trigger the live fire test by flipping the status to Approved, pushing the asset through Zapier WF-2 to Buffer.
+4. **OWNED BY ME:** I will then trigger the live fire test by flipping the status to Approved, pushing the asset through [REDACTED-PLATFORM] WF-2 to Buffer.
 
 I am holding on the line. Confirm when the Meta Ads connector is re-authorized and the Canva PNG is attached to the Airtable record, and I will execute the final scripts to push the system live.
 

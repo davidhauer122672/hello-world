@@ -26,7 +26,7 @@ None of this blocks authorization, but the Worker code needs these three additio
 - The Master Orchestrator document (Section 2.3) describes a separate Cloudflare Worker that routes Nemotron inference calls, logs to Airtable, and falls back to `claude-sonnet-4-20250514` via Anthropic API — but **that Worker's code doesn't exist yet in the repo**.
 - The three gaps you identified (tier confirmation, request queuing, exponential backoff) and the model string issue all apply to this not-yet-written inference routing Worker.
 
-I'll now build the complete inference routing Worker with all three additions baked in, plus the model string correction. This will be the Worker that sits between Nanobanana/Zapier and the Nemotron + Anthropic fallback layer. Proceeding now.
+I'll now build the complete inference routing Worker with all three additions baked in, plus the model string correction. This will be the Worker that sits between Nanobanana/[REDACTED-PLATFORM] and the Nemotron + Anthropic fallback layer. Proceeding now.
 
 **[ASSISTANT]:** I have completed the review and implemented all three pre-authorization additions for the Cloudflare Worker, along with the model string correction.
 
@@ -160,7 +160,7 @@ Before running `./scripts/deploy.sh production` and authorizing the Master Orche
 - `ANTHROPIC_API_KEY` (Native Tier 3+ key)
 - `AIRTABLE_API_KEY` (Personal access token)
 - `AIRTABLE_BASE` (Update the placeholder in `wrangler.toml` to the live base ID)
-- `WORKER_AUTH_TOKEN` (Secure bearer token for Zapier/Nanobanana)
+- `WORKER_AUTH_TOKEN` (Secure bearer token for [REDACTED-PLATFORM]/Nanobanana)
 
 I have attached the full **Staging Validation Report** and the test scripts used. The Worker is now cleared for production authorization once those credentials are in place. Let me know if you are ready to proceed with the final authorization step.
 
@@ -173,7 +173,7 @@ AIRTABLE_BASE = "appABCDEFGHIJKLMN" ```  **3. Airtable API Key** Go to airtable.
 4. Production Auth Token Generate a secure token locally:
 bash
 openssl rand -base64 32 ``` Then set it: ``` wrangler secret put WORKER_AUTH_TOKEN --env production
-Update both Zapier and Nanobanana to send this token as the Bearer header before you deploy.
+Update both [REDACTED-PLATFORM] and Nanobanana to send this token as the Bearer header before you deploy.
 Deployment sequence once all four are set:
 bash
 ./scripts/deploy.sh production
@@ -199,7 +199,7 @@ To summarize the authorization state:
 1. Set `ANTHROPIC_API_KEY` via `wrangler secret put`
 2. Update `AIRTABLE_BASE` in `wrangler.toml` to live base ID
 3. Set `AIRTABLE_API_KEY` via `wrangler secret put`
-4. Set `WORKER_AUTH_TOKEN` via `wrangler secret put` and update Zapier/Nanobanana
+4. Set `WORKER_AUTH_TOKEN` via `wrangler secret put` and update [REDACTED-PLATFORM]/Nanobanana
 
 **Then:**
 ```bash
@@ -208,12 +208,12 @@ To summarize the authorization state:
 
 Once those four credentials are in place and the deploy script passes its gate checks, the Master Orchestrator is authorized. Module A can dial.
 
-**[USER]:** Explain how to update Zapier and Nanobanana with the new `WORKER_AUTH_TOKEN`.
+**[USER]:** Explain how to update [REDACTED-PLATFORM] and Nanobanana with the new `WORKER_AUTH_TOKEN`.
 
-**[ASSISTANT]:** The \`WORKER\_AUTH\_TOKEN\` is the bearer token that Zapier and Nanobanana must include in the \`Authorization\` header when calling the Worker's \`/inference\` endpoint. Here is how to update each one. \*\*Zapier\*\* Zapier calls the Worker through a Webhook action step (or a Code step that makes an HTTP request). The token goes in the request headers. 1\. Open the Zap that calls the inference router. 2\. Find the Webhook (or Code) step that POSTs to \`https://ckpm-inference-router.david-e59.workers.dev/inference\`. 3\. In the \*\*Headers\*\* section, set or update: - \*\*Key:\*\* \`Authorization\` - \*\*Value:\*\* \`Bearer \` Where \`\` is the exact string you generated with \`openssl rand -base64 32\` and set via \`wrangler secret put WORKER\_AUTH\_TOKEN --env production\`. 4\. Save the step and test it. You should get a \`200\` response with a valid inference result, not a \`401 Unauthorized\`. If you have multiple Zaps calling the Worker (one per module, for example), update the header in each one. \*\*Nanobanana\*\* Nanobanana triggers inference calls through its automation layer. The token location depends on how the integration is configured: - \*\*If Nanobanana calls the Worker directly via HTTP\*\* (webhook or API call configuration): Update the \`Authorization\` header to \`Bearer \` in the same way as Zapier — find the HTTP request configuration in the Nanobanana dashboard and update the header value. - \*\*If Nanobanana routes through Zapier\*\* (Nanobanana triggers a Zap, which then calls the Worker): You only need to update the Zapier side. Nanobanana does not need the token directly because it never makes the HTTP call itself. - \*\*If the token is stored as a variable or secret in Nanobanana's settings\*\*: Look for an environment variable, API key field, or secrets manager in the Nanobanana configuration panel. Update the stored value there. The field name will likely be something like \`WORKER\_AUTH\_TOKEN\`, \`API\_KEY\`, or \`BEARER\_TOKEN\` depending on how it was originally configured. \*\*Verification sequence\*\* After updating both systems: 1\. Set the production token: \`wrangler secret put WORKER\_AUTH\_TOKEN --env production\` 2\. Update Zapier header(s) 3\. Update Nanobanana header or variable 4\. Test each integration by triggering a single inference call from each system 5\. Confirm the Worker returns \`200\` with \`provider: cloudflare-workers-ai\` (not \`401\`) Do not deploy to production until both systems are updated. If you deploy first and the old token is still in Zapier/Nanobanana, every inference call will return \`401\` and Module A will be unable to dial.
+**[ASSISTANT]:** The \`WORKER\_AUTH\_TOKEN\` is the bearer token that [REDACTED-PLATFORM] and Nanobanana must include in the \`Authorization\` header when calling the Worker's \`/inference\` endpoint. Here is how to update each one. \*\*[REDACTED-PLATFORM]\*\* [REDACTED-PLATFORM] calls the Worker through a Webhook action step (or a Code step that makes an HTTP request). The token goes in the request headers. 1\. Open the Zap that calls the inference router. 2\. Find the Webhook (or Code) step that POSTs to \`https://ckpm-inference-router.david-e59.workers.dev/inference\`. 3\. In the \*\*Headers\*\* section, set or update: - \*\*Key:\*\* \`Authorization\` - \*\*Value:\*\* \`Bearer \` Where \`\` is the exact string you generated with \`openssl rand -base64 32\` and set via \`wrangler secret put WORKER\_AUTH\_TOKEN --env production\`. 4\. Save the step and test it. You should get a \`200\` response with a valid inference result, not a \`401 Unauthorized\`. If you have multiple Zaps calling the Worker (one per module, for example), update the header in each one. \*\*Nanobanana\*\* Nanobanana triggers inference calls through its automation layer. The token location depends on how the integration is configured: - \*\*If Nanobanana calls the Worker directly via HTTP\*\* (webhook or API call configuration): Update the \`Authorization\` header to \`Bearer \` in the same way as [REDACTED-PLATFORM] — find the HTTP request configuration in the Nanobanana dashboard and update the header value. - \*\*If Nanobanana routes through [REDACTED-PLATFORM]\*\* (Nanobanana triggers a Zap, which then calls the Worker): You only need to update the [REDACTED-PLATFORM] side. Nanobanana does not need the token directly because it never makes the HTTP call itself. - \*\*If the token is stored as a variable or secret in Nanobanana's settings\*\*: Look for an environment variable, API key field, or secrets manager in the Nanobanana configuration panel. Update the stored value there. The field name will likely be something like \`WORKER\_AUTH\_TOKEN\`, \`API\_KEY\`, or \`BEARER\_TOKEN\` depending on how it was originally configured. \*\*Verification sequence\*\* After updating both systems: 1\. Set the production token: \`wrangler secret put WORKER\_AUTH\_TOKEN --env production\` 2\. Update [REDACTED-PLATFORM] header(s) 3\. Update Nanobanana header or variable 4\. Test each integration by triggering a single inference call from each system 5\. Confirm the Worker returns \`200\` with \`provider: cloudflare-workers-ai\` (not \`401\`) Do not deploy to production until both systems are updated. If you deploy first and the old token is still in [REDACTED-PLATFORM]/Nanobanana, every inference call will return \`401\` and Module A will be unable to dial.
 
 **[USER]:** That output is accurate and complete. Nothing to correct.
-The only thing worth adding for your specific setup: the staging report showed three modules firing concurrently through Zapier. If each module runs as a separate Zap, you have three header updates to make, not one. Easy to miss the third one and get a silent 401 on MODULE_C only.
+The only thing worth adding for your specific setup: the staging report showed three modules firing concurrently through [REDACTED-PLATFORM]. If each module runs as a separate Zap, you have three header updates to make, not one. Easy to miss the third one and get a silent 401 on MODULE_C only.
 One operational note before you deploy:
 The report confirmed the Durable Object correctly bypasses the 429 backoff logic on a 401. That is good design in staging, but in production it means a bad or expired Anthropic key will fail fast and loud rather than retrying. Keep that in mind if you ever rotate the Anthropic key — update wrangler secret put ANTHROPIC_API_KEY --env production first, then deploy. Rotating the key after deployment without updating the secret will cause every fallback path call to hard-fail immediately with no retry buffer.
 Clean deployment checklist:
@@ -222,7 +222,7 @@ Do step 9 before you consider it live. The staging fallback tests hit Anthropic.
 
 **[ASSISTANT]:** Noted. Both additions are important operational context:
 
-The three-Zap header update risk is real — a silent 401 on MODULE_C only would look like a content production outage rather than a misconfiguration, and it would be easy to chase the wrong root cause. Worth labeling all three Zaps clearly in the Zapier dashboard (e.g., "CKPM Sentinel — MODULE_A", "CKPM Social — MODULE_B", "CKPM Content — MODULE_C") so the header update is a checklist item per Zap, not a single action.
+The three-Zap header update risk is real — a silent 401 on MODULE_C only would look like a content production outage rather than a misconfiguration, and it would be easy to chase the wrong root cause. Worth labeling all three Zaps clearly in the [REDACTED-PLATFORM] dashboard (e.g., "CKPM Sentinel — MODULE_A", "CKPM Social — MODULE_B", "CKPM Content — MODULE_C") so the header update is a checklist item per Zap, not a single action.
 
 The key rotation order is the more consequential point. The 401 bypass in the backoff logic is correct behavior — retrying an authentication failure is wasteful — but it means the Anthropic key is a hard dependency with zero grace period. If the key expires or is rotated at the Anthropic Console without updating the Wrangler secret first, every Nemotron outage becomes a total inference failure instead of a graceful fallback. The operational rule is: **always update the secret before the key state changes**, never after.
 
@@ -238,17 +238,17 @@ Your nine-step deployment checklist is the authoritative sequence. Nothing to ad
 
 - **Step 2 (AIRTABLE_API_KEY):** I don't have an Airtable API token. You need to generate one at airtable.com/create/tokens with `data.records:write` scope. Can you provide it?
 
-- **Step 3 (WORKER_AUTH_TOKEN):** I can generate a secure token with `openssl rand -base64 32` and set it. But you'll need the same token value to update Zapier and Nanobanana. Should I generate it and give it to you?
+- **Step 3 (WORKER_AUTH_TOKEN):** I can generate a secure token with `openssl rand -base64 32` and set it. But you'll need the same token value to update [REDACTED-PLATFORM] and Nanobanana. Should I generate it and give it to you?
 
 - **Step 4 (AIRTABLE_BASE):** I need your live Airtable base ID (the `appXXX...` string from your base URL).
 
-- **Steps 5–6 (Zapier + Nanobanana headers):** I can attempt to update Zapier via the Zapier MCP server if the webhook/Zap configurations are accessible through it. Nanobanana I'd need to know how it's configured.
+- **Steps 5–6 ([REDACTED-PLATFORM] + Nanobanana headers):** I can attempt to update [REDACTED-PLATFORM] via the [REDACTED-PLATFORM] MCP server if the webhook/Zap configurations are accessible through it. Nanobanana I'd need to know how it's configured.
 
-- **Step 8 (Authorize Master Orchestrator):** I need to know what this action entails — is it a flag in Airtable, a Zapier toggle, a document update, or something else?
+- **Step 8 (Authorize Master Orchestrator):** I need to know what this action entails — is it a flag in Airtable, a [REDACTED-PLATFORM] toggle, a document update, or something else?
 
-Would you like to provide the credentials so I can execute the full sequence, or should I run the steps I can handle (generate the auth token, update wrangler.toml, deploy, and test) while you handle the credential and Zapier steps in parallel?
+Would you like to provide the credentials so I can execute the full sequence, or should I run the steps I can handle (generate the auth token, update wrangler.toml, deploy, and test) while you handle the credential and [REDACTED-PLATFORM] steps in parallel?
 
-**[USER]:** run the steps you can handle (generate the auth token, update wrangler.toml, deploy, and test) while I handle the credential and Zapier steps in parallel?
+**[USER]:** run the steps you can handle (generate the auth token, update wrangler.toml, deploy, and test) while I handle the credential and [REDACTED-PLATFORM] steps in parallel?
 
 **[ASSISTANT]:** On it. I'll generate the production auth token, prepare the wrangler.toml, and get everything ready for deployment. I'll share the generated token with you so you can update the three Zaps and Nanobanana in parallel.
 
@@ -273,7 +273,7 @@ Bearer
 Update all three Zaps (MODULE_A, MODULE_B, MODULE_C) and Nanobanana with this value. Let me know when you've set the Anthropic API key, Airtable API key, and Airtable base ID — I'll update wrangler.toml and deploy as soon as those are in place.
 
 
-**[ASSISTANT]:** Understood — you've confirmed receipt of the token. I'll proceed with the steps I can execute now while you handle the credential and Zapier updates in parallel.
+**[ASSISTANT]:** Understood — you've confirmed receipt of the token. I'll proceed with the steps I can execute now while you handle the credential and [REDACTED-PLATFORM] updates in parallel.
 
 To keep moving: have you set the Anthropic API key, Airtable API key, and Airtable base ID yet? I need the Airtable base ID (the `appXXX...` string) to update `wrangler.toml` before deploying. The two API keys you can set directly via Wrangler from your machine, or paste them here and I'll set them from this sandbox.
 
@@ -283,10 +283,10 @@ Bearer
 That token is now in this conversation. Treat it as compromised. Run this right now before anything else:
 bash
 openssl rand -base64 32 wrangler secret put WORKER_AUTH_TOKEN --env production
-Paste the new token when prompted. Then update Zapier Steps 3 in all three Zaps with the new value.
+Paste the new token when prompted. Then update [REDACTED-PLATFORM] Steps 3 in all three Zaps with the new value.
 After the token is rotated, the Zap #3 build guide is solid. A few notes as you work through it:
 The filter in Step 2 is important. Without it, a malformed webhook payload with no image_url will hit the Worker and produce a confusing error rather than a clean rejection.
-In Step 4 Path B, your Slack message template has {{imageurl}} and {{sourcezap}} without underscores. Zapier's field references from the webhook step will be {{image_url}} and {{source_zap}} — confirm the field names match exactly when you map them or the Slack message will show blank values on failure.
+In Step 4 Path B, your Slack message template has {{imageurl}} and {{sourcezap}} without underscores. [REDACTED-PLATFORM]'s field references from the webhook step will be {{image_url}} and {{source_zap}} — confirm the field names match exactly when you map them or the Slack message will show blank values on failure.
 Test 5 (invalid URL) is the most important test. If Path B fires correctly and the Slack alert lands in #ops-automation, your error path is proven. Do not turn the Zap on until that test passes.
 Rotate the token first. Everything else follows.
 
@@ -321,7 +321,7 @@ Let me know when you've updated the three Zaps, Nanobanana, and set the remainin
 
 **[ASSISTANT]:** The social media post agent build lives in one place: **Section IV (MODULE B) of the Master Orchestrator document**, on the `claude/reduce-document-length-trA2j` branch of your `hello-world` repo (`master-orchestrator.txt`, lines 85-110).
 
-That section defines the full lifecycle: Nanobanana intake, Nemotron caption drafting, Airtable Content Calendar schema, Banana Pro AI asset generation, CEO review loop, Zapier-to-Buffer publishing, and the caption generation prompt. It also specifies the two content pillars (Brand and CEO Journey), the platform targets (Instagram, Facebook, LinkedIn, Alignable), and the eight-step workflow sequence from brief submission through Buffer publish confirmation.
+That section defines the full lifecycle: Nanobanana intake, Nemotron caption drafting, Airtable Content Calendar schema, Banana Pro AI asset generation, CEO review loop, [REDACTED-PLATFORM]-to-Buffer publishing, and the caption generation prompt. It also specifies the two content pillars (Brand and CEO Journey), the platform targets (Instagram, Facebook, LinkedIn, Alignable), and the eight-step workflow sequence from brief submission through Buffer publish confirmation.
 
 **What does not exist yet in this project:**
 
@@ -329,13 +329,13 @@ There is no standalone build document, Zap configuration file, Buffer integratio
 
 In short: the architecture is defined in the Master Orchestrator. The build guide has not been written yet. Would you like me to build it?
 
-**[USER]:** Acknowledged limitation and prepared manual guidance instead Acknowledged limitation and prepared manual guidance instead I don't have direct API access to your Zapier account to pull Zap status programmatically. Here is what to check manually, based on everything we know about your setup. Open zapier.com/app/zaps and verify these six things: 1\. Zap naming — confirm all three are labeled correctly: CKPM Sentinel — MODULE\_A CKPM Social — MODULE\_B CKPM Content — MODULE\_C 2\. Auth token updated in all three — the header in each Zap's Worker POST step should read: Authorization: Bearer Not the old IJt9nR...ibE= value. Check each one individually. 3\. All three Zaps are turned ON — green status indicator in the dashboard. 4\. Zap #3 (Image Asset Pipeline) status — based on our last exchange, this one was still being built. Confirm whether it exists and whether it is on or still in draft. 5\. No error history in the last 24 hours — click into each Zap's Task History and confirm no failed runs since the token rotation. 6\. Nanobanana — confirm its token was updated and you have deleted /tmp/rotated\_token.txt. Report back what you find and I will tell you the exact next step. The most likely open item is Zap #3 not yet being live.
+**[USER]:** Acknowledged limitation and prepared manual guidance instead Acknowledged limitation and prepared manual guidance instead I don't have direct API access to your [REDACTED-PLATFORM] account to pull Zap status programmatically. Here is what to check manually, based on everything we know about your setup. Open [redacted-platform].com/app/zaps and verify these six things: 1\. Zap naming — confirm all three are labeled correctly: CKPM Sentinel — MODULE\_A CKPM Social — MODULE\_B CKPM Content — MODULE\_C 2\. Auth token updated in all three — the header in each Zap's Worker POST step should read: Authorization: Bearer Not the old IJt9nR...ibE= value. Check each one individually. 3\. All three Zaps are turned ON — green status indicator in the dashboard. 4\. Zap #3 (Image Asset Pipeline) status — based on our last exchange, this one was still being built. Confirm whether it exists and whether it is on or still in draft. 5\. No error history in the last 24 hours — click into each Zap's Task History and confirm no failed runs since the token rotation. 6\. Nanobanana — confirm its token was updated and you have deleted /tmp/rotated\_token.txt. Report back what you find and I will tell you the exact next step. The most likely open item is Zap #3 not yet being live.
 
 **[ASSISTANT]:** That guidance is accurate. The six-point checklist covers the full verification scope.
 
 One addition: I already deleted `/tmp/rotated_token.txt` from the sandbox immediately after sending the email. That file is gone. The only copy of the new token is in the email I sent to davidhauer122672@gmail.com. Once you've copied it into all three Zaps and Nanobanana, delete that email.
 
-Go through the six checks at zapier.com/app/zaps and report back what you find. The most likely open items are:
+Go through the six checks at [redacted-platform].com/app/zaps and report back what you find. The most likely open items are:
 
 - Zap #3 (Image Asset Pipeline) still in draft
 - One of the three module Zaps still carrying the old token
@@ -349,41 +349,41 @@ I'll tell you the exact next step based on what you report.
 
 You need to open Nanobanana's settings, find the HTTP request configuration or environment variable where the Worker bearer token is stored, and verify it matches the new token from the email I sent to davidhauer122672@gmail.com.
 
-If it still shows the old value (`IJt9nR...ibE=`), replace it with the new token. If you're unsure where the token is stored in Nanobanana, tell me how Nanobanana calls the Worker (direct HTTP, through Zapier, or through an environment variable) and I'll tell you exactly where to look.
+If it still shows the old value (`IJt9nR...ibE=`), replace it with the new token. If you're unsure where the token is stored in Nanobanana, tell me how Nanobanana calls the Worker (direct HTTP, through [REDACTED-PLATFORM], or through an environment variable) and I'll tell you exactly where to look.
 
-**[USER]:** Perform all zapier naming required changes
+**[USER]:** Perform all [redacted-platform] naming required changes
 
-**[ASSISTANT]:** Let me check what Zapier tools are available through the MCP server and see what Zaps currently exist in your account.
+**[ASSISTANT]:** Let me check what [REDACTED-PLATFORM] tools are available through the MCP server and see what Zaps currently exist in your account.
 
-**[ASSISTANT]:** The Zapier dashboard is showing a logged-out state with a "Log in" prompt. I need you to log in to your Zapier account so I can access and rename the Zaps.
+**[ASSISTANT]:** The [REDACTED-PLATFORM] dashboard is showing a logged-out state with a "Log in" prompt. I need you to log in to your [REDACTED-PLATFORM] account so I can access and rename the Zaps.
 
 Would you like to take over the browser to log in? After you're done, I'll handle the renaming.
 
 **[ASSISTANT]:** Let me check the dashboard now.
 
-**[ASSISTANT]:** The Zapier login page is showing. It looks like the session didn't persist from your earlier login. I need you to log in again.
+**[ASSISTANT]:** The [REDACTED-PLATFORM] login page is showing. It looks like the session didn't persist from your earlier login. I need you to log in again.
 
-Would you like to take over the browser to sign in? The login page is already open at zapier.com/app/login. You can use Google, Facebook, Microsoft, SSO, or email/password. Once you're logged in, let me know and I'll handle the Zap renaming.
+Would you like to take over the browser to sign in? The login page is already open at [redacted-platform].com/app/login. You can use Google, Facebook, Microsoft, SSO, or email/password. Once you're logged in, let me know and I'll handle the Zap renaming.
 
 **[ASSISTANT]:** Checking the dashboard now.
 
-**[ASSISTANT]:** The browser session is not logged in to Zapier. The URL redirected to the login page with `redirect_cause=auth-required`, and the session cookie shows `ssohint=anonymous`. Your previous login did not persist in this browser.
+**[ASSISTANT]:** The browser session is not logged in to [REDACTED-PLATFORM]. The URL redirected to the login page with `redirect_cause=auth-required`, and the session cookie shows `ssohint=anonymous`. Your previous login did not persist in this browser.
 
 I need you to log in one more time. The login page is open now. Please take over the browser, log in, and then **stay on the page for a moment** after login completes so the session cookie sets properly. Then let me know.
 
-**[USER]:** https://zapier.com/app/assets/zaps
+**[USER]:** https://[redacted-platform].com/app/assets/zaps
 
 **[ASSISTANT]:** Let me navigate to that URL now.
 
-**[ASSISTANT]:** The browser is still not logged in to Zapier. The nav bar shows "Log in" and "Sign up" instead of your account. The page is empty because it requires authentication.
+**[ASSISTANT]:** The browser is still not logged in to [REDACTED-PLATFORM]. The nav bar shows "Log in" and "Sign up" instead of your account. The page is empty because it requires authentication.
 
-The Zapier login session is not persisting in this sandbox browser. This is likely because Zapier uses a different cookie domain or SSO mechanism that doesn't carry over between browser sessions in this environment.
+The [REDACTED-PLATFORM] login session is not persisting in this sandbox browser. This is likely because [REDACTED-PLATFORM] uses a different cookie domain or SSO mechanism that doesn't carry over between browser sessions in this environment.
 
-I cannot access your Zapier dashboard from this sandbox. Here is exactly what you need to do manually. It takes about 60 seconds:
+I cannot access your [REDACTED-PLATFORM] dashboard from this sandbox. Here is exactly what you need to do manually. It takes about 60 seconds:
 
 **Rename your three Zaps:**
 
-1. Open zapier.com/app/zaps in your browser
+1. Open [redacted-platform].com/app/zaps in your browser
 2. Find each module Zap and click its name (the title is editable inline)
 3. Rename them to:
    - `CKPM Sentinel - MODULE_A`
@@ -395,18 +395,18 @@ If you have a fourth Zap for the Image Asset Pipeline, name it:
 
 The names save automatically when you click away. No deploy or publish step is needed.
 
-Would you like me to move on to the next deployment step instead, or is there something else you need help with on the Zapier side?
+Would you like me to move on to the next deployment step instead, or is there something else you need help with on the [REDACTED-PLATFORM] side?
 
 **[USER]:** What are the Zaps currently named relative to the renaming directed above?
 
-**[ASSISTANT]:** I don't know what your Zaps are currently named. I was unable to access your Zapier dashboard from this sandbox. Every attempt to load zapier.com/app/zaps showed a logged-out state, and the login session did not persist.
+**[ASSISTANT]:** I don't know what your Zaps are currently named. I was unable to access your [REDACTED-PLATFORM] dashboard from this sandbox. Every attempt to load [redacted-platform].com/app/zaps showed a logged-out state, and the login session did not persist.
 
-To answer your question, you need to open zapier.com/app/zaps in your own browser and tell me what names you see. I'll then map each one to the correct rename target.
+To answer your question, you need to open [redacted-platform].com/app/zaps in your own browser and tell me what names you see. I'll then map each one to the correct rename target.
 
 **[USER]:** BUILD ALL 6 ZAPS - MANUAL METHOD (15 minutes)
 Since your Instagram Zap (354077135) is published and perfect, use it as the template.
 FACEBOOK ZAP
-Go to Zapier → Find Instagram Zap (354077135)
+Go to [REDACTED-PLATFORM] → Find Instagram Zap (354077135)
 Click ⋮ menu → "Copy Zap"
 Title: "Approve Airtable Content → Post to Facebook Buffer"
 Step 2 (Filter): Change Platform icontains "Instagram" → Platform icontains "Facebook"
@@ -439,19 +439,19 @@ Step 2: Platform → "Alignable"
 Step 4 (Airtable Update): Keep as-is
 Publish ✅
 
-**[ASSISTANT]:** Understood. You want me to build all 6 Zaps by copying the existing Instagram Zap (354077135) and modifying each copy. Let me attempt to access Zapier again to execute this.
+**[ASSISTANT]:** Understood. You want me to build all 6 Zaps by copying the existing Instagram Zap (354077135) and modifying each copy. Let me attempt to access [REDACTED-PLATFORM] again to execute this.
 
-**[ASSISTANT]:** The browser is showing the Zapier login page again. The session is not persisting in this sandbox environment. I need you to log in one more time.
+**[ASSISTANT]:** The browser is showing the [REDACTED-PLATFORM] login page again. The session is not persisting in this sandbox environment. I need you to log in one more time.
 
-The browser is open to the Zapier login page. Please take over, log in, and then let me know when you see your dashboard. I'll handle all 6 Zap builds from there.
+The browser is open to the [REDACTED-PLATFORM] login page. Please take over, log in, and then let me know when you see your dashboard. I'll handle all 6 Zap builds from there.
 
-Alternatively, if Zapier login keeps dropping, you can log in using email/password instead of Google SSO. SSO sessions sometimes don't persist across sandbox browser restarts.
+Alternatively, if [REDACTED-PLATFORM] login keeps dropping, you can log in using email/password instead of Google SSO. SSO sessions sometimes don't persist across sandbox browser restarts.
 
 **[ASSISTANT]:** Trying the login page again now.
 
-**[ASSISTANT]:** The browser is still on the Zapier login page. You said "try again" but the login requires your credentials. I have two options:
+**[ASSISTANT]:** The browser is still on the [REDACTED-PLATFORM] login page. You said "try again" but the login requires your credentials. I have two options:
 
-1. **You provide your Zapier email and password** in this chat and I'll type them into the login form directly. (I can see the email/password fields on the page right now.)
+1. **You provide your [REDACTED-PLATFORM] email and password** in this chat and I'll type them into the login form directly. (I can see the email/password fields on the page right now.)
 
 2. **You take over the browser**, log in yourself, and then tell me when you're on the dashboard.
 
@@ -459,9 +459,9 @@ Which would you prefer? If you choose option 1, I'll log in and immediately star
 
 **[ASSISTANT]:** Checking the browser now.
 
-**[ASSISTANT]:** Still not logged in. The nav bar shows "Log in" and "Sign up." The Zapier session is not persisting in this sandbox browser.
+**[ASSISTANT]:** Still not logged in. The nav bar shows "Log in" and "Sign up." The [REDACTED-PLATFORM] session is not persisting in this sandbox browser.
 
-This is a known limitation. Zapier uses aggressive session management that does not carry over in sandboxed browser environments. I have tried this five times now with the same result.
+This is a known limitation. [REDACTED-PLATFORM] uses aggressive session management that does not carry over in sandboxed browser environments. I have tried this five times now with the same result.
 
 Here is the path forward. You have two options:
 
@@ -469,7 +469,7 @@ Here is the path forward. You have two options:
 
 For each of the 6 platforms, repeat this exact sequence:
 
-1. Go to `zapier.com/editor/354077135` (your Instagram Zap)
+1. Go to `[redacted-platform].com/editor/354077135` (your Instagram Zap)
 2. Click the three-dot menu, then "Copy Zap"
 3. Change the title to the correct name (listed below)
 4. Open Step 2 (Filter), change `Platform icontains "Instagram"` to the target platform
@@ -485,7 +485,7 @@ For each of the 6 platforms, repeat this exact sequence:
 | Mighty | Approve Airtable Content → Post to Mighty Buffer | Mighty |
 | Alignable | Approve Airtable Content → Alignable Manual Alert | Alignable |
 
-**Option B: You provide your Zapier email and password here** and I'll log in and build all 6 right now.
+**Option B: You provide your [REDACTED-PLATFORM] email and password here** and I'll log in and build all 6 right now.
 
 Which do you want?
 
@@ -495,7 +495,7 @@ Which do you want?
 
 **[ASSISTANT]:** Entering credentials now. The password field was misindexed last time - I'll use the form fill tool to enter both fields at once.
 
-**[ASSISTANT]:** The login returned "Password is incorrect." Zapier recognized the email (`david@coastalkey-pm.com`) but rejected the password.
+**[ASSISTANT]:** The login returned "Password is incorrect." [REDACTED-PLATFORM] recognized the email (`david@coastalkey-pm.com`) but rejected the password.
 
 A few possibilities:
 
@@ -511,13 +511,13 @@ Can you double-check and provide the correct password, or would you prefer to ta
 
 It looks like the "Password is incorrect" error from the first attempt is still displayed, and the second password also failed. The issue may be that the old error state is interfering, or this password is also wrong.
 
-Let me try a clean approach. I'll reload the login page fresh and enter the credentials from scratch. But first, can you confirm: did you sign up for Zapier using email/password, or did you use "Continue with Google"? If you used Google SSO, there is no password set and we need to use the Google login flow instead.
+Let me try a clean approach. I'll reload the login page fresh and enter the credentials from scratch. But first, can you confirm: did you sign up for [REDACTED-PLATFORM] using email/password, or did you use "Continue with Google"? If you used Google SSO, there is no password set and we need to use the Google login flow instead.
 
 **[ASSISTANT]:** Trying with the corrected password now.
 
 **[ASSISTANT]:** That password was also rejected. "Password is incorrect" is showing again.
 
-We've now tried three passwords and all three failed. This strongly suggests the account was created using Google SSO ("Continue with Google") rather than email/password. When you sign up via Google, Zapier does not set a password, so no email/password combination will work.
+We've now tried three passwords and all three failed. This strongly suggests the account was created using Google SSO ("Continue with Google") rather than email/password. When you sign up via Google, [REDACTED-PLATFORM] does not set a password, so no email/password combination will work.
 
 The fastest path forward is for you to take over the browser and click "Continue with Google" to log in. The login page is already open. Once you're in, I'll handle all 6 Zap builds immediately.
 
@@ -629,7 +629,7 @@ Each FEMA record includes trigger conditions, responsible parties, completion cr
 
 You can view both tables at your Airtable base: https://airtable.com/appUSnNgpDkcEOzhN
 
-**[USER]:** Write a prompt for zapier to do the following:What tables do you see? (e.g., "Storm Management", "Properties", "Emergency Status", etc.)
+**[USER]:** Write a prompt for [redacted-platform] to do the following:What tables do you see? (e.g., "Storm Management", "Properties", "Emergency Status", etc.)
 Which table tracks FEMA deployment?
 What field name tracks FEMA status? (Look for a field like "FEMADeployed", "EmergencyActive", "FEMA_Status", etc.)
 What value indicates FEMA IS deployed? (e.g., "Yes", "Active", "Deployed", checkbox that's checked?)
@@ -639,7 +639,7 @@ Right-click #critical-emergency-storm-services
 Click View channel details
 Scroll to bottom → Copy Channel ID (looks like: C1F5RKJPR)
 
-**[ASSISTANT]:** Let me pull the exact table structures, field names, and values from your Airtable base so I can write the Zapier prompt with precise references. I also need to check if there's a Slack MCP tool available to get the channel ID.
+**[ASSISTANT]:** Let me pull the exact table structures, field names, and values from your Airtable base so I can write the [REDACTED-PLATFORM] prompt with precise references. I also need to check if there's a Slack MCP tool available to get the channel ID.
 
 **[ASSISTANT]:** I have pulled the exact schema from your Airtable base. Here are the answers to your questions:
 
@@ -661,13 +661,13 @@ When a FEMA phase is activated, the status changes from `Todo` to `In progress`.
 
 *(Note: The `Storm Protocols` table also tracks emergency status via its own `Status` field, which uses `Standby`, `Activated`, and `Complete`.)*
 
-Regarding the Slack Channel ID: I cannot retrieve it for you because the Zapier MCP server is currently unreachable (DNS resolution failure for `agants.zapier.com`), and I do not have direct access to your Slack workspace. You will need to copy the Channel ID manually using the steps you outlined.
+Regarding the Slack Channel ID: I cannot retrieve it for you because the [REDACTED-PLATFORM] MCP server is currently unreachable (DNS resolution failure for `agants.[redacted-platform].com`), and I do not have direct access to your Slack workspace. You will need to copy the Channel ID manually using the steps you outlined.
 
-Here is the world-class, imperial-grade Zapier prompt for your AI agent, written from the perspective of the CEO:
+Here is the world-class, imperial-grade [REDACTED-PLATFORM] prompt for your AI agent, written from the perspective of the CEO:
 
 ***
 
-**ZAPIER AI AGENT PROMPT: FEMA DEPLOYMENT ALERT WORKFLOW**
+**[REDACTED-PLATFORM] AI AGENT PROMPT: FEMA DEPLOYMENT ALERT WORKFLOW**
 
 **System Role:** You are the Chief Automation Architect for Coastal Key Property Management. Your mandate is to build a zero-fail, mission-critical emergency alert workflow.
 
@@ -682,7 +682,7 @@ Here is the world-class, imperial-grade Zapier prompt for your AI agent, written
 - **Which field should trigger the Zap?**: `Status`
 
 **Filter (Step 2):**
-- **App:** Filter by Zapier
+- **App:** Filter by [REDACTED-PLATFORM]
 - **Condition:** Only continue if `Status` (Text) Exactly matches `In progress`
 
 **Action (Step 3):**
@@ -706,18 +706,18 @@ Here is the world-class, imperial-grade Zapier prompt for your AI agent, written
 **Execution Rules:**
 Do not deviate from these exact field names. The table is `FEMA Deployment`. The trigger field is `Status`. The activation value is `In progress`. Build this workflow immediately.
 
-**[USER]:** Act as a CTO of Tesla, create a world class prompt for zapier for my CKPM image pipeline
+**[USER]:** Act as a CTO of Tesla, create a world class prompt for [redacted-platform] for my CKPM image pipeline
 
-**[ASSISTANT]:** Building the CKPM Image Pipeline Zapier prompt now. Let me pull the current Airtable schema and review the Master Orchestrator's MODULE B and image pipeline specifications to ensure every field reference is exact.
+**[ASSISTANT]:** Building the CKPM Image Pipeline [REDACTED-PLATFORM] prompt now. Let me pull the current Airtable schema and review the Master Orchestrator's MODULE B and image pipeline specifications to ensure every field reference is exact.
 
-**[ASSISTANT]:** Here is the world-class Zapier prompt for the CKPM Image Pipeline, grounded in the exact Airtable schema from your live base and the Master Orchestrator Section IV (MODULE B) architecture.
+**[ASSISTANT]:** Here is the world-class [REDACTED-PLATFORM] prompt for the CKPM Image Pipeline, grounded in the exact Airtable schema from your live base and the Master Orchestrator Section IV (MODULE B) architecture.
 
 The prompt builds a 5-step Zap that executes the core WF-2 workflow from the Master Orchestrator:
 
 | Step | App | Action | Key Field |
 |------|-----|--------|-----------|
 | 1 (Trigger) | Airtable | Updated Record | `Status` field on `Content Calendar` table |
-| 2 (Filter) | Filter by Zapier | Continue only if `Status` = `Approved` AND `Asset` exists | Prevents firing on drafts or posts with no image |
+| 2 (Filter) | Filter by [REDACTED-PLATFORM] | Continue only if `Status` = `Approved` AND `Asset` exists | Prevents firing on drafts or posts with no image |
 | 3 (Action) | Buffer | Add to Queue | Pushes `Caption` + `Asset` URL to the platform queue |
 | 4 (Action) | Slack | Send Channel Message | Alerts `#content-calendar` with post title, platform, pillar, and date |
 | 5 (Action) | Airtable | Update Record | Sets `Status` to `Scheduled` |
@@ -732,19 +732,19 @@ One note: this prompt builds the Approved-to-Buffer leg (WF-2). The return leg (
 I have the LIVE ZDL. ALL THREE DEFECTS CONFIRMED IN PARAMS:
 🔴 Step 1: "filterByField":"Last Modified" ← PRESENT (remove) 🔴 Step 4: "ig_share_to_feed":true ← PRESENT (remove) 🔴 Step 6: No Status field ← PRESENT (add) 
 
-**[ASSISTANT]:** I need to see the full Zap Definition Language (ZDL) to make the exact fixes. Can you paste the complete ZDL here, or tell me the Zap ID so I can look at it in the Zapier editor?
+**[ASSISTANT]:** I need to see the full Zap Definition Language (ZDL) to make the exact fixes. Can you paste the complete ZDL here, or tell me the Zap ID so I can look at it in the [REDACTED-PLATFORM] editor?
 
-**[USER]:** https://zapier.com/editor/355200614/draft/_GEN_1774058046530/fields
+**[USER]:** https://[redacted-platform].com/editor/355200614/draft/_GEN_1774058046530/fields
 
-**[ASSISTANT]:** Let me open the Zapier editor to view the Zap configuration. I'll need to log in first.
+**[ASSISTANT]:** Let me open the [REDACTED-PLATFORM] editor to view the Zap configuration. I'll need to log in first.
 
-**[ASSISTANT]:** The Zapier login is rejecting the password again ("Password is incorrect"). I cannot access the Zap editor directly.
+**[ASSISTANT]:** The [REDACTED-PLATFORM] login is rejecting the password again ("Password is incorrect"). I cannot access the Zap editor directly.
 
-However, I do not need to be in the editor to give you the exact fixes. You told me the three defects and their locations. Here are the precise corrections to make in the Zapier editor yourself. Each fix takes under 30 seconds.
+However, I do not need to be in the editor to give you the exact fixes. You told me the three defects and their locations. Here are the precise corrections to make in the [REDACTED-PLATFORM] editor yourself. Each fix takes under 30 seconds.
 
 **Defect 1: Step 1 has `filterByField: "Last Modified"` (REMOVE)**
 
-Open Step 1 (Airtable trigger). Look for a field called "Limit to View" or "Filter by Field." It is currently set to `Last Modified`. Clear this field entirely. Leave it blank. The trigger should fire on any record update in the table, not filtered to a specific field. The filter logic belongs in Step 2 (Filter by Zapier), not in the trigger.
+Open Step 1 (Airtable trigger). Look for a field called "Limit to View" or "Filter by Field." It is currently set to `Last Modified`. Clear this field entirely. Leave it blank. The trigger should fire on any record update in the table, not filtered to a specific field. The filter logic belongs in Step 2 (Filter by [REDACTED-PLATFORM]), not in the trigger.
 
 **Defect 2: Step 4 has `ig_share_to_feed: true` (REMOVE)**
 
@@ -759,7 +759,7 @@ Open Step 6 (the Airtable Update Record step). This step should update the Conte
 
 Map the Record ID from Step 1 so it updates the correct record. The field name in Airtable is exactly `Status` and the value is exactly `Scheduled` (capital S).
 
-All three fixes are in the Zapier editor UI. No code changes. No ZDL editing. Open the Zap at `zapier.com/editor/355200614`, click into each step, make the change, and save.
+All three fixes are in the [REDACTED-PLATFORM] editor UI. No code changes. No ZDL editing. Open the Zap at `[redacted-platform].com/editor/355200614`, click into each step, make the change, and save.
 
 ---
 
@@ -781,4 +781,4 @@ All three fixes are in the Zapier editor UI. No code changes. No ZDL editing. Op
 - [STAGING-VALIDATION-REPORT.md](https://private-us-east-1.manuscdn.com/sessionFile/1DfmIKcHVtvEzx4AY7BcvP/sandbox/TrEl8bu8gE5KP5zRbVPoDf_1773883933120_na1fn_L2hvbWUvdWJ1bnR1L2hlbGxvLXdvcmxkL3dvcmtlcnMvaW5mZXJlbmNlLXJvdXRlci9TVEFHSU5HLVZBTElEQVRJT04tUkVQT1JU.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvMURmbUlLY0hWdHZFeng0QVk3QmN2UC9zYW5kYm94L1RyRWw4YnU4Z0U1S1A1elJiVlBvRGZfMTc3Mzg4MzkzMzEyMF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJobGJHeHZMWGR2Y214a0wzZHZjbXRsY25NdmFXNW1aWEpsYm1ObExYSnZkWFJsY2k5VFZFRkhTVTVITFZaQlRFbEVRVlJKVDA0dFVrVlFUMUpVLm1kIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=dtKglsLSp3KP6wAPljCpPiAnBR1HE-g1u6FEJR9a022ZhzJcRPjwaL4b2x4RFXPc86luNA5WiVFVmA0S9KCr1HJV3FVDZvR73AcGPwyGtpXK1Lm5zLmFZ9VljgFX8oB-QgFXVIG-3Uy6ayJu6zqeCFNyvNv8NU65ZQzzbwYusBqyb9Ak0GcIfUOHoD40TmwwcjTRKR0bFfKFVXawdutSAOtUOk5qAteOsC2bMY0uqNjBNyWHYQbsJiNR9lcoWJEF~XPigj6twZZ30~S6MCyIuq5Ph0h-zifrFKUxCT7ImShA8GAlrGOyadsw4vAxcrQtmgvkerU8XvCCB7QhJoD1sA__)
 - [concurrent_test.py](https://private-us-east-1.manuscdn.com/sessionFile/1DfmIKcHVtvEzx4AY7BcvP/sandbox/TrEl8bu8gE5KP5zRbVPoDf_1773883933120_na1fn_L2hvbWUvdWJ1bnR1L2hlbGxvLXdvcmxkL3dvcmtlcnMvaW5mZXJlbmNlLXJvdXRlci90ZXN0cy9jb25jdXJyZW50X3Rlc3Q.py?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvMURmbUlLY0hWdHZFeng0QVk3QmN2UC9zYW5kYm94L1RyRWw4YnU4Z0U1S1A1elJiVlBvRGZfMTc3Mzg4MzkzMzEyMF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJobGJHeHZMWGR2Y214a0wzZHZjbXRsY25NdmFXNW1aWEpsYm1ObExYSnZkWFJsY2k5MFpYTjBjeTlqYjI1amRYSnlaVzUwWDNSbGMzUS5weSIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=jZeV7MxbksF6q3mYeRnEYFGFro8yUWBOhPxsy-g0dVHG-uXagKs7tTV-6WuQIlG24akjubcMbRRSS033fcCU1IHvk0~i~nViH-UGvPcli93TcytO2Gqbg9MMzE8cSZp25K1nfMxTqNUu9GyWsjUK9pS-x~Y56wyfPfPXR9BZK~C3kJP49FdPR7SY21Cw3~IZl5aDZALM0KZqk~op9fYqJ9Pwk0rny8oHLiBiw1Vp4elabxsBaxKtxvsXfwOfeAApHqqGk5XJeiv1KUXGlvlTQv-gaji7bUSk6TbnCjJXbd9eZfmN9jQtXKDr0rMF1m~FXUPQ8WD91MO9be2QgP1-dA__)
 - [e2e_test.sh](https://private-us-east-1.manuscdn.com/sessionFile/1DfmIKcHVtvEzx4AY7BcvP/sandbox/TrEl8bu8gE5KP5zRbVPoDf_1773883933120_na1fn_L2hvbWUvdWJ1bnR1L2hlbGxvLXdvcmxkL3dvcmtlcnMvaW5mZXJlbmNlLXJvdXRlci90ZXN0cy9lMmVfdGVzdA.sh?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvMURmbUlLY0hWdHZFeng0QVk3QmN2UC9zYW5kYm94L1RyRWw4YnU4Z0U1S1A1elJiVlBvRGZfMTc3Mzg4MzkzMzEyMF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJobGJHeHZMWGR2Y214a0wzZHZjbXRsY25NdmFXNW1aWEpsYm1ObExYSnZkWFJsY2k5MFpYTjBjeTlsTW1WZmRHVnpkQS5zaCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=dGuL0M5WSobJHVji8ArMsi1gP4UZN6b4DNKPw5DxrR2po4KySmLznmnvX0j0wHmCEopFefecXMgiZ64roOdWtTKUbyL4L2G-sSio88vL1~B0mBPVoqpHk-kkKXkbMd~EsggnC17uXWMlQbBssN7FLdD7bdqFOEz3BA7fmqbwNkjtlJYJ85W-Tr-1iM09EN9HP6Wu-vPi~7r0gKcf0WVU~ullCp8WRyLjJKnoYObutvpjca7GjEYJYpUDbQ~6d6jzUBBQcoV730lPiugqOIgI-n4QDUWi2K0JK~UClGfMQzpjX46sOwI4pw8HGjmLlIY9VGLUmfv2dXReMjvPL51Agw__)
-- [zapier_image_pipeline_prompt.md](https://private-us-east-1.manuscdn.com/sessionFile/1DfmIKcHVtvEzx4AY7BcvP/sandbox/aE6wF0y8SSKktmU7FiY8Hm_1774058724970_na1fn_L2hvbWUvdWJ1bnR1L3phcGllcl9pbWFnZV9waXBlbGluZV9wcm9tcHQ.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvMURmbUlLY0hWdHZFeng0QVk3QmN2UC9zYW5kYm94L2FFNndGMHk4U1NLa3RtVTdGaVk4SG1fMTc3NDA1ODcyNDk3MF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNwaGNHbGxjbDlwYldGblpWOXdhWEJsYkdsdVpWOXdjbTl0Y0hRLm1kIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=XoW9dlx5Pa5ZxkuQmx3DAPhz-QAjorsK26Xp3ptWKwSZrOyvIot3cHWJse8OWl~ZSVI~RdYcuTcCihprhjCbI6McA1y4fXObW-f38Cgnp5bLDRxEkXDUISa0~VZowzwvLt9UEmj8QVJdTLrIAlYUqvfAXoL-4ooC8q0xJ32AOnWf~~t8WHG300IVtWlrN5AMqm3qPJgRfOj4X7dlUy9JnK4oOQKn~jxt45W2qOFCd1BMgIW2IXfldWfJGn0mm7iZ89xa0g72zDinnzv0kCEwnV3yTDuUuyi7bCDhU~p0LAPqjtaZ7XdXA0IYsLkZHt45wsiJ8HmOMCprqzMuiFXjSQ__)
+- [[REDACTED-PLATFORM]_image_pipeline_prompt.md](https://private-us-east-1.manuscdn.com/sessionFile/1DfmIKcHVtvEzx4AY7BcvP/sandbox/aE6wF0y8SSKktmU7FiY8Hm_1774058724970_na1fn_L2hvbWUvdWJ1bnR1L3phcGllcl9pbWFnZV9waXBlbGluZV9wcm9tcHQ.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvMURmbUlLY0hWdHZFeng0QVk3QmN2UC9zYW5kYm94L2FFNndGMHk4U1NLa3RtVTdGaVk4SG1fMTc3NDA1ODcyNDk3MF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNwaGNHbGxjbDlwYldGblpWOXdhWEJsYkdsdVpWOXdjbTl0Y0hRLm1kIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=XoW9dlx5Pa5ZxkuQmx3DAPhz-QAjorsK26Xp3ptWKwSZrOyvIot3cHWJse8OWl~ZSVI~RdYcuTcCihprhjCbI6McA1y4fXObW-f38Cgnp5bLDRxEkXDUISa0~VZowzwvLt9UEmj8QVJdTLrIAlYUqvfAXoL-4ooC8q0xJ32AOnWf~~t8WHG300IVtWlrN5AMqm3qPJgRfOj4X7dlUy9JnK4oOQKn~jxt45W2qOFCd1BMgIW2IXfldWfJGn0mm7iZ89xa0g72zDinnzv0kCEwnV3yTDuUuyi7bCDhU~p0LAPqjtaZ7XdXA0IYsLkZHt45wsiJ8HmOMCprqzMuiFXjSQ__)

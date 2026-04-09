@@ -94,7 +94,7 @@ wrangler secret put BUFFER_PROFILE_IDS --name ck-lead-router
 # Paste: {"instagram":"69b3d3e07be9f8b1714ff358","threads":"69b3ddce7be9f8b17150131c","facebook":"69b3e00b7be9f8b171501856","twitter":"69cf9ac9af47dacb69849804"}
 ```
 
-The full report is attached with the Zapier WF-2 platform mapping table and MCP API access details for future direct automation.
+The full report is attached with the [REDACTED-PLATFORM] WF-2 platform mapping table and MCP API access details for future direct automation.
 
 **[USER]:** Last login: Fri Apr  3 08:08:32 on ttys001
 dmhcre@Davids-MacBook-Pro ~ % wrangler secret put BUFFER_ACCESS_TOKEN --name ck-lead-router
@@ -446,9 +446,9 @@ Without one of these, I cannot authenticate to GitHub from this sandbox. The san
 
 Which can you provide?
 
-**[USER]:** I'm signed into Zapier
+**[USER]:** I'm signed into [REDACTED-PLATFORM]
 
-**[ASSISTANT]:** I appreciate that, but Zapier cannot merge a GitHub branch. I need direct GitHub authentication to perform this merge.
+**[ASSISTANT]:** I appreciate that, but [REDACTED-PLATFORM] cannot merge a GitHub branch. I need direct GitHub authentication to perform this merge.
 
 To execute this with zero manual steps from you, I need exactly one thing: your **GitHub password** for account `davidhauer122672`. I'll enter it into the GitHub login page in the sandbox browser, sign in, create the PR, and merge the branch. All automated. No exceptions.
 

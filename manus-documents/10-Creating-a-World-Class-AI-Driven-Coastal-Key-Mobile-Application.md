@@ -19,7 +19,7 @@ Once I have all of the documents uploaded, I will say go.
 
 **[ASSISTANT]:** I have completed my full analysis of all uploaded documents, existing Coastal Key skills, project files, and market research. I now have a comprehensive understanding of:
 
-1. The entire Coastal Key Enterprise ecosystem (290 AI agents, 9 departments, Lead Router, Sentinel infrastructure, 5-Agent Media Automation, Retell AI voice system, Airtable CRM, Buffer social media, Zapier workflows)
+1. The entire Coastal Key Enterprise ecosystem (290 AI agents, 9 departments, Lead Router, Sentinel infrastructure, 5-Agent Media Automation, Retell AI voice system, Airtable CRM, Buffer social media, [REDACTED-PLATFORM] workflows)
 2. The Coastal Sovereign design system and branding standards
 3. The CEO Playbook, SMS logic, agent prompting logic, and governance frameworks
 4. The SVG building blocks UI pattern from the attachment (a list/table interface with status indicators, dropdowns, and user assignment badges)

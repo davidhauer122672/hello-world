@@ -19,7 +19,7 @@ DOMAIN D6: AI AGENT OPERATIONS (Levels 126-150)
 Produce an Agent Fleet Operations Manual: detailed prompt engineering guidelines for each of the 10 named AI Commanders (SOVEREIGN-1, SENTINEL-PRIME, CONTENT-PRIME, OPS-PRIME, TECH-PRIME, AGENT-PRIME, COMPLIANCE-PRIME, FINANCE-PRIME, TALENT-PRIME, EXPANSION-PRIME). Include inter-agent communication protocol specifications, message format standards, priority escalation rules, and agent performance scoring criteria.
 
 DOMAIN D5: TECHNOLOGY INFRASTRUCTURE (Levels 101-125)
-Produce a Technology Stack Operations Guide: exact configuration for Cloudflare Workers AI (Nemotron model), Airtable schema governance rules, Zapier workflow naming conventions, Slack channel management protocol, API endpoint registry format, secret rotation schedule, monitoring alert thresholds, and disaster recovery procedures.
+Produce a Technology Stack Operations Guide: exact configuration for Cloudflare Workers AI (Nemotron model), Airtable schema governance rules, [REDACTED-PLATFORM] workflow naming conventions, Slack channel management protocol, API endpoint registry format, secret rotation schedule, monitoring alert thresholds, and disaster recovery procedures.
 
 Format as a professional operations document. Use numbered sections. No filler language. Every sentence must be actionable or define a measurable standard.
 
@@ -36,7 +36,7 @@ Includes the complete CEO Operating Rhythm with Monday-Friday daily cadences, Qu
 Includes the full Sovereign Command Framework prompt structure for all 10 named AI Commanders (SOVEREIGN-1 through EXPANSION-PRIME), the JSON inter-agent communication protocol with ACK requirements, message format standards, the 5-tier Priority Escalation Rules, and the 4-criteria Agent Performance Scoring system.
 
 **Domain D5: Technology Infrastructure (Levels 101-125)**
-Includes exact Cloudflare Workers AI (Nemotron) configuration parameters, Airtable schema governance rules, Zapier naming conventions, Slack channel management protocol, the 7-field API Endpoint Registry schema, the 3-tier Secret Rotation Schedule, dual-threshold Monitoring Alert table, and the 5-step Disaster Recovery procedure with defined RPO (1 hour) and RTO (< 4 hours).
+Includes exact Cloudflare Workers AI (Nemotron) configuration parameters, Airtable schema governance rules, [REDACTED-PLATFORM] naming conventions, Slack channel management protocol, the 7-field API Endpoint Registry schema, the 3-tier Secret Rotation Schedule, dual-threshold Monitoring Alert table, and the 5-step Disaster Recovery procedure with defined RPO (1 hour) and RTO (< 4 hours).
 
 ---
 

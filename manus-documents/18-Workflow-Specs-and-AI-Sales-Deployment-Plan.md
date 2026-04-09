@@ -1,4 +1,4 @@
-# Zapier Workflow Specs and AI Sales Deployment Plan
+# [REDACTED-PLATFORM] Workflow Specs and AI Sales Deployment Plan
 
 **Task ID:** `2chTsTvLWe9aCrQ7sjbM7a`  
 **Status:** completed  
@@ -12,8 +12,8 @@
 
 **[USER]:** Produce the following documentation for Coastal Key Treasure Coast Asset Management. This is a research and writing task only. No external tool connections are needed.
 
-SECTION 1: ZAPIER WORKFLOW BUILD SPECIFICATIONS
-Produce detailed step-by-step Zapier build instructions for these 5 workflows. For each, specify the exact Trigger app/event, every Action step with app and action type, and field mappings.
+SECTION 1: [REDACTED-PLATFORM] WORKFLOW BUILD SPECIFICATIONS
+Produce detailed step-by-step [REDACTED-PLATFORM] build instructions for these 5 workflows. For each, specify the exact Trigger app/event, every Action step with app and action type, and field mappings.
 
 WF-5 Video Brief to Production: Triggered when Airtable Video Production table status changes to Approved. Actions: assemble production brief, post to Slack, dispatch thumbnail brief.
 
@@ -30,17 +30,17 @@ Research the Atlas AI platform (youratlas.ai) for outbound sales dialing. Produc
 
 Format as a professional operations document with numbered steps and clear headers.
 
-**[ASSISTANT]:** Understood. I will produce the full operations document for Coastal Key Treasure Coast Asset Management covering both sections: the 5 Zapier workflow build specifications and the 40-agent Atlas AI sales deployment plan. Let me begin research and drafting now.
+**[ASSISTANT]:** Understood. I will produce the full operations document for Coastal Key Treasure Coast Asset Management covering both sections: the 5 [REDACTED-PLATFORM] workflow build specifications and the 40-agent Atlas AI sales deployment plan. Let me begin research and drafting now.
 
 **[ASSISTANT]:** The Operations & Automation Document for Coastal Key Treasure Coast Asset Management is complete. Here is a summary of what was produced:
 
 ---
 
-**Section 1 — Zapier Workflow Build Specifications** covers all five workflows in a structured table format, with every trigger, action step, app, event type, and field mapping specified:
+**Section 1 — [REDACTED-PLATFORM] Workflow Build Specifications** covers all five workflows in a structured table format, with every trigger, action step, app, event type, and field mapping specified:
 
 - **WF-5 (Video Brief to Production):** Airtable "Approved Videos" view trigger → Formatter assembles brief → Slack posts to `#video-production` → Gmail dispatches thumbnail brief to design team.
 - **WF-6 (Podcast Publish):** Airtable "Approved Podcasts" view trigger → Buffer queues show notes for LinkedIn/Facebook → Buffer queues teaser for Instagram → Slack alerts `#marketing-updates`.
-- **WF-7 (AI Log Write):** Webhooks by Zapier catches POST from Cloudflare Worker → Airtable creates record in AI Log table with module tag, brief, output, model, and timestamp. Includes the required JSON payload schema.
+- **WF-7 (AI Log Write):** Webhooks by [REDACTED-PLATFORM] catches POST from Cloudflare Worker → Airtable creates record in AI Log table with module tag, brief, output, model, and timestamp. Includes the required JSON payload schema.
 - **WF-9 (Storm Protocol):** Manual Push or weather webhook trigger → Airtable logs activation → Slack broadcasts `@channel` emergency alert → Twilio sends SMS to property owners → Asana creates pre-storm checklist task.
 - **WF-10 (Client Renewal):** Airtable "Upcoming Renewals – 30 Days" view trigger (using `DATETIME_DIFF` formula) → Gmail sends personalized renewal email → Asana creates follow-up task → Slack alerts `#client-success`.
 

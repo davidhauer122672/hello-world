@@ -74,7 +74,7 @@ Should the webhook Zap also write back to Airtable? (Or just send Slack alert + 
 
 Here is the reality. Banana Pro AI does not publish a standardized webhook payload schema the way Stripe or Shopify does. It is a newer platform. That means the exact fields depend on how your Banana Pro AI workspace is configured and what triggers you set up.
 
-However, based on how content scheduling platforms in this category work, here is what you should **expect and verify** by doing a test webhook fire to a tool like [Webhook.site](https://webhook.site) or a Zapier "Catch Hook" step.
+However, based on how content scheduling platforms in this category work, here is what you should **expect and verify** by doing a test webhook fire to a tool like [Webhook.site](https://webhook.site) or a [REDACTED-PLATFORM] "Catch Hook" step.
 
 **Expected Native Payload (Best Estimate):**
 
@@ -93,7 +93,7 @@ However, based on how content scheduling platforms in this category work, here i
 
 **Your Immediate Next Step:**
 
-Set up a Zapier "Catch Raw Hook" trigger. Then fire one test post from Banana Pro AI. Zapier will capture the exact JSON payload. That gives you the real field map. No guessing. No assumptions. Takes five minutes.
+Set up a [REDACTED-PLATFORM] "Catch Raw Hook" trigger. Then fire one test post from Banana Pro AI. [REDACTED-PLATFORM] will capture the exact JSON payload. That gives you the real field map. No guessing. No assumptions. Takes five minutes.
 
 ---
 
@@ -105,7 +105,7 @@ Webhooks fire on events. If Banana Pro AI fires the webhook when a post is publi
 
 **The world-class move:** Hardcode the status on the receiving end.
 
-In your Zapier workflow, add a Formatter step that injects:
+In your [REDACTED-PLATFORM] workflow, add a Formatter step that injects:
 
 ```json
 "status": "Published"
@@ -123,10 +123,10 @@ Here is the correct architecture. This is what separates a small operation from 
 
 | Step | Action | Purpose |
 |---|---|---|
-| 1 | Zapier catches the webhook from Banana Pro AI | Real-time trigger |
-| 2 | Zapier writes a new row to Airtable | Permanent record of every published post |
-| 3 | Zapier sends a Slack alert | Real-time team visibility |
-| 4 | Zapier queues the post to Buffer (if cross-posting) | Multi-platform distribution |
+| 1 | [REDACTED-PLATFORM] catches the webhook from Banana Pro AI | Real-time trigger |
+| 2 | [REDACTED-PLATFORM] writes a new row to Airtable | Permanent record of every published post |
+| 3 | [REDACTED-PLATFORM] sends a Slack alert | Real-time team visibility |
+| 4 | [REDACTED-PLATFORM] queues the post to Buffer (if cross-posting) | Multi-platform distribution |
 
 **Why Airtable must always get the write-back:**
 
@@ -143,27 +143,27 @@ Slack alone is a notification. Airtable is the institution's memory.
 
 | Question | Answer |
 |---|---|
-| What fields does Banana Pro AI send? | Fire a test hook to Zapier "Catch Raw Hook" to capture the exact payload. Expect platform, caption, image URL, post date, content pillar at minimum. |
-| Does it include a Status field? | Likely no. Hardcode "Published" in Zapier since the webhook firing *is* the status confirmation. |
+| What fields does Banana Pro AI send? | Fire a test hook to [REDACTED-PLATFORM] "Catch Raw Hook" to capture the exact payload. Expect platform, caption, image URL, post date, content pillar at minimum. |
+| Does it include a Status field? | Likely no. Hardcode "Published" in [REDACTED-PLATFORM] since the webhook firing *is* the status confirmation. |
 | Should the Zap write back to Airtable? | Yes. Every single time. Airtable is the permanent record. Slack is the alert. Buffer is the distribution layer. All three fire from the same Zap. |
 
 ---
 
 **Your Next Move**
 
-1. Go to Zapier. Create a new Zap. Set trigger to "Webhooks by Zapier" and choose "Catch Raw Hook."
-2. Copy the webhook URL Zapier gives you.
+1. Go to [REDACTED-PLATFORM]. Create a new Zap. Set trigger to "Webhooks by [REDACTED-PLATFORM]" and choose "Catch Raw Hook."
+2. Copy the webhook URL [REDACTED-PLATFORM] gives you.
 3. Paste that URL into Banana Pro AI as your webhook endpoint.
 4. Fire one test post.
-5. Come back to me with the exact JSON payload Zapier captured.
+5. Come back to me with the exact JSON payload [REDACTED-PLATFORM] captured.
 
 From there, I will build the full Zap logic, Airtable field mapping, Slack message template, and Buffer queue step. Clean. Fast. Institutional grade.
 
 Let me know when you have that test payload.
 
 **[USER]:** apier (5 min):
-Go to zapier.com/app/dashboard → Create → New Zap
-Step 1: Webhooks by Zapier → Catch Raw Hook → copy the URL
+Go to [redacted-platform].com/app/dashboard → Create → New Zap
+Step 1: Webhooks by [REDACTED-PLATFORM] → Catch Raw Hook → copy the URL
 Step 2: Airtable → Create Record → Base: Untitled Base → Table: Content Calendar → map the fields per the setup guide
 Step 3: Slack → Send Channel Message → Channel: #content-calendar → Bot: Coastal Key Content
 Publish the Zap
@@ -182,14 +182,14 @@ Verify: Airtable record created, Slack alert in #content-calendar, Status = Publ
 
 ---
 
-**PHASE 1: Zapier Setup (5 Minutes)**
+**PHASE 1: [REDACTED-PLATFORM] Setup (5 Minutes)**
 
 **Step 1 — Trigger: Catch the Webhook**
-- Go to [zapier.com/app/dashboard](https://zapier.com/app/dashboard)
+- Go to [[redacted-platform].com/app/dashboard](https://[redacted-platform].com/app/dashboard)
 - Click **Create** then **New Zap**
-- Search for **"Webhooks by Zapier"**
+- Search for **"Webhooks by [REDACTED-PLATFORM]"**
 - Choose **"Catch Raw Hook"** (not "Catch Hook" — Raw gives you the full unfiltered JSON so you can see every field Banana Pro AI sends)
-- Zapier generates a unique webhook URL. **Copy it. Save it somewhere safe.** You will paste this into Banana Pro AI in Phase 2.
+- [REDACTED-PLATFORM] generates a unique webhook URL. **Copy it. Save it somewhere safe.** You will paste this into Banana Pro AI in Phase 2.
 - Click **Test Trigger** (it will wait for data — skip for now, come back after Phase 2)
 
 **Step 2 — Action 1: Write to Airtable**
@@ -200,7 +200,7 @@ Verify: Airtable record created, Slack alert in #content-calendar, Status = Publ
 - Select **Table:** "Content Calendar"
 - Map the fields like this:
 
-| Airtable Column | Zapier Mapping (from webhook JSON) |
+| Airtable Column | [REDACTED-PLATFORM] Mapping (from webhook JSON) |
 |---|---|
 | Platform | `platform` |
 | Caption | `caption` |
@@ -212,7 +212,7 @@ Verify: Airtable record created, Slack alert in #content-calendar, Status = Publ
 | Status | Hardcode: **Published** (type it manually, do not map) |
 | Source | Hardcode: **Banana Pro AI** (type it manually) |
 
-**Important:** If your Airtable table does not have these columns yet, go create them first. Every column must exist before Zapier can map to it.
+**Important:** If your Airtable table does not have these columns yet, go create them first. Every column must exist before [REDACTED-PLATFORM] can map to it.
 
 **Step 3 — Action 2: Send Slack Alert**
 - Click **+** to add another step
@@ -246,7 +246,7 @@ Source: Banana Pro AI
 
 - Open Banana Pro AI
 - Go to **Settings** then **Webhooks**
-- Paste your Zapier webhook URL
+- Paste your [REDACTED-PLATFORM] webhook URL
 - Set the trigger event to **"Post Published"**
 - Save
 
@@ -258,7 +258,7 @@ Fire one test post from Banana Pro AI. Then verify all three checkpoints:
 
 | Checkpoint | Where to Look | What You Should See |
 |---|---|---|
-| 1. Webhook fired | Zapier Zap History (zapier.com/app/history) | A successful run with the full JSON payload visible |
+| 1. Webhook fired | [REDACTED-PLATFORM] Zap History ([redacted-platform].com/app/history) | A successful run with the full JSON payload visible |
 | 2. Airtable record created | Your "Content Calendar" table in Airtable | New row with all fields populated, Status = Published |
 | 3. Slack alert received | `#content-calendar` channel in Slack | Formatted message with platform, caption, pillar, date, image link |
 
@@ -268,7 +268,7 @@ Fire one test post from Banana Pro AI. Then verify all three checkpoints:
 
 | Problem | Fix |
 |---|---|
-| Zapier shows no trigger | Webhook URL was not saved correctly in Banana Pro AI. Re-paste and re-save. |
+| [REDACTED-PLATFORM] shows no trigger | Webhook URL was not saved correctly in Banana Pro AI. Re-paste and re-save. |
 | Airtable record is blank or partial | Field names in Airtable do not match the JSON keys. Check spelling and capitalization. |
 | Slack message did not send | Bot is not added to `#content-calendar`. Go to the channel, type `/invite @Coastal Key Content`. |
 | JSON payload is missing expected fields | This tells you what Banana Pro AI actually sends. Adjust your Airtable columns to match reality. |
@@ -277,7 +277,7 @@ Fire one test post from Banana Pro AI. Then verify all three checkpoints:
 
 **After the Test Succeeds**
 
-Come back to me with the exact JSON payload Zapier captured. I will then:
+Come back to me with the exact JSON payload [REDACTED-PLATFORM] captured. I will then:
 
 1. Confirm your field mapping is complete (no data left unmapped).
 2. Build the Buffer cross-posting step if you want multi-platform distribution.
@@ -301,19 +301,19 @@ I cannot fire a test post on Banana Pro AI or create a record in your Airtable d
 - Log into Banana Pro AI
 - Create a simple test post (any image, any caption like "Webhook Test Post 001")
 - Publish it
-- This fires the webhook to your Zapier URL
+- This fires the webhook to your [REDACTED-PLATFORM] URL
 
 **Step 2 — Check Airtable:**
 - Open your Airtable base
 - Go to the "Content Calendar" table
-- Look for the new row that Zapier created automatically from the webhook
+- Look for the new row that [REDACTED-PLATFORM] created automatically from the webhook
 
 **Step 3 — Check Slack:**
 - Open your `#content-calendar` channel
 - Look for the bot message from "Coastal Key Content"
 
 **Step 4 — Come back to me with the results:**
-- Copy the JSON payload from Zapier's Zap History (zapier.com/app/history)
+- Copy the JSON payload from [REDACTED-PLATFORM]'s Zap History ([redacted-platform].com/app/history)
 - Paste it here
 - Tell me if the Airtable record and Slack alert came through
 
@@ -329,7 +329,7 @@ You are the one with the keys. I am the one with the blueprint. Let us meet in t
 
 **LAYER 1: Content Publish Pipeline (Where You Are Now)**
 
-This is your Banana Pro AI to Zapier to Airtable + Slack workflow. Once your test post fires clean, this layer is locked in. It gives you automated record-keeping and real-time team alerts every time a post goes live.
+This is your Banana Pro AI to [REDACTED-PLATFORM] to Airtable + Slack workflow. Once your test post fires clean, this layer is locked in. It gives you automated record-keeping and real-time team alerts every time a post goes live.
 
 **Status:** In progress. Waiting on your test post results.
 
@@ -378,7 +378,7 @@ This is your Banana Pro AI to Zapier to Airtable + Slack workflow. Once your tes
 - Any gaps (platforms with zero posts, pillars with no coverage)
 
 **How it works:**
-- Zapier Schedule trigger (every Monday at 8:00 AM)
+- [REDACTED-PLATFORM] Schedule trigger (every Monday at 8:00 AM)
 - Airtable "Find Records" filtered to last 7 days
 - Formatter step to build the summary
 - Slack or Gmail step to deliver it
@@ -392,7 +392,7 @@ This is your Banana Pro AI to Zapier to Airtable + Slack workflow. Once your tes
 **What it does:** Before a post publishes to Buffer (Layer 2), an AI step rewrites or enhances the caption for each specific platform.
 
 **How it works:**
-- Add an OpenAI (GPT) step in Zapier between the webhook trigger and the Buffer queue
+- Add an OpenAI (GPT) step in [REDACTED-PLATFORM] between the webhook trigger and the Buffer queue
 - Prompt: "Rewrite this caption for LinkedIn. Keep it professional. Under 200 words. Include a call to action."
 - Different prompt variations for Instagram, TikTok, Facebook, LinkedIn
 
@@ -405,7 +405,7 @@ This is your Banana Pro AI to Zapier to Airtable + Slack workflow. Once your tes
 **What it does:** Connects your content pipeline to your Retell AI phone system and SMS logic. When specific content types publish (like a new property listing or a client testimonial), the system triggers an outbound SMS or voice follow-up to relevant contacts.
 
 **How it works:**
-- Zapier filter step: If Content Pillar = "Listing" or "Testimonial"
+- [REDACTED-PLATFORM] filter step: If Content Pillar = "Listing" or "Testimonial"
 - Action: Send SMS via your SMS provider or trigger Retell AI outbound call
 - Message: "New property just listed. See it here: {post_url}"
 
@@ -743,11 +743,11 @@ This is the technical specification for building an Airtable OAuth2 integration.
 
 **No.** Here is why.
 
-You are currently using a Personal Access Token (PAT) to connect your automation stack (Zapier, weekly report script) to Airtable. That PAT works perfectly for your use case. It gives direct API access to your base without the complexity of OAuth2.
+You are currently using a Personal Access Token (PAT) to connect your automation stack ([REDACTED-PLATFORM], weekly report script) to Airtable. That PAT works perfectly for your use case. It gives direct API access to your base without the complexity of OAuth2.
 
 | Method | Best For | Complexity | Your Current Use |
 |---|---|---|---|
-| Personal Access Token (PAT) | Internal automations, scripts, Zapier | Simple. One token. Done. | This is what you are using now. It works. |
+| Personal Access Token (PAT) | Internal automations, scripts, [REDACTED-PLATFORM] | Simple. One token. Done. | This is what you are using now. It works. |
 | OAuth2 Integration | Multi-user apps where other people log in and grant access to their own Airtable data | Complex. Requires redirect URIs, token refresh logic, PKCE security. | Not needed yet. |
 
 ---
@@ -838,13 +838,13 @@ Manus operates in sandboxed cloud environments. The outbound IP addresses are dy
 
 | Option | How It Works | Best For |
 |---|---|---|
-| **A. API Key Authentication** | Instead of IP whitelisting, use API keys or Bearer tokens to authenticate requests. This is what your Airtable PAT and Slack webhook already do. The API does not care where the request comes from. It only cares that the key is valid. | Airtable, Slack, Zapier, most modern APIs. This is the standard. |
+| **A. API Key Authentication** | Instead of IP whitelisting, use API keys or Bearer tokens to authenticate requests. This is what your Airtable PAT and Slack webhook already do. The API does not care where the request comes from. It only cares that the key is valid. | Airtable, Slack, [REDACTED-PLATFORM], most modern APIs. This is the standard. |
 | **B. Webhook Signatures** | If a service requires verification that a request came from a trusted source, use HMAC signature validation on the payload. The receiving server checks the signature, not the IP. | Stripe, GitHub, enterprise-grade webhook consumers. |
 | **C. Proxy Through a Fixed IP** | If a service absolutely requires IP whitelisting (rare), route Manus API calls through a proxy server with a static IP that you control. A simple cloud server (AWS, DigitalOcean) running Nginx as a reverse proxy gives you a permanent IP to whitelist. | Legacy systems, bank APIs, or corporate firewalls with strict IP rules. |
 
 **What You Are Already Doing Right**
 
-Your current stack (Airtable PAT, Slack webhook URL, Zapier) all use Option A. They authenticate by token, not by IP. That is the Fortune 500 standard. It is more secure than IP whitelisting because tokens can be rotated instantly. IP addresses cannot.
+Your current stack (Airtable PAT, Slack webhook URL, [REDACTED-PLATFORM]) all use Option A. They authenticate by token, not by IP. That is the Fortune 500 standard. It is more secure than IP whitelisting because tokens can be rotated instantly. IP addresses cannot.
 
 **The Bottom Line**
 

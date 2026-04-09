@@ -30,7 +30,7 @@ The master script (`ck-sentinel-deploy.sh`) is a single 2,613-line executable th
 
 **Phase 3 -- Cloudflare Worker Fleet Deployment:** Generates six production-ready Workers (API Gateway, Dashboard Sync, AI Architect, Executive Admin, Risk Engine, Cron Scheduler) with full `wrangler.jsonc` configuration, KV bindings, D1 bindings, cron triggers, and route mappings.
 
-**Phase 4 -- Integration Renewal:** Verifies and renews all integrations (Airtable CRM, Zapier, Slack, Retell AI, HeyGen, Cloudflare).
+**Phase 4 -- Integration Renewal:** Verifies and renews all integrations (Airtable CRM, [REDACTED-PLATFORM], Slack, Retell AI, HeyGen, Cloudflare).
 
 **Phase 5 -- AI Bot Automation Deployment:** Generates complete configuration files for all five AI agents (SCAA-1, Asset Protection Director, Customer Service Director, Executive Intelligence Layer, Emergency Hotline Voice Bot).
 
@@ -80,7 +80,7 @@ The script will detect your existing Wrangler and Node.js installations during t
 chmod +x scripts/set-secrets.sh && ./scripts/set-secrets.sh
 ```
 
-This will prompt you for each API key (Airtable, Zapier, Retell, Slack, OpenAI, HeyGen). Enter each one when prompted. Press Enter to skip any you want to set later.
+This will prompt you for each API key (Airtable, [REDACTED-PLATFORM], Retell, Slack, OpenAI, HeyGen). Enter each one when prompted. Press Enter to skip any you want to set later.
 
 **Step 3: Deploy all six Workers to the Cloudflare edge.**
 
@@ -218,7 +218,7 @@ readonly CF_API_TOKEN="${CLOUDFLARE_API_TOKEN:-}"
 readonly CF_ZONE_ID="${CLOUDFLARE_ZONE_ID:-}"
 
 readonly AIRTABLE_API_KEY="${AIRTABLE_API_KEY:-}"
-readonly ZAPIER_WEBHOOK_URL="${ZAPIER_WEBHOOK_URL:-}"
+readonly AUTOMATION_WEBHOOK_URL="${AUTOMATION_WEBHOOK_URL:-}"
 readonly RETELL_API_KEY="${RETELL_API_KEY:-}"
 readonly SLACK_BOT_TOKEN="${SLACK_BOT_TOKEN:-}"
 readonly SLACK_WEBHOOK_URL="${SLACK_WEBHOOK_URL:-}"
@@ -376,7 +376,7 @@ run_systems_audit() {
         "CLOUDFLARE_API_TOKEN"
         "CLOUDFLARE_ZONE_ID"
         "AIRTABLE_API_KEY"
-        "ZAPIER_WEBHOOK_URL"
+        "AUTOMATION_WEBHOOK_URL"
         "RETELL_API_KEY"
         "SLACK_BOT_TOKEN"
         "SLACK_WEBHOOK_URL"
@@ -788,7 +788,7 @@ async function integrationAudit(env) {
     audit: "integration",
     systems: [
       { name: "Airtable CRM", status: "connected", last_check: new Date().toISOString() },
-      { name: "Zapier Automation", status: "connected", zaps_active: 3 },
+      { name: "[REDACTED-PLATFORM] Automation", status: "connected", zaps_active: 3 },
       { name: "Slack Bot", status: "connected", channels: ["sales-alerts", "client-onboarding", "ops-dispatch"] },
       { name: "Retell AI Voice", status: "connected", agents: ["asset-protection-director", "emergency-hotline"] },
       { name: "HeyGen Video", status: "connected", videos: ["launch", "welcome", "inspection", "portal-tour"] },
@@ -1003,7 +1003,7 @@ renew_integrations() {
     header "PHASE 4: INTEGRATION RENEWAL & SYNC"
     log "INFO" "Verifying and renewing all integrations..."
 
-    local integrations=("Airtable CRM" "Zapier Automation" "Slack Bot" "Retell AI Voice" "HeyGen Video" "Cloudflare Workers")
+    local integrations=("Airtable CRM" "[REDACTED-PLATFORM] Automation" "Slack Bot" "Retell AI Voice" "HeyGen Video" "Cloudflare Workers")
     for integration in "${integrations[@]}"; do
         step "Verifying integration: ${integration}..."
         success "Integration verified: ${integration}"
@@ -1046,7 +1046,7 @@ create_scaa1_config() {
   "version": "3.0",
   "full_name": "Sales Cycle Acceleration Agent",
   "enterprise": "Coastal Key Treasure Coast Asset Management",
-  "deployment_platform": "Zapier AI Actions",
+  "deployment_platform": "[REDACTED-PLATFORM] AI Actions",
   "purpose": "Generate institutional-grade Battle Plans for every new lead.",
   "pipeline": [
     "1. Identity Verification",
@@ -1982,7 +1982,7 @@ WORKERS=(
 
 SECRETS=(
     "AIRTABLE_API_KEY"
-    "ZAPIER_WEBHOOK_URL"
+    "AUTOMATION_WEBHOOK_URL"
     "RETELL_API_KEY"
     "SLACK_BOT_TOKEN"
     "SLACK_WEBHOOK_URL"
@@ -2040,7 +2040,7 @@ create_deployment_manifest() {
     "database_indexes": 7,
     "kv_namespaces": ["CK_SESSIONS", "CK_CACHE", "CK_CONFIG", "CK_AUDIT_LOG"]
   },
-  "integrations": ["Airtable", "Zapier", "Slack", "Retell AI", "HeyGen", "Cloudflare"],
+  "integrations": ["Airtable", "[REDACTED-PLATFORM]", "Slack", "Retell AI", "HeyGen", "Cloudflare"],
   "governance": {
     "audit_retention": "7 years minimum",
     "compliance_standard": "Florida CAM + SEC-aligned",
@@ -2185,7 +2185,7 @@ All 12 phases executed clean. Here is your audit summary:
 ```bash
 ./scripts/set-secrets.sh
 ```
-This will prompt you for each API key. Enter your Cloudflare, Airtable, Zapier, Retell, Slack, OpenAI, and HeyGen keys when prompted.
+This will prompt you for each API key. Enter your Cloudflare, Airtable, [REDACTED-PLATFORM], Retell, Slack, OpenAI, and HeyGen keys when prompted.
 
 **Step 2: Deploy all Workers to the Cloudflare edge.** Run:
 ```bash
@@ -2222,7 +2222,7 @@ Since the scripts are long, I need to deliver them in a way your terminal can ha
 | Cloudflare API Token | dash.cloudflare.com > My Profile > API Tokens > Create Token |
 | Cloudflare Zone ID | dash.cloudflare.com > select coastalkey-pm.com > right sidebar |
 | Airtable API Key | airtable.com/account |
-| Zapier Webhook URL | Your active Zap webhook trigger URL |
+| [REDACTED-PLATFORM] Webhook URL | Your active Zap webhook trigger URL |
 | Retell AI API Key | retellai.com dashboard |
 | Slack Bot Token | api.slack.com > Your Apps > OAuth |
 | Slack Webhook URL | api.slack.com > Incoming Webhooks |
@@ -2236,7 +2236,7 @@ Once you confirm, I will send you the two script replacement blocks to paste int
 **[USER]:** Cloudflare account ID: coastalkey-pm.com, Cloudflare API Token: 
 cfut_xgTs0vq5wwyYphMPdw57Ign1YuCzCTlS3AMj2GoN9356ed08, Cloudflare Zone ID: 
 df2ae76c8850a1eb8c9b38d4680b1552, Airtable API Key:
-pat4SEt9swtyM9khP, Zapier webhook URL: Webhook Created for Manus to Zapier, 
+pat4SEt9swtyM9khP, [REDACTED-PLATFORM] webhook URL: Webhook Created for Manus to [REDACTED-PLATFORM], 
 
 **[ASSISTANT]:** I have your credentials. Let me be direct about something important before we proceed.
 
@@ -2289,7 +2289,7 @@ readonly CF_SECRETS=(
 
 readonly INTEGRATION_SECRETS=(
     "AIRTABLE_API_KEY:Airtable API Key:CRM system of record"
-    "ZAPIER_WEBHOOK_URL:Zapier Webhook URL:Automation orchestration"
+    "AUTOMATION_WEBHOOK_URL:[REDACTED-PLATFORM] Webhook URL:Automation orchestration"
     "RETELL_API_KEY:Retell AI API Key:Voice bot deployment"
     "SLACK_BOT_TOKEN:Slack Bot Token:Team notifications"
     "SLACK_WEBHOOK_URL:Slack Webhook URL:Channel alerts"
@@ -2865,7 +2865,7 @@ When the secrets script prompts you, enter these values:
 | Cloudflare API Token | `cfut_xgTs0vq5wwyYphMPdw57Ign1YuCzCTlS3AMj2GoN9356ed08` |
 | Cloudflare Zone ID | `df2ae76c8850a1eb8c9b38d4680b1552` |
 | Airtable API Key | `pat4SEt9swtyM9khP` |
-| Zapier Webhook URL | Press Enter to skip (webhook not yet configured) |
+| [REDACTED-PLATFORM] Webhook URL | Press Enter to skip (webhook not yet configured) |
 | Retell AI API Key | Press Enter to skip (or enter if you have it) |
 | Slack Bot Token | Press Enter to skip (or enter if you have it) |
 | Slack Webhook URL | Press Enter to skip (or enter if you have it) |
@@ -2924,19 +2924,19 @@ Final output will be highly polished and a world-class output that's compared ag
 
 **[ASSISTANT]:** Acknowledged. I'm stepping into the full coalition role now. Before I build anything, I need to understand your current Lead Router setup. Let me ask two quick questions to ensure precision:
 
-1. **Which Lead Router platform are you using?** (e.g., Chili Piper, LeanData, Distribution Engine, Salesforce Lead Assignment, or a custom Zapier-based router?)
+1. **Which Lead Router platform are you using?** (e.g., Chili Piper, LeanData, Distribution Engine, Salesforce Lead Assignment, or a custom [REDACTED-PLATFORM]-based router?)
 
 2. **How many sales reps or agents should receive routed leads?** And should the routing be round-robin (equal distribution), territory-based (by zip code or region), or weighted (priority reps get more leads)?
 
-If you are not yet on a specific Lead Router platform, I will architect one using your existing tech stack (Cloudflare Workers + Zapier + Airtable + Slack) that will outperform any off-the-shelf solution. Let me know.
+If you are not yet on a specific Lead Router platform, I will architect one using your existing tech stack (Cloudflare Workers + [REDACTED-PLATFORM] + Airtable + Slack) that will outperform any off-the-shelf solution. Let me know.
 
 **[USER]:** 4.	Act as a top tier Fortune 500 AI website development CEO, a top-tier Fortune 500 AI Development architect, and the Tesla Chief Automations Office CEO, and a top tier Fortune 500 AI development engineer , and a top tier Fortune 500 AI data scientist collaborating with Steve Jobs, Mark Zuckerberg, Elon Musk, Sam Altman, Greg Brockman, IIya Sutskever, Wojciech Zaremba, Peter Steinberger, Dan Martell, John Schulman,Jeff Bezos, John McCarthy, John C. Maxwell and the CEO of Google. Create a world-class output that compares to other world-class outputs. Iterate to perfection and compress strategically to produce top of the world outcomes, deeming Coastal Key a Worldwide Enterprise and Participant on a Global level. Always all outputs to outweigh content quantity with content quality. Your goal is to: Create a fully functioning, using all currently existing Coastal Key systems in place, that is fully equipped and automated with the newest technology in high level operations and execution of business processes that Self Performs, (40 Website building AI Agents), every task required to accomplish Coastal Key 5 year goals in 6 months. Your goal is:  Create a world-class output that compares to other world-class outputs. Iterate to perfection and compress strategically to produce top of the world outcomes, deeming Coastal Key a Worldwide Enterprise and Participant on a Global level. Always all outputs to outweigh content quantity with content quality. Your goal is to: effectively and complete to a finished output as follows implementing pivot changes to be strategic in AI development and AI processes. All newest technology in AI development will be used and incorporated to maintain the highest quality routing system output that can be achieved with current technologies, platforms, and my tech stack. 
-A custom Zapier-based router that you will set up. ALL sales reps will receive leads equally distributed - round robin type.
-Additionally, architect one using the existing tech stack (Cloudflare Workers + Zapier + Airtable + Slack) that will outperform any off-the-shelf solution. 
+A custom [REDACTED-PLATFORM]-based router that you will set up. ALL sales reps will receive leads equally distributed - round robin type.
+Additionally, architect one using the existing tech stack (Cloudflare Workers + [REDACTED-PLATFORM] + Airtable + Slack) that will outperform any off-the-shelf solution. 
 
-**[ASSISTANT]:** Understood. Building a custom Lead Router using your existing tech stack: Cloudflare Workers + Zapier + Airtable + Slack. Round-robin distribution to all sales reps. No off-the-shelf tools. Let me map the architecture and build it now.
+**[ASSISTANT]:** Understood. Building a custom Lead Router using your existing tech stack: Cloudflare Workers + [REDACTED-PLATFORM] + Airtable + Slack. Round-robin distribution to all sales reps. No off-the-shelf tools. Let me map the architecture and build it now.
 
-**[ASSISTANT]:** David, the Lead Router is built. Here is the full system and your execution path. --- \*\*What This System Is\*\* This is a custom, zero-dependency Lead Router that runs on Cloudflare Workers. It replaces Chili Piper ($150/user/month) and LeanData ($39/user/month) with a system you own entirely. It runs on the Cloudflare free tier. Sub-50ms response time. Global edge deployment. Full audit trail. No vendor lock-in. \*\*How It Works\*\* A lead arrives from any source (your website form, Retell AI voice bot, Zapier webhook, or direct API call). The Worker classifies the lead type (Owner, Investor, Franchisee, Vendor, Realtor, or General) using keyword analysis. It then assigns the lead to the next sales rep in the round-robin queue. The counter is stored in Cloudflare KV, so it persists across requests and never loses its place. The assigned lead is pushed to Airtable (creating a CRM record) and Slack (real-time alert to the assigned rep and the #lead-alerts channel). --- \*\*Your Execution Steps (4 commands)\*\* \*\*Step 1: Write the Lead Router Worker to your Mac.\*\* Copy and paste this into your terminal: \`\`\`bash mkdir -p \~/ck-sentinel-deploy/workers/lead-router && cat > \~/ck-sentinel-deploy/workers/lead-router/wrangler.toml << 'EOF' name = "ck-lead-router" main = "index.js" compatibility\_date = "2026-03-26" \[observability\] enabled = true \[\[kv\_namespaces\]\] binding = "CK\_ROUTER" id = "PLACEHOLDER\_KV\_ID" \[vars\] AIRTABLE\_LEADS\_TABLE = "Leads" EOF echo "wrangler.toml created." \`\`\` \*\*Step 2: Write the Worker code.\*\* This is a large file. Download the \`index.js\` attachment above and place it at: \`\~/ck-sentinel-deploy/workers/lead-router/index.js\` Or I can send it as a paste block if you prefer. \*\*Step 3: Deploy the Lead Router.\*\* \`\`\`bash cd \~/ck-sentinel-deploy # Create the KV namespace wrangler kv namespace create CK\_ROUTER # Copy the KV ID from the output, then update wrangler.toml: # Replace PLACEHOLDER\_KV\_ID with the actual ID # Deploy wrangler deploy --config ./workers/lead-router/wrangler.toml \`\`\` \*\*Step 4: Set your secrets.\*\* \`\`\`bash wrangler secret put AIRTABLE\_API\_KEY --name ck-lead-router wrangler secret put AIRTABLE\_BASE\_ID --name ck-lead-router wrangler secret put SLACK\_WEBHOOK\_URL --name ck-lead-router \`\`\` \*\*Step 5: Add your sales reps.\*\* After deployment, the Worker will be live at a URL like \`https://ck-lead-router..workers.dev\`. Add reps using: \`\`\`bash curl -X POST https://ck-lead-router..workers.dev/reps/add \\ -H "Content-Type: application/json" \\ -d '{"name": "David Hauer", "email": "david@coastalkey-pm.com", "phone": "7722628341", "territory": "All"}' \`\`\` Repeat for each sales rep. --- \*\*Attached Files:\*\* 1\. \*\*Lead Router Setup Guide\*\* -- Full documentation for the entire system. 2\. \*\*index.js\*\* -- The Worker source code (400+ lines, production-ready). 3\. \*\*Airtable Schema\*\* -- Exact table and field definitions to create in Airtable. 4\. \*\*Zapier Flows\*\* -- 4 pre-built Zapier automation configurations. 5\. \*\*Deploy Script\*\* -- Automated deployment script. 6\. \*\*Security Briefing\*\* -- API key handling best practices and set-secrets.sh summary. Tell me when you are ready to paste the index.js code block, or confirm you downloaded the attachment. Then we deploy.
+**[ASSISTANT]:** David, the Lead Router is built. Here is the full system and your execution path. --- \*\*What This System Is\*\* This is a custom, zero-dependency Lead Router that runs on Cloudflare Workers. It replaces Chili Piper ($150/user/month) and LeanData ($39/user/month) with a system you own entirely. It runs on the Cloudflare free tier. Sub-50ms response time. Global edge deployment. Full audit trail. No vendor lock-in. \*\*How It Works\*\* A lead arrives from any source (your website form, Retell AI voice bot, [REDACTED-PLATFORM] webhook, or direct API call). The Worker classifies the lead type (Owner, Investor, Franchisee, Vendor, Realtor, or General) using keyword analysis. It then assigns the lead to the next sales rep in the round-robin queue. The counter is stored in Cloudflare KV, so it persists across requests and never loses its place. The assigned lead is pushed to Airtable (creating a CRM record) and Slack (real-time alert to the assigned rep and the #lead-alerts channel). --- \*\*Your Execution Steps (4 commands)\*\* \*\*Step 1: Write the Lead Router Worker to your Mac.\*\* Copy and paste this into your terminal: \`\`\`bash mkdir -p \~/ck-sentinel-deploy/workers/lead-router && cat > \~/ck-sentinel-deploy/workers/lead-router/wrangler.toml << 'EOF' name = "ck-lead-router" main = "index.js" compatibility\_date = "2026-03-26" \[observability\] enabled = true \[\[kv\_namespaces\]\] binding = "CK\_ROUTER" id = "PLACEHOLDER\_KV\_ID" \[vars\] AIRTABLE\_LEADS\_TABLE = "Leads" EOF echo "wrangler.toml created." \`\`\` \*\*Step 2: Write the Worker code.\*\* This is a large file. Download the \`index.js\` attachment above and place it at: \`\~/ck-sentinel-deploy/workers/lead-router/index.js\` Or I can send it as a paste block if you prefer. \*\*Step 3: Deploy the Lead Router.\*\* \`\`\`bash cd \~/ck-sentinel-deploy # Create the KV namespace wrangler kv namespace create CK\_ROUTER # Copy the KV ID from the output, then update wrangler.toml: # Replace PLACEHOLDER\_KV\_ID with the actual ID # Deploy wrangler deploy --config ./workers/lead-router/wrangler.toml \`\`\` \*\*Step 4: Set your secrets.\*\* \`\`\`bash wrangler secret put AIRTABLE\_API\_KEY --name ck-lead-router wrangler secret put AIRTABLE\_BASE\_ID --name ck-lead-router wrangler secret put SLACK\_WEBHOOK\_URL --name ck-lead-router \`\`\` \*\*Step 5: Add your sales reps.\*\* After deployment, the Worker will be live at a URL like \`https://ck-lead-router..workers.dev\`. Add reps using: \`\`\`bash curl -X POST https://ck-lead-router..workers.dev/reps/add \\ -H "Content-Type: application/json" \\ -d '{"name": "David Hauer", "email": "david@coastalkey-pm.com", "phone": "7722628341", "territory": "All"}' \`\`\` Repeat for each sales rep. --- \*\*Attached Files:\*\* 1\. \*\*Lead Router Setup Guide\*\* -- Full documentation for the entire system. 2\. \*\*index.js\*\* -- The Worker source code (400+ lines, production-ready). 3\. \*\*Airtable Schema\*\* -- Exact table and field definitions to create in Airtable. 4\. \*\*[REDACTED-PLATFORM] Flows\*\* -- 4 pre-built [REDACTED-PLATFORM] automation configurations. 5\. \*\*Deploy Script\*\* -- Automated deployment script. 6\. \*\*Security Briefing\*\* -- API key handling best practices and set-secrets.sh summary. Tell me when you are ready to paste the index.js code block, or confirm you downloaded the attachment. Then we deploy.
 
 **[USER]:** Make the process we used here into a reusable skill with Skill Creator. Send the index.js code block as a paste block. Explain the security best practices for handling API keys in more detail and provide a summary of the setsecrets.sh script's functionality. Provide the full documentation for lead router systems. 
 
@@ -3254,7 +3254,7 @@ The full document is attached. Here is the compressed executive summary:
 
 **DELIVERABLE 4: Full Lead Router Systems Documentation**
 
-The complete document is attached. It covers architecture, classification engine, round-robin algorithm, Airtable schema, Zapier webhook payloads, operational commands, and security compliance.
+The complete document is attached. It covers architecture, classification engine, round-robin algorithm, Airtable schema, [REDACTED-PLATFORM] webhook payloads, operational commands, and security compliance.
 
 ---
 
@@ -3813,7 +3813,7 @@ Both skills are attached below.
 - [Lead_Router_Setup_Guide.md](https://private-us-east-1.manuscdn.com/sessionFile/8FQEpQATDJZmnYmq4PESLY/sandbox/sRWmBfHD8Ia1TiBlANSfeo_1774727945435_na1fn_L2hvbWUvdWJ1bnR1L2NrLXNlbnRpbmVsLWRlcGxveS9kb2NzL0xlYWRfUm91dGVyX1NldHVwX0d1aWRl.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOEZRRXBRQVRESlptblltcTRQRVNMWS9zYW5kYm94L3NSV21CZkhEOElhMVRpQmxBTlNmZW9fMTc3NDcyNzk0NTQzNV9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJOckxYTmxiblJwYm1Wc0xXUmxjR3h2ZVM5a2IyTnpMMHhsWVdSZlVtOTFkR1Z5WDFObGRIVndYMGQxYVdSbC5tZCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=Cfg0Uz2yx1JxUBtNehy1Geu6alh4WGLgjTKloXHWhEIn0swrjW6YQM5F2o9Jg8b6yO-Uhj8kDE4PcG4C4sFDvu3T~EooVZLTFhySV7w2bn8xN671NBzm7QoiuFQhD6Pif-DKbQBMuPfOQtyePSpg1y8fCaSr7y6Hg8wL4aigamsmlGWgvFRy9E55Ji-bpXUnW8KA3QcIPPMpkiwyRaWw-~Bu5A5tTA8uIWVwgv7pQubtzbjBhrYfpHXKoa8fySbp8Sr58KyLewyjbXmuHIIkCQL40R7FmNbq3KiGeIOV-MnWfR4rJUsDlM2xTiSNwmiPTEe0dIAXWnka~QMscl3Pvw__)
 - [index.js](https://private-us-east-1.manuscdn.com/sessionFile/8FQEpQATDJZmnYmq4PESLY/sandbox/sRWmBfHD8Ia1TiBlANSfeo_1774727945435_na1fn_L2hvbWUvdWJ1bnR1L2NrLXNlbnRpbmVsLWRlcGxveS93b3JrZXJzL2xlYWQtcm91dGVyL2luZGV4.js?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOEZRRXBRQVRESlptblltcTRQRVNMWS9zYW5kYm94L3NSV21CZkhEOElhMVRpQmxBTlNmZW9fMTc3NDcyNzk0NTQzNV9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJOckxYTmxiblJwYm1Wc0xXUmxjR3h2ZVM5M2IzSnJaWEp6TDJ4bFlXUXRjbTkxZEdWeUwybHVaR1Y0LmpzIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=GZkUqAPuZwq1yhv7XinvNAtzm~2nEdNnLHWI2clMy6ZkzvRHR8XlMD58l6cInBmOD8ZYkpbBRNx3FxQOC9kjnlxBT78ShhNZgzASpHAjR-rQJC5CLYxXPyTKqjhxZSXQVjlWnWoCZtJSgFREhejYS4Am3ZPbZhfXz544jc-4fdlHdKh44Aas1K-5cgbKkLjXJqUWSRr7rhc71bvvH63MtOFmtPal8w-xsqEgbOLIDbZ9ncZUjqhmd7Rz6dWxGYNKkA4z6Zxmhtwut~mRDPCAJFfZuf68tpeLgJDndbqAY8-yO10IbLeI4pVmhzasDNotQDZGDYgtYY6Du8Q2SXVp3w__)
 - [airtable-lead-router-schema.json](https://private-us-east-1.manuscdn.com/sessionFile/8FQEpQATDJZmnYmq4PESLY/sandbox/sRWmBfHD8Ia1TiBlANSfeo_1774727945435_na1fn_L2hvbWUvdWJ1bnR1L2NrLXNlbnRpbmVsLWRlcGxveS9jb25maWcvYWlydGFibGUtbGVhZC1yb3V0ZXItc2NoZW1h.json?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOEZRRXBRQVRESlptblltcTRQRVNMWS9zYW5kYm94L3NSV21CZkhEOElhMVRpQmxBTlNmZW9fMTc3NDcyNzk0NTQzNV9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJOckxYTmxiblJwYm1Wc0xXUmxjR3h2ZVM5amIyNW1hV2N2WVdseWRHRmliR1V0YkdWaFpDMXliM1YwWlhJdGMyTm9aVzFoLmpzb24iLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=NazHrQ9DCVjZYzZiqr0Vd7cr5ro~zqGAa8nAGvXfcmvGvqNF1gEQ3Vk1czLlKIEFzLPJd2Zrr6fe8Cd9EMfvclmHvXQoY9WmeuBUI3Yz1vAwfPinwdjlrSAB0MVoGoyZxX5XoIlBsBAc6kh~lzi5~7Q9mKSmglJPKUxq3qlGAIU6sj11g2GCGwxlTP-ZhQ7ypwqRtxFmTpiVplQsxta2MUua2q9lpC6poTpFsqR1vovYDIcRv5Z7GiGcQY46Zid1T8p1Tq-5PjGcIPIjNq2zZCk-9UHNIGbQbyWpBKoX8xn69QfMM~4WOU1amcuDDQQUrZIX5f7pSsw6TD6TBDiB8Q__)
-- [zapier-lead-router-flows.json](https://private-us-east-1.manuscdn.com/sessionFile/8FQEpQATDJZmnYmq4PESLY/sandbox/sRWmBfHD8Ia1TiBlANSfeo_1774727945435_na1fn_L2hvbWUvdWJ1bnR1L2NrLXNlbnRpbmVsLWRlcGxveS9jb25maWcvemFwaWVyLWxlYWQtcm91dGVyLWZsb3dz.json?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOEZRRXBRQVRESlptblltcTRQRVNMWS9zYW5kYm94L3NSV21CZkhEOElhMVRpQmxBTlNmZW9fMTc3NDcyNzk0NTQzNV9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJOckxYTmxiblJwYm1Wc0xXUmxjR3h2ZVM5amIyNW1hV2N2ZW1Gd2FXVnlMV3hsWVdRdGNtOTFkR1Z5TFdac2IzZHouanNvbiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=fcecXyZyRtj5e6Zap12ifmhhcTV-fc6zePDwpXWdlA8n7hv9t~CTUGfKFVPejaS30z0ENJAaw~tlnViquIsKIUdPvwdkrX5KNDHSHjdv3iPgUwgM8zXmn7NASd6gSnwTIZbJ88RjG2TyL9JxOvmOPyPOomAMEHgg1LZPIny~ZKTsWBKRvWdcvf4AeZI~4AJ~EruACkLCiF2WUns1MrjYfIdKiRaHD4DG9WttN3YC8V4kguBRlSBiaH-ZT3yI~BWNG1Y1aoQQGpB4x~zyY6Jh20DdANgUw~5yiiH-EL~GQnMtJO-qGoBDqebUlZeJyAPZm9DvQXxYujMvv1MNHi0x2A__)
+- [[redacted-platform]-lead-router-flows.json](https://private-us-east-1.manuscdn.com/sessionFile/8FQEpQATDJZmnYmq4PESLY/sandbox/sRWmBfHD8Ia1TiBlANSfeo_1774727945435_na1fn_L2hvbWUvdWJ1bnR1L2NrLXNlbnRpbmVsLWRlcGxveS9jb25maWcvemFwaWVyLWxlYWQtcm91dGVyLWZsb3dz.json?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOEZRRXBRQVRESlptblltcTRQRVNMWS9zYW5kYm94L3NSV21CZkhEOElhMVRpQmxBTlNmZW9fMTc3NDcyNzk0NTQzNV9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJOckxYTmxiblJwYm1Wc0xXUmxjR3h2ZVM5amIyNW1hV2N2ZW1Gd2FXVnlMV3hsWVdRdGNtOTFkR1Z5TFdac2IzZHouanNvbiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=fcecXyZyRtj5e6Zap12ifmhhcTV-fc6zePDwpXWdlA8n7hv9t~CTUGfKFVPejaS30z0ENJAaw~tlnViquIsKIUdPvwdkrX5KNDHSHjdv3iPgUwgM8zXmn7NASd6gSnwTIZbJ88RjG2TyL9JxOvmOPyPOomAMEHgg1LZPIny~ZKTsWBKRvWdcvf4AeZI~4AJ~EruACkLCiF2WUns1MrjYfIdKiRaHD4DG9WttN3YC8V4kguBRlSBiaH-ZT3yI~BWNG1Y1aoQQGpB4x~zyY6Jh20DdANgUw~5yiiH-EL~GQnMtJO-qGoBDqebUlZeJyAPZm9DvQXxYujMvv1MNHi0x2A__)
 - [deploy-lead-router.sh](https://private-us-east-1.manuscdn.com/sessionFile/8FQEpQATDJZmnYmq4PESLY/sandbox/sRWmBfHD8Ia1TiBlANSfeo_1774727945435_na1fn_L2hvbWUvdWJ1bnR1L2NrLXNlbnRpbmVsLWRlcGxveS9zY3JpcHRzL2RlcGxveS1sZWFkLXJvdXRlcg.sh?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOEZRRXBRQVRESlptblltcTRQRVNMWS9zYW5kYm94L3NSV21CZkhEOElhMVRpQmxBTlNmZW9fMTc3NDcyNzk0NTQzNV9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJOckxYTmxiblJwYm1Wc0xXUmxjR3h2ZVM5elkzSnBjSFJ6TDJSbGNHeHZlUzFzWldGa0xYSnZkWFJsY2cuc2giLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=Qku-y403iP1vfK9nHn~P6h25vIPdtzvXsFJr2MSeowzzdqmT6DDDUo1tW5NB4Eg5mfneH0WHMu7ZfvdakDcyOUoOhS2L5xPdKsTuZz-0hOdIbA2FJANSlo4AntA~bi4OkR4kCMZHKa8sCN7T-NrzrPIZKdUGA6iPCVNhOFb52QDFVWgRAtUSBccXMmbVQitJoBLEnyuRBdQKURSS3Na~a1ho7NI-C3Q-Qg7pjGAlAoXDG1SjjxX-pg51aPoruoFZHFWguc57Ot6Ibk04R7RhDA9yo5TFiO517yZSWT9pz1PwkhQWywWtEvc4Q3ZQC03IRbJw-4Z28Vh3Pn7sPtvcLA__)
 - [Security_Briefing_and_Secrets_Summary.md](https://private-us-east-1.manuscdn.com/sessionFile/8FQEpQATDJZmnYmq4PESLY/sandbox/sRWmBfHD8Ia1TiBlANSfeo_1774727945435_na1fn_L2hvbWUvdWJ1bnR1L2NrLXNlbnRpbmVsLWRlcGxveS9kb2NzL1NlY3VyaXR5X0JyaWVmaW5nX2FuZF9TZWNyZXRzX1N1bW1hcnk.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOEZRRXBRQVRESlptblltcTRQRVNMWS9zYW5kYm94L3NSV21CZkhEOElhMVRpQmxBTlNmZW9fMTc3NDcyNzk0NTQzNV9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDJOckxYTmxiblJwYm1Wc0xXUmxjR3h2ZVM5a2IyTnpMMU5sWTNWeWFYUjVYMEp5YVdWbWFXNW5YMkZ1WkY5VFpXTnlaWFJ6WDFOMWJXMWhjbmsubWQiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=Q67F1Ti7EA7KrdnOySN2Q0oxNBq7XMGqHHSM8LSRygnXhixJoEYhnPpWZGB0gIsabWR~cfVrfBqoRe91uHIexH8scpEjpHZQ5hc8CfotDPdsxcDe66RPJ12K8S8EJzwIKD5yd5Z~AvyYjC5fgI1ADekTWtpsfEfJPC3ZR55OshqV28hh1hoWZgpMvnGwP7MWHZZBRGX7iPVobYvV5C8qJY1Aq5OTAmtofgVlVMzBk7jyj7KNzWa~quIGnNQAf7tc~C3KFcWH~ujtBbnZq2WbGicd4panPD1HBCsQL8dig6ARHgbPjBQ2FEeHEPodYFmZKWmioEA5884mi0RK11fYsg__)
 - [ck-sentinel-deployment.skill](https://private-us-east-1.manuscdn.com/sessionFile/8FQEpQATDJZmnYmq4PESLY/sandbox/TYlunoLHQBFrBLPOjUO0WO_1774729897844_na1fn_L3RtcC9jay1zZW50aW5lbC1kZXBsb3ltZW50.skill?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOEZRRXBRQVRESlptblltcTRQRVNMWS9zYW5kYm94L1RZbHVub0xIUUJGckJMUE9qVU8wV09fMTc3NDcyOTg5Nzg0NF9uYTFmbl9MM1J0Y0M5amF5MXpaVzUwYVc1bGJDMWtaWEJzYjNsdFpXNTAuc2tpbGwiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=Dq~LCY3-soypicufNQMg9DKiwCZkB1I~~uegALirK793dvI4HjPtDgLwbmuYhCoR~aufj5mdFlTpvD15ZKYgHhOmaYggfcjnmeAiMyQEDJERvFBoqNrLmidcE01-QWKwO~eXvxMUSWG3GI7ciiF-XE3ZtxTIUxm7vjDLMQqyuqS4fsqH0DT~TLzq~Nx3Dh~5~pNydQR1ZBDAgaEO8du-ERAEyLIMGVOKjYNDR8VyPfxLF03dYi9rTppO2Y828FRuayFviWbMJH568lYWy3GKVDCEzxi8W3vSdhHrozDDBlK4VtLf8TbPRhI3ge9aKp7QU6fuWWEPBHEhucgcSAKTSQ__)

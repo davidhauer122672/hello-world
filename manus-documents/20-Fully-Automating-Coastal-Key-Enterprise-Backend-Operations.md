@@ -45,7 +45,7 @@ Let me begin by reading the Skill Creator instructions and the architecture docu
 
 **1. Reusable Skill** created at `/home/ubuntu/skills/ck-enterprise-automation-builder/` and validated. Use it to regenerate or extend the automation architecture for any new division or market.
 
-**2. Implementation Guide** covers every trigger map, workflow diagram, Zapier configuration, Cloudflare Worker deployment, and Airtable schema needed to bring the architecture live.
+**2. Implementation Guide** covers every trigger map, workflow diagram, [REDACTED-PLATFORM] configuration, Cloudflare Worker deployment, and Airtable schema needed to bring the architecture live.
 
 **3. Presentation** regenerated with 10 slides featuring real property management photography: the team at a luxury waterfront estate, executive boardroom strategy sessions, sales reps working CRM systems, inspectors on-site at coastal properties, and vendor dispatch at luxury homes.
 
@@ -84,19 +84,19 @@ Let me start by reading the Skill Creator instructions and existing architecture
 **To activate the Airtable integration**, replace the placeholder values in the code (lines 78-80 of Home.tsx) with your actual Airtable Base ID and Personal Access Token. Create a table called `CK_Lead_Inquiries` with these fields: Full Name, Email, Phone, Company, Property Count, Service Area, Message, Source, Submitted At.
 
 **Next steps to consider:**
-1. **Connect the Lead Router** so form submissions also trigger the SCAA-1 Battle Plan workflow automatically via Zapier.
+1. **Connect the Lead Router** so form submissions also trigger the SCAA-1 Battle Plan workflow automatically via [REDACTED-PLATFORM].
 2. **Add a Retell AI call widget** to the contact section so visitors can speak directly with the AI concierge.
 3. **Publish the web page** by clicking the Publish button in the Management UI to make it live on your custom domain.
 
 **[USER]:** 1. Integrate a Retail AI call widget into the contact section of the web page for immediate visitor interaction. This widget has already been created as a Coastal Key mobile app.
-2. Act the lead capture form to a Zapier workflow that automatically triggers the SCAA1 battle plan.
+2. Act the lead capture form to a [REDACTED-PLATFORM] workflow that automatically triggers the SCAA1 battle plan.
 3. Add a new section to the web page that visually embeds the presentation slides about the automation architecture.
 4. Make the process we used here into a reusable skill with Skill Creator.
 
 **[ASSISTANT]:** Acknowledged. I have four new deliverables to build:
 
 1. Integrate the Retell AI call widget into the contact section of the web page
-2. Connect the lead capture form to a Zapier webhook that triggers the SCAA-1 Battle Plan
+2. Connect the lead capture form to a [REDACTED-PLATFORM] webhook that triggers the SCAA-1 Battle Plan
 3. Add an embedded presentation slides section to the web page
 4. Create a new reusable skill capturing this full process
 
@@ -106,16 +106,16 @@ Let me start by reviewing the current codebase and existing skills to build all 
 
 **[ASSISTANT]:** Continuing. Let me re-read the remaining sections of the web page to complete all four deliverables.
 
-**[ASSISTANT]:** Phase 1 complete. All documentation reviewed. Now implementing the Retell AI widget, Zapier webhook, embedded slides, and the reusable skill. Building all four in sequence.
+**[ASSISTANT]:** Phase 1 complete. All documentation reviewed. Now implementing the Retell AI widget, [REDACTED-PLATFORM] webhook, embedded slides, and the reusable skill. Building all four in sequence.
 
 **[ASSISTANT]:** All four deliverables are complete and deployed.
 
-The web page now includes: a **Retell AI callback widget** (gold phone icon, bottom-right corner) with an in-page "Request AI Callback" CTA in the contact section; a **Zapier webhook** that fires the SCAA-1 Battle Plan payload after every lead submission; an **embedded 15-slide presentation** section with responsive 16:9 iframe and navigation link; and a validated **reusable skill** (`ck-enterprise-web-integration`) capturing all four integration patterns with code examples and credential checklist.
+The web page now includes: a **Retell AI callback widget** (gold phone icon, bottom-right corner) with an in-page "Request AI Callback" CTA in the contact section; a **[REDACTED-PLATFORM] webhook** that fires the SCAA-1 Battle Plan payload after every lead submission; an **embedded 15-slide presentation** section with responsive 16:9 iframe and navigation link; and a validated **reusable skill** (`ck-enterprise-web-integration`) capturing all four integration patterns with code examples and credential checklist.
 
 **To activate, replace these placeholders:**
 - Retell Public Key and Agent ID in `client/index.html`
 - Airtable Base ID and API Key in `Home.tsx`
-- Zapier Webhook URL in `Home.tsx`
+- [REDACTED-PLATFORM] Webhook URL in `Home.tsx`
 
 **Next steps to consider:**
 1. **Add a mobile hamburger menu** so the 7-item navigation collapses on smaller screens.
@@ -156,7 +156,7 @@ All terminology replaced. All white space eliminated. All buttons gold bar with 
 **[ASSISTANT]:** The website has been completely overhauled. It is now consolidated to 5 pages under coastalkey-pm.com with the "Service. Security. Stewardship." theme. All backgrounds are dark navy with zero white space. Every button is a gold bar with black text. All "portfolio" replaced with "property." No "industrial grade" language. No third-party branding visible. The lead capture form, AI concierge callback, and embedded presentation are all intact. Mobile hamburger menu works across all pages.
 
 **Next steps to consider:**
-1. **Replace the placeholder Airtable/Zapier/Retell credentials** in the Contact page and index.html with your live API keys to activate the lead capture and AI concierge.
+1. **Replace the placeholder Airtable/[REDACTED-PLATFORM]/Retell credentials** in the Contact page and index.html with your live API keys to activate the lead capture and AI concierge.
 2. **Add client testimonials or case studies** to the Services page to strengthen social proof for property owners visiting the site.
 3. **Publish the site** by clicking the Publish button in the Management UI, then bind your coastalkey-pm.com domain in Settings > Domains.
 

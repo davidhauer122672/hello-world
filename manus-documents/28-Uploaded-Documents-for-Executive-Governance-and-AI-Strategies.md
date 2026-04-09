@@ -100,7 +100,7 @@ Starting now.
 **[ASSISTANT]:** All four deliverables are complete. Here is what was built.
 
 **Deliverable 1: World-Class JSON for Mac Terminal Integration**
-A fully structured, valid JSON file containing all 10 sections of the 5-Agent Media Automation System. It includes 5 agent definitions, 6 Zapier workflows, 8 KPI targets, 12 activation steps, 5 risk notes, and 3 revenue impact projections. Every field is typed and keyed for programmatic access. You can parse it in your Mac terminal with `cat 5_Agent_Media_Automation_System.json | python3 -m json.tool` or integrate it directly into any system that reads JSON.
+A fully structured, valid JSON file containing all 10 sections of the 5-Agent Media Automation System. It includes 5 agent definitions, 6 [REDACTED-PLATFORM] workflows, 8 KPI targets, 12 activation steps, 5 risk notes, and 3 revenue impact projections. Every field is typed and keyed for programmatic access. You can parse it in your Mac terminal with `cat 5_Agent_Media_Automation_System.json | python3 -m json.tool` or integrate it directly into any system that reads JSON.
 
 **Deliverable 2: Reusable Skill (Document Compressor)**
 A validated, production-ready skill installed at `/home/ubuntu/skills/document-compressor/`. It includes the SKILL.md instruction file and a Python compression script. Any future task requesting document compression, character reduction, or content tightening will trigger this skill automatically. The workflow covers analysis, automated baseline compression, iterative manual tightening, fine-tuning to exact targets, and verification.
@@ -113,13 +113,13 @@ All five agents (Content Strategist, Caption Engine, Visual Director, Repurposin
 
 All files have been filed to the project directory.
 
-**[USER]:** Make the process we used here into a reusable skill with Skill Creator. Generate a presentation script for the five-agent media automation system based on the JSON output. Create slides summarizing the five-agent media automation system, focusing on the agent definitions and Zapier workflows. Visualize the KPI targets and revenue impact projections from the five-agent media automation system. JSON 
+**[USER]:** Make the process we used here into a reusable skill with Skill Creator. Generate a presentation script for the five-agent media automation system based on the JSON output. Create slides summarizing the five-agent media automation system, focusing on the agent definitions and [REDACTED-PLATFORM] workflows. Visualize the KPI targets and revenue impact projections from the five-agent media automation system. JSON 
 
 **[ASSISTANT]:** I'm on it. Five deliverables coming:
 
 1. Reusable skill via Skill Creator for the 5-Agent Media Automation System build process
 2. Presentation script based on the JSON output
-3. Slides summarizing the agent definitions and Zapier workflows
+3. Slides summarizing the agent definitions and [REDACTED-PLATFORM] workflows
 4. Visualization of KPI targets and revenue impact projections
 5. Updated JSON (if needed)
 
@@ -132,13 +132,13 @@ Starting now.
 **[ASSISTANT]:** All five deliverables are complete. Here is what was built.
 
 **Deliverable 1: Reusable Skill (5-Agent Media Automation)**
-A validated, production-ready skill installed at `/home/ubuntu/skills/5-agent-media-automation/`. It includes the SKILL.md instruction file and the master JSON template. Any future task requesting a media automation system, content engine, or social media agent architecture will trigger this skill automatically. The workflow covers agent definition, Zapier workflow mapping, KPI target setting, revenue projection modeling, and activation sequencing.
+A validated, production-ready skill installed at `/home/ubuntu/skills/5-agent-media-automation/`. It includes the SKILL.md instruction file and the master JSON template. Any future task requesting a media automation system, content engine, or social media agent architecture will trigger this skill automatically. The workflow covers agent definition, [REDACTED-PLATFORM] workflow mapping, KPI target setting, revenue projection modeling, and activation sequencing.
 
 **Deliverable 2: Presentation Script**
-A 10-minute CEO presentation script covering all 10 slides. Written in 9th-grade English. Short sentences. No filler. No cheesy quotes. No em dashes. The script walks through the executive mandate, the 5-agent architecture, each agent definition, the 6 Zapier workflows, the automation chain flow, KPI targets, and revenue impact projections.
+A 10-minute CEO presentation script covering all 10 slides. Written in 9th-grade English. Short sentences. No filler. No cheesy quotes. No em dashes. The script walks through the executive mandate, the 5-agent architecture, each agent definition, the 6 [REDACTED-PLATFORM] workflows, the automation chain flow, KPI targets, and revenue impact projections.
 
 **Deliverable 3: Slide Deck (10 Slides)**
-A 10-slide institutional-grade presentation summarizing the full 5-Agent Media Automation System. Navy background with gold accents. Montserrat and Open Sans typography. Focused on agent definitions and Zapier workflows as requested. Includes the KPI targets grid and the three revenue levers.
+A 10-slide institutional-grade presentation summarizing the full 5-Agent Media Automation System. Navy background with gold accents. Montserrat and Open Sans typography. Focused on agent definitions and [REDACTED-PLATFORM] workflows as requested. Includes the KPI targets grid and the three revenue levers.
 
 **Deliverable 4: KPI and Revenue Impact Visualization**
 A four-module dashboard visualization built with the Coastal Key brand palette. Module 1 shows all 8 KPI performance targets as a horizontal bar chart. Module 2 shows the annual revenue impact projection with conservative and optimistic scenarios ($128K to $184K total annual impact). Module 3 shows the annual content volume breakdown by format (2,080 assets/year across 8 derivative types). Module 4 shows the operational efficiency scorecard with all 6 key metrics.
@@ -177,7 +177,7 @@ orchestrator command doctrine. Master Orchestrator command doctrine is authorize
 
 Six enterprise systems were updated to recognize and report to the Master Orchestrator as the governing intelligence layer.
 
-The **Website Agent Data** now lists the Master Orchestrator as Department 1 with 10 agents and the gold accent color. The **5-Agent Media Automation** skill now routes all Zapier workflow failures (WF-2, WF-4, WF-10 through WF-13) through the Orchestrator's S2 escalation protocol. The **AI Security Shield** skill now triggers S1/S2 escalation for all security breaches and model drift alerts. The **Sentinel Deployment** skill now governs all Cloudflare Worker deployments through the S1-S4 severity protocol. The **Lead Router Operations** skill now feeds lead volume and conversion metrics directly into Module 4 of the CEO Administration Dashboard. The **Project Directory** holds the Orchestrator Markdown, JSON, and Deployment Manifest as permanent enterprise records.
+The **Website Agent Data** now lists the Master Orchestrator as Department 1 with 10 agents and the gold accent color. The **5-Agent Media Automation** skill now routes all [REDACTED-PLATFORM] workflow failures (WF-2, WF-4, WF-10 through WF-13) through the Orchestrator's S2 escalation protocol. The **AI Security Shield** skill now triggers S1/S2 escalation for all security breaches and model drift alerts. The **Sentinel Deployment** skill now governs all Cloudflare Worker deployments through the S1-S4 severity protocol. The **Lead Router Operations** skill now feeds lead volume and conversion metrics directly into Module 4 of the CEO Administration Dashboard. The **Project Directory** holds the Orchestrator Markdown, JSON, and Deployment Manifest as permanent enterprise records.
 
 **Operational Status:**
 
@@ -551,7 +551,7 @@ Pre-live test checklist for rechVm1hmggAvfvXp:
 Update Post Date to a future date
 Export Canva design as PNG, attach to Asset field
 Reset Status from Approved back to Draft
-Build Buffer account and WF-2 in Zapier
+Build Buffer account and WF-2 in [REDACTED-PLATFORM]
 Re-set Status to Approved and observe the full chain
 
 **[ASSISTANT]:** Acknowledged. I am delegating this to the Chief AI Development Architect and AI Development Engineer. Let me assess the full scope of what needs to be built and deployed before issuing the action plan.
@@ -561,11 +561,11 @@ Re-set Status to Approved and observe the full chain
 **Document 1: 3-Agent Team Action Plan**
 The executive delegation memo. It defines the two issues, the root cause of each, the exact fix for each, and the 6-step pre-live test checklist execution sequence. This is the command document the team follows.
 
-**Document 2: WF-2 Zapier Specification**
+**Document 2: WF-2 [REDACTED-PLATFORM] Specification**
 The complete architecture for the Approval-to-Buffer workflow. It defines the Airtable trigger (Status = Approved), the Slack notification (Action 1), the Buffer scheduling (Action 2), and the Airtable status update to Scheduled (Action 3). Every field mapping is specified. Every error condition is documented.
 
 **Document 3: Buffer Integration Guide**
-The account setup and channel connection guide. It covers Instagram Business, Facebook Page, and LinkedIn Company Page connections. It documents the Zapier authentication handshake. It addresses the Alignable manual posting protocol since Alignable has no API.
+The account setup and channel connection guide. It covers Instagram Business, Facebook Page, and LinkedIn Company Page connections. It documents the [REDACTED-PLATFORM] authentication handshake. It addresses the Alignable manual posting protocol since Alignable has no API.
 
 **Document 4: Deployment Package**
 The terminal-ready scripts. Script 1 updates the Post Date to +48 hours and resets Status to Draft. Script 2 clears the invalid Canva link from the Image URL field. The manual asset upload protocol covers the Canva export and Airtable attachment. The Live Fire Test script sets Status to Approved to trigger the full chain. The verification checklist has 9 checkboxes to confirm success.
@@ -575,17 +575,17 @@ The terminal-ready scripts. Script 1 updates the Post Date to +48 hours and rese
 2. Run Script 2 (clear bad image URL).
 3. Export the Canva PNG and upload to Airtable Asset field.
 4. Build Buffer account and connect channels.
-5. Build WF-2 in Zapier per the specification.
+5. Build WF-2 in [REDACTED-PLATFORM] per the specification.
 6. Run the Live Fire Test script.
 7. Verify Slack, Buffer, and Airtable status updates.
 
-**[USER]:** Make the process we used here into a reusable skill with Skill Creator. Generate the terminal-ready scripts for script one and script two from the deployment package. Provide a detailed guide on how to export the Canva PNG and upload it to the Airtable asset field. Show me the full architecture for the approval to buffer workflow WF-2 Zapier specification. 
+**[USER]:** Make the process we used here into a reusable skill with Skill Creator. Generate the terminal-ready scripts for script one and script two from the deployment package. Provide a detailed guide on how to export the Canva PNG and upload it to the Airtable asset field. Show me the full architecture for the approval to buffer workflow WF-2 [REDACTED-PLATFORM] specification. 
 Additionally, execute to full operational the following: 
 What needs to happen before any post goes live:
 
 You create a Buffer account at buffer.com and connect Instagram, Facebook, and LinkedIn.
-You authorize Buffer in Zapier under My Apps.
-You build WF-2 in Zapier using the spec in the Deployment Tracker (record recBDReVmJrH6dPHg).
+You authorize Buffer in [REDACTED-PLATFORM] under My Apps.
+You build WF-2 in [REDACTED-PLATFORM] using the spec in the Deployment Tracker (record recBDReVmJrH6dPHg).
 You export the Canva design as a PNG and attach it to the Asset field on the test record.
 You update Post Date to a future date.
 You reset Status to Draft, then back to Approved.
@@ -595,7 +595,7 @@ You reset Status to Draft, then back to Approved.
 1. Reusable skill via Skill Creator for the deployment remediation process
 2. Terminal-ready scripts for Script 1 and Script 2
 3. Detailed Canva PNG export and Airtable upload guide
-4. Full WF-2 Zapier architecture specification
+4. Full WF-2 [REDACTED-PLATFORM] architecture specification
 5. Complete operational execution guide for the pre-live checklist
 6. All systems brought to full operational status
 
@@ -622,14 +622,14 @@ bash ~/ck-enterprise/script2_clear_image_url.sh
 **Deliverable 4: Canva PNG Export & Airtable Upload Guide**
 A detailed protocol covering why Canva links fail (Buffer rejects web page URLs), how to export the design as PNG (Share > Download > PNG), and how to manually attach the file to the Airtable Asset field (drag and drop into `fldlbwkaiT9JBV18E`).
 
-**Deliverable 5: WF-2 Zapier Architecture Specification**
+**Deliverable 5: WF-2 [REDACTED-PLATFORM] Architecture Specification**
 The complete workflow architecture. Trigger: Airtable record update where Status = Approved. Action 1: Slack notification to #content-production. Action 2: Buffer scheduling using the Asset field (not the Image URL field). Action 3: Airtable status update to Scheduled. Includes field mappings, error handling, and the activation protocol.
 
 **Deliverable 6: Pre-Live Operational Execution Guide**
 The 6-step checklist to bring the system to full operational status:
 1. Create Buffer account and connect IG, FB, LI.
-2. Authorize Buffer in Zapier under My Apps.
-3. Build WF-2 in Zapier using the spec in the Deployment Tracker (record `recBDReVmJrH6dPHg`).
+2. Authorize Buffer in [REDACTED-PLATFORM] under My Apps.
+3. Build WF-2 in [REDACTED-PLATFORM] using the spec in the Deployment Tracker (record `recBDReVmJrH6dPHg`).
 4. Export Canva design as PNG and attach to the Asset field.
 5. Update Post Date to a future date.
 6. Reset Status to Draft, then set to Approved and observe the full chain.
@@ -880,7 +880,7 @@ Now moving to the video script and social media assets phase.
 - [Claude_Integration_Guide.md](https://private-us-east-1.manuscdn.com/sessionFile/JK298xk5mWXA2ssAja6HlJ/sandbox/vdMR0Xno9xoN4jq4GBrjhW_1775141284673_na1fn_L2hvbWUvdWJ1bnR1L3dvcmsvQ2xhdWRlX0ludGVncmF0aW9uX0d1aWRl.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSksyOTh4azVtV1hBMnNzQWphNkhsSi9zYW5kYm94L3ZkTVIwWG5vOXhvTjRqcTRHQnJqaFdfMTc3NTE0MTI4NDY3M19uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNkdmNtc3ZRMnhoZFdSbFgwbHVkR1ZuY21GMGFXOXVYMGQxYVdSbC5tZCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=OSfKy9G6Z6EGVfcMUHIXrimCkQEwyei-bVC8wPxwpAUa67U9~dgcbfgKZNUkC~j1B9fBBI-boorhF7hqi24mMr3MLq4WksOVDNuk74lh8NxQ1vQK1SO0du8VkwQH4mHSR518KSjBT6sZX8IQYPjdNvv1~kShGR5f0UERJ6EvItHwRpRhwltRb0mehEzcQKuRHQhzgWElCkUVkcK2Vv4TYZ8KQCZQ2USRQl2Rq6vV9PL8-gmHKUUKl~T7OUv62WvmaNH2DFjoNi-KRfLmhvfTmmjspuKC5D8S94xjs2JTZuDlA9h5up-DNLBYPwmUQ-4Cl9gMltUyXEq6-6LeODGQVg__)
 - [Claude_Project_Instructions.md](https://private-us-east-1.manuscdn.com/sessionFile/JK298xk5mWXA2ssAja6HlJ/sandbox/vdMR0Xno9xoN4jq4GBrjhW_1775141284673_na1fn_L2hvbWUvdWJ1bnR1L3dvcmsvQ2xhdWRlX1Byb2plY3RfSW5zdHJ1Y3Rpb25z.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSksyOTh4azVtV1hBMnNzQWphNkhsSi9zYW5kYm94L3ZkTVIwWG5vOXhvTjRqcTRHQnJqaFdfMTc3NTE0MTI4NDY3M19uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNkdmNtc3ZRMnhoZFdSbFgxQnliMnBsWTNSZlNXNXpkSEoxWTNScGIyNXoubWQiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=Vh0Zddot5dRVLptQsfZjtPqCFztq-VXima32vwXX1RuxNd76sXrncj-OdLzPo-CGpU-nHwaUXdjijK-75wH0gexlq8lwv~j8xVzxuqXZJXPXzqpOGeCag6taSkAohskoZ9oEsQPAAum8u8dtTtIm-7b21MTdzY68I4TrZ~3m6owAbLPqT6R~j4nNaXRvVpSB6Wmjp9cPCjYE-7eEoL0yDPZ6jr1b0N8usW8hwsUI2bHqKE1ry87nFNaLbAzfAtAgp8AGHnQq4pH~t0iCNrRO97aD3rxIEbeL3X9LS0lXrhig-Govm3-qahjcS4X6x8MKFOgflFvbeLRBNglJSw29-w__)
 - [3_Agent_Team_Action_Plan.md](https://private-us-east-1.manuscdn.com/sessionFile/JK298xk5mWXA2ssAja6HlJ/sandbox/jRyL2LTXFS8cmXGE8CgYtp_1775152215434_na1fn_L2hvbWUvdWJ1bnR1L3dvcmsvM19BZ2VudF9UZWFtX0FjdGlvbl9QbGFu.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSksyOTh4azVtV1hBMnNzQWphNkhsSi9zYW5kYm94L2pSeUwyTFRYRlM4Y21YR0U4Q2dZdHBfMTc3NTE1MjIxNTQzNF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNkdmNtc3ZNMTlCWjJWdWRGOVVaV0Z0WDBGamRHbHZibDlRYkdGdS5tZCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=eFSWXKJxzVcrv9wKiDfxURdboPcIl65sHQZ67Rgb5xUs5DfHR7rV~W6m03UpJ-N9YnN3tTGFCk-rGtWPfaCGw4bBY4z~v8n~hXGElu6CTbJRhS6yqkW33~R8MKpuaSugYp-Vn4gIxxy-JaRHZs4~10RFZ0xEjFwLYfdC6thzxoDP60AeGgkpp1NdrO1vTYWHG7ZzUX5PFrR6DssNw1y0EyvJkJCvSzLDTvpPP8-K2jLQ5T3zldwwYK1FfanLCx6Q3KNU3CBAH~pATavZT6n-C0NDuFX64pPKYKbnVF6MvUu8Kstn3d9TN-6V9DRI6vwmMTk64yj0S3tAYHHNbGSGxg__)
-- [WF2_Zapier_Specification.md](https://private-us-east-1.manuscdn.com/sessionFile/JK298xk5mWXA2ssAja6HlJ/sandbox/jRyL2LTXFS8cmXGE8CgYtp_1775152215434_na1fn_L2hvbWUvdWJ1bnR1L3dvcmsvV0YyX1phcGllcl9TcGVjaWZpY2F0aW9u.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSksyOTh4azVtV1hBMnNzQWphNkhsSi9zYW5kYm94L2pSeUwyTFRYRlM4Y21YR0U4Q2dZdHBfMTc3NTE1MjIxNTQzNF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNkdmNtc3ZWMFl5WDFwaGNHbGxjbDlUY0dWamFXWnBZMkYwYVc5dS5tZCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=VS~4rJ6EgVlyVGxQ-KBsCa9Ba~0mc69p7HnAAH~zJjZS-63okgEtKBPXVOCbwIyI2JnidJrftjm1gJsEEdoYiwS7V8~5KKI6n1fkPrwahtX1YD69UwxefYW1dz3CmaRSp4oS74adP2KDGZLD~ocpVGQ-~irZH5U-qiGlqaa5nOt01V2PiwEfiValp3Iia-rUTSF1gVypLsfht8Pn~2elvlUcrkpdK-mVhwD3Sh9XbALryiPtvvoJm06iAPNXBnVdKUzz9vBpZEm207H-H1mot-XYy-bi8nB~GtfnsizCgB9u5fi3gHydneORuZvVTmx9dr6BudQ4s11em4GsRUROzw__)
+- [WF2_[REDACTED-PLATFORM]_Specification.md](https://private-us-east-1.manuscdn.com/sessionFile/JK298xk5mWXA2ssAja6HlJ/sandbox/jRyL2LTXFS8cmXGE8CgYtp_1775152215434_na1fn_L2hvbWUvdWJ1bnR1L3dvcmsvV0YyX1phcGllcl9TcGVjaWZpY2F0aW9u.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSksyOTh4azVtV1hBMnNzQWphNkhsSi9zYW5kYm94L2pSeUwyTFRYRlM4Y21YR0U4Q2dZdHBfMTc3NTE1MjIxNTQzNF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNkdmNtc3ZWMFl5WDFwaGNHbGxjbDlUY0dWamFXWnBZMkYwYVc5dS5tZCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=VS~4rJ6EgVlyVGxQ-KBsCa9Ba~0mc69p7HnAAH~zJjZS-63okgEtKBPXVOCbwIyI2JnidJrftjm1gJsEEdoYiwS7V8~5KKI6n1fkPrwahtX1YD69UwxefYW1dz3CmaRSp4oS74adP2KDGZLD~ocpVGQ-~irZH5U-qiGlqaa5nOt01V2PiwEfiValp3Iia-rUTSF1gVypLsfht8Pn~2elvlUcrkpdK-mVhwD3Sh9XbALryiPtvvoJm06iAPNXBnVdKUzz9vBpZEm207H-H1mot-XYy-bi8nB~GtfnsizCgB9u5fi3gHydneORuZvVTmx9dr6BudQ4s11em4GsRUROzw__)
 - [Buffer_Integration_Guide.md](https://private-us-east-1.manuscdn.com/sessionFile/JK298xk5mWXA2ssAja6HlJ/sandbox/jRyL2LTXFS8cmXGE8CgYtp_1775152215434_na1fn_L2hvbWUvdWJ1bnR1L3dvcmsvQnVmZmVyX0ludGVncmF0aW9uX0d1aWRl.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSksyOTh4azVtV1hBMnNzQWphNkhsSi9zYW5kYm94L2pSeUwyTFRYRlM4Y21YR0U4Q2dZdHBfMTc3NTE1MjIxNTQzNF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNkdmNtc3ZRblZtWm1WeVgwbHVkR1ZuY21GMGFXOXVYMGQxYVdSbC5tZCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=rWtSsgIg13ggEY4NnB1P235YKs2Tvgj-~ijWSl~DSrxzDoY8L0QYe7-~1mKaExQYUBFPmIS~~hfL~9wUdd~FKcivVgUf6Ay0YaMqc8khZ-qy~SqVPAw7vug4S9MGfk9eBAsQPolaFUv5Et-lIDetz-AhSZcS~vSVHTvdMVCqi-UORQRJTw-L61dO1c78yCnZbmSMvg2fhJz4Rzmzu5XxNmP~ZYSz~CpqdwRYXbxdFTcIjzEQuXN9IGaldbocQeyk2n3E6gt4btqCYEbQqgk6TRDJp4JSimyFnEAQv4wp6W9wxSsgw9O7lioj7yU62dLqB-eTV9PqJ5Bcz7f-jfmsiA__)
 - [Deployment_Package.md](https://private-us-east-1.manuscdn.com/sessionFile/JK298xk5mWXA2ssAja6HlJ/sandbox/jRyL2LTXFS8cmXGE8CgYtp_1775152215434_na1fn_L2hvbWUvdWJ1bnR1L3dvcmsvRGVwbG95bWVudF9QYWNrYWdl.md?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSksyOTh4azVtV1hBMnNzQWphNkhsSi9zYW5kYm94L2pSeUwyTFRYRlM4Y21YR0U4Q2dZdHBfMTc3NTE1MjIxNTQzNF9uYTFmbl9MMmh2YldVdmRXSjFiblIxTDNkdmNtc3ZSR1Z3Ykc5NWJXVnVkRjlRWVdOcllXZGwubWQiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=hvhw0zC7E3T5tECrEHqYi0EN8TmRvrG-Xunx4ES7YvLbNYBgqhCfVRjEJ~-UlYtnY4Eu0jLVd4bpuzdTJGZkag4c84nEkcPWDvtOj-eevvXSzWmM466aIWzeWCF5KHzB~9A6LYf8OegU7HiL6PzeAp9zKlXsIBMOlPx7WAN0IoXno9oH7Xq~KZb-WQx2OpcibZqHmJCMDwZlqEnGD~rZhzdCOIeAXd3unvX~d~MRjbWW-9fVbaiORWvNTsmRk1EhYZ2530~szTAF6XmvD~I9qP8ohJvqGNZzOpNHBqYwoHZsf8cOk6C4sRaPM9kCCAy5d0SzGXRNPsBUMArK5eMa8w__)
 - [media-automation-deployment-remediation.skill](https://private-us-east-1.manuscdn.com/sessionFile/JK298xk5mWXA2ssAja6HlJ/sandbox/s64JE3YxkMns3fBJ1ucKi5_1775176219287_na1fn_L3RtcC9tZWRpYS1hdXRvbWF0aW9uLWRlcGxveW1lbnQtcmVtZWRpYXRpb24.skill?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSksyOTh4azVtV1hBMnNzQWphNkhsSi9zYW5kYm94L3M2NEpFM1l4a01uczNmQkoxdWNLaTVfMTc3NTE3NjIxOTI4N19uYTFmbl9MM1J0Y0M5dFpXUnBZUzFoZFhSdmJXRjBhVzl1TFdSbGNHeHZlVzFsYm5RdGNtVnRaV1JwWVhScGIyNC5za2lsbCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=CPBz3NXeFHuQHzBJd~wI8UEH2qynCHFPhrc-3SGrkxhY8PPxfunfe5upbNGSJU-z-C2BbL6CIWAeFuSkuZajOXvRprhYRhecUDG7mNCnqm7hDIjvU-i9q3AEwK1b3zQOh7NbJBi8kjky~J11xGVJTEJdzxgY4i4vneJbnhZUa6FHfbFEyB-Q1mlKH8RpDqwd~XsZ6qrJJmU21PUHCTc1PJa5TUNARk0RnUYzh0yHtQ3mW8pX5325a-wexNyIw95Xv44EsGE7g9wNbdM6Mk1H9KAVymSaLkWeJbdWZJ6FqE7rePJn07XW7ImmZCBDWwfAHvos5Jmqa4W-boYj6DP0Tw__)

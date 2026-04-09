@@ -31,7 +31,7 @@ id = "3d722426db4241209fd0444b42f84904"
 # ── Secrets (set via dashboard or `wrangler secret put`) ──
 # ANTHROPIC_API_KEY        — Anthropic console API key
 # AIRTABLE_API_KEY         — Airtable personal access token
-# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Zapier)
+# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Atlas)
 # SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications (legacy fallback)
 # SLACK_BOT_TOKEN           — Slack Bot OAuth token (xoxb-...) for Coastal Key app (A0APSJ44NV6)
 # SLACK_SIGNING_SECRET      — Slack app signing secret for request signature verification
