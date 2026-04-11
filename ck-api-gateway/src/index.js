@@ -73,6 +73,8 @@
  *   POST /v1/frameworks/content           — Generate content using framework principles
  *   POST /v1/frameworks/sales-playbook    — Generate sales playbook from framework rules
  *   POST /v1/frameworks/productivity-plan — Generate agent/team productivity plan
+ *   POST /v1/frameworks/vpas/evaluate    — Evaluate task/project against V+P+A=S equation
+ *   POST /v1/frameworks/vpas/audit       — Audit division/fleet V+P+A=S compliance
  *   GET  /v1/financial/models            — Revenue models, expense categories, benchmarks
  *   POST /v1/financial/management-fee    — Calculate management fee
  *   POST /v1/financial/rent-estimate     — Estimate optimal rent for property
@@ -138,7 +140,7 @@ import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js'
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
 import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost, handleMasterPlan, handleMasterPlanPhase, handleDivisionPlan, handleSovereignDirectiveIssue, handleActivationStatus } from './routes/mcco.js';
-import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan } from './routes/frameworks.js';
+import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan, handleVPASEvaluate, handleVPASAudit } from './routes/frameworks.js';
 import {
   handleTraderDashboard, handleTraderAgent, handleWatchlist, handleQuote, handleSignal,
   handleCapitalCall, handlePortfolio as handleTraderPortfolio, handleTraderNews,
@@ -589,6 +591,14 @@ export default {
 
       if (path === '/v1/frameworks/productivity-plan' && method === 'POST') {
         return await handleFrameworkProductivityPlan(request, env, ctx);
+      }
+
+      if (path === '/v1/frameworks/vpas/evaluate' && method === 'POST') {
+        return await handleVPASEvaluate(request, env, ctx);
+      }
+
+      if (path === '/v1/frameworks/vpas/audit' && method === 'POST') {
+        return await handleVPASAudit(request, env, ctx);
       }
 
       if (path.match(/^\/v1\/frameworks\/category\/[^/]+$/) && method === 'GET') {
