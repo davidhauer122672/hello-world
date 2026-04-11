@@ -22,14 +22,57 @@ import {
   generateCapitalCallPrompt, calculatePortfolioMetrics,
   getMarketOverview, logTrade, getTradeHistory,
 } from '../engines/ai-trader.js';
+import { TRADER_FLEET, TRADER_DESKS } from '../engines/trader-fleet.js';
 
 export async function handleTraderDashboard(env) {
   const overview = await getMarketOverview(env);
-  return jsonResponse(overview);
+  return jsonResponse({
+    ...overview,
+    fleet: {
+      totalTraders: 1 + TRADER_FLEET.length,
+      apex: AI_TRADER_AGENT.id,
+      desks: TRADER_DESKS,
+    },
+  });
 }
 
 export function handleTraderAgent() {
-  return jsonResponse({ agent: AI_TRADER_AGENT });
+  return jsonResponse({
+    apex: AI_TRADER_AGENT,
+    fleet: {
+      total: 1 + TRADER_FLEET.length,
+      desks: Object.entries(TRADER_DESKS).map(([k, v]) => ({
+        desk: k,
+        ...v,
+      })),
+    },
+  });
+}
+
+export function handleTraderFleet(url) {
+  let agents = [...TRADER_FLEET];
+
+  const desk = url.searchParams.get('desk');
+  if (desk) {
+    agents = agents.filter(a => a.desk.toLowerCase() === desk.toLowerCase());
+  }
+
+  return jsonResponse({
+    fleet: agents,
+    count: agents.length,
+    desks: TRADER_DESKS,
+    apex: AI_TRADER_AGENT.id,
+    totalIncludingApex: 1 + TRADER_FLEET.length,
+  });
+}
+
+export function handleGetTraderById(traderId) {
+  if (traderId.toUpperCase() === 'FIN-TRADER-001') {
+    return jsonResponse(AI_TRADER_AGENT);
+  }
+  const agent = TRADER_FLEET.find(a => a.id === traderId.toUpperCase());
+  if (!agent) return errorResponse(`Trader agent "${traderId}" not found.`, 404);
+  return jsonResponse(agent);
 }
 
 export function handleWatchlist() {

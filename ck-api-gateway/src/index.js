@@ -172,7 +172,8 @@ import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleE
 import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost, handleMasterPlan, handleMasterPlanPhase, handleDivisionPlan, handleSovereignDirectiveIssue, handleActivationStatus } from './routes/mcco.js';
 import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan, handleVPASEvaluate, handleVPASAudit } from './routes/frameworks.js';
 import {
-  handleTraderDashboard, handleTraderAgent, handleWatchlist, handleQuote, handleSignal,
+  handleTraderDashboard, handleTraderAgent, handleTraderFleet, handleGetTraderById,
+  handleWatchlist, handleQuote, handleSignal,
   handleCapitalCall, handlePortfolio as handleTraderPortfolio, handleTraderNews,
   handleLogTrade, handleTradeHistory, handleCapitalTiers,
 } from './routes/trader.js';
@@ -745,6 +746,13 @@ export default {
       }
       if (path === '/v1/trader/agent' && method === 'GET') {
         return handleTraderAgent();
+      }
+      if (path === '/v1/trader/fleet' && method === 'GET') {
+        return handleTraderFleet(url);
+      }
+      if (path.match(/^\/v1\/trader\/fleet\/[^/]+$/) && method === 'GET') {
+        const traderId = path.split('/v1/trader/fleet/')[1];
+        return handleGetTraderById(traderId);
       }
       if (path === '/v1/trader/watchlist' && method === 'GET') {
         return handleWatchlist();

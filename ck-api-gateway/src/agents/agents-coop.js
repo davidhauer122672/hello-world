@@ -247,4 +247,35 @@ export const COOPERATIONS_COMMITTEE = {
       'Strategic coverage score across all 8 target categories',
     ],
   },
+
+  // ── Travel Governance and Fiscal Controls ─────────────────────────────────
+
+  travelGovernance: {
+    authority: 'Cooperations Committee coordinates all CEO/Founder travel and in-person engagements.',
+    coordination: ['CEO/Founder', 'Executive Administrator', 'Cooperations Committee'],
+    fundingSource: 'Coastal Key Property Management LLC Business Account',
+    fiscalRule: 'Travel and engagement expenditures are ONLY authorized when sufficient funds exist in the Coastal Key business account. No credit-based or deficit-funded travel.',
+    approvalChain: [
+      '1. COOP-005 (Calendar Command) proposes engagement with cost estimate',
+      '2. FIN-004 (Cash Flow Monitor) verifies available business account balance',
+      '3. If funds available: route to CEO via Agent-6 for approval',
+      '4. If funds insufficient: engagement deferred until funds are available',
+      '5. CEO approves or rejects. No override of fiscal controls permitted.',
+    ],
+    travelPolicies: [
+      'All travel funded exclusively by CK Property Management Business Account.',
+      'No personal funds, credit cards, or external financing for business travel.',
+      'Executive Administrator coordinates logistics after CEO approval.',
+      'Travel budget reviewed monthly by FIN-004 (Cash Flow Monitor).',
+      'International travel requires additional board-level approval.',
+      'Worldwide Coastal Key cooperative efforts follow same fiscal discipline.',
+      'Travel receipts documented and archived per 7-year compliance requirement.',
+    ],
+    budgetCategories: [
+      { category: 'Local meetings (within Treasure Coast)', maxPerEvent: 200, approvalRequired: false },
+      { category: 'Regional travel (within Florida)', maxPerEvent: 1500, approvalRequired: true },
+      { category: 'National travel (conferences, partnerships)', maxPerEvent: 5000, approvalRequired: true },
+      { category: 'International travel (global expansion)', maxPerEvent: 15000, approvalRequired: 'Board + CEO' },
+    ],
+  },
 };
