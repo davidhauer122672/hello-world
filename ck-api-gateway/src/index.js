@@ -120,6 +120,18 @@
  *   GET  /v1/slack/channels    — Slack channel architecture
  *   GET  /v1/slack/apps        — Slack app registry
  *   GET  /v1/slack/audit       — Slack platform audit record
+ *   POST /v1/email/send              — Send email via Gmail API (OAuth 2.0)
+ *   POST /v1/email/draft             — Create email draft via Gmail API
+ *   GET  /v1/email/oauth/health      — Gmail OAuth connectivity check
+ *   POST /v1/compliance/dnc/add        — Add phone to DNC registry
+ *   POST /v1/compliance/dnc/check      — Check phone against DNC list
+ *   POST /v1/compliance/dnc/bulk-check — Bulk scrub phone list against DNC
+ *   POST /v1/compliance/dnc/remove     — Remove phone from DNC
+ *   POST /v1/compliance/consent/record — Record PEWC for contact
+ *   POST /v1/compliance/consent/check  — Check consent status
+ *   GET  /v1/compliance/calling-window — Check calling window status
+ *   POST /v1/compliance/pre-call-check — Full pre-call compliance gate
+ *   GET  /v1/compliance/audit          — Generate TCPA/DNC audit report
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  */
@@ -159,6 +171,8 @@ import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSla
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
 import { handleMetaAdsStatus, handleMetaAdsBoost } from './routes/meta-ads.js';
+import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
+import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -750,6 +764,46 @@ export default {
       }
       if (path === '/v1/slack/audit' && method === 'GET') {
         return handleSlackAudit();
+      }
+
+      // ── Gmail OAuth Email Operations ──
+      if (path === '/v1/email/send' && method === 'POST') {
+        return await handleEmailSend(request, env, ctx);
+      }
+      if (path === '/v1/email/draft' && method === 'POST') {
+        return await handleEmailDraft(request, env, ctx);
+      }
+      if (path === '/v1/email/oauth/health' && method === 'GET') {
+        return await handleEmailOAuthHealth(env);
+      }
+
+      // ── TCPA/DNC Compliance ──
+      if (path === '/v1/compliance/dnc/add' && method === 'POST') {
+        return await handleDNCAdd(request, env, ctx);
+      }
+      if (path === '/v1/compliance/dnc/check' && method === 'POST') {
+        return await handleDNCCheck(request, env, ctx);
+      }
+      if (path === '/v1/compliance/dnc/bulk-check' && method === 'POST') {
+        return await handleDNCBulkCheck(request, env, ctx);
+      }
+      if (path === '/v1/compliance/dnc/remove' && method === 'POST') {
+        return await handleDNCRemove(request, env, ctx);
+      }
+      if (path === '/v1/compliance/consent/record' && method === 'POST') {
+        return await handleConsentRecord(request, env, ctx);
+      }
+      if (path === '/v1/compliance/consent/check' && method === 'POST') {
+        return await handleConsentCheck(request, env, ctx);
+      }
+      if (path === '/v1/compliance/calling-window' && method === 'GET') {
+        return handleCallingWindow();
+      }
+      if (path === '/v1/compliance/pre-call-check' && method === 'POST') {
+        return await handlePreCallCheck(request, env, ctx);
+      }
+      if (path === '/v1/compliance/audit' && method === 'GET') {
+        return await handleComplianceAudit(env, ctx);
       }
 
       // ── Thinking Coach ──
