@@ -417,6 +417,11 @@ export const PRODUCTIVITY_TECHNIQUES = {
   },
 };
 
+// ── Framework 7: V + P + A = S (Imported) ──────────────────────────────────
+
+import { VPAS_SUCCESS_EQUATION } from './vpas-success-equation.js';
+export { VPAS_SUCCESS_EQUATION };
+
 // ── Master Framework Registry ───────────────────────────────────────────────
 
 export const FRAMEWORKS = [
@@ -426,6 +431,7 @@ export const FRAMEWORKS = [
   PRODUCTIVITY_8_IN_4,
   FLOW_STATE_FRAMEWORK,
   PRODUCTIVITY_TECHNIQUES,
+  VPAS_SUCCESS_EQUATION,
 ];
 
 export const FRAMEWORK_BY_ID = new Map(FRAMEWORKS.map(f => [f.id, f]));
@@ -436,6 +442,7 @@ export const FRAMEWORKS_BY_CATEGORY = {
   sales: FRAMEWORKS.filter(f => f.category === 'sales'),
   productivity: FRAMEWORKS.filter(f => f.category === 'productivity'),
   performance: FRAMEWORKS.filter(f => f.category === 'performance'),
+  leadership: FRAMEWORKS.filter(f => f.category === 'leadership'),
 };
 
 export const FRAMEWORK_CATEGORIES = Object.keys(FRAMEWORKS_BY_CATEGORY);

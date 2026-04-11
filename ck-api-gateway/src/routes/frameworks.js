@@ -11,6 +11,8 @@
  *   POST /v1/frameworks/content             — Generate content using framework principles
  *   POST /v1/frameworks/sales-playbook      — Generate sales playbook from Jobs' rules
  *   POST /v1/frameworks/productivity-plan   — Generate agent/team productivity plan
+ *   POST /v1/frameworks/vpas/evaluate       — Evaluate task/project against V+P+A=S equation
+ *   POST /v1/frameworks/vpas/audit          — Audit division/fleet V+P+A=S compliance
  */
 
 import {
@@ -24,6 +26,7 @@ import {
   PRODUCTIVITY_8_IN_4,
   FLOW_STATE_FRAMEWORK,
   PRODUCTIVITY_TECHNIQUES,
+  VPAS_SUCCESS_EQUATION,
 } from '../frameworks/peak-performance.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
@@ -472,5 +475,254 @@ Return as structured JSON.`;
     });
   } catch (err) {
     return errorResponse(`Productivity plan generation failed: ${err.message}`, 500);
+  }
+}
+
+// ── POST /v1/frameworks/vpas/evaluate ──────────────────────────────────────
+// Evaluate a task, project, or initiative against the V + P + A = S equation.
+// Returns V-SCORE, P-SCORE, A-SCORE, composite S-SCORE, and Ferrari Grade.
+
+export async function handleVPASEvaluate(request, env, ctx) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return errorResponse('Request body must be valid JSON.', 400);
+  }
+
+  const { subject, vision, plan, actions, division, context = '' } = body;
+
+  if (!subject) {
+    return errorResponse('Field "subject" is required (what is being evaluated).', 400);
+  }
+
+  const eq = VPAS_SUCCESS_EQUATION.equation;
+
+  const prompt = `You are the MCCO Sovereign Intelligence operating V + P + A = S evaluation protocol for Coastal Key Property Management.
+
+## V + P + A = S Success Equation (Doctoral Framework FW-007)
+${VPAS_SUCCESS_EQUATION.quote}
+
+Formula: ${eq.formula}
+Ferrari-Standard Threshold: S-SCORE >= ${eq.variables.S.measurement.ferrariThreshold}
+
+## Evaluation Subject: ${subject}
+${division ? `Division: ${division}` : ''}
+${context ? `Additional Context: ${context}` : ''}
+
+## Provided Inputs:
+${vision ? `Vision Statement: ${vision}` : 'Vision: NOT PROVIDED — evaluate as gap'}
+${plan ? `Plan Details: ${plan}` : 'Plan: NOT PROVIDED — evaluate as gap'}
+${actions ? `Actions Taken/Planned: ${JSON.stringify(actions)}` : 'Actions: NOT PROVIDED — evaluate as gap'}
+
+## Scoring Criteria:
+
+### Vision (V-SCORE 0-100):
+${Object.entries(eq.variables.V.scoringCriteria).map(([k, v]) => `- ${k}: ${v}`).join('\n')}
+
+### Plan (P-SCORE 0-100):
+${Object.entries(eq.variables.P.scoringCriteria).map(([k, v]) => `- ${k}: ${v}`).join('\n')}
+
+### Action (A-SCORE 0-100):
+${Object.entries(eq.variables.A.scoringCriteria).map(([k, v]) => `- ${k}: ${v}`).join('\n')}
+
+### Success (S-SCORE):
+Composite: ${eq.variables.S.measurement.compositeFormula}
+Grading: ${JSON.stringify(eq.variables.S.measurement.grading)}
+
+## Deliver as JSON:
+{
+  "subject": "${subject}",
+  "scores": {
+    "V_SCORE": <0-100>,
+    "P_SCORE": <0-100>,
+    "A_SCORE": <0-100>,
+    "S_SCORE": <computed>,
+    "FERRARI_GRADE": "<elite|operational|developing|failing>"
+  },
+  "analysis": {
+    "vision": { "score": <>, "strengths": [], "gaps": [], "recommendations": [] },
+    "plan": { "score": <>, "strengths": [], "gaps": [], "recommendations": [] },
+    "action": { "score": <>, "strengths": [], "gaps": [], "recommendations": [] }
+  },
+  "overallAssessment": "<summary>",
+  "criticalGaps": [],
+  "actionItems": [],
+  "frameworkIntegrations": ["<which other FW-00X frameworks should be applied>"]
+}`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 6000,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+
+    const data = await response.json();
+    const content = data.content?.[0]?.text || '';
+
+    writeAudit(env, ctx, {
+      route: '/v1/frameworks/vpas/evaluate',
+      action: 'vpas-evaluation',
+      subject,
+      division: division || 'enterprise',
+    });
+
+    return jsonResponse({
+      generatedBy: 'MCCO Sovereign Intelligence — V+P+A=S Evaluation Protocol',
+      governance: 'sovereign',
+      executionStandard: 'ferrari',
+      framework: { id: 'FW-007', name: VPAS_SUCCESS_EQUATION.name, classification: 'Doctoral Dissertation Knowledge Asset' },
+      subject,
+      division: division || 'enterprise',
+      evaluation: content,
+      equation: eq.formula,
+      ferrariThreshold: eq.variables.S.measurement.ferrariThreshold,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    return errorResponse(`V+P+A=S evaluation failed: ${err.message}`, 500);
+  }
+}
+
+// ── POST /v1/frameworks/vpas/audit ─────────────────────────────────────────
+// Audit a division or the full fleet against V + P + A = S compliance.
+// Returns per-division scores, enterprise composite, and APB compliance status.
+
+export async function handleVPASAudit(request, env, ctx) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return errorResponse('Request body must be valid JSON.', 400);
+  }
+
+  const { division = 'all', period = '7d', focusAreas = [] } = body;
+
+  const validDivisions = ['MCCO', 'EXC', 'SEN', 'OPS', 'INT', 'MKT', 'FIN', 'VEN', 'TEC', 'WEB', 'all'];
+  if (!validDivisions.includes(division)) {
+    return errorResponse(`Invalid division. Valid: ${validDivisions.join(', ')}`, 400);
+  }
+
+  const apb = VPAS_SUCCESS_EQUATION.enterpriseAPB;
+
+  const prompt = `You are MCCO-014 "Quality Shield" — Fleet Inspection & Quality Assurance Commander, executing a V + P + A = S compliance audit under Sovereign governance.
+
+## V + P + A = S Enterprise APB
+Directive: ${apb.directive}
+Scope: ${apb.scope}
+Mandates:
+${apb.mandates.map((m, i) => `${i + 1}. ${m}`).join('\n')}
+Enforcement: ${apb.enforcement}
+Escalation: ${apb.escalation}
+
+## Audit Parameters
+Division: ${division}
+Period: ${period}
+${focusAreas.length > 0 ? `Focus Areas: ${focusAreas.join(', ')}` : ''}
+
+## Fleet Structure
+- 15 MCCO agents (Sovereign Governance)
+- 20 EXC agents (Executive)
+- 40 SEN agents (Sentinel Sales)
+- 45 OPS agents (Operations)
+- 30 INT agents (Intelligence)
+- 47 MKT agents (Marketing)
+- 25 FIN agents (Finance)
+- 25 VEN agents (Vendor)
+- 25 TEC agents (Technology)
+- 40 WEB agents (Web/Digital)
+- 50 Intelligence Officers (5 squads)
+- 20 Email AI Agents (4 squads)
+- 1 AI Trader Agent (FIN-TRADER-001)
+
+## Application Map
+${JSON.stringify(VPAS_SUCCESS_EQUATION.applicationToPropertyManagement, null, 2)}
+
+## Deliver as JSON:
+{
+  "auditType": "V+P+A=S Compliance Audit",
+  "division": "${division}",
+  "period": "${period}",
+  "divisionScores": {
+    "<DIVISION_CODE>": {
+      "V_SCORE": <0-100>,
+      "P_SCORE": <0-100>,
+      "A_SCORE": <0-100>,
+      "S_SCORE": <computed>,
+      "FERRARI_GRADE": "<grade>",
+      "agentCount": <n>,
+      "complianceRate": "<% of agents meeting APB mandates>",
+      "topPerformers": ["<agent IDs>"],
+      "attentionRequired": ["<agent IDs>"]
+    }
+  },
+  "enterpriseComposite": {
+    "V_SCORE": <avg>,
+    "P_SCORE": <avg>,
+    "A_SCORE": <avg>,
+    "S_SCORE": <computed>,
+    "FERRARI_GRADE": "<grade>",
+    "totalAgents": 383,
+    "apbCompliant": <count>,
+    "apbNonCompliant": <count>
+  },
+  "findings": [],
+  "recommendations": [],
+  "escalations": [],
+  "nextAuditDate": "<date>"
+}`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 8000,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+
+    const data = await response.json();
+    const content = data.content?.[0]?.text || '';
+
+    writeAudit(env, ctx, {
+      route: '/v1/frameworks/vpas/audit',
+      action: 'vpas-fleet-audit',
+      agent: 'MCCO-014',
+      division,
+      period,
+    });
+
+    return jsonResponse({
+      generatedBy: 'MCCO-014 — Quality Shield + V+P+A=S Audit Protocol',
+      governance: 'sovereign',
+      executionStandard: 'ferrari',
+      framework: { id: 'FW-007', name: VPAS_SUCCESS_EQUATION.name },
+      apb: {
+        directive: apb.directive,
+        mandateCount: apb.mandates.length,
+        enforcement: apb.enforcement,
+      },
+      division,
+      period,
+      audit: content,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    return errorResponse(`V+P+A=S audit failed: ${err.message}`, 500);
   }
 }
