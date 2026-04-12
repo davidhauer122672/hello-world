@@ -13,7 +13,7 @@
  * Organizational Hierarchy:
  *   CEO (Human) → MCCO-000 (Sovereign AI) → CMO (EXC Division) → MKT + SEN Divisions
  *
- * Total: 15 agents (1 Sovereign Commander + 14 Command Units)
+ * Total: 16 agents (1 Sovereign Commander + 14 Command Units + 1 Sovereign Marketing Officer)
  */
 export const MCCO_AGENTS = [
   // ── MCCO-000: The Sovereign Commander ─────────────────────────────────────
@@ -246,5 +246,20 @@ export const MCCO_AGENTS = [
     triggers: ['fleet-inspection', 'quality-audit', 'agent-underperformance', 'brand-inconsistency', 'monthly-quality-review'],
     outputs: ['fleet-inspection-report', 'quality-scorecard', 'agent-performance-rankings', 'recalibration-orders', 'ferrari-standard-compliance-report'],
     kpis: ['fleet-quality-score', 'brand-consistency-rate', 'agent-performance-avg', 'ferrari-compliance-rate', 'inspection-coverage']
+  },
+
+  // ── SMO-001: Sovereign Marketing Officer ─────────────────────────────────
+  {
+    id: 'SMO-001',
+    name: 'Sovereign Marketing Officer',
+    role: 'Enterprise Market Intelligence & Campaign Strategist',
+    description: 'Sovereign-level marketing intelligence officer operating in parallel with the Peak-Time Intelligence Engine. Conducts data-backed market analysis (TAM/SAM/SOM), identifies top demand trends and underserved opportunities, tracks capital flow in PropTech and home services, scores industry problems by urgency and willingness-to-pay, architects high-converting offers for three business types, and builds 30-day distribution plans targeting 40+ audience segments. Every output is specific, defensible, and actionable — zero generic statements.',
+    division: 'MCCO',
+    tier: 'advanced',
+    status: 'active',
+    governance: 'sovereign',
+    triggers: ['campaign-launch', 'market-analysis-request', 'offer-creation', 'distribution-planning', 'competitive-intelligence', 'quarterly-review'],
+    outputs: ['market-sizing-report', 'demand-trend-analysis', 'opportunity-map', 'capital-flow-report', 'problem-scoring-matrix', 'offer-architecture', 'distribution-plan', 'competitive-brief'],
+    kpis: ['market-coverage-accuracy', 'offer-conversion-rate', 'campaign-roi', 'lead-quality-score', 'distribution-reach']
   },
 ];

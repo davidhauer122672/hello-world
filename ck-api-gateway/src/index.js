@@ -132,6 +132,24 @@
  *   GET  /v1/compliance/calling-window — Check calling window status
  *   POST /v1/compliance/pre-call-check — Full pre-call compliance gate
  *   GET  /v1/compliance/audit          — Generate TCPA/DNC audit report
+ *   GET  /v1/campaign/peak-time/dashboard      — Peak-Time Intelligence Engine dashboard
+ *   GET  /v1/campaign/peak-time/schedule        — Generate posting schedule (DST-aware)
+ *   GET  /v1/campaign/peak-time/next-slots      — Next posting slots per platform
+ *   GET  /v1/campaign/peak-time/matrix          — Platform scheduling matrix
+ *   GET  /v1/campaign/peak-time/dst             — DST status and transitions
+ *   GET  /v1/campaign/peak-time/bulletin        — All Points Bulletin
+ *   GET  /v1/campaign/peak-time/buffer-status   — Buffer configuration status
+ *   POST /v1/campaign/peak-time/schedule-post   — Schedule single post via Buffer
+ *   POST /v1/campaign/peak-time/schedule-batch  — Schedule batch of posts
+ *   GET  /v1/campaign/peak-time/smo             — Sovereign Marketing Officer status
+ *   POST /v1/campaign/peak-time/smo/analyze     — AI market analysis via Claude
+ *   GET  /v1/campaign/peak-time/market-analysis — Full market analysis
+ *   GET  /v1/campaign/peak-time/problems        — Top 10 problems table
+ *   GET  /v1/campaign/peak-time/offers          — Landing page offers
+ *   GET  /v1/campaign/peak-time/distribution    — 30-day distribution plan
+ *   GET  /v1/campaign/peak-time/division/:code  — Division-specific schedule
+ *   POST /v1/campaign/peak-time/validate-slot   — Validate a posting slot
+ *   GET  /v1/campaign/peak-time/weekly-counts   — Weekly post counts per platform
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  */
@@ -174,6 +192,15 @@ import { handleMetaAdsStatus, handleMetaAdsBoost } from './routes/meta-ads.js';
 import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
+import {
+  handleCampaignPeakTimeDashboard, handleCampaignSchedule, handleCampaignNextSlots,
+  handleCampaignMatrix, handleCampaignDST, handleCampaignBulletin, handleCampaignBufferStatus,
+  handleCampaignSchedulePost, handleCampaignScheduleBatch,
+  handleCampaignSMO, handleCampaignSMOAnalyze,
+  handleCampaignMarketAnalysis, handleCampaignProblems, handleCampaignOffers,
+  handleCampaignDistribution, handleCampaignDivisionSchedule, handleCampaignValidateSlot,
+  handleCampaignWeeklyCounts,
+} from './routes/campaign.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -871,6 +898,63 @@ export default {
       if (path === '/v1/manifest' && method === 'GET') {
         const summary = url.searchParams.get('summary') === 'true';
         return jsonResponse(summary ? getManifestSummary() : getFullManifest());
+      }
+
+      // ── Peak-Time Intelligence Engine (Campaign #1) ──
+      if (path === '/v1/campaign/peak-time/dashboard' && method === 'GET') {
+        return handleCampaignPeakTimeDashboard();
+      }
+      if (path === '/v1/campaign/peak-time/schedule' && method === 'GET') {
+        return handleCampaignSchedule(url);
+      }
+      if (path === '/v1/campaign/peak-time/next-slots' && method === 'GET') {
+        return handleCampaignNextSlots();
+      }
+      if (path === '/v1/campaign/peak-time/matrix' && method === 'GET') {
+        return handleCampaignMatrix();
+      }
+      if (path === '/v1/campaign/peak-time/dst' && method === 'GET') {
+        return handleCampaignDST(url);
+      }
+      if (path === '/v1/campaign/peak-time/bulletin' && method === 'GET') {
+        return handleCampaignBulletin(env, ctx);
+      }
+      if (path === '/v1/campaign/peak-time/buffer-status' && method === 'GET') {
+        return handleCampaignBufferStatus(env);
+      }
+      if (path === '/v1/campaign/peak-time/schedule-post' && method === 'POST') {
+        return await handleCampaignSchedulePost(request, env, ctx);
+      }
+      if (path === '/v1/campaign/peak-time/schedule-batch' && method === 'POST') {
+        return await handleCampaignScheduleBatch(request, env, ctx);
+      }
+      if (path === '/v1/campaign/peak-time/smo' && method === 'GET') {
+        return handleCampaignSMO();
+      }
+      if (path === '/v1/campaign/peak-time/smo/analyze' && method === 'POST') {
+        return await handleCampaignSMOAnalyze(request, env, ctx);
+      }
+      if (path === '/v1/campaign/peak-time/market-analysis' && method === 'GET') {
+        return handleCampaignMarketAnalysis();
+      }
+      if (path === '/v1/campaign/peak-time/problems' && method === 'GET') {
+        return handleCampaignProblems();
+      }
+      if (path === '/v1/campaign/peak-time/offers' && method === 'GET') {
+        return handleCampaignOffers();
+      }
+      if (path === '/v1/campaign/peak-time/distribution' && method === 'GET') {
+        return handleCampaignDistribution(url);
+      }
+      if (path === '/v1/campaign/peak-time/weekly-counts' && method === 'GET') {
+        return handleCampaignWeeklyCounts();
+      }
+      if (path === '/v1/campaign/peak-time/validate-slot' && method === 'POST') {
+        return await handleCampaignValidateSlot(request);
+      }
+      if (path.match(/^\/v1\/campaign\/peak-time\/division\/[^/]+$/) && method === 'GET') {
+        const divisionCode = path.split('/v1/campaign/peak-time/division/')[1];
+        return handleCampaignDivisionSchedule(divisionCode, url);
       }
 
       return errorResponse('Not found', 404);

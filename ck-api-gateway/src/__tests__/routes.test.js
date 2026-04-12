@@ -177,10 +177,10 @@ describe('MCCO Routes', async () => {
     assert.ok(b.mccoFleet || b.hierarchy);
   });
 
-  it('lists 15 MCCO agents', async () => {
+  it('lists 16 MCCO agents', async () => {
     const b = await body(handleListMCCOAgents(makeURL('/v1/mcco/agents')));
-    assert.equal(b.count, 15);
-    assert.equal(b.agents.length, 15);
+    assert.equal(b.count, 16);
+    assert.equal(b.agents.length, 16);
     assert.equal(b.governance, 'sovereign');
   });
 
