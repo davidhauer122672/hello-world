@@ -6,6 +6,9 @@ const path = require('path');
 const { securityHeaders, rateLimiter, cors } = require('./middleware/security');
 const { errorHandler, notFoundHandler, asyncWrap } = require('./middleware/error-handler');
 
+// Auth
+const { router: authRouter, validateSession, extractBearerToken, safeCompare } = require('./routes/auth');
+
 // Route handlers
 const { router: paymentsRouter, webhookHandler } = require('./routes/payments');
 const appointmentsRouter = require('./routes/appointments');
@@ -32,11 +35,18 @@ const PORT = process.env.PORT || 3000;
 
 // ── Admin auth middleware ─────────────────────────────────────────────────
 function requireAdminToken(req, res, next) {
-  const token = req.headers.authorization?.replace('Bearer ', '');
-  if (!token || token !== process.env.ADMIN_TOKEN) {
-    return res.status(401).json({ error: 'Unauthorized — admin token required' });
+  const token = extractBearerToken(req);
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized — valid token required' });
   }
-  next();
+
+  // Accept admin token (timing-safe) OR valid session token
+  const adminToken = process.env.ADMIN_TOKEN;
+  const isAdmin = adminToken && safeCompare(token, adminToken);
+  if (isAdmin || validateSession(token)) {
+    return next();
+  }
+  return res.status(401).json({ error: 'Unauthorized — invalid or expired token' });
 }
 
 // ── Global security middleware ────────────────────────────────────────────
@@ -58,6 +68,7 @@ app.use(express.json({ limit: '50kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ── Public routes ─────────────────────────────────────────────────────────
+app.use('/api/auth', authRouter);
 app.use('/api/health', healthRouter);
 app.use('/api/appointments', appointmentsRouter);
 app.use('/api/payments', paymentsRouter);
