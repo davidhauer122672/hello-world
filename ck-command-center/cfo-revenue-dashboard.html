@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key Enterprise — CFO Revenue Platform</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060b;--bg2:#0c0c14;--bg3:#12121e;--bg4:#1a1a2a;
+  --text:#eaeaf0;--text2:#a0a0b8;--text3:#606078;
+  --gold:#d4a843;--gold2:#b08930;--gold-bg:rgba(212,168,67,0.08);
+  --green:#00e676;--green-bg:rgba(0,230,118,0.08);
+  --red:#ff3d5a;--red-bg:rgba(255,61,90,0.08);
+  --blue:#448aff;--blue-bg:rgba(68,138,255,0.08);
+  --cyan:#00e5ff;--purple:#aa66ff;--purple-bg:rgba(170,102,255,0.08);
+  --border:#1a1a2e;--border2:#2a2a40;
+  --radius:10px;--radius-sm:6px;
+  --shadow:0 4px 24px rgba(0,0,0,0.5);
+  --font:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;font-size:14px}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:16px}
+.header-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:14px}
+.header h1{font-size:18px;font-weight:700;letter-spacing:-0.3px}
+.header .sub{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:600}
+.header-right{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--cyan)}
+.main{padding:24px;max-width:1400px;margin:0 auto}
+.grid{display:grid;gap:16px;margin-bottom:24px}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:8px;font-weight:600}
+.card-value{font-size:28px;font-weight:800;font-family:var(--mono);letter-spacing:-1px}
+.card-value.gold{color:var(--gold)}.card-value.green{color:var(--green)}.card-value.blue{color:var(--blue)}.card-value.purple{color:var(--purple)}
+.card-sub{font-size:11px;color:var(--text2);margin-top:4px}
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border2);font-weight:600}
+td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+td:first-child{color:var(--text);font-weight:500}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.badge-green{background:var(--green-bg);color:var(--green)}.badge-gold{background:var(--gold-bg);color:var(--gold)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-purple{background:var(--purple-bg);color:var(--purple)}
+.bar{height:6px;border-radius:3px;background:var(--bg4);overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.hook-list{list-style:none;padding:0}.hook-list li{padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
+.hook-list li::before{content:'"';color:var(--gold);font-weight:700;margin-right:4px}
+.hook-list li::after{content:'"';color:var(--gold);font-weight:700;margin-left:2px}
+@media(max-width:900px){.grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-logo">CK</div>
+  <div><h1>CFO Revenue Platform</h1><div class="sub">Self-Sustaining Revenue Engine &bull; Investor Positioning &bull; Autonomous AI Operations</div></div>
+  <div class="header-right" id="clock"></div>
+</div>
+<div class="main">
+
+<!-- KPI Cards -->
+<div class="grid grid-4">
+  <div class="card"><div class="card-title">Total Addressable Revenue</div><div class="card-value gold">$3.17M</div><div class="card-sub">10 revenue channels</div></div>
+  <div class="card"><div class="card-title">18-Month ARR Target</div><div class="card-value green">$2.82M</div><div class="card-sub">$234,820 MRR @ Month 18</div></div>
+  <div class="card"><div class="card-title">Enterprise Valuation (6x)</div><div class="card-value blue">$16.8M</div><div class="card-sub">$22.4M at 8x premium</div></div>
+  <div class="card"><div class="card-title">LTV:CAC Ratio</div><div class="card-value purple">70:1</div><div class="card-sub">$10,620 LTV / $150 CAC</div></div>
+</div>
+
+<!-- Revenue Channels -->
+<div class="card" style="margin-bottom:24px">
+  <div class="section-title">Revenue Architecture — 10 Channels</div>
+  <table>
+    <tr><th>#</th><th>Channel</th><th>Model</th><th>ARR Target</th><th>Timeline</th><th>% of Total</th></tr>
+    <tr><td>1</td><td>Home Watch Contracts</td><td><span class="badge badge-green">Recurring</span></td><td>$708,000</td><td>Active. Scaling.</td><td>22.3%<div class="bar"><div class="bar-fill" style="width:22.3%"></div></div></td></tr>
+    <tr><td>2</td><td>Storm Protocol Services</td><td><span class="badge badge-gold">Seasonal</span></td><td>$84,750</td><td>Active. June-Nov.</td><td>2.7%<div class="bar"><div class="bar-fill" style="width:2.7%"></div></div></td></tr>
+    <tr><td>3</td><td>STR Oversight (10% gross)</td><td><span class="badge badge-green">Recurring</span></td><td>$180,000</td><td>Q2 2026 launch</td><td>5.7%<div class="bar"><div class="bar-fill" style="width:5.7%"></div></div></td></tr>
+    <tr><td>4</td><td>Investor Portfolio Mgmt</td><td><span class="badge badge-green">Recurring+</span></td><td>$237,000</td><td>Sentinel-driven</td><td>7.5%<div class="bar"><div class="bar-fill" style="width:7.5%"></div></div></td></tr>
+    <tr><td>5</td><td>SaaS Licensing (CK OS)</td><td><span class="badge badge-blue">SaaS MRR</span></td><td>$596,400</td><td>Q4 2026 beta</td><td>18.8%<div class="bar"><div class="bar-fill" style="width:18.8%"></div></div></td></tr>
+    <tr><td>6</td><td>AI Mastery Course</td><td><span class="badge badge-purple">Digital</span></td><td>$498,500</td><td>Q3 2026 launch</td><td>15.7%<div class="bar"><div class="bar-fill" style="width:15.7%"></div></div></td></tr>
+    <tr><td>7</td><td>Template Packs</td><td><span class="badge badge-purple">Digital</span></td><td>$197,000</td><td>Q2 2026 launch</td><td>6.2%<div class="bar"><div class="bar-fill" style="width:6.2%"></div></div></td></tr>
+    <tr><td>8</td><td>Consulting &amp; Implementation</td><td><span class="badge badge-gold">Service</span></td><td>$360,000</td><td>On demand</td><td>11.3%<div class="bar"><div class="bar-fill" style="width:11.3%"></div></div></td></tr>
+    <tr><td>9</td><td>Affiliate &amp; Referral</td><td><span class="badge badge-green">Passive</span></td><td>$96,000</td><td>Q2 2026</td><td>3.0%<div class="bar"><div class="bar-fill" style="width:3.0%"></div></div></td></tr>
+    <tr><td>10</td><td>Content Monetization</td><td><span class="badge badge-gold">Mixed</span></td><td>$216,000</td><td>Ongoing build</td><td>6.8%<div class="bar"><div class="bar-fill" style="width:6.8%"></div></div></td></tr>
+  </table>
+</div>
+<!-- 18-Month Financial Projections -->
+<div class="card" style="margin-bottom:24px">
+  <div class="section-title">18-Month Financial Projection</div>
+  <table>
+    <tr><th>Revenue Stream</th><th>Month 6</th><th>Month 12</th><th>Month 18</th></tr>
+    <tr><td>Service Contracts</td><td>$29,500</td><td>$59,000</td><td>$98,000</td></tr>
+    <tr><td>Storm Services</td><td>$14,000</td><td>$14,000</td><td>$18,000</td></tr>
+    <tr><td>Digital Products</td><td>$8,000</td><td>$22,000</td><td>$41,000</td></tr>
+    <tr><td>SaaS Licensing</td><td>$0</td><td>$9,940</td><td>$29,820</td></tr>
+    <tr><td>Consulting</td><td>$5,000</td><td>$15,000</td><td>$30,000</td></tr>
+    <tr><td>Affiliate / Content</td><td>$2,000</td><td>$8,000</td><td>$18,000</td></tr>
+    <tr style="border-top:2px solid var(--gold)"><td style="font-weight:700;color:var(--gold)">Total MRR</td><td style="font-weight:700;color:var(--gold)">$58,500</td><td style="font-weight:700;color:var(--gold)">$127,940</td><td style="font-weight:700;color:var(--gold)">$234,820</td></tr>
+  </table>
+</div>
+
+<!-- Digital Products + Investor Metrics -->
+<div class="grid grid-2">
+  <div class="card">
+    <div class="section-title">Digital Product Suite</div>
+    <table>
+      <tr><th>Product</th><th>Price</th><th>Tier</th></tr>
+      <tr><td>Home Watch Startup Kit</td><td>$47</td><td><span class="badge badge-green">Entry</span></td></tr>
+      <tr><td>AI Automation Playbook</td><td>$197</td><td><span class="badge badge-blue">Mid</span></td></tr>
+      <tr><td>Inspection Template Pack</td><td>$197</td><td><span class="badge badge-blue">Mid</span></td></tr>
+      <tr><td>AI PM Mastery Course</td><td>$997</td><td><span class="badge badge-purple">Premium</span></td></tr>
+      <tr><td>CK OS Starter</td><td>$197/mo</td><td><span class="badge badge-purple">SaaS</span></td></tr>
+      <tr><td>CK OS Professional</td><td>$497/mo</td><td><span class="badge badge-purple">SaaS</span></td></tr>
+      <tr><td>CK OS Enterprise</td><td>$997/mo</td><td><span class="badge badge-gold">White-label</span></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <div class="section-title">Investor Key Metrics (18mo Target)</div>
+    <table>
+      <tr><th>Metric</th><th>Target</th></tr>
+      <tr><td>Monthly Recurring Revenue</td><td style="color:var(--green);font-weight:700">$200,000</td></tr>
+      <tr><td>Annual Recurring Revenue</td><td style="color:var(--green);font-weight:700">$2,400,000</td></tr>
+      <tr><td>Active Service Contracts</td><td>200+</td></tr>
+      <tr><td>SaaS Licensees</td><td>50+</td></tr>
+      <tr><td>Gross Margin (Service)</td><td>65-70%</td></tr>
+      <tr><td>Gross Margin (Digital/SaaS)</td><td style="color:var(--cyan)">85-92%</td></tr>
+      <tr><td>Client Acquisition Cost</td><td>Under $150</td></tr>
+      <tr><td>Lifetime Value (3yr)</td><td>$10,620</td></tr>
+      <tr><td>LTV:CAC Ratio</td><td style="color:var(--gold);font-weight:700">70:1</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Valuation + Acquisition -->
+<div class="grid grid-2" style="margin-top:24px">
+  <div class="card">
+    <div class="section-title">Valuation Framework</div>
+    <div class="grid grid-3" style="margin-bottom:0">
+      <div><div class="card-title">Conservative (6x)</div><div class="card-value gold" style="font-size:22px">$16.8M</div><div class="card-sub">$2.8M ARR</div></div>
+      <div><div class="card-title">Premium (8x)</div><div class="card-value green" style="font-size:22px">$22.4M</div><div class="card-sub">Tech asset premium</div></div>
+      <div><div class="card-title">SaaS Standalone (10x)</div><div class="card-value blue" style="font-size:22px">$5.96M</div><div class="card-sub">$596K SaaS ARR</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title">Client Acquisition Strategies</div>
+    <table>
+      <tr><th>Strategy</th><th>Cost</th><th>Target</th></tr>
+      <tr><td>County Record Data Mining</td><td style="color:var(--green)">$0</td><td>5,000+ records/qtr</td></tr>
+      <tr><td>Insurance Carrier Partnerships</td><td>Co-marketing</td><td>3 partners / 6mo</td></tr>
+      <tr><td>Attorney &amp; CPA Referrals</td><td>10% Y1</td><td>15 active partners</td></tr>
+      <tr><td>HOA Board Presentations</td><td>Time</td><td>2 per month</td></tr>
+      <tr><td>LinkedIn Authority Funnel</td><td>$0</td><td>5K followers / 50 leads</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Content Hooks -->
+<div class="card" style="margin-top:24px">
+  <div class="section-title">Content Hooks — 30 Scroll-Stopping Hooks</div>
+  <div class="grid grid-3">
+    <div>
+      <div class="card-title" style="color:var(--red);margin-bottom:8px">Property Risk (10)</div>
+      <ul class="hook-list" id="hooks-risk"></ul>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--blue);margin-bottom:8px">CEO Journey (10)</div>
+      <ul class="hook-list" id="hooks-ceo"></ul>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--purple);margin-bottom:8px">Myth vs. Reality (10)</div>
+      <ul class="hook-list" id="hooks-myth"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- Deployment Checklist -->
+<div class="card" style="margin-top:24px">
+  <div class="section-title">Deployment Checklist</div>
+  <table>
+    <tr><th>#</th><th>Action</th><th>Owner</th><th>Status</th></tr>
+    <tr><td>1</td><td>Activate Gmail OAuth for SOE email worker</td><td>CEO</td><td><span class="badge badge-red">BLOCKER</span></td></tr>
+    <tr><td>2</td><td>Rotate Airtable + Anthropic API keys in CF Secrets</td><td>CEO</td><td><span class="badge badge-red">BLOCKER</span></td></tr>
+    <tr><td>3</td><td>Patch index.html + redeploy coastalkey-pm.com</td><td>SOE</td><td><span class="badge badge-green">Ready</span></td></tr>
+    <tr><td>4</td><td>Publish 30 hooks to Content Calendar</td><td>SOE</td><td><span class="badge badge-green">Ready</span></td></tr>
+    <tr><td>5</td><td>Build Risk Calculator lead magnet</td><td>Claude</td><td><span class="badge badge-green">Ready</span></td></tr>
+    <tr><td>6</td><td>Create Insurance Checklist PDF</td><td>Claude</td><td><span class="badge badge-green">Ready</span></td></tr>
+    <tr><td>7</td><td>Build Home Watch Startup Kit ($47)</td><td>Claude + CEO</td><td><span class="badge badge-blue">Q2 2026</span></td></tr>
+    <tr><td>8</td><td>Draft AI Mastery Course (12 modules)</td><td>Claude</td><td><span class="badge badge-green">Ready</span></td></tr>
+    <tr><td>9</td><td>TCPA/DNC clearance for Sentinel</td><td>L-01 CLIO</td><td><span class="badge badge-gold">Pending</span></td></tr>
+    <tr><td>10</td><td>Complete SOE rebuild WF-1 through WF-13</td><td>SOE Worker</td><td><span class="badge badge-blue">In Progress</span></td></tr>
+  </table>
+</div>
+
+<div style="text-align:center;padding:32px 0;font-size:11px;color:var(--text3)">
+  Coastal Key Property Management LLC &bull; 1407 SE Legacy Cove Circle, Ste 100, Stuart, FL 34997 &bull; (772) 262-8341<br>
+  CFO Revenue Platform v1.0 &bull; Confidential &bull; CEO Use Only
+</div>
+</div>
+
+<script>
+// Clock
+function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour12:false})+' EST'}
+setInterval(updateClock,1000);updateClock();
+
+// Populate hooks
+const hooks={
+  risk:['Your property sat empty for 4 months. Here is what we found on the first inspection.','This $2.1M home had 3 active leaks and the owner had no idea.','The most expensive repair we have ever documented started with a $12 part.','Your neighbor is not an inspection report.','We walked a property that had not been checked in 11 months. $47,000 in damage.','Every insurance adjuster asks the same question. Most homeowners cannot answer it.','A burst pipe in an empty home runs for an average of 14 days before anyone notices.','Hurricane season is 53 days away. The one thing 90% of absentee owners forget.','AC system in Florida humidity unchecked for 6 months.','217 property deficiencies last quarter. 83% invisible from the street.'],
+  ceo:['I built a 100-agent AI enterprise in 6 months with zero employees.','Every PM company in America runs the same broken model. We replaced it.','The single decision that compressed 3 years of growth into 6 months.','I removed Zapier from our entire tech stack in one weekend.','Most CEOs outsource their thinking to software. I built software that thinks like a CEO.','Home watch company vs asset protection platform: one word — documentation.','We log every AI inference call to an audit trail.','I spent $0 on advertising. Every client came from one of these five systems.','The property management industry has a $4.2B documentation gap.','The exact Airtable schema that runs a 100-agent AI operation.'],
+  myth:['Good neighbor can watch your property? Your insurer disagrees.','Home watch is a luxury? A single undetected leak costs 15x the annual fee.','PM companies handle oversight? They handle rent collection.','Only need home watch during hurricane season? Mold grows in 48 hours.','AI cannot run a PM company? It runs ours. 24/7. With audit trails.','Security cameras monitor your property? They record. They do not inspect.','Monthly inspections are enough? In Florida humidity, a lot changes in 30 days.','Your property is fine because nothing happened yet? Survivorship bias.','Small properties do not need oversight? Damage does not check square footage.','AI is replacing property managers? AI is replacing the ones who do not use it.']
+};
+Object.entries(hooks).forEach(([key,items])=>{
+  const ul=document.getElementById('hooks-'+key);
+  items.forEach(h=>{const li=document.createElement('li');li.textContent=h;ul.appendChild(li)});
+});
+</script>
+</body>
+</html>

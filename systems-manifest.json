@@ -345,5 +345,43 @@
       "manual_backup_trigger": true,
       "manual_report_trigger": true
     }
+  },
+  "cfo_revenue_platform": {
+    "status": "operational",
+    "version": "1.0.0",
+    "files": [
+      "ck-api-gateway/src/engines/cfo-revenue-engine.js",
+      "ck-api-gateway/src/routes/cfo-revenue.js",
+      "ck-command-center/cfo-revenue-dashboard.html"
+    ],
+    "capabilities": [
+      "ten_channel_revenue_architecture",
+      "digital_product_catalog",
+      "brand_positioning_framework",
+      "client_acquisition_engine",
+      "content_deployment_plan",
+      "lead_magnet_funnel_architecture",
+      "investor_positioning_valuation",
+      "eighteen_month_projection_model",
+      "enterprise_valuation_calculator",
+      "deployment_checklist_tracker"
+    ],
+    "endpoints": [
+      "GET /v1/cfo/dashboard",
+      "GET /v1/cfo/channels",
+      "GET /v1/cfo/products",
+      "GET /v1/cfo/brand",
+      "GET /v1/cfo/acquisition",
+      "GET /v1/cfo/content-plan",
+      "GET /v1/cfo/lead-magnets",
+      "GET /v1/cfo/investor",
+      "POST /v1/cfo/projection",
+      "POST /v1/cfo/valuation",
+      "GET /v1/cfo/checklist"
+    ],
+    "revenue_target": "$2.4M ARR (18 months)",
+    "total_addressable_revenue": "$3,173,650",
+    "valuation_range": "$16.8M - $22.4M",
+    "dashboard": "ck-command-center/cfo-revenue-dashboard.html"
   }
 }
