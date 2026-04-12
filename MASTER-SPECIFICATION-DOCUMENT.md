@@ -109,3 +109,129 @@ manage      — Manage agents, workflows, and integrations
 - Send external communications as CEO/Founder
 
 ---
+
+## SECTION 2: ENTERPRISE ARCHITECTURE
+
+### 2.1 Monorepo Structure
+
+**Repository:** `davidhauer122672/hello-world` | **Platform Version:** 2.1.0 | **Runtime:** Node.js 22+ | **Package Manager:** npm workspaces
+
+```
+hello-world/
+├── server.js                    # Express 5.2 server (monolithic API, 28 endpoints)
+├── package.json                 # Root workspace: ck-api-gateway, sentinel-webhook, ck-nemotron-worker
+├── ck-api-gateway/              # Cloudflare Worker — 147 endpoints, 24 route modules
+├── sentinel-webhook/            # Cloudflare Worker — Retell call pipeline
+├── ck-nemotron-worker/          # Cloudflare Worker — NVIDIA Nemotron 340B inference
+├── ck-command-center/           # Cloudflare Pages — Enterprise dashboard + Gazette + Trader
+├── ck-website/                  # Cloudflare Pages — Reverse proxy to Manus origin
+├── ck-trading-desk/             # Electron + React — Desktop trading terminal
+├── middleware/                  # Express security (rate limiting, CORS, headers, error handling)
+├── routes/                      # Express route handlers (11 modules)
+├── lib/                         # Business logic (14 modules: drip, backup, SMS, email, workflows)
+├── public/                      # Static frontend (landing, booking, dashboard, success, team)
+├── th-sentinel-campaign/        # Retell/Atlas campaign configs, 8 campaigns, 4 KB docs
+├── scripts/                     # Utilities (PDF manifest generator)
+├── tests/                       # Server test suite
+├── .github/workflows/deploy.yml # CI/CD: test → preflight → parallel deploy
+├── systems-manifest.json        # Complete system inventory (JSON)
+└── deployment.json              # Deployment architecture reference
+```
+
+### 2.2 Service Map
+
+| Service | Runtime | Deployment | Endpoints | Purpose |
+|---------|---------|------------|-----------|---------|
+| **ck-api-gateway** | Cloudflare Worker | `ck-api-gateway.david-e59.workers.dev` | 147 | Central API router — inference, agents, leads, workflows, campaigns, financial engine, trading, Slack |
+| **ck-website** | Cloudflare Pages | `coastalkey-pm.com` | Proxy | Reverse proxy to Manus origin (`coastalkey-awfopuqz.manus.space`) with edge caching, SEO injection, URL rewriting |
+| **ck-command-center** | Cloudflare Pages | `ck-command-center.pages.dev` | Static | Enterprise dashboard, Gazette, Trading Desk UI, fleet monitoring |
+| **sentinel-webhook** | Cloudflare Worker | `sentinel-webhook.david-e59.workers.dev` | 2 | Retell `call_analyzed` → Airtable lead + Slack notification pipeline |
+| **ck-nemotron-worker** | Cloudflare Worker | `ck-nemotron-worker.david-e59.workers.dev` | 2 | NVIDIA Nemotron 340B inference endpoint |
+| **ck-trading-desk** | Electron 30 + React 18 | Desktop (Win/Mac/Linux) | IPC | Autonomous financial operations terminal with live market data |
+
+### 2.3 Service Architecture Detail
+
+**ck-api-gateway** (Primary — all business logic routes through here):
+- **Entry:** `src/index.js` — ES module, route dispatch with auth gate
+- **Middleware:** `auth.js` (Bearer + Slack HMAC), `rate-limit.js` (60 RPM KV sliding window), `ceo-authority.js` (operating authority framework)
+- **KV Namespaces:** CACHE (inference), SESSIONS (state), RATE_LIMITS (throttling), AUDIT_LOG (30-day trail)
+- **Routes:** 24 modules in `src/routes/`
+- **Agents:** 16 registry files in `src/agents/` defining all 383 units
+- **Services:** 9 integration clients in `src/services/` (Airtable, Anthropic, Atlas, Slack, etc.)
+- **Engines:** 4 compute engines in `src/engines/` (financial, trading, analysis, AI trader)
+
+**sentinel-webhook** (Retell Pipeline):
+- Receives Retell `call_analyzed` events → transforms payload → creates Airtable lead record
+- Split routing: engaged calls → Leads table, failed calls (`inactivity_timeout`, `machine_hangup`, `error`) → Missed/Failed Calls QA table + Leads
+- Non-fatal Slack notifications (lead record creation never blocked by Slack failures)
+
+**ck-website** (Edge Proxy):
+- `_worker.js` reverse proxies `coastalkey-awfopuqz.manus.space` on `coastalkey-pm.com`
+- URL rewriting across HTML/CSS/JS/JSON responses
+- Edge caching: static 30 days, fonts 1 year, HTML 5 minutes
+- SEO canonical injection, HSTS, graceful 503 fallback
+- Pages: `/`, `/services`, `/agents`, `/dashboard`, `/eliza`, `/portal`, `/admin`
+
+**ck-trading-desk** (Desktop Terminal):
+- Electron main process with IPC bridge (`preload.js`)
+- React renderer: Dashboard, Portfolio, CashFlow, TradingDesk, AnalysisSuite, AgentFleet pages
+- Gateway client service calls all `/v1/trader/*` and `/v1/financial/*` endpoints
+- Cross-platform build: DMG/ZIP (Mac), NSIS/Portable (Win), AppImage/DEB (Linux)
+
+### 2.4 Tech Stack
+
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| **Runtime** | Node.js | 22+ |
+| **Framework** | Express | 5.2.1 |
+| **Edge Workers** | Cloudflare Workers | Wrangler 4.0 |
+| **Edge Pages** | Cloudflare Pages | — |
+| **Edge KV** | Cloudflare KV | 4 namespaces |
+| **AI Inference** | Anthropic Claude | claude-sonnet-4-6 / claude-opus-4-6 |
+| **AI Inference** | NVIDIA Nemotron | 340B-instruct via NIM |
+| **Database** | Airtable | 39 tables, base `appUSnNgpDkcEOzhN` |
+| **Voice AI** | Retell AI + Atlas AI | youratlas.com, 8 campaigns |
+| **Payments** | Stripe | 20.4.1 |
+| **SMS** | Twilio | 5.13.0 |
+| **Email** | Nodemailer (SMTP) | 8.0.3 |
+| **Sheets** | Google APIs | 171.4.0 |
+| **Scheduling** | node-cron | 4.2.1 |
+| **PDF** | PDFKit | 0.18.0 |
+| **Desktop** | Electron + Vite + React | 30.0 / 5.4 / 18.3 |
+| **Charts** | Recharts | 2.12.0 |
+| **CI/CD** | GitHub Actions | Node 22, Wrangler 3 |
+
+### 2.5 CI/CD Pipeline
+
+**Trigger:** Push to `main` or PR against `main`
+**Concurrency:** Group by ref, cancel in-progress
+
+```
+test (all suites)
+  └─→ preflight (wrangler whoami — validate Cloudflare token)
+       ├─→ deploy-website        (parallel)
+       ├─→ deploy-gateway        (parallel)
+       │    ├─→ deploy-sentinel  (sequential — depends on gateway)
+       │    └─→ deploy-nemotron  (sequential — depends on gateway)
+       └─→ deploy-command-center (parallel)
+```
+
+**Deploy Strategy:** Each job retries 3x with 15s backoff on failure. Pages projects auto-created if missing. Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
+
+### 2.6 Security Layer
+
+| Mechanism | Implementation | Scope |
+|-----------|---------------|-------|
+| **Bearer Auth** | `WORKER_AUTH_TOKEN` constant-time comparison | All `/v1/*` except health, public leads, Slack events |
+| **Slack Auth** | HMAC-SHA256 signature verification (`SLACK_SIGNING_SECRET`) | `/v1/slack/commands`, `/v1/slack/interactions`, `/v1/slack/events` |
+| **Rate Limiting** | 60 RPM per IP, KV sliding window (`RATE_LIMITS` namespace) | All authenticated endpoints |
+| **Audit Logging** | KV writes with 30-day TTL (`AUDIT_LOG` namespace) | All operations |
+| **CORS** | Configurable origin allowlist | Gateway level |
+| **Headers** | X-Content-Type-Options, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy, CSP | All responses |
+| **Body Limit** | 50KB JSON max | All endpoints |
+| **Replay Protection** | 5-minute window on Slack signatures | Slack inbound |
+| **Webhook Verification** | Stripe signature, Retell payload validation | Payment + voice webhooks |
+
+**Public Endpoints (no auth):** `/v1/health`, `/v1/leads/public`, `/v1/slack/events`
+
+---
