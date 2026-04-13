@@ -24,11 +24,13 @@ import { SLACK_AUDIT_RECORD } from '../slack/audit-record.js';
  * POST /v1/slack/commands — Dispatches incoming slash commands.
  */
 export async function handleSlackCommand(request, env, ctx) {
-  // Verify Slack signature
-  if (env.SLACK_SIGNING_SECRET) {
-    const valid = await verifySlackSignature(request, env.SLACK_SIGNING_SECRET);
-    if (!valid) return errorResponse('Invalid signature', 401);
+  // Verify Slack signature — reject if signing secret is not configured
+  if (!env.SLACK_SIGNING_SECRET) {
+    console.error('SLACK_SIGNING_SECRET not configured — rejecting unauthenticated Slack request');
+    return errorResponse('Slack signing secret not configured', 503);
   }
+  const valid = await verifySlackSignature(request, env.SLACK_SIGNING_SECRET);
+  if (!valid) return errorResponse('Invalid signature', 401);
 
   const formData = await request.formData();
   const command = formData.get('command');
@@ -405,10 +407,12 @@ async function handleCampaignCommand(text, env) {
  * POST /v1/slack/interactions — Handles button clicks and modal submissions.
  */
 export async function handleSlackInteraction(request, env, ctx) {
-  if (env.SLACK_SIGNING_SECRET) {
-    const valid = await verifySlackSignature(request, env.SLACK_SIGNING_SECRET);
-    if (!valid) return errorResponse('Invalid signature', 401);
+  if (!env.SLACK_SIGNING_SECRET) {
+    console.error('SLACK_SIGNING_SECRET not configured — rejecting unauthenticated Slack request');
+    return errorResponse('Slack signing secret not configured', 503);
   }
+  const valid = await verifySlackSignature(request, env.SLACK_SIGNING_SECRET);
+  if (!valid) return errorResponse('Invalid signature', 401);
 
   const formData = await request.formData();
   const payloadStr = formData.get('payload');

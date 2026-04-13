@@ -14,6 +14,7 @@
  *   BUFFER_PROFILE_FACEBOOK      — Buffer profile ID for Facebook
  *   BUFFER_PROFILE_LINKEDIN      — Buffer profile ID for LinkedIn
  *   BUFFER_PROFILE_X             — Buffer profile ID for X (Twitter)
+ *   BUFFER_PROFILE_ALIGNABLE     — Buffer profile ID for Alignable
  */
 
 import { getRecord, updateRecord, createRecord, TABLES } from '../services/airtable.js';

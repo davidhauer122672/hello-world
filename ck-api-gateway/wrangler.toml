@@ -43,7 +43,11 @@ id = "3d722426db4241209fd0444b42f84904"
 # BUFFER_PROFILE_FACEBOOK      — Buffer profile ID for Facebook
 # BUFFER_PROFILE_LINKEDIN      — Buffer profile ID for LinkedIn
 # BUFFER_PROFILE_X             — Buffer profile ID for X (Twitter)
+# BUFFER_PROFILE_ALIGNABLE     — Buffer profile ID for Alignable
 # GOOGLE_CLIENT_ID             — Google OAuth 2.0 client ID (Gmail API)
 # GOOGLE_CLIENT_SECRET         — Google OAuth 2.0 client secret
 # GMAIL_REFRESH_TOKEN          — Gmail long-lived refresh token (offline access)
 # GMAIL_FROM_ADDRESS           — Authorized Gmail sender address
+# META_PAGE_ACCESS_TOKEN        — Meta/Facebook Page access token for ad management
+# META_AD_ACCOUNT_ID            — Meta Ads account ID (act_XXXXXXXXX)
+# META_PAGE_ID                  — Facebook Page ID for post boosting

@@ -58,8 +58,8 @@ describe('WF-2 Content Publish Trigger Config', () => {
     assert.deepEqual(WF2_CONTENT_PUBLISH.conditions.requiredFields, ['Caption', 'Platform']);
   });
 
-  it('should target all 4 social platforms', () => {
-    assert.deepEqual(WF2_CONTENT_PUBLISH.platforms, ['instagram', 'facebook', 'linkedin', 'x']);
+  it('should target all 5 social platforms', () => {
+    assert.deepEqual(WF2_CONTENT_PUBLISH.platforms, ['instagram', 'facebook', 'linkedin', 'x', 'alignable']);
   });
 
   it('should reference correct Airtable table ID', () => {

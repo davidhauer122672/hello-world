@@ -254,3 +254,37 @@ export async function handleMetaAdsBoost(request, env, ctx) {
     return errorResponse(`Meta Ads boost failed: ${err.message}`, 500);
   }
 }
+
+/**
+ * GET /v1/meta-ads/campaigns — List active Meta Ads campaigns
+ */
+export async function handleMetaAdsCampaigns(env) {
+  const token = env.META_PAGE_ACCESS_TOKEN;
+  const adAccountId = env.META_AD_ACCOUNT_ID;
+
+  if (!token || !adAccountId) {
+    return errorResponse('Meta Ads not configured. Set META_PAGE_ACCESS_TOKEN and META_AD_ACCOUNT_ID secrets.', 503);
+  }
+
+  try {
+    const res = await fetch(
+      `${META_GRAPH_API}/${adAccountId}/campaigns?fields=id,name,status,objective,daily_budget,lifetime_budget,start_time,stop_time&access_token=${encodeURIComponent(token)}&limit=25`
+    );
+
+    const data = await res.json();
+
+    if (data.error) {
+      return errorResponse(`Meta API error: ${data.error.message}`, 502);
+    }
+
+    return jsonResponse({
+      service: 'meta-ads',
+      ad_account: adAccountId,
+      campaigns: data.data || [],
+      total: (data.data || []).length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    return errorResponse(`Failed to fetch campaigns: ${err.message}`, 502);
+  }
+}

@@ -168,9 +168,9 @@ import {
 } from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
+import { handleMetaAdsStatus, handleMetaAdsBoost, handleMetaAdsCampaigns } from './routes/meta-ads.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
-import { handleMetaAdsStatus, handleMetaAdsBoost } from './routes/meta-ads.js';
 import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
@@ -248,6 +248,24 @@ export default {
         }
       } else {
         checks.atlas = { status: 'not_configured', platform: 'youratlas.com' };
+      }
+
+      // Meta Ads
+      if (env.META_PAGE_ACCESS_TOKEN && env.META_AD_ACCOUNT_ID) {
+        checks.metaAds = { status: 'configured', adAccount: env.META_AD_ACCOUNT_ID };
+      } else {
+        const metaMissing = [];
+        if (!env.META_PAGE_ACCESS_TOKEN) metaMissing.push('META_PAGE_ACCESS_TOKEN');
+        if (!env.META_AD_ACCOUNT_ID) metaMissing.push('META_AD_ACCOUNT_ID');
+        if (!env.META_PAGE_ID) metaMissing.push('META_PAGE_ID');
+        checks.metaAds = { status: 'not_configured', missing: metaMissing };
+      }
+
+      // Buffer
+      if (env.BUFFER_ACCESS_TOKEN) {
+        checks.buffer = { status: 'configured' };
+      } else {
+        checks.buffer = { status: 'not_configured', impact: 'Content publish falls back to manual mode' };
       }
 
       // KV stores
@@ -865,6 +883,9 @@ export default {
       }
       if (path === '/v1/meta-ads/boost' && method === 'POST') {
         return await handleMetaAdsBoost(request, env, ctx);
+      }
+      if (path === '/v1/meta-ads/campaigns' && method === 'GET') {
+        return await handleMetaAdsCampaigns(env);
       }
 
       // ── Agent Manifest ──
