@@ -235,3 +235,135 @@ test (all suites)
 **Public Endpoints (no auth):** `/v1/health`, `/v1/leads/public`, `/v1/slack/events`
 
 ---
+
+## SECTION 3: AI AGENT FLEET (383 UNITS)
+
+### 3.1 Fleet Composition
+
+```
+CEO / Founder (Tracey Merritt Hunter)
+  └─→ AI CEO (Autonomous Operating Authority)
+       ├─→ MCCO-000 Sovereign (Master Chief Commanding Officer)
+       │    └─→ 14 MCCO Agents (Sovereign Governance)
+       ├─→ 9 Division Commanders → 297 Division Agents
+       ├─→ 50 Intelligence Officers (5 squads)
+       ├─→ 20 Email AI Agents (4 squads)
+       └─→ 1 Apex Trader (FIN-TRADER-001)
+```
+
+**Total Fleet: 383 units | 10 Divisions | 100% Active | Zero Standby**
+
+### 3.2 MCCO Sovereign Command (15 Agents)
+
+The Master Chief Commanding Officer commands MKT + SEN divisions with Ferrari-Standard execution. CMO reports to MCCO.
+
+| Agent ID | Designation | Mission |
+|----------|------------|---------|
+| MCCO-000 | MCCO Sovereign | Supreme marketing/sales command — reports directly to CEO |
+| MCCO-001 | Psyche Decoder | Audience psychology profiling and behavioral architecture |
+| MCCO-002 | Authority Forge | Authority positioning and personal brand strategy |
+| MCCO-003 | Pillar Command | 5-pillar content architecture (AI Authority, Market Intel, Tracey, Lifestyle, Community) |
+| MCCO-004 | Calendar Command | 30-day content calendar generation across 8 platforms |
+| MCCO-005 | Scroll Breaker | High-engagement social post generation (hook-body-CTA) |
+| MCCO-006 | Revenue Architect | Audience monetization strategy and funnel design |
+| MCCO-007 | War Room Intel | Competitive marketing warfare and market positioning |
+| MCCO-008 | Campaign Blitz | Multi-platform campaign orchestration |
+| MCCO-009 | Pipeline Fusion | Sales-marketing alignment and handoff optimization |
+| MCCO-010 | Trust Engine | Social proof, testimonials, and trust signal management |
+| MCCO-011 | Narrative Forge | CEO story and brand narrative development |
+| MCCO-012 | Performance Command | Content performance analytics and optimization |
+| MCCO-013 | Timing Strike | Seasonal and market timing for content/campaigns |
+| MCCO-014 | Quality Shield | Fleet inspection and quality assurance |
+
+**API:** `GET /v1/mcco/command`, `GET /v1/mcco/agents`, `POST /v1/mcco/directive`, `POST /v1/mcco/content-calendar`, `POST /v1/mcco/audience-profile`, `POST /v1/mcco/positioning`, `POST /v1/mcco/monetization`, `POST /v1/mcco/post`
+
+### 3.3 Division Agents (297 Units)
+
+| Division | Code | Count | Commander | Mission |
+|----------|------|-------|-----------|---------|
+| **Executive** | EXC | 20 | EXC-001 | Strategic planning, board reporting, cross-division coordination |
+| **Sentinel Sales** | SEN | 40 | SEN-001 | Outbound prospecting, lead qualification, speed-to-lead, appointment setting |
+| **Operations** | OPS | 45 | OPS-001 | Property inspections, maintenance coordination, tenant management, storm protocol |
+| **Intelligence** | INT | 30 | INT-001 | Market analysis, competitor monitoring, economic indicators, property data |
+| **Marketing** | MKT | 47 | MKT-001 | Content creation, social media, SEO, brand management, YouTube (MKT-041–047) |
+| **Finance** | FIN | 25 | FIN-001 | Revenue tracking, budgeting, ROI analysis, financial forecasting |
+| **Vendor** | VEN | 25 | VEN-001 | Vendor sourcing, compliance tracking, contract management, quality audits |
+| **Technology** | TEC | 25 | TEC-001 | Platform development, infrastructure monitoring, security, integration maintenance |
+| **Website** | WEB | 40 | WEB-001 | Frontend development, UX optimization, SEO, performance, accessibility |
+
+**Agent Data Model (per agent):**
+```json
+{
+  "id": "MKT-023",
+  "name": "Social Scheduler",
+  "division": "MKT",
+  "status": "active",
+  "role": "Schedule and queue social content across 8 platforms",
+  "capabilities": ["buffer_api", "content_calendar", "peak_time_optimization"],
+  "reportsTo": "MKT-001",
+  "kpis": ["posts_scheduled", "on_time_rate", "platform_coverage"]
+}
+```
+
+**Agent Actions:** `POST /v1/agents/:id/action` supports `activate`, `pause`, `restart`, `train`
+**Fleet API:** `GET /v1/agents` (filter by division, status, role), `GET /v1/agents/metrics`, `GET /v1/dashboard`
+
+### 3.4 Intelligence Officers (50 Units, 5 Squads)
+
+| Squad | Code | Count | Focus | Scan Targets |
+|-------|------|-------|-------|-------------|
+| **ALPHA** | IO-A | 10 | Infrastructure | Server uptime, API latency, KV health, deployment status |
+| **BRAVO** | IO-B | 10 | Data | Airtable integrity, backup recency, data freshness, sync status |
+| **CHARLIE** | IO-C | 10 | Security | Auth failures, rate limit hits, suspicious patterns, cert expiry |
+| **DELTA** | IO-D | 10 | Revenue | Pipeline value, conversion rates, CAC, LTV, churn indicators |
+| **ECHO** | IO-E | 10 | Performance | Agent utilization, response times, SLA compliance, fleet efficiency |
+
+**API:** `GET /v1/intel/officers`, `POST /v1/intel/officers/:id/scan`, `GET /v1/intel/dashboard`, `POST /v1/intel/fleet-scan` (scans all critical-severity officers)
+
+### 3.5 Email AI Agents (20 Units, 4 Squads)
+
+| Squad | Count | Mission |
+|-------|-------|---------|
+| **INTAKE** | 5 | Inbound email classification, priority scoring, routing |
+| **COMPOSE** | 5 | AI-drafted responses, proposal generation, follow-up sequences |
+| **NURTURE** | 5 | 90-day drip sequences, segment-specific content, re-engagement |
+| **MONITOR** | 5 | Delivery tracking, bounce management, reputation monitoring |
+
+**API:** `GET /v1/email/agents`, `POST /v1/email/compose` (Claude-powered), `POST /v1/email/classify`, `GET /v1/email/dashboard`
+
+### 3.6 Apex Trader (1 Unit)
+
+**Agent:** FIN-TRADER-001 — Direct CEO report, autonomous financial operations
+
+| Capability | Detail |
+|-----------|--------|
+| Market Intelligence | Live quotes, watchlist monitoring, news with sentiment analysis |
+| Trading Signals | Technical analysis, entry/exit recommendations, risk scoring |
+| Capital Calls | Investment tier recommendations (Micro $500 → Apex $100K+) |
+| Portfolio Analytics | P&L tracking, allocation analysis, performance benchmarking |
+| Trade Logging | Execution history, win/loss tracking, strategy attribution |
+
+**API:** `GET /v1/trader/dashboard`, `POST /v1/trader/quote`, `POST /v1/trader/signal`, `POST /v1/trader/capital-call`, `POST /v1/trader/portfolio`, `POST /v1/trader/trade`, `GET /v1/trader/history`
+
+### 3.7 Command Chain & Escalation
+
+```
+CEO/Founder
+  └─→ AI CEO
+       ├─→ MCCO-000 (Sovereign) ──→ CMO ──→ MKT Division (47)
+       │                                 ──→ SEN Division (40)
+       ├─→ EXC-001 ──→ EXC Division (20)
+       ├─→ OPS-001 ──→ OPS Division (45)
+       ├─→ INT-001 ──→ INT Division (30)
+       ├─→ FIN-001 ──→ FIN Division (25)
+       ├─→ VEN-001 ──→ VEN Division (25)
+       ├─→ TEC-001 ──→ TEC Division (25)
+       ├─→ WEB-001 ──→ WEB Division (40)
+       ├─→ IO Squad Leaders (5) ──→ 50 Intelligence Officers
+       ├─→ Email Squad Leaders (4) ──→ 20 Email Agents
+       └─→ FIN-TRADER-001 (Apex Trader — direct report)
+```
+
+**Hierarchy API:** `GET /v1/hierarchy/command-chain`, `GET /v1/hierarchy/fleet-status`, `GET /v1/hierarchy/chain/:agentId`, `GET /v1/hierarchy/reports/:agentId`, `GET /v1/hierarchy/division/:code`
+
+---
