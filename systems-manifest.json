@@ -85,8 +85,8 @@
         "files": ["lib/social-publisher.js", "routes/social.js"],
         "platforms": ["instagram", "facebook", "linkedin", "alignable"],
         "content_pillars": ["brand", "ceo_journey"],
-        "modes": ["buffer_api_automated", "manual_copy_paste_fallback"],
-        "capabilities": ["draft_creation", "approval_workflow", "buffer_push", "publish_tracking", "calendar_view"],
+        "modes": ["claude_ai_automated", "manual_copy_paste_fallback"],
+        "capabilities": ["draft_creation", "approval_workflow", "claude_ai_publish", "publish_tracking", "calendar_view"],
         "schedule": "*/30 * * * * (publish status polling)",
         "endpoints": [
           "POST /api/social/draft",
@@ -217,15 +217,10 @@
         "purpose": "Payment processing",
         "capabilities": ["checkout_sessions", "webhook_verification"]
       },
-      "buffer": {
-        "purpose": "Social media scheduling",
-        "capabilities": ["post_creation", "publish_status_polling"],
-        "fallback": "manual_mode"
-      },
       "anthropic_claude": {
-        "purpose": "Sales objection AI",
-        "model": "claude-sonnet-4-20250514",
-        "capabilities": ["objection_classification", "reframe_generation"]
+        "purpose": "AI inference, content optimization, social media publishing, sales objection AI",
+        "model": "claude-sonnet-4-6",
+        "capabilities": ["objection_classification", "reframe_generation", "content_optimization", "social_publishing"]
       },
       "retell_ai": {
         "purpose": "Voice call integration",
@@ -247,9 +242,9 @@
     "files": ["lib/workflows.js", "routes/workflows.js"],
     "workflows": {
       "wf1": {"name": "New Lead Nurture", "trigger": "POST /api/workflows/wf1", "actions": ["generate_battle_plan", "email_ceo", "sms_alert", "drip_enrollment"]},
-      "wf2": {"name": "Social Approval", "trigger": "POST /api/workflows/wf2", "actions": ["buffer_push_or_manual", "sms_notify"]},
+      "wf2": {"name": "Social Approval", "trigger": "POST /api/workflows/wf2", "actions": ["claude_ai_publish", "sms_notify"]},
       "wf3": {"name": "Investor Escalation", "trigger": "POST /api/workflows/wf3", "actions": ["sms_urgent", "email_ceo_investor_brief"]},
-      "wf4": {"name": "Buffer Published", "trigger": "POST /api/workflows/wf4", "actions": ["mark_published"]},
+      "wf4": {"name": "Post Published", "trigger": "POST /api/workflows/wf4", "actions": ["mark_published"]},
       "wf5": {"name": "Video Production", "trigger": "POST /api/workflows/wf5", "actions": ["generate_thumbnail", "generate_social_briefs", "email_production_brief", "sms_notify"]},
       "wf6": {"name": "Podcast Publish", "trigger": "POST /api/workflows/wf6", "actions": ["create_social_drafts", "sms_notify"]},
       "wf7": {"name": "AI Log Write", "trigger": "POST /api/workflows/wf7", "actions": ["log_to_file"]}
@@ -282,7 +277,7 @@
   "cron_schedules": {
     "daily_report": "0 9 * * * — Owner SMS at 9 AM",
     "drip_processing": "0 * * * * — Hourly email sends",
-    "publish_tracker": "*/30 * * * * — Buffer status polling",
+    "publish_tracker": "*/30 * * * * — publish status polling",
     "data_backup": "0 2 * * * — Daily snapshot at 2 AM"
   },
   "tech_stack": {
@@ -303,7 +298,7 @@
   },
   "environment_variables": {
     "required": ["PORT", "STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_WEBHOOK_SECRET", "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER", "OWNER_PHONE_NUMBER", "GOOGLE_SERVICE_ACCOUNT_KEY", "GOOGLE_SHEET_ID", "SITE_URL", "BUSINESS_NAME", "ANTHROPIC_API_KEY"],
-    "optional": ["GOOGLE_SHEET_NAME", "BUFFER_ACCESS_TOKEN", "BUFFER_PROFILE_INSTAGRAM", "BUFFER_PROFILE_FACEBOOK", "BUFFER_PROFILE_LINKEDIN", "BUFFER_PROFILE_ALIGNABLE", "CORS_ORIGIN", "NODE_ENV"]
+    "optional": ["GOOGLE_SHEET_NAME", "CORS_ORIGIN", "NODE_ENV"]
   },
   "compliance": {
     "security": {

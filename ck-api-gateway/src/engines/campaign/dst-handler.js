@@ -5,7 +5,7 @@
  *   EDT (UTC-4): Second Sunday of March → First Sunday of November
  *   EST (UTC-5): First Sunday of November → Second Sunday of March
  *
- * Every post timestamp is converted to exact UTC for Buffer API consumption.
+ * Every post timestamp is converted to exact UTC for platform API consumption.
  * Zero manual intervention. Zero drift. Zero missed windows.
  */
 
@@ -137,8 +137,8 @@ export function utcToEastern(utcDate) {
 }
 
 /**
- * Format a UTC Date as an ISO 8601 string suitable for the Buffer API.
- * Buffer accepts: "2026-04-14T13:00:00Z"
+ * Format a UTC Date as an ISO 8601 string suitable for publishing APIs.
+ * Standard format: "2026-04-14T13:00:00Z"
  *
  * @param {Date} utcDate
  * @returns {string} ISO 8601 UTC string

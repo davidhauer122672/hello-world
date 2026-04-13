@@ -192,7 +192,7 @@ export function generate30DayPlan(startDate = new Date().toISOString().split('T'
       dayPlan.actions.push('Mid-week performance check — adjust ad spend if needed');
     }
     if (dayOfWeek === 5) { // Friday
-      dayPlan.actions.push('Schedule next week Buffer posts via Peak-Time Engine');
+      dayPlan.actions.push('Schedule next week posts via Peak-Time Intelligence Engine');
     }
 
     // Add weekly email sends (Mon, Wed, Fri)

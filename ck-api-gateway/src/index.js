@@ -9,7 +9,7 @@
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
  *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
- *   POST /v1/content/publish    — Publish Content Calendar record to Buffer (WF-2 replacement)
+ *   POST /v1/content/publish    — Publish Content Calendar record via Claude AI
  *   GET  /v1/meta-ads/status    — Meta Ads connector health check & diagnostics
  *   POST /v1/meta-ads/boost     — Boost high-engagement post via Meta Ads Manager
  *   GET  /v1/agents             — List/search agents with filtering
@@ -138,8 +138,8 @@
  *   GET  /v1/campaign/peak-time/matrix          — Platform scheduling matrix
  *   GET  /v1/campaign/peak-time/dst             — DST status and transitions
  *   GET  /v1/campaign/peak-time/bulletin        — All Points Bulletin
- *   GET  /v1/campaign/peak-time/buffer-status   — Buffer configuration status
- *   POST /v1/campaign/peak-time/schedule-post   — Schedule single post via Buffer
+ *   GET  /v1/campaign/peak-time/publish-status   — Claude AI publishing status
+ *   POST /v1/campaign/peak-time/schedule-post   — Schedule single post via Claude AI
  *   POST /v1/campaign/peak-time/schedule-batch  — Schedule batch of posts
  *   GET  /v1/campaign/peak-time/smo             — Sovereign Marketing Officer status
  *   POST /v1/campaign/peak-time/smo/analyze     — AI market analysis via Claude
@@ -194,7 +194,7 @@ import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, hand
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import {
   handleCampaignPeakTimeDashboard, handleCampaignSchedule, handleCampaignNextSlots,
-  handleCampaignMatrix, handleCampaignDST, handleCampaignBulletin, handleCampaignBufferStatus,
+  handleCampaignMatrix, handleCampaignDST, handleCampaignBulletin, handleCampaignPublishStatus,
   handleCampaignSchedulePost, handleCampaignScheduleBatch,
   handleCampaignSMO, handleCampaignSMOAnalyze,
   handleCampaignMarketAnalysis, handleCampaignProblems, handleCampaignOffers,
@@ -919,8 +919,8 @@ export default {
       if (path === '/v1/campaign/peak-time/bulletin' && method === 'GET') {
         return handleCampaignBulletin(env, ctx);
       }
-      if (path === '/v1/campaign/peak-time/buffer-status' && method === 'GET') {
-        return handleCampaignBufferStatus(env);
+      if (path === '/v1/campaign/peak-time/publish-status' && method === 'GET') {
+        return handleCampaignPublishStatus(env);
       }
       if (path === '/v1/campaign/peak-time/schedule-post' && method === 'POST') {
         return await handleCampaignSchedulePost(request, env, ctx);

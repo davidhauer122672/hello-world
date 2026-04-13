@@ -159,7 +159,7 @@ GET  /api/standup              — CEO daily standup briefing
 ## Operational Schedulers
 - **Daily Report**: 9:00 AM UTC — SMS revenue + schedule summary
 - **Drip Engine**: Every hour — process 90-day email nurture sequences
-- **Publish Tracker**: Every 30 min — poll Buffer for publish confirmations
+- **Publish Tracker**: Every 30 min — poll for publish confirmations
 - **Backup**: 2:00 AM UTC — JSON data backup with 7-day retention
 - **CEO Standup**: 6:00 AM EST (11:00 UTC) — sovereign operations briefing
 

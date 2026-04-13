@@ -9,7 +9,7 @@
 
 ## OBJECTIVE
 
-Execute a controlled live-fire test of the WF-2 media automation pipeline: Airtable Content Calendar → Buffer API → Multi-Platform Publishing. This guide validates end-to-end connectivity before full production activation.
+Execute a controlled live-fire test of the WF-2 media automation pipeline: Airtable Content Calendar → Claude AI Platform → Multi-Platform Publishing. This guide validates end-to-end connectivity before full production activation.
 
 ---
 
@@ -18,7 +18,7 @@ Execute a controlled live-fire test of the WF-2 media automation pipeline: Airta
 | Requirement | Status | Action If Missing |
 |---|---|---|
 | Meta Ads Manager connector authorized | **REQUIRED** | Complete OAuth re-authorization (see Directive 1 below) |
-| Buffer account created | **REQUIRED** | Create at https://buffer.com, connect social channels |
+| Claude AI API key configured | Operational | Verify `ANTHROPIC_API_KEY` in Cloudflare Worker secrets |
 | Airtable API key configured | Operational | Verify `AIRTABLE_API_KEY` in Cloudflare Worker secrets |
 | CK API Gateway deployed | Operational | `https://ck-api-gateway.david-e59.workers.dev` |
 | Content Calendar table exists | Operational | Table ID: `tblEPr4f2lMz6ruxF` |
@@ -61,24 +61,23 @@ If the response returns an ad account ID, the connector is live.
 **Deadline:** Within 24 hours of Meta Ads restoration
 **Test Record:** `rechVm1hmggAvfvXp` (Content Calendar table)
 
-### Step 1: Verify Buffer Account & Social Channel Connections
+### Step 1: Verify Claude AI Platform Configuration
 
-**Action:** Confirm Buffer account is created and all target social channels are connected.
+**Action:** Confirm Claude AI API key is configured and the Peak-Time Intelligence Engine is operational.
 
-| Channel | Buffer Profile Secret | Expected |
+| Requirement | Secret | Status |
 |---|---|---|
-| Instagram | `BUFFER_PROFILE_INSTAGRAM` | Connected |
-| Facebook | `BUFFER_PROFILE_FACEBOOK` | Connected |
-| LinkedIn | `BUFFER_PROFILE_LINKEDIN` | Connected |
-| X (Twitter) | `BUFFER_PROFILE_X` | Connected |
+| Claude AI API Key | `ANTHROPIC_API_KEY` | Required |
+| Peak-Time Engine | Built-in | Operational |
 
 **Verification:**
 ```bash
-# Check Buffer profiles (requires BUFFER_ACCESS_TOKEN)
-curl -s "https://api.bufferapp.com/1/profiles.json?access_token=$BUFFER_ACCESS_TOKEN" | jq '.[].service'
+# Check Claude AI health via gateway
+curl -s -H "Authorization: Bearer $WORKER_AUTH_TOKEN" \
+  "https://ck-api-gateway.david-e59.workers.dev/v1/campaign/peak-time/publish-status" | jq '.mode'
 ```
 
-**Pass Criteria:** All 4 platform profiles return valid IDs. Store each profile ID in the corresponding Cloudflare Worker secret.
+**Pass Criteria:** Response returns `mode: "claude-ai"` confirming the publishing engine is operational.
 
 ---
 
@@ -163,12 +162,12 @@ curl -s -X PATCH "https://api.airtable.com/v0/appUSnNgpDkcEOzhN/tblEPr4f2lMz6rux
 1. Airtable automation detects Status change → `Approved`
 2. Automation POSTs to `https://ck-api-gateway.david-e59.workers.dev/v1/content/publish` with `{ "recordId": "rechVm1hmggAvfvXp" }`
 3. API Gateway reads the record, validates status = `Approved`
-4. If `BUFFER_ACCESS_TOKEN` is configured: pushes to Buffer API for each platform
-5. If Buffer not configured: returns manual-mode payload with copy-paste instructions
-6. Updates Airtable record with Buffer Status, Buffer Post ID, and execution notes
+4. Claude AI optimizes content for each target platform
+5. Returns platform-optimized content with DST-aware UTC timestamps
+6. Updates Airtable record with Publish Status, Publish ID, and execution notes
 7. Writes to AI Log table for audit trail
 
-**Pass Criteria:** API Gateway returns `200` with either `mode: "buffer"` (automated) or `mode: "manual"` (fallback). Airtable record's `Buffer Status` field updates accordingly.
+**Pass Criteria:** API Gateway returns `200` with `mode: "claude-ai"`. Airtable record's `Publish Status` field updates accordingly.
 
 ---
 
@@ -178,9 +177,9 @@ curl -s -X PATCH "https://api.airtable.com/v0/appUSnNgpDkcEOzhN/tblEPr4f2lMz6rux
 
 | Check | Method | Expected Result |
 |---|---|---|
-| API Gateway response | Check Cloudflare Worker logs | 200 OK, mode = buffer or manual |
-| Airtable Buffer Status | View record `rechVm1hmggAvfvXp` | `Scheduled`, `Manual`, or `Partial` |
-| Buffer queue | Check Buffer dashboard | Post appears in scheduled queue |
+| API Gateway response | Check Cloudflare Worker logs | 200 OK, mode = claude-ai |
+| Airtable Publish Status | View record `rechVm1hmggAvfvXp` | `Ready`, `Partial`, or `Failed` |
+| Optimized content | Check API response | Platform-optimized text returned |
 | AI Log entry | Check AI Log table | New record with Module = `Social` |
 | Audit log | `GET /v1/audit` | Entry for `/v1/content/publish` |
 | Slack notification | Check `#marketing-ops` channel | Post approval notification (if configured) |
@@ -220,9 +219,9 @@ Analyze all inbound commercial real estate listings against these criteria:
 Once all 6 steps pass:
 
 1. **Enable Airtable automation** for Content Calendar → Status = Approved → POST to `/v1/content/publish`
-2. **Configure Buffer profile IDs** as Cloudflare Worker secrets
+2. **Verify ANTHROPIC_API_KEY** is configured in Cloudflare Worker secrets for Claude AI publishing
 3. **Activate the MCCO Content Calendar Commander** (MCCO-004) to begin generating 30-day content calendars
-4. **Enable the Publish Tracker** cron (every 30 min) to poll Buffer for publish confirmations
+4. **Enable the Publish Tracker** cron (every 30 min) to monitor publish confirmations
 5. **Activate Meta Ads boost triggers** for posts exceeding 3x average engagement
 
 The media automation engine is then fully operational.

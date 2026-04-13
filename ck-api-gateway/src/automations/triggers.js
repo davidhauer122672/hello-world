@@ -135,9 +135,8 @@ export const SCAA1_BATTLE_PLAN = {
  * WF2 - Content Publish Workflow (Media Automation Pipeline)
  *
  * Triggers when a Content Calendar record's "Status" field changes to "Approved".
- * Pushes the content to Buffer API for multi-platform scheduling, or falls back
- * to manual mode if Buffer is not configured. Updates Airtable with Buffer status
- * and writes to the AI Log for audit trail.
+ * Generates platform-optimized content via Claude AI for multi-platform scheduling.
+ * Updates Airtable with publish status and writes to the AI Log for audit trail.
  *
  * This is the core trigger for the media automation engine.
  *
@@ -145,7 +144,7 @@ export const SCAA1_BATTLE_PLAN = {
  */
 export const WF2_CONTENT_PUBLISH = {
   id: 'wf2-content-publish',
-  description: 'Publish approved content to Buffer for multi-platform distribution',
+  description: 'Publish approved content via Claude AI for multi-platform distribution',
   trigger: {
     type: 'fieldChange',
     table: 'Content Calendar',
@@ -171,7 +170,7 @@ export const WF2_CONTENT_PUBLISH = {
   },
   fallback: {
     mode: 'manual',
-    description: 'If BUFFER_ACCESS_TOKEN is not set, returns copy-paste payload for human posting',
+    description: 'Returns copy-paste payload for manual platform posting when needed',
   },
   platforms: ['instagram', 'facebook', 'linkedin', 'x'],
   slack_channel: '#marketing-ops',

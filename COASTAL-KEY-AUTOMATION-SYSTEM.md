@@ -11,9 +11,9 @@
 ### Content Engine Pipeline
 
 ```
-[Content Generation] → [Airtable Calendar] → [Buffer Queue] → [Platform APIs] → [Analytics Sync]
-       ↑                      ↑                    ↑                                ↓
-   Claude API           Manual Review          Scheduling                   Engagement Metrics
+[Content Generation] → [Airtable Calendar] → [Claude AI Optimization] → [Platform APIs] → [Analytics Sync]
+       ↑                      ↑                         ↑                                    ↓
+   Claude API           Manual Review              Scheduling                        Engagement Metrics
   MKT Division          Status Gates           Peak Times                  back to Airtable
   40 AI Agents          Approval Flow          Auto-publish                Performance Loop
 ```
@@ -24,7 +24,7 @@
 |---|---|---|
 | **Content Brain** | Claude API via `/v1/content/generate` | Generates captions, scripts, articles, hashtags |
 | **Content Calendar** | Airtable `Content Calendar` table | Single source of truth for all scheduled content |
-| **Distribution** | Buffer API / native platform scheduling | Queues and publishes at peak times |
+| **Distribution** | Claude AI platform / native platform scheduling | Optimizes and publishes at peak times |
 | **Analytics** | Platform APIs → Airtable sync | Tracks impressions, engagements, engagement rate |
 | **Orchestration** | CK API Gateway + Cloudflare Workers | Triggers generation, syncs analytics, manages pipeline |
 
@@ -95,11 +95,11 @@ MKT agents generate: caption copy (platform-optimized), hashtag sets (5-10), sin
 
 ### Stage 3: Scheduling (Automated)
 
-Approved posts auto-queue to Buffer at designated peak times via Buffer API. Buffer Status and Buffer Post ID fields confirm placement. Fallback: native platform scheduling via API if Buffer fails.
+Approved posts are optimized by Claude AI and queued at designated peak times via the Peak-Time Intelligence Engine. Publish Status and Publish ID fields confirm placement. Fallback: manual platform posting with copy-paste payload.
 
 ### Stage 4: Publishing (Automated)
 
-On publish: Status → `Published`, timestamp recorded, Buffer sync confirmation logged.
+On publish: Status → `Published`, timestamp recorded, publish confirmation logged.
 
 ### Stage 5: Analytics (Daily Sync at 6:00 AM ET)
 
@@ -199,7 +199,7 @@ Social media metrics added to CK Command Center dashboard: live follower counts,
 |---|---|---|
 | Post engagement > 3x average | "Boost candidate" flag | Slack #marketing |
 | Engagement rate < 2% for 3 days | "Content quality review needed" | Slack #marketing |
-| Buffer publish failure | "Manual post required" | Slack #marketing-urgent |
+| Publish failure | "Manual post required" | Slack #marketing-urgent |
 | Negative comment detected | "Reputation management" | Slack #marketing-urgent |
 | Follower milestone (every 1,000) | Celebration post auto-generated | All platforms |
 

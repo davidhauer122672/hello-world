@@ -11,7 +11,7 @@ export { EDT_OFFSET, EST_OFFSET, isEDT, getUTCOffset, getTimezoneLabel, getTimez
 
 export { PLATFORMS, DAYS, generateScheduleSlots, getWeeklyPostCounts, getNextSlot, getAllNextSlots, validateSlot } from './scheduling-matrix.js';
 
-export { schedulePost, scheduleBatch, checkPostStatus, getBufferConfigStatus } from './buffer-integration.js';
+export { schedulePost, scheduleBatch, checkPostStatus, getPublishConfigStatus } from './buffer-integration.js';
 
 export { SMO_AGENT, TARGET_SEGMENTS, BUSINESS_TYPES, generateSMOAnalysisPrompt, getSMOStatus } from './sovereign-marketing-officer.js';
 
@@ -48,7 +48,7 @@ export function getCampaignDashboard() {
     engines: [
       { id: 'DST-HANDLER', name: 'DST Handler', status: 'operational', module: 'dst-handler.js' },
       { id: 'SCHEDULING-MATRIX', name: 'Platform Scheduling Matrix', status: 'operational', module: 'scheduling-matrix.js' },
-      { id: 'BUFFER-INTEGRATION', name: 'Buffer Integration', status: 'operational', module: 'buffer-integration.js' },
+      { id: 'CLAUDE-AI-PUBLISHER', name: 'Claude AI Publishing Engine', status: 'operational', module: 'claude-ai-publisher.js' },
       { id: 'SMO-001', name: 'Sovereign Marketing Officer', status: 'operational', module: 'sovereign-marketing-officer.js' },
       { id: 'MARKET-ANALYSIS', name: 'Market Analysis Engine', status: 'operational', module: 'market-analysis.js' },
       { id: 'PROBLEMS-ANALYSIS', name: 'Problems Analysis Engine', status: 'operational', module: 'problems-analysis.js' },

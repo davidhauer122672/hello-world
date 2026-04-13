@@ -9,8 +9,8 @@
  *   GET  /v1/campaign/peak-time/matrix          — Platform scheduling matrix
  *   GET  /v1/campaign/peak-time/dst             — DST status and transitions
  *   GET  /v1/campaign/peak-time/bulletin        — All Points Bulletin
- *   GET  /v1/campaign/peak-time/buffer-status   — Buffer configuration status
- *   POST /v1/campaign/peak-time/schedule-post   — Schedule single post via Buffer
+ *   GET  /v1/campaign/peak-time/publish-status   — Claude AI publishing status
+ *   POST /v1/campaign/peak-time/schedule-post   — Schedule single post via Claude AI
  *   POST /v1/campaign/peak-time/schedule-batch  — Schedule batch of posts
  *   GET  /v1/campaign/peak-time/smo             — Sovereign Marketing Officer status
  *   GET  /v1/campaign/peak-time/market-analysis — Full market analysis
@@ -29,7 +29,7 @@ import {
   getCampaignDashboard,
   generateScheduleSlots, getAllNextSlots, getWeeklyPostCounts, validateSlot,
   PLATFORMS, getDSTTransitions, isEDT, getTimezoneLabel,
-  getBufferConfigStatus, schedulePost, scheduleBatch,
+  getPublishConfigStatus, schedulePost, scheduleBatch,
   getSMOStatus, generateSMOAnalysisPrompt,
   getMarketAnalysis, getProblemsAnalysis, getLandingPageOffers, getDistributionPlan,
 } from '../engines/campaign/index.js';
@@ -119,12 +119,12 @@ export function handleCampaignBulletin(env, ctx) {
   return jsonResponse(bulletin);
 }
 
-// ── GET /v1/campaign/peak-time/buffer-status ───────────────────────────────
+// ── GET /v1/campaign/peak-time/publish-status ──────────────────────────────
 
-export function handleCampaignBufferStatus(env) {
+export function handleCampaignPublishStatus(env) {
   return jsonResponse({
-    engine: 'Peak-Time Intelligence Engine — Buffer Integration',
-    ...getBufferConfigStatus(env),
+    engine: 'Peak-Time Intelligence Engine — Claude AI Publishing',
+    ...getPublishConfigStatus(env),
     timestamp: new Date().toISOString(),
   });
 }

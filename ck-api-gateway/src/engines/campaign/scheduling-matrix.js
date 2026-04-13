@@ -10,7 +10,7 @@
  * Every slot includes behavioral rationale specific to the target demographic.
  */
 
-import { easternToUTC, getTimezoneLabel, getTimezoneAbbr, toBufferTimestamp } from './dst-handler.js';
+import { easternToUTC, getTimezoneLabel, getTimezoneAbbr, toBufferTimestamp as toUTCTimestamp } from './dst-handler.js';
 
 // ── Day Constants ──────────────────────────────────────────────────────────
 
@@ -26,7 +26,7 @@ export const PLATFORMS = {
   instagram: {
     id: 'instagram',
     label: 'Instagram',
-    bufferProfileEnv: 'BUFFER_PROFILE_INSTAGRAM',
+    publishEngine: 'claude-ai',
     slots: [
       {
         days: [DAYS.TUE, DAYS.WED, DAYS.THU, DAYS.FRI],
@@ -48,7 +48,7 @@ export const PLATFORMS = {
   threads: {
     id: 'threads',
     label: 'Threads',
-    bufferProfileEnv: 'BUFFER_PROFILE_THREADS',
+    publishEngine: 'claude-ai',
     slots: [
       {
         days: [DAYS.TUE, DAYS.WED, DAYS.THU, DAYS.FRI],
@@ -70,7 +70,7 @@ export const PLATFORMS = {
   facebook: {
     id: 'facebook',
     label: 'Facebook',
-    bufferProfileEnv: 'BUFFER_PROFILE_FACEBOOK',
+    publishEngine: 'claude-ai',
     slots: [
       {
         days: [DAYS.TUE, DAYS.WED, DAYS.THU],
@@ -85,7 +85,7 @@ export const PLATFORMS = {
   linkedin: {
     id: 'linkedin',
     label: 'LinkedIn',
-    bufferProfileEnv: 'BUFFER_PROFILE_LINKEDIN',
+    publishEngine: 'claude-ai',
     slots: [
       {
         days: [DAYS.TUE, DAYS.WED, DAYS.THU],
@@ -100,7 +100,7 @@ export const PLATFORMS = {
   x: {
     id: 'x',
     label: 'X / Twitter',
-    bufferProfileEnv: 'BUFFER_PROFILE_X',
+    publishEngine: 'claude-ai',
     slots: [
       {
         days: [DAYS.MON, DAYS.TUE, DAYS.WED],
@@ -154,12 +154,12 @@ export function generateScheduleSlots(startDate, days = 30, platforms = null) {
           platformLabel: platform.label,
           easternTime: `${String(slot.hour).padStart(2, '0')}:${String(slot.minute).padStart(2, '0')} ${tzAbbr}`,
           utcTimestamp: utcTime.toISOString(),
-          bufferScheduledAt: toBufferTimestamp(utcTime),
+          publishTimestamp: toUTCTimestamp(utcTime),
           timezone: tzLabel,
           utcOffset: tzAbbr === 'EDT' ? '-04:00' : '-05:00',
           rationale: slot.rationale,
           contentType: slot.contentType,
-          bufferProfileEnv: platform.bufferProfileEnv,
+          publishEngine: platform.publishEngine,
         });
       }
     }
@@ -215,7 +215,7 @@ export function getNextSlot(platformId) {
         dayOfWeek: DAY_NAMES[dayOfWeek],
         easternTime: `${String(slot.hour).padStart(2, '0')}:${String(slot.minute).padStart(2, '0')} ${getTimezoneAbbr(utcTime)}`,
         utcTimestamp: utcTime.toISOString(),
-        bufferScheduledAt: toBufferTimestamp(utcTime),
+        publishTimestamp: toUTCTimestamp(utcTime),
       };
     }
   }

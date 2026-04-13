@@ -3,7 +3,7 @@
  *
  * Precision scheduling engine for the 45–65 high-net-worth absentee
  * property owner cohort.  Converts human-readable slot definitions to
- * exact UTC timestamps that Buffer, Meta, and LinkedIn APIs consume.
+ * exact UTC timestamps that Meta, LinkedIn, and platform APIs consume.
  *
  * DST-aware: Apr–Oct → EDT (UTC-4) · Nov–Mar → EST (UTC-5)
  *
@@ -207,7 +207,7 @@ export function generateSchedule(options = {}) {
           platformLabel: config.label,
           easternTime: `${String(slot.hour).padStart(2, '0')}:${String(slot.minute).padStart(2, '0')} ${tz.split(' ')[0]}`,
           utcTimestamp: utcTime.toISOString(),
-          bufferScheduledAt: utcTime.toISOString(),
+          publishTimestamp: utcTime.toISOString(),
           timezone: tz,
           utcOffset: isEDT(current) ? '-04:00' : '-05:00',
           rationale: slot.rationale,
@@ -383,7 +383,7 @@ export function generateAllPointsBulletin() {
       rule: 'Automatic DST handling — zero manual intervention required.',
       edt: { months: 'April through October', offset: 'UTC-4', label: 'EDT' },
       est: { months: 'November through March', offset: 'UTC-5', label: 'EST' },
-      implementation: 'Every post is converted to the exact UTC timestamp Buffer needs. No exceptions.',
+      implementation: 'Every post is converted to the exact UTC timestamp the platform API needs. No exceptions.',
     },
 
     divisionOrders: {
@@ -393,7 +393,7 @@ export function generateAllPointsBulletin() {
         orders: [
           'Integrate Peak-Time Intelligence Engine into API gateway immediately',
           'Ensure all UTC conversions pass DST boundary tests',
-          'Wire Buffer profile IDs to platform matrix',
+          'Wire Claude AI publishing engine to platform matrix',
           'Monitor first 72 hours of automated scheduling for accuracy',
         ],
       },
