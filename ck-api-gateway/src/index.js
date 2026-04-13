@@ -132,6 +132,16 @@
  *   GET  /v1/compliance/calling-window — Check calling window status
  *   POST /v1/compliance/pre-call-check — Full pre-call compliance gate
  *   GET  /v1/compliance/audit          — Generate TCPA/DNC audit report
+ *   GET  /v1/rnd/campaign              — Full 7-day R&D campaign plan
+ *   GET  /v1/rnd/campaign/status       — Live campaign status
+ *   GET  /v1/rnd/campaign/day/:day     — Single day's plan (1-7)
+ *   GET  /v1/rnd/campaign/competitors  — Verified competitor analysis matrix
+ *   GET  /v1/rnd/campaign/systems      — Unincorporated systems to adopt
+ *   GET  /v1/capital/engine            — Full Capital Engine overview
+ *   GET  /v1/capital/pillars/:id       — Single revenue pillar (CE-P1, CE-P2, CE-P3)
+ *   GET  /v1/capital/drip-matrix       — DRIP Matrix delegation framework
+ *   GET  /v1/capital/business-model    — Integrated business model
+ *   GET  /v1/capital/metrics           — Revenue projections and KPIs
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  */
@@ -173,6 +183,8 @@ import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkin
 import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
 import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
+import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, handleRndCompetitors, handleRndSystems } from './routes/rnd-campaign.js';
+import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -886,6 +898,42 @@ export default {
       }
       if (path === '/v1/meta-ads/campaigns' && method === 'GET') {
         return await handleMetaAdsCampaigns(env);
+      }
+
+      // ── R&D Campaign ──
+      if (path === '/v1/rnd/campaign' && method === 'GET') {
+        return handleRndCampaignPlan();
+      }
+      if (path === '/v1/rnd/campaign/status' && method === 'GET') {
+        return handleRndCampaignStatus();
+      }
+      if (path === '/v1/rnd/campaign/competitors' && method === 'GET') {
+        return handleRndCompetitors();
+      }
+      if (path === '/v1/rnd/campaign/systems' && method === 'GET') {
+        return handleRndSystems();
+      }
+      if (path.match(/^\/v1\/rnd\/campaign\/day\/\d+$/) && method === 'GET') {
+        const dayNum = path.split('/v1/rnd/campaign/day/')[1];
+        return handleRndCampaignDay(dayNum);
+      }
+
+      // ── Capital Engine ──
+      if (path === '/v1/capital/engine' && method === 'GET') {
+        return handleCapitalEngine();
+      }
+      if (path === '/v1/capital/drip-matrix' && method === 'GET') {
+        return handleDRIPMatrix();
+      }
+      if (path === '/v1/capital/business-model' && method === 'GET') {
+        return handleBusinessModel();
+      }
+      if (path === '/v1/capital/metrics' && method === 'GET') {
+        return handleCapitalMetrics();
+      }
+      if (path.match(/^\/v1\/capital\/pillars\/CE-P[1-3]$/) && method === 'GET') {
+        const pillarId = path.split('/v1/capital/pillars/')[1];
+        return handleCapitalPillar(pillarId);
       }
 
       // ── Agent Manifest ──
