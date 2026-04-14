@@ -1,10 +1,13 @@
 {
   "manifest": {
-    "version": "2.1.0",
-    "generated": "2026-04-08",
+    "version": "2.2.0",
+    "generated": "2026-04-14",
     "organization": "Coastal Key Treasure Coast Asset Management",
     "platform": "Unified Operations Platform",
-    "classification": "Enterprise Home Watch & Asset Management"
+    "classification": "Enterprise Home Watch & Asset Management",
+    "mission": "Coastal Key delivers enterprise-grade AI systems that automate operational complexity for working owners—reclaiming their time while multiplying productivity across every business function.",
+    "governance": "GOVERNANCE.md",
+    "standards": ["ferrari_precision", "redbull_optimization", "spacex_engineering"]
   },
   "architecture": {
     "runtime": "Node.js + Express 5",
@@ -304,6 +307,15 @@
   "environment_variables": {
     "required": ["PORT", "STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_WEBHOOK_SECRET", "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER", "OWNER_PHONE_NUMBER", "GOOGLE_SERVICE_ACCOUNT_KEY", "GOOGLE_SHEET_ID", "SITE_URL", "BUSINESS_NAME", "ANTHROPIC_API_KEY"],
     "optional": ["GOOGLE_SHEET_NAME", "BUFFER_ACCESS_TOKEN", "BUFFER_PROFILE_INSTAGRAM", "BUFFER_PROFILE_FACEBOOK", "BUFFER_PROFILE_LINKEDIN", "BUFFER_PROFILE_ALIGNABLE", "CORS_ORIGIN", "NODE_ENV"]
+  },
+  "quality_gates": {
+    "G1_code_quality": "Zero lint errors, consistent formatting",
+    "G2_test_coverage": "All test suites pass before deploy",
+    "G3_security_scan": "No exposed secrets, headers enforced",
+    "G4_api_consistency": "Uniform response schema across all endpoints",
+    "G5_deploy_preflight": "Cloudflare API token validated before any deploy",
+    "G6_edge_performance": "Static 30d cache, HTML 5m cache, fonts 1y cache",
+    "G7_fleet_inspection": "All 383 agents report operational status"
   },
   "compliance": {
     "security": {

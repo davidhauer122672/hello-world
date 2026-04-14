@@ -1,6 +1,11 @@
 # Coastal Key Enterprise Platform
 
+> *Coastal Key delivers enterprise-grade AI systems that automate operational complexity for working owners—reclaiming their time while multiplying productivity across every business function.*
+
 Enterprise AI operations platform for Coastal Key Property Management — Treasure Coast asset oversight powered by a 383-unit autonomous agent fleet, sovereign MCCO governance, and Cloudflare edge infrastructure.
+
+**Standards**: Ferrari Precision | Red Bull Optimization | SpaceX Engineering
+**Governance**: [GOVERNANCE.md](GOVERNANCE.md) | **Mission**: [MISSION.md](MISSION.md)
 
 ## Architecture
 
