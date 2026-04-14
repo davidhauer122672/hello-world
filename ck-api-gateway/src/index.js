@@ -150,6 +150,14 @@
  *   GET  /v1/capital/drip-matrix       — DRIP Matrix delegation framework
  *   GET  /v1/capital/business-model    — Integrated business model
  *   GET  /v1/capital/metrics           — Revenue projections and KPIs
+ *   GET  /v1/metrics/dashboard         — Profit dashboard (7 core + 4 supporting metrics)
+ *   GET  /v1/metrics/targets           — Governance targets and thresholds
+ *   POST /v1/metrics/calculate         — Calculate all metrics from supplied data
+ *   GET  /v1/metrics/revenue-lines     — Revenue line item definitions
+ *   GET  /v1/metrics/expenses          — Operating expense categories
+ *   POST /v1/metrics/noi              — Calculate Net Operating Income
+ *   POST /v1/metrics/gross-margin     — Calculate Gross Margin
+ *   POST /v1/metrics/cac-ltv          — Calculate CAC vs LTV ratio
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  */
@@ -194,6 +202,7 @@ import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './rou
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, handleRndCompetitors, handleRndSystems } from './routes/rnd-campaign.js';
 import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
+import { handleMetricsDashboard, handleMetricsTargets, handleMetricsCalculate, handleRevenueLines, handleExpenseCategories, handleCalculateNOI, handleCalculateGrossMargin, handleCalculateCACLTV } from './routes/profit-metrics.js';
 import { handleCoopCommittee, handleListCoopAgents, handleGetCoopAgent, handleCoopBrief, handleCoopOutreach, handleCoopNetworkMap, handleCoopTargets, handleCoopSchedule } from './routes/cooperations.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
@@ -978,6 +987,32 @@ export default {
       if (path.match(/^\/v1\/capital\/pillars\/CE-P[1-3]$/) && method === 'GET') {
         const pillarId = path.split('/v1/capital/pillars/')[1];
         return handleCapitalPillar(pillarId);
+      }
+
+      // ── Profit Metrics (Sovereign Governance) ──
+      if (path === '/v1/metrics/dashboard' && method === 'GET') {
+        return handleMetricsDashboard();
+      }
+      if (path === '/v1/metrics/targets' && method === 'GET') {
+        return handleMetricsTargets();
+      }
+      if (path === '/v1/metrics/calculate' && method === 'POST') {
+        return handleMetricsCalculate(request, env, ctx);
+      }
+      if (path === '/v1/metrics/revenue-lines' && method === 'GET') {
+        return handleRevenueLines();
+      }
+      if (path === '/v1/metrics/expenses' && method === 'GET') {
+        return handleExpenseCategories();
+      }
+      if (path === '/v1/metrics/noi' && method === 'POST') {
+        return handleCalculateNOI(request);
+      }
+      if (path === '/v1/metrics/gross-margin' && method === 'POST') {
+        return handleCalculateGrossMargin(request);
+      }
+      if (path === '/v1/metrics/cac-ltv' && method === 'POST') {
+        return handleCalculateCACLTV(request);
       }
 
       // ── Agent Manifest ──
