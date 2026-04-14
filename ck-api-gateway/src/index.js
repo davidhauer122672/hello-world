@@ -218,6 +218,7 @@ import { handleRetailBlueprint, handleRetailBrand, handleRetailSKUStrategy, hand
 import { handleRetellFramework, handleRetellFunctions, handleRetellFunction, handleRetellTests, handleRetellPipeline } from './routes/retell-config.js';
 import { handleCapGenOverview, handleCapGenCampaigns, handleCapGenCampaign, handleCapGenPipeline, handleCapGenOrchestrator, handleCapGenRevenue, handleCapGenDashboard } from './routes/capital-generator-ops.js';
 import { handleEngineeringFramework, handleEngineeringPillars, handleEngineeringPillar, handleOrchestratorIntegration, handleIndustryPositioning, handleImplementationStatus } from './routes/engineering-advancements.js';
+import { handleDesignSystem, handleDesignPrinciples, handleDesignTokens, handleAssetSpecs, handleMasterPrompt } from './routes/bauhaus-design.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1171,6 +1172,23 @@ export default {
       if (path.match(/^\/v1\/capgen\/campaigns\/CAMP-\d+$/) && method === 'GET') {
         const campaignId = path.split('/v1/capgen/campaigns/')[1];
         return handleCapGenCampaign(campaignId);
+      }
+
+      // ── Bauhaus Design System ──
+      if (path === '/v1/design/system' && method === 'GET') {
+        return handleDesignSystem();
+      }
+      if (path === '/v1/design/principles' && method === 'GET') {
+        return handleDesignPrinciples();
+      }
+      if (path === '/v1/design/tokens' && method === 'GET') {
+        return handleDesignTokens();
+      }
+      if (path === '/v1/design/assets' && method === 'GET') {
+        return handleAssetSpecs();
+      }
+      if (path === '/v1/design/master-prompt' && method === 'GET') {
+        return handleMasterPrompt();
       }
 
       // ── Engineering Advancements (ENR-Grade) ──
