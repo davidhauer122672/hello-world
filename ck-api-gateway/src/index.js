@@ -216,6 +216,7 @@ import { handleInvestorFramework, handleInvestorSections, handleInvestorSection,
 import { handleOpsFlowchart, handleOpsStages, handleOpsStage, handleOpsRACI, handleOpsKPIs } from './routes/operations-flowchart.js';
 import { handleRetailBlueprint, handleRetailBrand, handleRetailSKUStrategy, handleRetailFinancials, handleRetailLayout, handleRetailOmnichannel, handleRetailLaunchPlan, handleRetailAcquisition } from './routes/retail-blueprint.js';
 import { handleRetellFramework, handleRetellFunctions, handleRetellFunction, handleRetellTests, handleRetellPipeline } from './routes/retell-config.js';
+import { handleCapGenOverview, handleCapGenCampaigns, handleCapGenCampaign, handleCapGenPipeline, handleCapGenOrchestrator, handleCapGenRevenue, handleCapGenDashboard } from './routes/capital-generator-ops.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1145,6 +1146,30 @@ export default {
       if (path.match(/^\/v1\/retell\/functions\/FN-\d+$/) && method === 'GET') {
         const functionId = path.split('/v1/retell/functions/')[1];
         return handleRetellFunction(functionId);
+      }
+
+      // ── Capital Generator Operations ──
+      if (path === '/v1/capgen/overview' && method === 'GET') {
+        return handleCapGenOverview();
+      }
+      if (path === '/v1/capgen/campaigns' && method === 'GET') {
+        return handleCapGenCampaigns();
+      }
+      if (path === '/v1/capgen/pipeline' && method === 'GET') {
+        return handleCapGenPipeline();
+      }
+      if (path === '/v1/capgen/orchestrator' && method === 'GET') {
+        return handleCapGenOrchestrator();
+      }
+      if (path === '/v1/capgen/revenue' && method === 'GET') {
+        return handleCapGenRevenue();
+      }
+      if (path === '/v1/capgen/dashboard' && method === 'GET') {
+        return handleCapGenDashboard();
+      }
+      if (path.match(/^\/v1\/capgen\/campaigns\/CAMP-\d+$/) && method === 'GET') {
+        const campaignId = path.split('/v1/capgen/campaigns/')[1];
+        return handleCapGenCampaign(campaignId);
       }
 
       // ── Agent Manifest ──
