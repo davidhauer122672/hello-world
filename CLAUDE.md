@@ -16,7 +16,7 @@ Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (199 endpoints)
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (205 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
 - **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
 - **Website**: https://coastalkey-pm.com (reverse proxy → Manus origin)
@@ -24,7 +24,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 199 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, client portal automation, risk mitigation, Treasure Coast intelligence, AI backend tiers, sovereign governance, investor acquisition, operations flowchart, retail blueprint, ReTell functions, capital generator operations (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 205 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, client portal automation, risk mitigation, Treasure Coast intelligence, AI backend tiers, sovereign governance, investor acquisition, operations flowchart, retail blueprint, ReTell functions, capital generator operations, ENR engineering advancements (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Dashboard UI for 383-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
@@ -167,6 +167,27 @@ GET  /v1/retell/functions           — All 8 custom voice agent functions
 GET  /v1/retell/functions/:id       — Single function detail (FN-001 to FN-008)
 GET  /v1/retell/tests               — All 12 test scenarios with expected outcomes
 GET  /v1/retell/pipeline            — 4-stage deployment pipeline
+```
+
+### Capital Generator Operations
+```
+GET  /v1/capgen/overview             — Capital Generator ops overview
+GET  /v1/capgen/campaigns            — All outbound campaigns (5 campaigns)
+GET  /v1/capgen/campaigns/:id        — Single campaign detail (CAMP-01 to CAMP-05)
+GET  /v1/capgen/pipeline             — Lead pipeline stages + routing (8 stages)
+GET  /v1/capgen/orchestrator         — Master Orchestrator routing rules
+GET  /v1/capgen/revenue              — Revenue projections (goal-aligned)
+GET  /v1/capgen/dashboard            — Combined campaign dashboard
+```
+
+### ENR Engineering Advancements (FutureTech 2026)
+```
+GET  /v1/engineering/framework       — Full engineering framework (5 pillars, 25 components)
+GET  /v1/engineering/pillars         — All 5 ENR engineering pillars with CK implementations
+GET  /v1/engineering/pillars/:id     — Single pillar detail (ENR-P1 to ENR-P5)
+GET  /v1/engineering/orchestrator    — Orchestrator integration map
+GET  /v1/engineering/positioning     — Industry positioning & standards (7 standards)
+GET  /v1/engineering/status          — Implementation deployment status
 ```
 
 ## Slack Integration (3 apps, 10 commands, 12 programmatic channels)

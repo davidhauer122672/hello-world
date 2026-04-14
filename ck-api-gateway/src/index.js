@@ -217,6 +217,7 @@ import { handleOpsFlowchart, handleOpsStages, handleOpsStage, handleOpsRACI, han
 import { handleRetailBlueprint, handleRetailBrand, handleRetailSKUStrategy, handleRetailFinancials, handleRetailLayout, handleRetailOmnichannel, handleRetailLaunchPlan, handleRetailAcquisition } from './routes/retail-blueprint.js';
 import { handleRetellFramework, handleRetellFunctions, handleRetellFunction, handleRetellTests, handleRetellPipeline } from './routes/retell-config.js';
 import { handleCapGenOverview, handleCapGenCampaigns, handleCapGenCampaign, handleCapGenPipeline, handleCapGenOrchestrator, handleCapGenRevenue, handleCapGenDashboard } from './routes/capital-generator-ops.js';
+import { handleEngineeringFramework, handleEngineeringPillars, handleEngineeringPillar, handleOrchestratorIntegration, handleIndustryPositioning, handleImplementationStatus } from './routes/engineering-advancements.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1170,6 +1171,27 @@ export default {
       if (path.match(/^\/v1\/capgen\/campaigns\/CAMP-\d+$/) && method === 'GET') {
         const campaignId = path.split('/v1/capgen/campaigns/')[1];
         return handleCapGenCampaign(campaignId);
+      }
+
+      // ── Engineering Advancements (ENR-Grade) ──
+      if (path === '/v1/engineering/framework' && method === 'GET') {
+        return handleEngineeringFramework();
+      }
+      if (path === '/v1/engineering/pillars' && method === 'GET') {
+        return handleEngineeringPillars();
+      }
+      if (path === '/v1/engineering/orchestrator' && method === 'GET') {
+        return handleOrchestratorIntegration();
+      }
+      if (path === '/v1/engineering/positioning' && method === 'GET') {
+        return handleIndustryPositioning();
+      }
+      if (path === '/v1/engineering/status' && method === 'GET') {
+        return handleImplementationStatus();
+      }
+      if (path.match(/^\/v1\/engineering\/pillars\/ENR-P\d+$/) && method === 'GET') {
+        const pillarId = path.split('/v1/engineering/pillars/')[1];
+        return handleEngineeringPillar(pillarId);
       }
 
       // ── Agent Manifest ──
