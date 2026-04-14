@@ -16,7 +16,7 @@ Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (162 endpoints)
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (192 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
 - **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
 - **Website**: https://coastalkey-pm.com (reverse proxy → Manus origin)
@@ -24,7 +24,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 162 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, client portal automation, risk mitigation, Treasure Coast intelligence, AI backend tiers (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 192 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, client portal automation, risk mitigation, Treasure Coast intelligence, AI backend tiers, sovereign governance, investor acquisition, operations flowchart, retail blueprint, ReTell functions (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Dashboard UI for 383-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
@@ -118,6 +118,55 @@ GET  /v1/ai-tier/plans/:id         — Single tier detail
 GET  /v1/ai-tier/reports           — AI report templates (5 templates)
 GET  /v1/ai-tier/cost-structure    — Infrastructure cost breakdown
 GET  /v1/ai-tier/metrics           — Unit economics & revenue projections
+```
+
+### Sovereign Governance Framework
+```
+GET  /v1/governance/framework       — Full governance framework (mission + goals + alignment)
+GET  /v1/governance/mission         — Mission statement & decision filter
+GET  /v1/governance/goals           — All 5 core goals (measurable, time-bound)
+GET  /v1/governance/goals/:id       — Single goal detail (GOAL-01 to GOAL-05)
+GET  /v1/governance/decision-filter — Sovereign decision filter + operating principles
+GET  /v1/governance/alignment       — Strategic alignment map + feedback loops
+```
+
+### Investment Acquisition Framework
+```
+GET  /v1/investor/framework         — Framework overview (35 questions, scoring model)
+GET  /v1/investor/sections          — All 5 due diligence sections
+GET  /v1/investor/sections/:id      — Single section detail (SEC-01 to SEC-05)
+GET  /v1/investor/questions/:id     — Single question detail (Q-01 to Q-35)
+POST /v1/investor/score             — Score an acquisition (weighted section grades)
+```
+
+### Operations Manager Flowchart
+```
+GET  /v1/ops/flowchart              — Full workflow logic tree overview
+GET  /v1/ops/stages                 — All 7 workflow stages with decision nodes
+GET  /v1/ops/stages/:id             — Single stage detail (STAGE-01 to STAGE-07)
+GET  /v1/ops/raci                   — RACI responsibility matrix
+GET  /v1/ops/kpis                   — All stage KPIs + bottleneck flags
+```
+
+### Retail Shoe & Apparel Blueprint
+```
+GET  /v1/retail/blueprint           — Full blueprint overview
+GET  /v1/retail/brand               — Brand identity system (voice, visuals, positioning)
+GET  /v1/retail/sku-strategy        — SKU mix + inventory architecture
+GET  /v1/retail/financials          — Financial model + break-even + projections
+GET  /v1/retail/layout              — Store layout (7 zones, 1,200 sq ft)
+GET  /v1/retail/omnichannel         — POS + ecommerce + social integration
+GET  /v1/retail/launch-plan         — Soft + hard launch phases
+GET  /v1/retail/acquisition         — Customer acquisition engine + LTV:CAC
+```
+
+### Custom ReTell Function Framework
+```
+GET  /v1/retell/framework           — Framework overview (8 functions, 12 test scenarios)
+GET  /v1/retell/functions           — All 8 custom voice agent functions
+GET  /v1/retell/functions/:id       — Single function detail (FN-001 to FN-008)
+GET  /v1/retell/tests               — All 12 test scenarios with expected outcomes
+GET  /v1/retell/pipeline            — 4-stage deployment pipeline
 ```
 
 ## Slack Integration (3 apps, 10 commands, 12 programmatic channels)

@@ -211,6 +211,11 @@ import { handlePortalOverview, handlePortalWorkflows, handlePortalWorkflow, hand
 import { handleRiskEngine, handleRiskDomains, handleRiskDomain, handleSensorIntegration, handleRiskAssessment, handleRiskMetrics } from './routes/risk-mitigation.js';
 import { handleTCIntelOverview, handleTCIntelCompetitors, handleTCIntelCompetitor, handleTCIntelAutomationGaps, handleTCIntelMetrics } from './routes/treasure-coast-intel.js';
 import { handleAITierPlans, handleAITierPlan, handleAITierReports, handleAITierCostStructure, handleAITierMetrics } from './routes/ai-backend-tier.js';
+import { handleGovernanceFramework, handleMission, handleGoals, handleGoal, handleDecisionFilter, handleAlignmentMap } from './routes/governance.js';
+import { handleInvestorFramework, handleInvestorSections, handleInvestorSection, handleInvestorQuestion, handleInvestorScore } from './routes/investor-acquisition.js';
+import { handleOpsFlowchart, handleOpsStages, handleOpsStage, handleOpsRACI, handleOpsKPIs } from './routes/operations-flowchart.js';
+import { handleRetailBlueprint, handleRetailBrand, handleRetailSKUStrategy, handleRetailFinancials, handleRetailLayout, handleRetailOmnichannel, handleRetailLaunchPlan, handleRetailAcquisition } from './routes/retail-blueprint.js';
+import { handleRetellFramework, handleRetellFunctions, handleRetellFunction, handleRetellTests, handleRetellPipeline } from './routes/retell-config.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1038,6 +1043,108 @@ export default {
       if (path.match(/^\/v1\/ai-tier\/plans\/TIER-[A-Z0-9-]+$/) && method === 'GET') {
         const tierId = path.split('/v1/ai-tier/plans/')[1];
         return handleAITierPlan(tierId);
+      }
+
+      // ── Sovereign Governance Framework ──
+      if (path === '/v1/governance/framework' && method === 'GET') {
+        return handleGovernanceFramework();
+      }
+      if (path === '/v1/governance/mission' && method === 'GET') {
+        return handleMission();
+      }
+      if (path === '/v1/governance/goals' && method === 'GET') {
+        return handleGoals();
+      }
+      if (path === '/v1/governance/decision-filter' && method === 'GET') {
+        return handleDecisionFilter();
+      }
+      if (path === '/v1/governance/alignment' && method === 'GET') {
+        return handleAlignmentMap();
+      }
+      if (path.match(/^\/v1\/governance\/goals\/GOAL-\d+$/) && method === 'GET') {
+        const goalId = path.split('/v1/governance/goals/')[1];
+        return handleGoal(goalId);
+      }
+
+      // ── Investment Acquisition Framework ──
+      if (path === '/v1/investor/framework' && method === 'GET') {
+        return handleInvestorFramework();
+      }
+      if (path === '/v1/investor/sections' && method === 'GET') {
+        return handleInvestorSections();
+      }
+      if (path === '/v1/investor/score' && method === 'POST') {
+        return await handleInvestorScore(request);
+      }
+      if (path.match(/^\/v1\/investor\/sections\/SEC-\d+$/) && method === 'GET') {
+        const sectionId = path.split('/v1/investor/sections/')[1];
+        return handleInvestorSection(sectionId);
+      }
+      if (path.match(/^\/v1\/investor\/questions\/Q-\d+$/) && method === 'GET') {
+        const questionId = path.split('/v1/investor/questions/')[1];
+        return handleInvestorQuestion(questionId);
+      }
+
+      // ── Operations Manager Flowchart ──
+      if (path === '/v1/ops/flowchart' && method === 'GET') {
+        return handleOpsFlowchart();
+      }
+      if (path === '/v1/ops/stages' && method === 'GET') {
+        return handleOpsStages();
+      }
+      if (path === '/v1/ops/raci' && method === 'GET') {
+        return handleOpsRACI();
+      }
+      if (path === '/v1/ops/kpis' && method === 'GET') {
+        return handleOpsKPIs();
+      }
+      if (path.match(/^\/v1\/ops\/stages\/STAGE-\d+$/) && method === 'GET') {
+        const stageId = path.split('/v1/ops/stages/')[1];
+        return handleOpsStage(stageId);
+      }
+
+      // ── Retail Shoe & Apparel Blueprint ──
+      if (path === '/v1/retail/blueprint' && method === 'GET') {
+        return handleRetailBlueprint();
+      }
+      if (path === '/v1/retail/brand' && method === 'GET') {
+        return handleRetailBrand();
+      }
+      if (path === '/v1/retail/sku-strategy' && method === 'GET') {
+        return handleRetailSKUStrategy();
+      }
+      if (path === '/v1/retail/financials' && method === 'GET') {
+        return handleRetailFinancials();
+      }
+      if (path === '/v1/retail/layout' && method === 'GET') {
+        return handleRetailLayout();
+      }
+      if (path === '/v1/retail/omnichannel' && method === 'GET') {
+        return handleRetailOmnichannel();
+      }
+      if (path === '/v1/retail/launch-plan' && method === 'GET') {
+        return handleRetailLaunchPlan();
+      }
+      if (path === '/v1/retail/acquisition' && method === 'GET') {
+        return handleRetailAcquisition();
+      }
+
+      // ── Custom ReTell Function Framework ──
+      if (path === '/v1/retell/framework' && method === 'GET') {
+        return handleRetellFramework();
+      }
+      if (path === '/v1/retell/functions' && method === 'GET') {
+        return handleRetellFunctions();
+      }
+      if (path === '/v1/retell/tests' && method === 'GET') {
+        return handleRetellTests();
+      }
+      if (path === '/v1/retell/pipeline' && method === 'GET') {
+        return handleRetellPipeline();
+      }
+      if (path.match(/^\/v1\/retell\/functions\/FN-\d+$/) && method === 'GET') {
+        const functionId = path.split('/v1/retell/functions/')[1];
+        return handleRetellFunction(functionId);
       }
 
       // ── Agent Manifest ──
