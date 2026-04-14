@@ -212,10 +212,15 @@ describe('Thinking Coach Routes', () => {
     it('includes all capability endpoints', async () => {
       const response = handleThinkingDashboard();
       const data = await parseResponse(response);
-      assert.equal(data.capabilities.single_framework_session, '/v1/thinking/session');
-      assert.equal(data.capabilities.multi_framework_analysis, '/v1/thinking/multi');
-      assert.equal(data.capabilities.learning_blueprint, '/v1/thinking/learning-blueprint');
-      assert.equal(data.capabilities.daily_mental_models, '/v1/thinking/daily-models');
+      assert.ok(data.capabilities.single_framework_session.includes('/v1/thinking/session'));
+      assert.ok(data.capabilities.multi_framework_analysis.includes('/v1/thinking/multi'));
+      assert.ok(data.capabilities.learning_blueprint.includes('/v1/thinking/learning-blueprint'));
+      assert.ok(data.capabilities.daily_mental_models.includes('/v1/thinking/daily-models'));
+      assert.ok(data.capabilities.pm_mastery_training.includes('/v1/thinking/pm-mastery'));
+      assert.ok(data.capabilities.cognitive_os_upgrade.includes('/v1/thinking/cognitive-os'));
+      assert.ok(data.capabilities.life_architecture.includes('/v1/thinking/life-architecture'));
+      assert.ok(data.capabilities.time_leverage_strategy.includes('/v1/thinking/time-leverage'));
+      assert.ok(data.capabilities.psychological_reprogrammer.includes('/v1/thinking/reprogram'));
     });
 
     it('includes framework complexity breakdown', async () => {
@@ -316,5 +321,101 @@ describe('Thinking Coach Route Validation', () => {
     assert.equal(response.status, 400);
     const data = await parseResponse(response);
     assert.ok(data.error.includes('skill'));
+  });
+
+  it('POST /v1/thinking/cognitive-os rejects missing current_patterns', async () => {
+    const { handleCognitiveOS } = await import('../routes/thinking-coach.js');
+    const request = {
+      json: async () => ({}),
+    };
+    const response = await handleCognitiveOS(request, {}, { waitUntil: () => {} });
+    assert.equal(response.status, 400);
+    const data = await parseResponse(response);
+    assert.ok(data.error.includes('current_patterns'));
+  });
+
+  it('POST /v1/thinking/life-architecture rejects missing current_state', async () => {
+    const { handleLifeArchitecture } = await import('../routes/thinking-coach.js');
+    const request = {
+      json: async () => ({}),
+    };
+    const response = await handleLifeArchitecture(request, {}, { waitUntil: () => {} });
+    assert.equal(response.status, 400);
+    const data = await parseResponse(response);
+    assert.ok(data.error.includes('current_state'));
+  });
+
+  it('POST /v1/thinking/time-leverage rejects missing goal', async () => {
+    const { handleTimeLeverage } = await import('../routes/thinking-coach.js');
+    const request = {
+      json: async () => ({}),
+    };
+    const response = await handleTimeLeverage(request, {}, { waitUntil: () => {} });
+    assert.equal(response.status, 400);
+    const data = await parseResponse(response);
+    assert.ok(data.error.includes('goal'));
+  });
+
+  it('POST /v1/thinking/reprogram rejects missing current_identity', async () => {
+    const { handleReprogram } = await import('../routes/thinking-coach.js');
+    const request = {
+      json: async () => ({}),
+    };
+    const response = await handleReprogram(request, {}, { waitUntil: () => {} });
+    assert.equal(response.status, 400);
+    const data = await parseResponse(response);
+    assert.ok(data.error.includes('current_identity'));
+  });
+});
+
+// ── Playbook Service Tests ─────────────────────────────────────────────────
+
+describe('Thinking Coach Playbook Services', () => {
+  it('pmMasteryTraining is exported and callable', async () => {
+    const { pmMasteryTraining } = await import('../services/thinking-coach.js');
+    assert.equal(typeof pmMasteryTraining, 'function');
+  });
+
+  it('cognitiveOSUpgrade is exported and callable', async () => {
+    const { cognitiveOSUpgrade } = await import('../services/thinking-coach.js');
+    assert.equal(typeof cognitiveOSUpgrade, 'function');
+  });
+
+  it('lifeArchitecture is exported and callable', async () => {
+    const { lifeArchitecture } = await import('../services/thinking-coach.js');
+    assert.equal(typeof lifeArchitecture, 'function');
+  });
+
+  it('timeLeverageStrategy is exported and callable', async () => {
+    const { timeLeverageStrategy } = await import('../services/thinking-coach.js');
+    assert.equal(typeof timeLeverageStrategy, 'function');
+  });
+
+  it('psychReprogrammer is exported and callable', async () => {
+    const { psychReprogrammer } = await import('../services/thinking-coach.js');
+    assert.equal(typeof psychReprogrammer, 'function');
+  });
+});
+
+// ── Dashboard with Playbooks ───────────────────────────────────────────────
+
+describe('Thinking Coach Dashboard — Full Playbook', () => {
+  it('dashboard includes all 7 playbooks', async () => {
+    const { handleThinkingDashboard } = await import('../routes/thinking-coach.js');
+    const response = handleThinkingDashboard();
+    const data = await parseResponse(response);
+    assert.equal(data.playbooks.total, 7);
+    assert.equal(data.playbooks.list.length, 7);
+  });
+
+  it('dashboard includes all 9 capability endpoints', async () => {
+    const { handleThinkingDashboard } = await import('../routes/thinking-coach.js');
+    const response = handleThinkingDashboard();
+    const data = await parseResponse(response);
+    assert.ok(data.capabilities.pm_mastery_training);
+    assert.ok(data.capabilities.cognitive_os_upgrade);
+    assert.ok(data.capabilities.life_architecture);
+    assert.ok(data.capabilities.time_leverage_strategy);
+    assert.ok(data.capabilities.psychological_reprogrammer);
   });
 });

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key Enterprise — Unified Master Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060b;--bg2:#0c0c14;--bg3:#12121e;--bg4:#1a1a2a;--bg5:#222234;
+  --text:#eaeaf0;--text2:#a0a0b8;--text3:#606078;
+  --gold:#d4a843;--gold2:#b08930;--gold-bg:rgba(212,168,67,0.08);
+  --green:#00e676;--green2:#00c853;--green-bg:rgba(0,230,118,0.08);
+  --red:#ff3d5a;--red2:#d32f2f;--red-bg:rgba(255,61,90,0.08);
+  --blue:#448aff;--blue2:#2962ff;--blue-bg:rgba(68,138,255,0.08);
+  --cyan:#00e5ff;--purple:#aa66ff;--purple-bg:rgba(170,102,255,0.08);
+  --yellow:#ffd740;--yellow-bg:rgba(255,215,64,0.08);
+  --orange:#ff9100;
+  --border:#1a1a2e;--border2:#2a2a40;
+  --radius:10px;--radius-sm:6px;
+  --shadow:0 4px 24px rgba(0,0,0,0.5);
+  --font:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden;font-size:14px}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── Master Layout ── */
+.master-layout{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;min-height:100vh}
+.master-header{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;z-index:100}
+.master-sidebar{background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding-bottom:80px}
+.master-main{background:var(--bg);overflow-y:auto;padding:20px;min-height:0}
+
+/* ── Header ── */
+.header-brand{display:flex;align-items:center;gap:10px}
+.header-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:13px}
+.header-title{font-size:15px;font-weight:700;letter-spacing:-0.3px}
+.header-subtitle{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:600}
+.header-spacer{flex:1}
+.header-stats{display:flex;gap:20px;font-size:12px;font-family:var(--mono)}
+.header-stat{display:flex;align-items:center;gap:6px}
+.header-stat .label{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:0.5px}
+.header-stat .value{font-weight:700}
+.header-stat .value.up{color:var(--green)}.header-stat .value.down{color:var(--red)}
+.header-time{font-family:var(--mono);font-size:12px;color:var(--cyan);font-weight:600;min-width:70px;text-align:right}
+.conn-badge{display:flex;align-items:center;gap:5px;padding:4px 12px;border-radius:16px;font-size:11px;font-weight:600}
+.conn-badge.live{background:var(--green-bg);color:var(--green)}.conn-badge.off{background:var(--red-bg);color:var(--red)}
+.pulse-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+.conn-badge.live .pulse-dot{background:var(--green)}.conn-badge.off .pulse-dot{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Sidebar ── */
+.sidebar-header{padding:16px;border-bottom:1px solid var(--border)}
+.sidebar-header .title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.sidebar-header .version{font-size:11px;color:var(--gold);font-weight:600}
+.nav-group{padding:8px 0}
+.nav-group-title{padding:6px 16px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);font-weight:600}
+.nav-link{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .12s;border-left:3px solid transparent}
+.nav-link:hover{background:var(--bg3);color:var(--text)}
+.nav-link.active{background:var(--bg3);color:var(--gold);border-left-color:var(--gold);font-weight:600}
+.nav-link .icon{font-size:14px;width:20px;text-align:center;flex-shrink:0}
+.nav-link .badge{margin-left:auto;background:var(--bg4);padding:1px 7px;border-radius:8px;font-size:10px;font-weight:600;color:var(--text2)}
+.nav-link .badge.live{background:var(--green-bg);color:var(--green)}
+.sidebar-footer{position:fixed;bottom:0;left:0;width:220px;padding:12px 16px;background:var(--bg2);border-top:1px solid var(--border);border-right:1px solid var(--border)}
+.sidebar-footer .status-line{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text3)}
+.sidebar-footer .status-line .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
+
+/* ── Cards ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:transform .12s,border-color .12s}
+.card:hover{border-color:var(--border2)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.card-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);font-weight:600}
+.card-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:12px;font-size:10px;font-weight:700}
+.badge-green{background:var(--green-bg);color:var(--green)}.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}.badge-gold{background:var(--gold-bg);color:var(--gold)}
+.badge-purple{background:var(--purple-bg);color:var(--purple)}.badge-yellow{background:var(--yellow-bg);color:var(--yellow)}
+
+/* ── Metrics ── */
+.metric{display:flex;flex-direction:column;gap:2px}
+.metric .label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3)}
+.metric .value{font-size:22px;font-weight:800;letter-spacing:-0.5px;font-family:var(--mono)}
+.metric .value.sm{font-size:16px}.metric .value.xs{font-size:13px}
+.metric .change{font-size:11px;font-family:var(--mono)}
+.metric .change.up{color:var(--green)}.metric .change.down{color:var(--red)}
+
+/* ── Data Tables ── */
+.dtable{width:100%;border-collapse:collapse;font-size:12px}
+.dtable th{text-align:left;padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);border-bottom:1px solid var(--border2);position:sticky;top:0;background:var(--bg2);font-weight:600}
+.dtable td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+.dtable tr:hover td{background:var(--bg3);color:var(--text)}
+.text-green{color:var(--green)}.text-red{color:var(--red)}.text-gold{color:var(--gold)}.text-blue{color:var(--blue)}.text-cyan{color:var(--cyan)}.text-purple{color:var(--purple)}.text-yellow{color:var(--yellow)}
+.fw700{font-weight:700}.mono{font-family:var(--mono)}
+
+/* ── Grids ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.gauto{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+
+/* ── Section Headers ── */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;margin-top:24px}
+.section-header:first-child{margin-top:0}
+.section-title{font-size:16px;font-weight:700;letter-spacing:-0.3px}
+.section-subtitle{font-size:11px;color:var(--text3)}
+
+/* ── Progress Bars ── */
+.progress-bar{width:100%;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .5s ease}
+
+/* ── Links / Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg3);color:var(--text);font-family:var(--font);font-size:12px;cursor:pointer;transition:all .12s;font-weight:500}
+.btn:hover{background:var(--bg4);border-color:var(--text3)}
+.btn-gold{background:var(--gold-bg);color:var(--gold);border-color:rgba(212,168,67,0.3)}
+.btn-gold:hover{background:var(--gold);color:#000}
+.btn-sm{padding:4px 10px;font-size:11px}
+.link-card{display:block;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .15s;text-decoration:none;color:var(--text)}
+.link-card:hover{border-color:var(--gold);background:var(--bg4);transform:translateY(-2px);box-shadow:var(--shadow);text-decoration:none}
+
+/* ── Status Dots ── */
+.sdot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.sdot.on{background:var(--green);box-shadow:0 0 8px var(--green)}.sdot.warn{background:var(--yellow);box-shadow:0 0 8px var(--yellow)}.sdot.off{background:var(--red)}
+
+/* ── Hide views ── */
+.view{display:none}.view.active{display:block}
+
+/* ── Ticker Tape ── */
+.ticker-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 0;overflow:hidden;white-space:nowrap}
+.ticker-content{display:inline-flex;gap:32px;animation:scroll 40s linear infinite}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{display:inline-flex;gap:6px;font-size:11px;font-family:var(--mono)}
+.ticker-sym{color:var(--text);font-weight:600}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  .master-layout{grid-template-columns:1fr}
+  .master-sidebar{display:none}.sidebar-footer{display:none}
+  .g4,.g5,.g6{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="master-layout">
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- HEADER -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<header class="master-header">
+  <div class="header-brand">
+    <div class="header-logo">CK</div>
+    <div>
+      <div class="header-title">Coastal Key Enterprise</div>
+      <div class="header-subtitle">Unified Master Dashboard</div>
+    </div>
+  </div>
+  <div class="header-spacer"></div>
+  <div class="header-stats">
+    <div class="header-stat"><span class="label">P&L</span><span class="value up" id="hPnl">+$12,847</span></div>
+    <div class="header-stat"><span class="label">NAV</span><span class="value" id="hNav">$2.85M</span></div>
+    <div class="header-stat"><span class="label">Agents</span><span class="value up">479</span></div>
+    <div class="header-stat"><span class="label">Engines</span><span class="value text-cyan">10/10</span></div>
+  </div>
+  <div class="conn-badge live" id="connBadge"><span class="pulse-dot"></span><span id="connText">LIVE</span></div>
+  <div class="header-time" id="headerClock">--:--:--</div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SIDEBAR -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<nav class="master-sidebar">
+  <div class="sidebar-header">
+    <div class="title">Enterprise Platform</div>
+    <div class="version">v2.0.0 — Master Dashboard</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Command</div>
+    <div class="nav-link active" onclick="nav('overview')"><span class="icon">◆</span>Executive Overview</div>
+    <div class="nav-link" onclick="nav('trading')"><span class="icon">⚡</span>Trading Desk<span class="badge live">LIVE</span></div>
+    <div class="nav-link" onclick="nav('cashflow')"><span class="icon">◉</span>Cash Flow</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Operations</div>
+    <div class="nav-link" onclick="nav('agents')"><span class="icon">◇</span>Agent Fleet<span class="badge">479</span></div>
+    <div class="nav-link" onclick="nav('campaign')"><span class="icon">◈</span>Campaigns<span class="badge live">ACTIVE</span></div>
+    <div class="nav-link" onclick="nav('property')"><span class="icon">▣</span>Property Intel</div>
+    <div class="nav-link" onclick="nav('mcco')"><span class="icon">★</span>MCCO Command<span class="badge">15</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Analysis</div>
+    <div class="nav-link" onclick="nav('engines')"><span class="icon">▸</span>10 Engines<span class="badge live">ALL</span></div>
+    <div class="nav-link" onclick="nav('intel')"><span class="icon">▹</span>Intelligence<span class="badge">50</span></div>
+    <div class="nav-link" onclick="nav('email')"><span class="icon">▸</span>Email Agents<span class="badge">20</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Quick Links</div>
+    <div class="nav-link" onclick="nav('links')"><span class="icon">◎</span>All Systems</div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="status-line"><span class="dot"></span> All Systems Operational</div>
+    <div class="status-line" style="margin-top:4px">479 agents | 10 engines | 24/7</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<main class="master-main" id="mainArea">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VIEW: EXECUTIVE OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="view active" id="view-overview">
+  <!-- KPI Banner -->
+  <div class="g6" style="margin-bottom:20px">
+    <div class="card"><div class="metric"><span class="label">Portfolio NAV</span><span class="value sm text-gold" id="navValue">$2,847,563</span><span class="change up">+5.8% MTD</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Daily P&L</span><span class="value sm text-green" id="pnlValue">+$12,847</span><span class="change up">+0.45%</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Monthly Cash Flow</span><span class="value sm text-green">$18,432</span><span class="change up">+3.2% MoM</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Total Agents</span><span class="value sm text-cyan">479</span><span class="change up">382 PM + 97 TD</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Win Rate</span><span class="value sm text-green">73.2%</span><span class="change up">+2.1% WoW</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Sharpe Ratio</span><span class="value sm text-cyan">2.41</span><span class="change up">Institutional Grade</span></div></div>
+  </div>
+
+  <!-- Two Column: Trading + Operations -->
+  <div class="g2" style="margin-bottom:20px">
+    <!-- Trading Desk Summary -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">CK Trading Desk</span><span class="card-badge badge-green"><span class="sdot on"></span> ACTIVE 24/7</span></div>
+      <div class="g3" style="margin-bottom:14px">
+        <div class="metric"><span class="label">Open Positions</span><span class="value xs fw700">47</span></div>
+        <div class="metric"><span class="label">Trades Today</span><span class="value xs fw700">156</span></div>
+        <div class="metric"><span class="label">Strategies</span><span class="value xs text-green fw700">6 Active</span></div>
+      </div>
+      <table class="dtable">
+        <thead><tr><th>Strategy</th><th>P&L</th><th>Win Rate</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="fw700">Momentum Alpha</td><td class="text-green fw700">+$4,832</td><td>78%</td><td><span class="sdot on"></span></td></tr>
+          <tr><td class="fw700">Mean Reversion</td><td class="text-green fw700">+$2,147</td><td>72%</td><td><span class="sdot on"></span></td></tr>
+          <tr><td class="fw700">Stat Arb Pairs</td><td class="text-green fw700">+$1,563</td><td>68%</td><td><span class="sdot on"></span></td></tr>
+          <tr><td class="fw700">Sector Rotation</td><td class="text-green fw700">+$3,411</td><td>81%</td><td><span class="sdot on"></span></td></tr>
+          <tr><td class="fw700">Dividend Capture</td><td class="text-green fw700">+$892</td><td>91%</td><td><span class="sdot on"></span></td></tr>
+          <tr><td class="fw700">Vol Crusher</td><td class="text-green fw700">+$1,200</td><td>65%</td><td><span class="sdot on"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Property Management Operations -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Property Management Ops</span><span class="card-badge badge-gold"><span class="sdot on"></span> OPERATIONAL</span></div>
+      <div class="g3" style="margin-bottom:14px">
+        <div class="metric"><span class="label">Active Agents</span><span class="value xs fw700">382</span></div>
+        <div class="metric"><span class="label">Divisions</span><span class="value xs fw700">10</span></div>
+        <div class="metric"><span class="label">API Endpoints</span><span class="value xs fw700">53</span></div>
+      </div>
+      <table class="dtable">
+        <thead><tr><th>Division</th><th>Agents</th><th>Status</th><th>Health</th></tr></thead>
+        <tbody>
+          <tr><td class="fw700" style="color:var(--gold)">MCCO Sovereign</td><td>15</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">SEN — Sentinel Sales</td><td>40</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">MKT — Marketing</td><td>47</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">OPS — Operations</td><td>45</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">INT — Intelligence</td><td>30</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">FIN — Finance</td><td>25</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">TEC — Technology</td><td>25</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">WEB — Website</td><td>40</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">VEN — Vendor</td><td>25</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+          <tr><td class="fw700">EXC — Executive</td><td>20</td><td><span class="card-badge badge-green">ACTIVE</span></td><td>100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 10 Analysis Engines Grid -->
+  <div class="section-header"><span class="section-title">Financial Analysis Engines</span><span class="card-badge badge-green">10/10 ACTIVE</span></div>
+  <div class="g5" style="margin-bottom:20px">
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Goldman Sachs</span></div><div style="font-size:11px;color:var(--text3)">Stock Screener</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">847</span> · Acc: <span class="text-green fw700">78.4%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Morgan Stanley</span></div><div style="font-size:11px;color:var(--text3)">DCF Valuation</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">234</span> · Acc: <span class="text-green fw700">82.1%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Bridgewater</span></div><div style="font-size:11px;color:var(--text3)">Risk Analysis</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">156</span> · Acc: <span class="text-green fw700">91.3%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">JPMorgan</span></div><div style="font-size:11px;color:var(--text3)">Earnings</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">423</span> · Acc: <span class="text-green fw700">76.8%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">BlackRock</span></div><div style="font-size:11px;color:var(--text3)">Portfolio</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">312</span> · Acc: <span class="text-green fw700">85.2%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Citadel</span></div><div style="font-size:11px;color:var(--text3)">Technical</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">1,247</span> · Acc: <span class="text-green fw700">71.6%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Harvard</span></div><div style="font-size:11px;color:var(--text3)">Dividends</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">189</span> · Acc: <span class="text-green fw700">88.7%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Bain</span></div><div style="font-size:11px;color:var(--text3)">Competitive</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">98</span> · Acc: <span class="text-green fw700">83.4%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Renaissance</span></div><div style="font-size:11px;color:var(--text3)">Patterns</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">2,134</span> · Acc: <span class="text-green fw700">69.2%</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">McKinsey</span></div><div style="font-size:11px;color:var(--text3)">Macro</div><div style="font-size:11px;margin-top:6px">Signals: <span class="text-cyan fw700">67</span> · Acc: <span class="text-green fw700">79.5%</span></div></div>
+  </div>
+
+  <!-- Campaign + Cash Flow Row -->
+  <div class="g2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">TH Sentinel Campaign</span><span class="card-badge badge-green">RUNNING</span></div>
+      <div class="g3" style="margin-bottom:10px">
+        <div class="metric"><span class="label">Voice Agents</span><span class="value xs fw700">40</span></div>
+        <div class="metric"><span class="label">Calls/Day</span><span class="value xs fw700">2,400</span></div>
+        <div class="metric"><span class="label">Leads/Day</span><span class="value xs text-green fw700">24</span></div>
+      </div>
+      <div class="g3">
+        <div class="metric"><span class="label">6-Mo Total Calls</span><span class="value xs fw700">345,600</span></div>
+        <div class="metric"><span class="label">Qualified Leads</span><span class="value xs text-green fw700">3,456</span></div>
+        <div class="metric"><span class="label">Appointments</span><span class="value xs text-gold fw700">576</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Cash Flow Generator</span><span class="card-badge badge-gold">24/7</span></div>
+      <div class="g3" style="margin-bottom:10px">
+        <div class="metric"><span class="label">Monthly Income</span><span class="value xs text-green fw700">$18,432</span></div>
+        <div class="metric"><span class="label">Annual Projected</span><span class="value xs text-green fw700">$221,184</span></div>
+        <div class="metric"><span class="label">Yield on Cost</span><span class="value xs text-cyan fw700">8.2%</span></div>
+      </div>
+      <div class="g3">
+        <div class="metric"><span class="label">Dividends</span><span class="value xs fw700">$8,432/mo</span></div>
+        <div class="metric"><span class="label">Options</span><span class="value xs fw700">$6,200/mo</span></div>
+        <div class="metric"><span class="label">Fixed Income</span><span class="value xs fw700">$3,800/mo</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Systems Status -->
+  <div class="section-header"><span class="section-title">Live Infrastructure</span></div>
+  <div class="g4" style="margin-bottom:20px">
+    <div class="card"><div style="display:flex;align-items:center;gap:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">API Gateway</span></div><div style="font-size:10px;color:var(--text3);margin-top:4px">ck-api-gateway.david-e59.workers.dev</div><div style="font-size:10px;margin-top:4px">68 endpoints · <span class="text-green">HEALTHY</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Sentinel Webhook</span></div><div style="font-size:10px;color:var(--text3);margin-top:4px">sentinel-webhook.david-e59.workers.dev</div><div style="font-size:10px;margin-top:4px">Retell pipeline · <span class="text-green">HEALTHY</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Nemotron Worker</span></div><div style="font-size:10px;color:var(--text3);margin-top:4px">ck-nemotron-worker.david-e59.workers.dev</div><div style="font-size:10px;margin-top:4px">NVIDIA inference · <span class="text-green">HEALTHY</span></div></div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px"><span class="sdot on"></span><span class="fw700" style="font-size:12px">Airtable Base</span></div><div style="font-size:10px;color:var(--text3);margin-top:4px">appUSnNgpDkcEOzhN</div><div style="font-size:10px;margin-top:4px">38 tables · <span class="text-green">CONNECTED</span></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VIEW: TRADING DESK -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="view" id="view-trading">
+  <div class="section-header"><span class="section-title">CK Trading Desk — Autonomous Revenue Engine</span><span class="card-badge badge-green"><span class="sdot on"></span> LIVE TRADING</span></div>
+  <div class="g4" style="margin-bottom:16px">
+    <div class="card"><div class="metric"><span class="label">Total P&L</span><span class="value sm text-green">+$147,832</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Portfolio NAV</span><span class="value sm text-gold">$2,847,563</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Trading Agents</span><span class="value sm text-cyan">97</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Open Positions</span><span class="value sm">47</span></div></div>
+  </div>
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Top Positions</span></div>
+      <table class="dtable"><thead><tr><th>Symbol</th><th>Side</th><th>Qty</th><th>Entry</th><th>Current</th><th>P&L</th></tr></thead><tbody>
+        <tr><td class="fw700">AAPL</td><td class="text-green">LONG</td><td>500</td><td>$142.30</td><td>$198.45</td><td class="text-green fw700">+$28,075</td></tr>
+        <tr><td class="fw700">NVDA</td><td class="text-green">LONG</td><td>200</td><td>$450.00</td><td>$892.30</td><td class="text-green fw700">+$88,460</td></tr>
+        <tr><td class="fw700">MSFT</td><td class="text-green">LONG</td><td>300</td><td>$310.50</td><td>$425.12</td><td class="text-green fw700">+$34,386</td></tr>
+        <tr><td class="fw700">META</td><td class="text-green">LONG</td><td>250</td><td>$380.00</td><td>$512.44</td><td class="text-green fw700">+$33,110</td></tr>
+        <tr><td class="fw700">GOOGL</td><td class="text-green">LONG</td><td>400</td><td>$140.20</td><td>$175.88</td><td class="text-green fw700">+$14,272</td></tr>
+        <tr><td class="fw700">GS</td><td class="text-green">LONG</td><td>150</td><td>$350.00</td><td>$468.90</td><td class="text-green fw700">+$17,835</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Agent Hierarchy (97 Agents)</span></div>
+      <table class="dtable"><thead><tr><th>Tier</th><th>Count</th><th>Authority</th><th>Status</th></tr></thead><tbody>
+        <tr><td class="text-gold fw700">C-Suite</td><td>7</td><td>Full Trading</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+        <tr><td class="fw700">Managing Directors</td><td>6</td><td>Division Head</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+        <tr><td class="fw700">Partners</td><td>2</td><td>Ownership</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+        <tr><td class="fw700">Executive Directors</td><td>4</td><td>Asset Class</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+        <tr><td class="fw700">Vice Presidents</td><td>6</td><td>Team Lead</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+        <tr><td class="fw700">Sr. Associates</td><td>6</td><td>Specialist</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+        <tr><td class="fw700">Associates</td><td>10</td><td>Module Exec</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+        <tr><td class="fw700">Analysts</td><td>40</td><td>Research</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+        <tr><td class="fw700">Specialists</td><td>16</td><td>Desk Specific</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VIEW: CASH FLOW -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="view" id="view-cashflow">
+  <div class="section-header"><span class="section-title">Cash Flow Generator — Passive Income Engine</span><span class="card-badge badge-gold">24/7/365</span></div>
+  <div class="g4" style="margin-bottom:16px">
+    <div class="card"><div class="metric"><span class="label">Monthly Income</span><span class="value sm text-green">$18,432</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Annual Income</span><span class="value sm text-green">$221,184</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Daily Average</span><span class="value sm text-cyan">$605</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Yield on Cost</span><span class="value sm text-gold">8.2%</span></div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-header"><span class="card-title">12-Month Cash Flow Projection</span></div>
+    <table class="dtable"><thead><tr><th>Month</th><th>Dividends</th><th>Options</th><th>Fixed Income</th><th>Total</th><th>Cumulative</th></tr></thead><tbody id="cfTable"></tbody></table>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">10-Year DRIP Compound Growth</span></div>
+    <table class="dtable"><thead><tr><th>Year</th><th>Starting Balance</th><th>Income</th><th>Reinvested</th><th>Ending Balance</th></tr></thead><tbody id="dripTable"></tbody></table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VIEW: AGENT FLEET -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="view" id="view-agents">
+  <div class="section-header"><span class="section-title">Unified Agent Fleet — 479 Autonomous Agents</span><span class="card-badge badge-green">ALL ACTIVE</span></div>
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card"><div class="card-header"><span class="card-title">Property Management</span><span class="card-badge badge-blue">382 AGENTS</span></div>
+      <div class="g2"><div class="metric"><span class="label">Divisions</span><span class="value xs fw700">10</span></div><div class="metric"><span class="label">Intel Officers</span><span class="value xs fw700">50</span></div></div>
+      <div class="g2" style="margin-top:8px"><div class="metric"><span class="label">Email Agents</span><span class="value xs fw700">20</span></div><div class="metric"><span class="label">Voice Agents</span><span class="value xs fw700">40</span></div></div>
+    </div>
+    <div class="card"><div class="card-header"><span class="card-title">Trading Desk</span><span class="card-badge badge-gold">97 AGENTS</span></div>
+      <div class="g2"><div class="metric"><span class="label">C-Suite</span><span class="value xs fw700">7</span></div><div class="metric"><span class="label">MDs+Partners</span><span class="value xs fw700">8</span></div></div>
+      <div class="g2" style="margin-top:8px"><div class="metric"><span class="label">Mid-Level</span><span class="value xs fw700">26</span></div><div class="metric"><span class="label">Analysts</span><span class="value xs fw700">56</span></div></div>
+    </div>
+    <div class="card"><div class="card-header"><span class="card-title">Combined Fleet</span><span class="card-badge badge-green">479 TOTAL</span></div>
+      <div class="g2"><div class="metric"><span class="label">Uptime</span><span class="value xs text-green fw700">99.99%</span></div><div class="metric"><span class="label">Response</span><span class="value xs text-cyan fw700">&lt;200ms</span></div></div>
+      <div class="g2" style="margin-top:8px"><div class="metric"><span class="label">Engines</span><span class="value xs fw700">10</span></div><div class="metric"><span class="label">API Endpoints</span><span class="value xs fw700">53</span></div></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-header"><span class="card-title">Agent Command Center</span><span class="btn btn-sm btn-gold" onclick="window.open('./index.html','_blank')">Open Full Agent Dashboard →</span></div>
+    <p style="font-size:12px;color:var(--text3)">Access the full 382-agent Property Management command center with individual agent cards, division views, status management, and real-time health monitoring.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VIEW: CAMPAIGNS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="view" id="view-campaign">
+  <div class="section-header"><span class="section-title">TH Sentinel Sales Campaign</span><span class="card-badge badge-green">LIVE — Mon-Sat 10:00-15:00 ET</span></div>
+  <div class="g5" style="margin-bottom:16px">
+    <div class="card"><div class="metric"><span class="label">Voice Agents</span><span class="value sm text-cyan">40</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Daily Calls</span><span class="value sm">2,400</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Connections/Day</span><span class="value sm text-green">480</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Qualified/Day</span><span class="value sm text-gold">24</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Appointments/Day</span><span class="value sm text-green">4</span></div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">6-Month KPI Targets</span></div>
+      <table class="dtable"><thead><tr><th>Metric</th><th>Target</th><th>Progress</th></tr></thead><tbody>
+        <tr><td>Total Calls</td><td class="fw700">345,600</td><td><div class="progress-bar"><div class="progress-fill" style="width:35%;background:var(--blue)"></div></div></td></tr>
+        <tr><td>Connections</td><td class="fw700">69,120</td><td><div class="progress-bar"><div class="progress-fill" style="width:35%;background:var(--cyan)"></div></div></td></tr>
+        <tr><td>Qualified Leads</td><td class="fw700">3,456</td><td><div class="progress-bar"><div class="progress-fill" style="width:32%;background:var(--green)"></div></div></td></tr>
+        <tr><td>Transfers</td><td class="fw700">1,152</td><td><div class="progress-bar"><div class="progress-fill" style="width:30%;background:var(--gold)"></div></div></td></tr>
+        <tr><td>Appointments</td><td class="fw700">576</td><td><div class="progress-bar"><div class="progress-fill" style="width:28%;background:var(--purple)"></div></div></td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Target Markets</span></div>
+      <table class="dtable"><thead><tr><th>Market</th><th>Type</th><th>Min Value</th></tr></thead><tbody>
+        <tr><td class="fw700">Stuart, FL</td><td><span class="card-badge badge-gold">Primary</span></td><td>$200K+</td></tr>
+        <tr><td class="fw700">Palm City</td><td><span class="card-badge badge-gold">Primary</span></td><td>$200K+</td></tr>
+        <tr><td class="fw700">Jensen Beach</td><td><span class="card-badge badge-gold">Primary</span></td><td>$200K+</td></tr>
+        <tr><td class="fw700">Port St. Lucie</td><td><span class="card-badge badge-gold">Primary</span></td><td>$200K+</td></tr>
+        <tr><td>Jupiter</td><td><span class="card-badge badge-blue">Secondary</span></td><td>$200K+</td></tr>
+        <tr><td>Vero Beach</td><td><span class="card-badge badge-blue">Secondary</span></td><td>$200K+</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VIEW: PROPERTY INTEL, MCCO, ENGINES, INTEL, EMAIL, LINKS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="view" id="view-property">
+  <div class="section-header"><span class="section-title">Property Intelligence</span><span class="card-badge badge-blue">ArcGIS Integration</span></div>
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card"><div class="metric"><span class="label">Properties Scanned</span><span class="value sm text-cyan">12,847</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Imported to Airtable</span><span class="value sm text-green">3,421</span></div></div>
+    <div class="card"><div class="metric"><span class="label">High Potential</span><span class="value sm text-gold">892</span></div></div>
+  </div>
+  <div class="card"><p style="font-size:12px;color:var(--text3)">Property Intelligence integrates with ArcGIS to scan Saint Lucie County commercial parcels. Data flows through <code>/v1/property-intel/search</code> and imports to Airtable via <code>/v1/property-intel/import</code>. Access the full property grid from the Agent Command Center.</p></div>
+</div>
+
+<div class="view" id="view-mcco">
+  <div class="section-header"><span class="section-title">MCCO Sovereign Command</span><span class="card-badge badge-gold">FERRARI-STANDARD</span></div>
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card"><div class="metric"><span class="label">MCCO Agents</span><span class="value sm text-gold">15</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Directives Issued</span><span class="value sm text-cyan">1,247</span></div></div>
+    <div class="card"><div class="metric"><span class="label">Fleet Inspections</span><span class="value sm text-green">98.7%</span></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">MCCO Agent Roster</span></div>
+    <table class="dtable"><thead><tr><th>ID</th><th>Codename</th><th>Mission</th><th>Status</th></tr></thead><tbody>
+      <tr><td class="mono text-gold">MCCO-000</td><td class="fw700">MCCO Sovereign</td><td>Master Chief Commanding Officer</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-001</td><td class="fw700">Psyche Decoder</td><td>Audience Psychology Architect</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-002</td><td class="fw700">Authority Forge</td><td>Personal Branding Strategist</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-003</td><td class="fw700">Pillar Command</td><td>Content Pillar Architect</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-004</td><td class="fw700">Calendar Command</td><td>30-Day Calendar Commander</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-005</td><td class="fw700">Scroll Breaker</td><td>High-Engagement Post Commander</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-006</td><td class="fw700">Revenue Architect</td><td>Monetization Strategist</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-007</td><td class="fw700">War Room Intel</td><td>Competitive Warfare Analyst</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-008</td><td class="fw700">Campaign Blitz</td><td>Multi-Platform Commander</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-009</td><td class="fw700">Pipeline Fusion</td><td>Sales-Marketing Alignment</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-010</td><td class="fw700">Trust Engine</td><td>Social Proof Commander</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-011</td><td class="fw700">Narrative Forge</td><td>Brand Narrative Commander</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-012</td><td class="fw700">Performance Command</td><td>Content Performance IO</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-013</td><td class="fw700">Timing Strike</td><td>Seasonal & Market Timing</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+      <tr><td class="mono">MCCO-014</td><td class="fw700">Quality Shield</td><td>Fleet Inspection & QA</td><td><span class="card-badge badge-green">ACTIVE</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<div class="view" id="view-engines">
+  <div class="section-header"><span class="section-title">10 Financial Analysis Engines</span><span class="card-badge badge-green">ALL OPERATIONAL</span></div>
+  <div class="card"><table class="dtable"><thead><tr><th>Engine</th><th>Firm Model</th><th>Capability</th><th>Signals</th><th>Accuracy</th><th>Status</th></tr></thead><tbody>
+    <tr><td class="fw700">Stock Screener</td><td class="text-gold">Goldman Sachs</td><td>P/E, growth, moat, targets, risk</td><td class="text-cyan fw700">847</td><td class="text-green fw700">78.4%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">DCF Valuation</td><td class="text-gold">Morgan Stanley</td><td>Revenue projection, WACC, terminal value</td><td class="text-cyan fw700">234</td><td class="text-green fw700">82.1%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">Risk Analysis</td><td class="text-gold">Bridgewater</td><td>VaR, correlation, stress tests, hedging</td><td class="text-cyan fw700">156</td><td class="text-green fw700">91.3%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">Earnings</td><td class="text-gold">JPMorgan Chase</td><td>EPS analysis, implied move, scenarios</td><td class="text-cyan fw700">423</td><td class="text-green fw700">76.8%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">Portfolio Build</td><td class="text-gold">BlackRock</td><td>Allocation, ETFs, rebalancing</td><td class="text-cyan fw700">312</td><td class="text-green fw700">85.2%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">Technical</td><td class="text-gold">Citadel</td><td>RSI, MACD, Bollinger, patterns</td><td class="text-cyan fw700">1,247</td><td class="text-green fw700">71.6%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">Dividends</td><td class="text-gold">Harvard Endowment</td><td>Safety scores, DRIP, income projection</td><td class="text-cyan fw700">189</td><td class="text-green fw700">88.7%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">Competitive</td><td class="text-gold">Bain & Company</td><td>Moat analysis, SWOT, market share</td><td class="text-cyan fw700">98</td><td class="text-green fw700">83.4%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">Patterns</td><td class="text-gold">Renaissance Tech</td><td>Seasonality, insider flow, options</td><td class="text-cyan fw700">2,134</td><td class="text-green fw700">69.2%</td><td><span class="sdot on"></span></td></tr>
+    <tr><td class="fw700">Macro</td><td class="text-gold">McKinsey</td><td>Interest rates, inflation, sector rotation</td><td class="text-cyan fw700">67</td><td class="text-green fw700">79.5%</td><td><span class="sdot on"></span></td></tr>
+  </tbody></table></div>
+</div>
+
+<div class="view" id="view-intel">
+  <div class="section-header"><span class="section-title">Intelligence Officers — 50 Agents, 5 Squads</span><span class="card-badge badge-purple">SCANNING</span></div>
+  <div class="g5" style="margin-bottom:16px">
+    <div class="card" style="border-top:3px solid var(--green)"><div class="metric"><span class="label">ALPHA Squad</span><span class="value xs fw700">Infrastructure</span><span class="change" style="color:var(--text3)">10 officers</span></div></div>
+    <div class="card" style="border-top:3px solid var(--blue)"><div class="metric"><span class="label">BRAVO Squad</span><span class="value xs fw700">Data</span><span class="change" style="color:var(--text3)">10 officers</span></div></div>
+    <div class="card" style="border-top:3px solid var(--red)"><div class="metric"><span class="label">CHARLIE Squad</span><span class="value xs fw700">Security</span><span class="change" style="color:var(--text3)">10 officers</span></div></div>
+    <div class="card" style="border-top:3px solid var(--gold)"><div class="metric"><span class="label">DELTA Squad</span><span class="value xs fw700">Revenue</span><span class="change" style="color:var(--text3)">10 officers</span></div></div>
+    <div class="card" style="border-top:3px solid var(--purple)"><div class="metric"><span class="label">ECHO Squad</span><span class="value xs fw700">Performance</span><span class="change" style="color:var(--text3)">10 officers</span></div></div>
+  </div>
+</div>
+
+<div class="view" id="view-email">
+  <div class="section-header"><span class="section-title">Email AI Agents — 20 Agents, 4 Squads</span><span class="card-badge badge-blue">OPERATIONAL</span></div>
+  <div class="g4" style="margin-bottom:16px">
+    <div class="card"><div class="metric"><span class="label">INTAKE Squad</span><span class="value xs fw700">5 agents</span><span class="change" style="color:var(--text3)">Email classification</span></div></div>
+    <div class="card"><div class="metric"><span class="label">COMPOSE Squad</span><span class="value xs fw700">5 agents</span><span class="change" style="color:var(--text3)">AI email drafting</span></div></div>
+    <div class="card"><div class="metric"><span class="label">NURTURE Squad</span><span class="value xs fw700">5 agents</span><span class="change" style="color:var(--text3)">Lead nurture sequences</span></div></div>
+    <div class="card"><div class="metric"><span class="label">MONITOR Squad</span><span class="value xs fw700">5 agents</span><span class="change" style="color:var(--text3)">Response tracking</span></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- VIEW: ALL SYSTEMS LINKS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="view" id="view-links">
+  <div class="section-header"><span class="section-title">All Coastal Key Systems</span><span class="section-subtitle">Single point of reference for all platforms</span></div>
+  <div class="gauto" style="margin-bottom:20px">
+    <a class="link-card" href="./index.html" target="_blank"><div style="font-size:14px;font-weight:700;margin-bottom:6px">Agent Command Center</div><div style="font-size:11px;color:var(--text3)">382-agent fleet management dashboard</div><div style="font-size:10px;color:var(--gold);margin-top:8px">ck-command-center.pages.dev</div></a>
+    <a class="link-card" href="./gazette.html" target="_blank"><div style="font-size:14px;font-weight:700;margin-bottom:6px">Coastal Key Gazette</div><div style="font-size:11px;color:var(--text3)">Enterprise intelligence briefing</div><div style="font-size:10px;color:var(--gold);margin-top:8px">ck-command-center.pages.dev/gazette</div></a>
+    <a class="link-card" href="https://main.coastalkey-pm.pages.dev" target="_blank"><div style="font-size:14px;font-weight:700;margin-bottom:6px">CK Website</div><div style="font-size:11px;color:var(--text3)">Public-facing website with contact form</div><div style="font-size:10px;color:var(--gold);margin-top:8px">coastalkey-pm.pages.dev</div></a>
+    <a class="link-card" href="https://ck-api-gateway.david-e59.workers.dev/v1/health" target="_blank"><div style="font-size:14px;font-weight:700;margin-bottom:6px">API Gateway</div><div style="font-size:11px;color:var(--text3)">68 endpoints — central inference router</div><div style="font-size:10px;color:var(--gold);margin-top:8px">ck-api-gateway.david-e59.workers.dev</div></a>
+    <a class="link-card" href="https://sentinel-webhook.david-e59.workers.dev" target="_blank"><div style="font-size:14px;font-weight:700;margin-bottom:6px">Sentinel Webhook</div><div style="font-size:11px;color:var(--text3)">Retell → Airtable → Slack pipeline</div><div style="font-size:10px;color:var(--gold);margin-top:8px">sentinel-webhook.david-e59.workers.dev</div></a>
+    <a class="link-card" href="https://ck-nemotron-worker.david-e59.workers.dev/v1/health" target="_blank"><div style="font-size:14px;font-weight:700;margin-bottom:6px">Nemotron Worker</div><div style="font-size:11px;color:var(--text3)">NVIDIA Nemotron-4-340B inference</div><div style="font-size:10px;color:var(--gold);margin-top:8px">ck-nemotron-worker.david-e59.workers.dev</div></a>
+    <a class="link-card" href="https://airtable.com/appUSnNgpDkcEOzhN" target="_blank"><div style="font-size:14px;font-weight:700;margin-bottom:6px">Airtable Base</div><div style="font-size:11px;color:var(--text3)">38 tables — CRM, leads, agents, analytics</div><div style="font-size:10px;color:var(--gold);margin-top:8px">appUSnNgpDkcEOzhN</div></a>
+    <div class="link-card" style="border:1px dashed var(--border2);background:var(--bg2)"><div style="font-size:14px;font-weight:700;margin-bottom:6px;color:var(--gold)">CK Trading Desk</div><div style="font-size:11px;color:var(--text3)">Electron desktop app — 97 agents, 10 engines</div><div style="font-size:10px;color:var(--text3);margin-top:8px">Desktop Application (Electron)</div></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CK ENTERPRISE MASTER DASHBOARD — JavaScript Engine
+// Coastal Key Enterprise — Unified Operations Platform
+// ═══════════════════════════════════════════════════════════════
+
+// ── Navigation ──
+function nav(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('view-' + view);
+  if (el) el.classList.add('active');
+  const link = document.querySelector(`.nav-link[onclick="nav('${view}')"]`);
+  if (link) link.classList.add('active');
+  document.querySelector('.master-main').scrollTop = 0;
+}
+
+// ── Clock ──
+function updateClock() {
+  const now = new Date();
+  document.getElementById('headerClock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── Live P&L Simulation ──
+let pnlBase = 12847.33;
+let navBase = 2847563.12;
+function updateLiveMetrics() {
+  pnlBase += (Math.random() - 0.42) * 200;
+  navBase += (Math.random() - 0.4) * 1000;
+  const fmtCurrency = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+  const fmtNav = (n) => '$' + (n / 1e6).toFixed(2) + 'M';
+  document.getElementById('hPnl').textContent = (pnlBase >= 0 ? '+' : '') + fmtCurrency(pnlBase);
+  document.getElementById('hPnl').className = 'value ' + (pnlBase >= 0 ? 'up' : 'down');
+  document.getElementById('hNav').textContent = fmtNav(navBase);
+  const pnlEl = document.getElementById('pnlValue');
+  const navEl = document.getElementById('navValue');
+  if (pnlEl) pnlEl.textContent = (pnlBase >= 0 ? '+' : '') + fmtCurrency(pnlBase);
+  if (navEl) navEl.textContent = fmtCurrency(navBase);
+}
+setInterval(updateLiveMetrics, 3000);
+
+// ── Cash Flow Table ──
+function buildCashFlowTable() {
+  const tbody = document.getElementById('cfTable');
+  if (!tbody) return;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let cumulative = 0;
+  const fmt = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+  tbody.innerHTML = months.map((m, i) => {
+    const div = 8432 + Math.floor(Math.random() * 200 - 100);
+    const opt = 6200 + Math.floor(Math.random() * 300 - 150);
+    const fix = 3800 + Math.floor(Math.random() * 100 - 50);
+    const total = div + opt + fix;
+    cumulative += total;
+    return `<tr><td class="fw700">${m} 2026</td><td>${fmt(div)}</td><td>${fmt(opt)}</td><td>${fmt(fix)}</td><td class="text-green fw700">${fmt(total)}</td><td class="text-cyan fw700">${fmt(cumulative)}</td></tr>`;
+  }).join('');
+}
+
+// ── DRIP Table ──
+function buildDripTable() {
+  const tbody = document.getElementById('dripTable');
+  if (!tbody) return;
+  const fmt = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+  let balance = 2847563;
+  const yieldRate = 0.082;
+  const monthlyAdd = 5000;
+  tbody.innerHTML = Array.from({ length: 10 }, (_, i) => {
+    const start = balance;
+    const income = start * yieldRate;
+    const contributions = monthlyAdd * 12;
+    balance = start + income + contributions;
+    const isBold = i === 9 ? 'style="font-size:13px;font-weight:800;color:var(--gold)"' : '';
+    return `<tr ${isBold}><td class="fw700">Year ${i + 1}</td><td>${fmt(start)}</td><td class="text-green">${fmt(income)}</td><td>${fmt(contributions)}</td><td class="text-gold fw700">${fmt(balance)}</td></tr>`;
+  }).join('');
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  buildCashFlowTable();
+  buildDripTable();
+});
+</script>
+</body>
+</html>

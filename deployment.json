@@ -65,8 +65,12 @@
     "active_domain": "coastalkey-pm.com"
   },
   "agents": {
-    "total": 382,
+    "total": 383,
     "divisions": 9,
-    "web_dev_agents": 40
+    "web_dev_agents": 40,
+    "mcco_agents": 15,
+    "intelligence_officers": 50,
+    "email_agents": 20,
+    "trader_agents": 1
   }
 }

@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Division Definitions
  *
- * 10 operational divisions that map to the org chart.
+ * 11 operational divisions that map to the org chart.
  * Each division has a color, icon, and description used by the Command Center UI.
  *
  * MCCO (Sovereign Governance) sits above MKT and SEN in the org hierarchy.
@@ -77,5 +77,12 @@ export const DIVISIONS = [
     color: '#0ea5e9',
     icon: 'globe',
     description: 'Website architecture, frontend development, deployment, and domain consolidation for coastalkey-pm.com.',
+  },
+  {
+    id: 'COOP',
+    name: 'Cooperations Committee',
+    color: '#ec4899',
+    icon: 'handshake',
+    description: 'CEO external engagement coordination — strategic contacts, meeting preparation, outreach drafting, relationship network analysis, and social calendar management. 3 squads: Outreach (4 agents), Engagement (3 agents), Intelligence (3 agents). Reports directly to CEO.',
   },
 ];

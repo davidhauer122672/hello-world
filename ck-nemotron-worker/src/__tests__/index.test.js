@@ -16,6 +16,7 @@ function makeRequest(path, options = {}) {
 const env = {
   WORKER_AUTH_TOKEN: 'test-token',
   MODEL_ID: 'nvidia/nemotron-4-340b-instruct',
+  NVIDIA_API_KEY: 'test-nvidia-key',
 };
 
 describe('ck-nemotron-worker', () => {

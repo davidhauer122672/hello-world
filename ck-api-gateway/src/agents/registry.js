@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Agent Registry
  *
- * Central registry for all 312 AI agents across 10 divisions.
+ * Central registry for all 322 AI agents across 11 divisions.
  * Exports the AGENTS array, DIVISIONS array, and lookup functions
  * consumed by routes/agents.js and the Command Center dashboard.
  *
@@ -33,6 +33,7 @@ import { FIN_AGENTS } from './agents-fin.js';
 import { VEN_AGENTS } from './agents-ven.js';
 import { TEC_AGENTS } from './agents-tec.js';
 import { WEB_AGENTS } from './agents-web.js';
+import { COOP_AGENTS } from './agents-coop.js';
 
 // ── Merged agent list ───────────────────────────────────────────────────────
 
@@ -47,6 +48,7 @@ export const AGENTS = [
   ...VEN_AGENTS,
   ...TEC_AGENTS,
   ...WEB_AGENTS,
+  ...COOP_AGENTS,
 ];
 
 // Re-export divisions so consumers only need one import path

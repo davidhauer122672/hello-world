@@ -9,6 +9,17 @@
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
  *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
+ *   POST /v1/content/publish    — Publish Content Calendar record to Buffer (WF-2 replacement)
+ *   GET  /v1/coop/committee      — Cooperations Committee charter and dashboard
+ *   GET  /v1/coop/agents         — List all 10 COOP agents
+ *   GET  /v1/coop/agents/:id     — Get single COOP agent
+ *   POST /v1/coop/brief          — Generate CEO meeting preparation brief
+ *   POST /v1/coop/outreach       — Draft warm outreach message for target contact
+ *   POST /v1/coop/network-map    — Analyze CEO relationship network
+ *   GET  /v1/coop/targets        — Target contact categories and priorities
+ *   POST /v1/coop/schedule       — Propose CEO meeting for calendar
+ *   GET  /v1/meta-ads/status    — Meta Ads connector health check & diagnostics
+ *   POST /v1/meta-ads/boost     — Boost high-engagement post via Meta Ads Manager
  *   GET  /v1/agents             — List/search agents with filtering
  *   GET  /v1/agents/metrics     — Aggregate agent metrics
  *   GET  /v1/agents/:id         — Get single agent details
@@ -70,6 +81,8 @@
  *   POST /v1/frameworks/content           — Generate content using framework principles
  *   POST /v1/frameworks/sales-playbook    — Generate sales playbook from framework rules
  *   POST /v1/frameworks/productivity-plan — Generate agent/team productivity plan
+ *   POST /v1/frameworks/vpas/evaluate    — Evaluate task/project against V+P+A=S equation
+ *   POST /v1/frameworks/vpas/audit       — Audit division/fleet V+P+A=S compliance
  *   GET  /v1/financial/models            — Revenue models, expense categories, benchmarks
  *   POST /v1/financial/management-fee    — Calculate management fee
  *   POST /v1/financial/rent-estimate     — Estimate optimal rent for property
@@ -115,6 +128,28 @@
  *   GET  /v1/slack/channels    — Slack channel architecture
  *   GET  /v1/slack/apps        — Slack app registry
  *   GET  /v1/slack/audit       — Slack platform audit record
+ *   POST /v1/email/send              — Send email via Gmail API (OAuth 2.0)
+ *   POST /v1/email/draft             — Create email draft via Gmail API
+ *   GET  /v1/email/oauth/health      — Gmail OAuth connectivity check
+ *   POST /v1/compliance/dnc/add        — Add phone to DNC registry
+ *   POST /v1/compliance/dnc/check      — Check phone against DNC list
+ *   POST /v1/compliance/dnc/bulk-check — Bulk scrub phone list against DNC
+ *   POST /v1/compliance/dnc/remove     — Remove phone from DNC
+ *   POST /v1/compliance/consent/record — Record PEWC for contact
+ *   POST /v1/compliance/consent/check  — Check consent status
+ *   GET  /v1/compliance/calling-window — Check calling window status
+ *   POST /v1/compliance/pre-call-check — Full pre-call compliance gate
+ *   GET  /v1/compliance/audit          — Generate TCPA/DNC audit report
+ *   GET  /v1/rnd/campaign              — Full 7-day R&D campaign plan
+ *   GET  /v1/rnd/campaign/status       — Live campaign status
+ *   GET  /v1/rnd/campaign/day/:day     — Single day's plan (1-7)
+ *   GET  /v1/rnd/campaign/competitors  — Verified competitor analysis matrix
+ *   GET  /v1/rnd/campaign/systems      — Unincorporated systems to adopt
+ *   GET  /v1/capital/engine            — Full Capital Engine overview
+ *   GET  /v1/capital/pillars/:id       — Single revenue pillar (CE-P1, CE-P2, CE-P3)
+ *   GET  /v1/capital/drip-matrix       — DRIP Matrix delegation framework
+ *   GET  /v1/capital/business-model    — Integrated business model
+ *   GET  /v1/capital/metrics           — Revenue projections and KPIs
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  */
@@ -125,6 +160,7 @@ import { handleInference } from './routes/inference.js';
 import { handleCreateLead, handleGetLead, handleEnrichLead, handlePublicLead } from './routes/leads.js';
 import { handleRetellWebhook } from './routes/retell.js';
 import { handleContentGenerate } from './routes/content.js';
+import { handleContentPublish } from './routes/content-publish.js';
 import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
@@ -133,10 +169,11 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
-import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost } from './routes/mcco.js';
-import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan } from './routes/frameworks.js';
+import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost, handleMasterPlan, handleMasterPlanPhase, handleDivisionPlan, handleSovereignDirectiveIssue, handleActivationStatus } from './routes/mcco.js';
+import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan, handleVPASEvaluate, handleVPASAudit } from './routes/frameworks.js';
 import {
-  handleTraderDashboard, handleTraderAgent, handleWatchlist, handleQuote, handleSignal,
+  handleTraderDashboard, handleTraderAgent, handleTraderFleet, handleGetTraderById,
+  handleWatchlist, handleQuote, handleSignal,
   handleCapitalCall, handlePortfolio as handleTraderPortfolio, handleTraderNews,
   handleLogTrade, handleTradeHistory, handleCapitalTiers,
 } from './routes/trader.js';
@@ -150,7 +187,14 @@ import {
 } from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
-import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handleThinkingDashboard } from './routes/thinking-coach.js';
+import { handleMetaAdsStatus, handleMetaAdsBoost, handleMetaAdsCampaigns } from './routes/meta-ads.js';
+import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
+import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
+import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
+import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
+import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, handleRndCompetitors, handleRndSystems } from './routes/rnd-campaign.js';
+import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
+import { handleCoopCommittee, handleListCoopAgents, handleGetCoopAgent, handleCoopBrief, handleCoopOutreach, handleCoopNetworkMap, handleCoopTargets, handleCoopSchedule } from './routes/cooperations.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -228,6 +272,24 @@ export default {
         checks.atlas = { status: 'not_configured', platform: 'youratlas.com' };
       }
 
+      // Meta Ads
+      if (env.META_PAGE_ACCESS_TOKEN && env.META_AD_ACCOUNT_ID) {
+        checks.metaAds = { status: 'configured', adAccount: env.META_AD_ACCOUNT_ID };
+      } else {
+        const metaMissing = [];
+        if (!env.META_PAGE_ACCESS_TOKEN) metaMissing.push('META_PAGE_ACCESS_TOKEN');
+        if (!env.META_AD_ACCOUNT_ID) metaMissing.push('META_AD_ACCOUNT_ID');
+        if (!env.META_PAGE_ID) metaMissing.push('META_PAGE_ID');
+        checks.metaAds = { status: 'not_configured', missing: metaMissing };
+      }
+
+      // Buffer
+      if (env.BUFFER_ACCESS_TOKEN) {
+        checks.buffer = { status: 'configured' };
+      } else {
+        checks.buffer = { status: 'not_configured', impact: 'Content publish falls back to manual mode' };
+      }
+
       // KV stores
       checks.kv = {
         cache: env.CACHE ? 'available' : 'missing',
@@ -300,6 +362,10 @@ export default {
 
       if (path === '/v1/content/generate' && method === 'POST') {
         return await handleContentGenerate(request, env, ctx);
+      }
+
+      if (path === '/v1/content/publish' && method === 'POST') {
+        return await handleContentPublish(request, env, ctx);
       }
 
       if (path === '/v1/agents' && method === 'GET') {
@@ -469,6 +535,28 @@ export default {
         return handleGetMCCOAgent(agentId);
       }
 
+      if (path === '/v1/mcco/master-plan' && method === 'GET') {
+        return handleMasterPlan();
+      }
+
+      if (path.match(/^\/v1\/mcco\/master-plan\/phase\/[^/]+$/) && method === 'GET') {
+        const phaseId = path.split('/v1/mcco/master-plan/phase/')[1];
+        return handleMasterPlanPhase(phaseId);
+      }
+
+      if (path.match(/^\/v1\/mcco\/master-plan\/division\/[^/]+$/) && method === 'GET') {
+        const divisionId = path.split('/v1/mcco/master-plan/division/')[1];
+        return handleDivisionPlan(divisionId);
+      }
+
+      if (path === '/v1/mcco/sovereign-directive' && method === 'POST') {
+        return await handleSovereignDirectiveIssue(request, env, ctx);
+      }
+
+      if (path === '/v1/mcco/activation-status' && method === 'GET') {
+        return handleActivationStatus();
+      }
+
       // ── Atlas AI Campaign Platform (youratlas.com) ──
       if (path === '/v1/atlas/health' && method === 'GET') {
         return await handleAtlasHealth(env);
@@ -557,6 +645,14 @@ export default {
 
       if (path === '/v1/frameworks/productivity-plan' && method === 'POST') {
         return await handleFrameworkProductivityPlan(request, env, ctx);
+      }
+
+      if (path === '/v1/frameworks/vpas/evaluate' && method === 'POST') {
+        return await handleVPASEvaluate(request, env, ctx);
+      }
+
+      if (path === '/v1/frameworks/vpas/audit' && method === 'POST') {
+        return await handleVPASAudit(request, env, ctx);
       }
 
       if (path.match(/^\/v1\/frameworks\/category\/[^/]+$/) && method === 'GET') {
@@ -651,6 +747,13 @@ export default {
       if (path === '/v1/trader/agent' && method === 'GET') {
         return handleTraderAgent();
       }
+      if (path === '/v1/trader/fleet' && method === 'GET') {
+        return handleTraderFleet(url);
+      }
+      if (path.match(/^\/v1\/trader\/fleet\/[^/]+$/) && method === 'GET') {
+        const traderId = path.split('/v1/trader/fleet/')[1];
+        return handleGetTraderById(traderId);
+      }
       if (path === '/v1/trader/watchlist' && method === 'GET') {
         return handleWatchlist();
       }
@@ -710,6 +813,46 @@ export default {
         return handleSlackAudit();
       }
 
+      // ── Gmail OAuth Email Operations ──
+      if (path === '/v1/email/send' && method === 'POST') {
+        return await handleEmailSend(request, env, ctx);
+      }
+      if (path === '/v1/email/draft' && method === 'POST') {
+        return await handleEmailDraft(request, env, ctx);
+      }
+      if (path === '/v1/email/oauth/health' && method === 'GET') {
+        return await handleEmailOAuthHealth(env);
+      }
+
+      // ── TCPA/DNC Compliance ──
+      if (path === '/v1/compliance/dnc/add' && method === 'POST') {
+        return await handleDNCAdd(request, env, ctx);
+      }
+      if (path === '/v1/compliance/dnc/check' && method === 'POST') {
+        return await handleDNCCheck(request, env, ctx);
+      }
+      if (path === '/v1/compliance/dnc/bulk-check' && method === 'POST') {
+        return await handleDNCBulkCheck(request, env, ctx);
+      }
+      if (path === '/v1/compliance/dnc/remove' && method === 'POST') {
+        return await handleDNCRemove(request, env, ctx);
+      }
+      if (path === '/v1/compliance/consent/record' && method === 'POST') {
+        return await handleConsentRecord(request, env, ctx);
+      }
+      if (path === '/v1/compliance/consent/check' && method === 'POST') {
+        return await handleConsentCheck(request, env, ctx);
+      }
+      if (path === '/v1/compliance/calling-window' && method === 'GET') {
+        return handleCallingWindow();
+      }
+      if (path === '/v1/compliance/pre-call-check' && method === 'POST') {
+        return await handlePreCallCheck(request, env, ctx);
+      }
+      if (path === '/v1/compliance/audit' && method === 'GET') {
+        return await handleComplianceAudit(env, ctx);
+      }
+
       // ── Thinking Coach ──
       if (path === '/v1/thinking/frameworks' && method === 'GET') {
         return handleListThinkingFrameworks(url);
@@ -730,8 +873,111 @@ export default {
       if (path === '/v1/thinking/daily-models' && method === 'POST') {
         return await handleDailyModels(request, env, ctx);
       }
+      if (path === '/v1/thinking/pm-mastery' && method === 'POST') {
+        return await handlePMMastery(request, env, ctx);
+      }
+      if (path === '/v1/thinking/cognitive-os' && method === 'POST') {
+        return await handleCognitiveOS(request, env, ctx);
+      }
+      if (path === '/v1/thinking/life-architecture' && method === 'POST') {
+        return await handleLifeArchitecture(request, env, ctx);
+      }
+      if (path === '/v1/thinking/time-leverage' && method === 'POST') {
+        return await handleTimeLeverage(request, env, ctx);
+      }
+      if (path === '/v1/thinking/reprogram' && method === 'POST') {
+        return await handleReprogram(request, env, ctx);
+      }
       if (path === '/v1/thinking/dashboard' && method === 'GET') {
         return handleThinkingDashboard();
+      }
+
+      // ── CEO Sovereign Directives ──
+      if (path === '/v1/ceo/directive' && method === 'POST') {
+        return await handleCeoDirective(request, env, ctx);
+      }
+      if (path === '/v1/ceo/operations-review' && method === 'POST') {
+        return await handleOperationsReview(request, env, ctx);
+      }
+      if (path === '/v1/ceo/operating-state' && method === 'GET') {
+        return handleOperatingState();
+      }
+      if (path === '/v1/ceo/dashboard' && method === 'GET') {
+        return handleCeoDashboard();
+      }
+
+      // ── Cooperations Committee ──
+      if (path === '/v1/coop/committee' && method === 'GET') {
+        return handleCoopCommittee();
+      }
+      if (path === '/v1/coop/agents' && method === 'GET') {
+        return handleListCoopAgents(url);
+      }
+      if (path === '/v1/coop/brief' && method === 'POST') {
+        return await handleCoopBrief(request, env, ctx);
+      }
+      if (path === '/v1/coop/outreach' && method === 'POST') {
+        return await handleCoopOutreach(request, env, ctx);
+      }
+      if (path === '/v1/coop/network-map' && method === 'POST') {
+        return await handleCoopNetworkMap(request, env, ctx);
+      }
+      if (path === '/v1/coop/targets' && method === 'GET') {
+        return handleCoopTargets();
+      }
+      if (path === '/v1/coop/schedule' && method === 'POST') {
+        return await handleCoopSchedule(request);
+      }
+      if (path.match(/^\/v1\/coop\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/coop/agents/')[1];
+        return handleGetCoopAgent(agentId);
+      }
+
+      // ── Meta Ads ──
+      if (path === '/v1/meta-ads/status' && method === 'GET') {
+        return await handleMetaAdsStatus(request, env, ctx);
+      }
+      if (path === '/v1/meta-ads/boost' && method === 'POST') {
+        return await handleMetaAdsBoost(request, env, ctx);
+      }
+      if (path === '/v1/meta-ads/campaigns' && method === 'GET') {
+        return await handleMetaAdsCampaigns(env);
+      }
+
+      // ── R&D Campaign ──
+      if (path === '/v1/rnd/campaign' && method === 'GET') {
+        return handleRndCampaignPlan();
+      }
+      if (path === '/v1/rnd/campaign/status' && method === 'GET') {
+        return handleRndCampaignStatus();
+      }
+      if (path === '/v1/rnd/campaign/competitors' && method === 'GET') {
+        return handleRndCompetitors();
+      }
+      if (path === '/v1/rnd/campaign/systems' && method === 'GET') {
+        return handleRndSystems();
+      }
+      if (path.match(/^\/v1\/rnd\/campaign\/day\/\d+$/) && method === 'GET') {
+        const dayNum = path.split('/v1/rnd/campaign/day/')[1];
+        return handleRndCampaignDay(dayNum);
+      }
+
+      // ── Capital Engine ──
+      if (path === '/v1/capital/engine' && method === 'GET') {
+        return handleCapitalEngine();
+      }
+      if (path === '/v1/capital/drip-matrix' && method === 'GET') {
+        return handleDRIPMatrix();
+      }
+      if (path === '/v1/capital/business-model' && method === 'GET') {
+        return handleBusinessModel();
+      }
+      if (path === '/v1/capital/metrics' && method === 'GET') {
+        return handleCapitalMetrics();
+      }
+      if (path.match(/^\/v1\/capital\/pillars\/CE-P[1-3]$/) && method === 'GET') {
+        const pillarId = path.split('/v1/capital/pillars/')[1];
+        return handleCapitalPillar(pillarId);
       }
 
       // ── Agent Manifest ──

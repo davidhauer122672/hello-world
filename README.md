@@ -1,63 +1,78 @@
-# Coastal Key Treasure Coast Asset Management — Unified Operations Platform
+# Coastal Key Enterprise Platform
 
-Institutional-grade property oversight platform with appointment booking, Stripe payments, workflow automation, and AI-powered sales enablement.
+> *Coastal Key delivers enterprise-grade AI systems that automate operational complexity for working owners—reclaiming their time while multiplying productivity across every business function.*
 
-## Features
+Enterprise AI operations platform for Coastal Key Property Management — Treasure Coast asset oversight powered by a 383-unit autonomous agent fleet, sovereign MCCO governance, and Cloudflare edge infrastructure.
 
-- **Calendar Booking** - Interactive month-view calendar with time slot selection and double-booking prevention
-- **Stripe Payments** - Secure checkout via Stripe Checkout Sessions (PCI compliant)
-- **Confirmation Emails** - Automatic email sent upon successful payment via Nodemailer
-- **Responsive Design** - Clean, mobile-friendly UI
+**Standards**: Ferrari Precision | Red Bull Optimization | SpaceX Engineering
+**Governance**: [GOVERNANCE.md](GOVERNANCE.md) | **Mission**: [MISSION.md](MISSION.md)
 
-## Setup
+## Architecture
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+| Service | Runtime | Description |
+|---------|---------|-------------|
+| **ck-api-gateway** | Cloudflare Worker | Central API — 147 endpoints across 22 route modules |
+| **ck-website** | Cloudflare Pages | Reverse proxy to Manus production site with edge caching, SEO injection |
+| **ck-command-center** | Cloudflare Pages | Enterprise dashboard, trading desk, fleet command, Gazette |
+| **sentinel-webhook** | Cloudflare Worker | Retell call_analyzed → Airtable + Slack pipeline |
+| **ck-nemotron-worker** | Cloudflare Worker | NVIDIA Nemotron inference endpoint |
+| **ck-trading-desk** | Electron + React | Desktop trading terminal with real-time market data |
 
-2. Copy `.env.example` to `.env` and fill in your keys:
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Start the server:
-   ```bash
-   npm start
-   ```
-
-4. Open `http://localhost:3000` in your browser.
-
-## Stripe Webhook (Local Development)
-
-To receive payment confirmations locally, use the Stripe CLI:
+## Quick Start
 
 ```bash
-stripe listen --forward-to localhost:3000/api/payments/webhook
+npm install                # Install all workspace dependencies
+npm test                   # Run all test suites
+npm run dev:gateway        # Local dev — API gateway
+npm run dev:sentinel       # Local dev — sentinel webhook
+npm run dev:nemotron       # Local dev — Nemotron worker
+npm run deploy             # Deploy all services to Cloudflare
 ```
 
-Copy the webhook signing secret to your `.env` file as `STRIPE_WEBHOOK_SECRET`.
+## Fleet Composition (383 Units)
 
-## Services & Pricing
+- **15 MCCO** — Sovereign command (marketing & sales governance, Ferrari-Standard execution)
+- **297 Division Agents** — 9 divisions: EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB
+- **50 Intelligence Officers** — 5 squads: ALPHA, BRAVO, CHARLIE, DELTA, ECHO
+- **20 Email AI Agents** — 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
+- **1 Apex Trader** — FIN-TRADER-001, direct CEO report
 
-| Service         | Duration | Price |
-|-----------------|----------|-------|
-| Consultation    | 1 hour   | $50   |
-| Follow-up       | 30 min   | $30   |
-| Premium Session | 2 hours  | $100  |
+## API Gateway Modules
 
-## How It Works
+Inference, leads, agents, dashboards, workflows, pricing, property intelligence, campaigns, email agents, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, deals, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, agent manifest.
 
-1. Client selects a date and time on the calendar
-2. Fills in their details and selects a service
-3. Clicks "Book & Pay" to be redirected to Stripe Checkout
-4. After payment, Stripe webhook marks the appointment as paid
-5. A confirmation email is automatically sent to the client
+All routes prefixed `/v1/`. Auth via Bearer token or Slack HMAC-SHA256 signature.
 
-## Tech Stack
+## Integrations
 
-- **Backend**: Node.js, Express
-- **Payments**: Stripe
-- **Email**: Nodemailer (SMTP)
-- **Storage**: JSON file (easily swappable for a database)
-- **Frontend**: Vanilla HTML/CSS/JS
+**Cloudflare** — Workers, Pages, KV (cache, sessions, rate limits, audit log)
+**Airtable** — 39 tables, base `appUSnNgpDkcEOzhN`
+**Slack** — 3 apps, 10 slash commands, 12 programmatic channels
+**Retell AI** — Voice agent campaigns via Atlas platform
+**Claude API** — Inference, content generation, thinking coach
+**NVIDIA** — Nemotron 340B inference
+**Stripe** — Payment processing
+
+## CI/CD
+
+GitHub Actions: `test → preflight token check → parallel deploy` on push to main.
+
+```
+test → preflight → ┬─ deploy-website
+                    ├─ deploy-gateway → deploy-sentinel
+                    ├─ deploy-gateway → deploy-nemotron
+                    └─ deploy-command-center
+```
+
+## Security
+
+- Bearer token authentication on all API endpoints
+- Slack webhook HMAC-SHA256 signature verification (5-min replay window)
+- Rate limiting — 60 RPM per IP via KV sliding window
+- Audit logging — KV with 30-day TTL
+- CORS restricted at gateway level
+- CEO authority framework middleware
+
+## License
+
+Proprietary — Coastal Key Treasure Coast Asset Management.

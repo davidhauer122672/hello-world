@@ -81,10 +81,12 @@ async function handleInference(request, env) {
 }
 
 function handleHealth(env) {
+  const apiKeyConfigured = !!env.NVIDIA_API_KEY;
   return json({
-    status: 'operational',
+    status: apiKeyConfigured ? 'operational' : 'degraded',
     service: 'ck-nemotron-worker',
     model: env.MODEL_ID || 'nvidia/nemotron-4-340b-instruct',
+    apiKeyConfigured,
     timestamp: new Date().toISOString(),
   });
 }

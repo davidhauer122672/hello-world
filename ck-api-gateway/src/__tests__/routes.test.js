@@ -35,7 +35,7 @@ describe('Agent Routes', async () => {
     const res = handleListAgents(makeURL('/v1/agents', { division: 'MKT' }));
     const b = await body(res);
     assert.ok(b.agents.every(a => a.division === 'MKT'));
-    assert.equal(b.agents.length, 47);
+    assert.equal(b.agents.length, 48);
   });
 
   it('filters agents by status active', async () => {
@@ -203,6 +203,47 @@ describe('MCCO Routes', async () => {
     const b = await body(handleMCCOFleetStatus());
     assert.ok(b.fleetInspection);
     assert.ok(b.totalAgentsGoverned > 0);
+  });
+});
+
+// ── MCCO Master Plan Routes ────────────────────────────────────────────────
+
+describe('MCCO Master Plan Routes', async () => {
+  const { handleMasterPlan, handleMasterPlanPhase, handleDivisionPlan, handleActivationStatus } = await import('../routes/mcco.js');
+
+  it('returns master plan with all phases and divisions', async () => {
+    const b = await body(handleMasterPlan());
+    assert.equal(b.masterPlan, 'Coastal Key 6-Month Hypergrowth');
+    assert.equal(b.status, 'ACTIVE');
+    assert.equal(b.phases.length, 3);
+    assert.equal(b.activatedDivisions, 10);
+    assert.ok(b.totalAgentsDeployed > 300);
+  });
+
+  it('returns phase 1 details', async () => {
+    const b = await body(handleMasterPlanPhase('1'));
+    assert.equal(b.phase.name, 'FOUNDATION');
+    assert.ok(b.phase.divisionOrders.MCCO);
+    assert.ok(b.phase.kpiTargets);
+  });
+
+  it('returns 404 for unknown phase', async () => {
+    assert.equal(handleMasterPlanPhase('99').status, 404);
+  });
+
+  it('returns MKT division execution plan', async () => {
+    const b = await body(handleDivisionPlan('MKT'));
+    assert.equal(b.division.id, 'MKT');
+    assert.ok(b.immediateActions.length > 0);
+    assert.equal(b.executionStandard, 'ferrari');
+  });
+
+  it('returns activation status for all divisions', async () => {
+    const b = await body(handleActivationStatus());
+    assert.equal(b.status, 'ALL DIVISIONS ACTIVATED');
+    assert.equal(b.governance, 'sovereign');
+    assert.equal(b.divisions.length, 10);
+    assert.ok(b.summary.totalAgents > 300);
   });
 });
 

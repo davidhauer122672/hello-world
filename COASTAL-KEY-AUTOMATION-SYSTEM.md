@@ -2,20 +2,20 @@
 
 **Classification:** Operations Playbook
 **System Owner:** MKT Division (40 AI Agents)
-**Version:** 1.0.0
+**Version:** 2.0.0
 
 ---
 
 ## I. SYSTEM ARCHITECTURE
 
-### The Content Engine Pipeline
+### Content Engine Pipeline
 
 ```
 [Content Generation] → [Airtable Calendar] → [Buffer Queue] → [Platform APIs] → [Analytics Sync]
-      ↑                       ↑                     ↑                              ↓
-  Claude API            Manual Review          Scheduling              Engagement Metrics
-  MKT Division          Status Gates           Peak Times              back to Airtable
-  40 AI Agents          Approval Flow          Auto-publish            Performance Loop
+       ↑                      ↑                    ↑                                ↓
+   Claude API           Manual Review          Scheduling                   Engagement Metrics
+  MKT Division          Status Gates           Peak Times                  back to Airtable
+  40 AI Agents          Approval Flow          Auto-publish                Performance Loop
 ```
 
 ### Components
@@ -32,51 +32,41 @@
 
 ## II. POSTING CADENCE & PEAK HOURS
 
-### Daily Minimum: 3 Posts Per Platform
+### Platform Schedule
 
 | Platform | Post 1 | Post 2 | Post 3 | Weekly Total |
 |---|---|---|---|---|
-| **Instagram** | 7:00 AM ET | 12:00 PM ET | 7:00 PM ET | 21 |
-| **Facebook** | 9:00 AM ET | 1:00 PM ET | 5:00 PM ET | 21 |
-| **LinkedIn** | 7:30 AM ET | 12:00 PM ET | 5:30 PM ET | 21 |
-| **YouTube** | 12:00 PM ET | 3:00 PM ET | 8:00 PM ET | 21 |
-| **TikTok** | 8:00 AM ET | 1:00 PM ET | 8:00 PM ET | 21 |
-| **X (Twitter)** | 7:30 AM ET | 12:30 PM ET | 7:00 PM ET | 21 |
-| **Mighty Networks** | 8:00 AM ET | 1:00 PM ET | 6:00 PM ET | 21 |
-| **Alignable** | 8:30 AM ET | 12:30 PM ET | 5:30 PM ET | 21 |
-| **TOTAL** | | | | **168/week** |
+| Instagram | 7:00 AM ET | 12:00 PM ET | 7:00 PM ET | 21 |
+| Facebook | 9:00 AM ET | 1:00 PM ET | — | 14 |
+| LinkedIn | 7:30 AM ET | — | — | 7 |
+| YouTube | 12:00 PM ET | — | — | 3 |
+| TikTok | 8:00 AM ET | 1:00 PM ET | — | 14 |
+| X (Twitter) | 7:30 AM ET | 12:30 PM ET | 7:00 PM ET | 21 |
+| Mighty Networks | 8:00 AM ET | — | — | 7 |
+| Alignable | 8:30 AM ET | — | — | 7 |
+| **TOTAL** | | | | **~94-112/week** |
 
 ### Why These Times
 
-- **Early morning (7-9 AM):** Property owners checking phones before work. Investors scanning market updates with coffee. Relocators researching during quiet hours.
-- **Midday (12-1 PM):** Lunch break scrolling. Highest LinkedIn engagement window. Decision-makers between meetings.
-- **Evening (5-8 PM):** End-of-day wind-down. Highest Instagram Reel completion rates. YouTube long-form consumption peaks.
+**Early morning (7-9 AM):** Property owners checking phones before work. Investors scanning market updates. Relocators researching during quiet hours. **Midday (12-1 PM):** Lunch-break scrolling. Highest LinkedIn engagement window. Decision-makers between meetings. **Evening (5-8 PM):** End-of-day wind-down. Highest Instagram Reel completion rates. YouTube long-form consumption peaks.
 
-### Weekend Adjustments
-
-- Saturday: Shift all times 1 hour later (lifestyle content performs better with late risers)
-- Sunday: Reduce LinkedIn to 1 post (professionals disengage). Increase lifestyle content across Instagram/TikTok.
+**Weekend adjustments:** Saturday — shift all times 1 hour later (lifestyle content performs better with late risers). Sunday — reduce LinkedIn to 0 posts, increase lifestyle content on Instagram/TikTok.
 
 ---
 
 ## III. CONTENT PILLAR ROTATION
 
-### Weekly Distribution
-
 | Day | Morning Slot | Midday Slot | Evening Slot |
 |---|---|---|---|
-| **Monday** | AI Authority | Market Intelligence | Tracey Hunter |
-| **Tuesday** | Market Intelligence | Treasure Coast Lifestyle | AI Authority |
-| **Wednesday** | Tracey Hunter | AI Authority | Market Intelligence |
-| **Thursday** | Treasure Coast Lifestyle | Tracey Hunter | AI Authority |
-| **Friday** | AI Authority | Market Intelligence | Treasure Coast Lifestyle |
-| **Saturday** | Treasure Coast Lifestyle | Tracey Hunter | Market Intelligence |
-| **Sunday** | Treasure Coast Lifestyle | AI Authority | Tracey Hunter |
+| Monday | AI Authority | Market Intelligence | Tracey Hunter |
+| Tuesday | Market Intelligence | Treasure Coast Lifestyle | AI Authority |
+| Wednesday | Tracey Hunter | AI Authority | Market Intelligence |
+| Thursday | Treasure Coast Lifestyle | Tracey Hunter | AI Authority |
+| Friday | AI Authority | Market Intelligence | Treasure Coast Lifestyle |
+| Saturday | Treasure Coast Lifestyle | Tracey Hunter | Market Intelligence |
+| Sunday | Treasure Coast Lifestyle | AI Authority | Tracey Hunter |
 
-This rotation ensures:
-- Each pillar gets ~25% of weekly content
-- No two consecutive posts on any platform share the same pillar
-- Weekend skews toward lifestyle (higher engagement on leisure content)
+Each pillar gets ~25% of weekly content. No two consecutive posts on any platform share the same pillar. Weekends skew toward lifestyle (higher engagement on leisure content).
 
 ---
 
@@ -84,7 +74,7 @@ This rotation ensures:
 
 ### Stage 1: Generation (Automated)
 
-```
+```json
 POST /v1/content/generate
 {
   "type": "social",
@@ -97,146 +87,75 @@ POST /v1/content/generate
 }
 ```
 
-The MKT division AI agents generate:
-- Caption copy (platform-optimized length)
-- Hashtag sets (5-10 per post)
-- CTA (single, pillar-matched)
-- Visual direction notes (for asset production)
-
-Output writes directly to Airtable Content Calendar with `Status: Draft`.
+MKT agents generate: caption copy (platform-optimized), hashtag sets (5-10), single pillar-matched CTA, and visual direction notes. Output writes to Airtable Content Calendar with Status: `Draft`.
 
 ### Stage 2: Review Gate (Human)
 
-- **Draft** → Content generated, awaiting review
-- **In Review** → Tracey or team member reviewing
-- **Approved** → Ready for scheduling
-- **Scheduled** → Queued in Buffer for publishing
-- **Published** → Live on platform
-- **Rejected** → Needs revision (notes added)
+`Draft` → `In Review` → `Approved` → `Scheduled` → `Published` (or `Rejected` with revision notes)
 
 ### Stage 3: Scheduling (Automated)
 
-Approved posts auto-queue to Buffer at designated peak times:
-- Buffer API integration via `Buffer Status` and `Buffer Post ID` fields
-- `Buffer Scheduled` checkbox confirms queue placement
-- Fallback: if Buffer fails, native platform scheduling via API
+Approved posts auto-queue to Buffer at designated peak times via Buffer API. Buffer Status and Buffer Post ID fields confirm placement. Fallback: native platform scheduling via API if Buffer fails.
 
 ### Stage 4: Publishing (Automated)
 
-Buffer publishes at the scheduled time. On publish:
-- `Status` → Published
-- `Published At` → timestamp
-- `Buffer Sync` → confirmation ID
+On publish: Status → `Published`, timestamp recorded, Buffer sync confirmation logged.
 
-### Stage 5: Analytics (Automated — Daily Sync)
+### Stage 5: Analytics (Daily Sync at 6:00 AM ET)
 
-Daily cron job at 6:00 AM ET syncs previous day's metrics:
-- `Impressions` ← platform API
-- `Engagements` ← platform API (likes + comments + shares + saves)
-- `Engagement Rate` ← calculated (engagements / impressions × 100)
-- `Analytics Synced` ← sync date
+Daily cron syncs previous day's metrics per post: Impressions, Engagements (likes + comments + shares + saves), Engagement Rate (engagements / impressions × 100), and sync date.
 
 ---
 
 ## V. PLATFORM-SPECIFIC AUTOMATION RULES
 
 ### Instagram
-- **Reels:** Auto-generate cover frame from first 3 seconds. Add caption overlay.
-- **Carousels:** Generate 5-8 slides. First slide = hook. Last slide = CTA.
-- **Stories:** Auto-post daily. Include poll/question sticker 3x/week for engagement.
-- **Auto-reply:** DM automation for common inquiries → route to Speed-to-Lead.
+Reels: auto-generate cover frame from first 3 seconds, add caption overlay. Carousels: generate 5-8 slides (first = hook, last = CTA). Stories: auto-post daily with poll/question sticker 3x/week. DM automation for common inquiries → route to Speed-to-Lead.
 
 ### Facebook
-- **Cross-post:** Instagram Reels auto-share to Facebook Reels.
-- **Groups:** Auto-post market updates to "Treasure Coast Property Owners" group.
-- **Boost rules:** Posts exceeding 2x average engagement auto-flagged for paid boost.
-- **Event integration:** Local events auto-posted from community calendar.
+Cross-post Instagram Reels to Facebook Reels. Auto-post market updates to "Treasure Coast Property Owners" group. Posts exceeding 2x average engagement auto-flagged for paid boost. Local events auto-posted from community calendar.
 
 ### LinkedIn
-- **Article publishing:** Long-form posts auto-formatted for LinkedIn article layout.
-- **Engagement automation:** Auto-like and comment on 10 target accounts daily.
-- **Newsletter:** Weekly digest of top-performing posts → LinkedIn Newsletter.
-- **Tagging:** Auto-tag relevant industry connections on thought leadership posts.
+Long-form posts auto-formatted for article layout. Auto-like and comment on 10 target accounts daily. Weekly digest → LinkedIn Newsletter. Auto-tag relevant connections on thought leadership posts.
 
 ### YouTube
-- **Shorts:** All Instagram Reels auto-repurposed as YouTube Shorts.
-- **SEO:** Auto-generate titles, descriptions, and tags optimized for search.
-- **Thumbnails:** AI-generate thumbnail with consistent brand template.
-- **End screens:** Auto-add subscribe CTA and related video link.
+All Instagram Reels auto-repurposed as YouTube Shorts. AI-generated titles, descriptions, and tags optimized for search. Consistent brand-template thumbnails. Auto-add subscribe CTA and related video end screens.
 
 ### TikTok
-- **Trend monitoring:** MKT agents scan trending sounds/formats daily.
-- **Cross-post:** Top-performing Reels repurposed with TikTok-native captions.
-- **Duets/Stitches:** Flag competitor content for strategic duet opportunities.
-- **Hashtag optimization:** Real-time hashtag performance tracking.
+MKT agents scan trending sounds/formats daily. Top Reels repurposed with TikTok-native captions. Flag competitor content for strategic duet opportunities. Real-time hashtag performance tracking.
 
 ### X (Twitter)
-- **Thread automation:** Long-form LinkedIn articles auto-converted to 5-8 tweet threads. First tweet is a standalone hook optimized for retweets.
-- **Data drop scheduling:** Market stats auto-pulled from INT Division Airtable data and formatted as single-tweet data drops with sharp commentary.
-- **Quote-tweet monitoring:** Flag competitor and industry tweets for strategic quote-tweet responses with Treasure Coast-specific data.
-- **Poll automation:** Weekly poll auto-generated from community engagement data. Results feed back into content strategy.
-- **Hashtag discipline:** Auto-limit to 2-3 hashtags per tweet. Strip excess tags from cross-posted content.
-- **Engagement rules:** Auto-reply to mentions within 15 minutes. Like all genuine @mentions. Retweet client testimonials.
+LinkedIn articles auto-converted to 5-8 tweet threads (first tweet = standalone hook). Market stats auto-pulled from INT Division data for single-tweet data drops. Flag competitor tweets for quote-tweet responses with Treasure Coast data. Weekly auto-poll from engagement data — results feed content strategy. Auto-limit 2-3 hashtags per tweet. Auto-reply to mentions within 15 minutes.
 
 ### Mighty Networks
-- **Community post scheduling:** Discussion prompts, market insights, and exclusive content auto-posted at peak community engagement times.
-- **Drip content:** New member welcome sequence (5 posts over 7 days) introducing Coastal Key's fleet, Tracey's credentials, service zones, and how to access premium intelligence.
-- **Live event automation:** Monthly "Command Center Live" auto-scheduled. Reminders sent 24h, 1h, and 15min before event.
-- **Member segmentation:** Tag members by interest (investor, owner, relocator, STR) and deliver segment-specific content automatically.
-- **Premium gating:** Gazette full reports, DELTA Squad revenue data, and portfolio review scheduling locked behind premium tier.
-- **Engagement tracking:** Member activity scores tracked weekly. Low-engagement members get re-engagement nudge content.
+Discussion prompts and exclusive content auto-posted at peak engagement times. New member welcome sequence: 5 posts over 7 days (fleet intro, Tracey credentials, service zones, premium access). Monthly "Command Center Live" auto-scheduled with 24h/1h/15min reminders. Members segmented by interest for targeted delivery. Premium gating on Gazette reports and DELTA Squad data. Weekly engagement scores trigger re-engagement nudges.
 
 ### Alignable
-- **Business update automation:** Operational milestones auto-posted from Airtable events (new vendors added, fleet milestones, service zone expansions).
-- **Referral network building:** Auto-connect with Treasure Coast businesses in target categories (HVAC, plumbing, landscaping, cleaning, insurance).
-- **Recommendation cycle:** Auto-prompt for recommendations from vendors after successful project completion. Reciprocate within 48 hours.
-- **Local market content:** Condensed versions of LinkedIn market intelligence auto-formatted for Alignable's business audience.
-- **Event posting:** Local Chamber of Commerce events, networking meetups, and Coastal Key community events auto-posted.
-- **Vendor recruitment pipeline:** New Alignable connections in contractor/service categories auto-flagged for VEN Division vendor intake process.
+Operational milestones auto-posted from Airtable events. Auto-connect with Treasure Coast businesses in target categories (HVAC, plumbing, landscaping, cleaning, insurance). Auto-prompt recommendations after successful vendor projects; reciprocate within 48 hours. Condensed LinkedIn market intelligence auto-formatted for business audience. New contractor connections auto-flagged for VEN Division intake.
 
 ---
 
 ## VI. CONTENT TEMPLATES
 
 ### Template 1: AI Authority Reel (Instagram/TikTok)
-```
-HOOK (0-1.5s): "Here's what 290 AI agents do before you wake up."
-BODY (1.5-12s): Screen recording of Command Center dashboard.
-       Show agent count, division breakdown, real-time activity feed.
-CLOSER (12-15s): "Your property. Our obsession. Link in bio."
-```
+
+**Hook (0-1.5s):** "Here's what 290 AI agents do before you wake up." **Body (1.5-12s):** Command Center dashboard screen recording — agent count, division breakdown, activity feed. **Closer (12-15s):** "Your property. Our obsession. Link in bio."
 
 ### Template 2: Market Intelligence Carousel (Instagram/Facebook)
-```
-SLIDE 1: "[County] Q1 2026 Market Report" — bold headline, CK branding
-SLIDE 2: Median price + YoY change — big number, trend arrow
-SLIDE 3: Days on market — comparison chart
-SLIDE 4: Hot zones — map with highlighted areas
-SLIDE 5: "What this means for you" — plain-language insight
-SLIDE 6: CTA — "Get your free property valuation. Link in bio."
-```
+
+Slide 1: "[County] Q1 2026 Market Report" (bold headline, CK branding). Slide 2: Median price + YoY change. Slide 3: Days on market comparison. Slide 4: Hot zones map. Slide 5: Plain-language insight. Slide 6: CTA — "Get your free property valuation."
 
 ### Template 3: Tracey Hunter Talking Head (All Platforms)
-```
-HOOK: Direct-to-camera. "I listed this waterfront home at $1.8M. Then something unexpected happened."
-STORY: 30-60 seconds. Natural, conversational. One key insight or win.
-CTA: "If you're thinking about making a move on the Treasure Coast, let's talk."
-```
 
-### Template 4: Treasure Coast Lifestyle (Instagram/TikTok)
-```
-VISUAL: Drone footage — sunrise over Hutchinson Island / Stuart waterfront / Jupiter Inlet
-OVERLAY TEXT: "This is why people are moving to the Treasure Coast."
-CAPTION: Market fact + lifestyle benefit + soft CTA
-```
+**Hook:** Direct-to-camera. "I listed this waterfront home at $1.8M. Then something unexpected happened." **Story (30-60s):** Natural, conversational, one key insight. **CTA:** "Thinking about making a move on the Treasure Coast? Let's talk."
+
+### Template 4: Lifestyle (Instagram/TikTok)
+
+Drone footage (Hutchinson Island sunrise / Stuart waterfront / Jupiter Inlet). Overlay: "This is why people are moving to the Treasure Coast." Caption: market fact + lifestyle benefit + soft CTA.
 
 ### Template 5: LinkedIn Thought Leadership
-```
-HOOK LINE: One provocative statement about AI in real estate.
-BODY: 800-1200 words. Personal perspective. Data-backed.
-       Reference specific CK infrastructure (fleet size, divisions, endpoints).
-CLOSER: Question to drive comments. Soft CTA.
-```
+
+One provocative opening statement. 800-1,200 words, personal perspective, data-backed, referencing CK infrastructure. Close with engagement question and soft CTA.
 
 ---
 
@@ -246,45 +165,40 @@ CLOSER: Question to drive comments. Soft CTA.
 
 | Trigger | Content Generated | Platform |
 |---|---|---|
-| New lead created in Airtable | "Another Treasure Coast property owner joined Coastal Key" | Instagram Story |
+| New lead in Airtable | "Another Treasure Coast property owner joined Coastal Key" | Instagram Story |
 | Deal closed by Tracey | Celebration post + Children's Miracle Network mention | All platforms |
-| Market report generated by INT division | Data carousel + video summary | Instagram, LinkedIn, YouTube |
+| INT division market report | Data carousel + video summary | Instagram, LinkedIn, YouTube |
 | Hurricane watch issued | Storm prep content series (3 posts) | All platforms |
 | New property listed | Property showcase Reel + carousel | Instagram, Facebook, TikTok |
 | Monthly Gazette published | Gazette excerpt series (5 posts) | LinkedIn, Instagram |
-| 100+ calls in a day by Sentinel | "Our AI fleet made 2,400 calls today" milestone post | LinkedIn, TikTok |
+| 100+ Sentinel calls in a day | "Our AI fleet made 2,400 calls today" milestone | LinkedIn, TikTok |
 
-### Recurring Automation
+### Recurring Schedule
 
-| Schedule | Action |
-|---|---|
-| Daily 5:00 AM ET | Generate day's content → Airtable (Status: Draft) |
-| Daily 5:30 AM ET | Auto-approve posts matching approved templates |
-| Daily 6:00 AM ET | Sync previous day's analytics from all platforms |
-| Weekly Monday 4:00 AM ET | Generate full week content batch |
-| Weekly Friday 5:00 PM ET | Week-in-review performance report → Slack |
-| Monthly 1st 6:00 AM ET | Generate monthly market report content series |
-| Quarterly | Content pillar performance audit. Rebalance if needed. |
+| Frequency | Time | Action |
+|---|---|---|
+| Daily | 5:00 AM ET | Generate day's content → Airtable (`Draft`) |
+| Daily | 5:30 AM ET | Auto-approve posts matching approved templates |
+| Daily | 6:00 AM ET | Sync previous day's analytics from all platforms |
+| Weekly (Mon) | 4:00 AM ET | Generate full week content batch |
+| Weekly (Fri) | 5:00 PM ET | Week-in-review performance report → Slack |
+| Monthly (1st) | 6:00 AM ET | Generate monthly market report content series |
+| Quarterly | — | Content pillar performance audit; rebalance if needed |
 
 ---
 
 ## VIII. PERFORMANCE MONITORING
 
-### Real-Time Dashboard (Command Center Integration)
+### Command Center Integration
 
-Add social media metrics to the CK Command Center dashboard:
-- Live follower count across all platforms
-- Today's posts: published vs. scheduled vs. draft
-- Engagement rate trend (7-day rolling average)
-- Top-performing post of the week
-- Content pipeline status (how many posts in each stage)
+Social media metrics added to CK Command Center dashboard: live follower counts, today's post status (published/scheduled/draft), 7-day rolling engagement rate, top-performing post of the week, and content pipeline stage counts.
 
 ### Alert Triggers
 
 | Condition | Alert | Channel |
 |---|---|---|
 | Post engagement > 3x average | "Boost candidate" flag | Slack #marketing |
-| Engagement rate drops below 2% for 3 days | "Content quality review needed" | Slack #marketing |
+| Engagement rate < 2% for 3 days | "Content quality review needed" | Slack #marketing |
 | Buffer publish failure | "Manual post required" | Slack #marketing-urgent |
 | Negative comment detected | "Reputation management" | Slack #marketing-urgent |
 | Follower milestone (every 1,000) | Celebration post auto-generated | All platforms |
@@ -293,33 +207,16 @@ Add social media metrics to the CK Command Center dashboard:
 
 ## IX. CONTENT REPURPOSING MATRIX
 
-Every piece of content gets repurposed across the ecosystem:
+**1 YouTube video (8 min) produces:**
 
-```
-1 YouTube Video (8 min)
-  → 3 YouTube Shorts (15-60s clips)
-  → 3 Instagram Reels (reformatted)
-  → 3 TikToks (native captions)
-  → 1 LinkedIn Article (transcript + insights)
-  → 1 Facebook Post (key takeaway)
-  → 1 X Thread (5-8 tweets, standalone hook)
-  → 1 Mighty Networks Discussion Post (member-exclusive extended cut)
-  → 1 Alignable Business Update (key insight for local business audience)
-  → 5 Instagram Stories (behind-the-scenes)
-  → 1 Email Newsletter segment
-  → 1 Gazette excerpt
+1 YouTube Video → 3 Shorts → 3 Instagram Reels → 3 TikToks → 1 LinkedIn Article → 1 Facebook Post → 1 X Thread → 1 Mighty Networks Discussion → 1 Alignable Update → 5 Instagram Stories → 1 Email Newsletter segment → 1 Gazette excerpt
 
-Total: 1 production → 21 content pieces
-```
+**Total: 1 production → 21 content pieces.**
 
 ### Repurposing Rules
-- YouTube → Shorts: Extract top 3 hooks/moments
-- YouTube → Reels: Reformat to 9:16, add Instagram-native text overlays
-- YouTube → LinkedIn: Transcribe, edit for professional tone, add data callouts
-- Reels → TikTok: Re-caption with TikTok-native language, trending sounds
-- LinkedIn → Email: Condense to 300 words, add personal CTA from Tracey
+
+YouTube → Shorts: extract top 3 hooks/moments. YouTube → Reels: reformat to 9:16, Instagram-native overlays. YouTube → LinkedIn: transcribe, professional tone, data callouts. Reels → TikTok: re-caption with native language, trending sounds. LinkedIn → Email: condense to 300 words, personal CTA from Tracey.
 
 ---
 
-*Coastal Key Property Management — Automated Content Operations*
-*MKT Division | 40 AI Agents | 168 Posts/Week | 8 Platforms | Zero Manual Publishing*
+*Coastal Key Property Management — Automated Content Operations | MKT Division | 40 AI Agents | ~112 Posts/Week | 8 Platforms | Zero Manual Publishing*

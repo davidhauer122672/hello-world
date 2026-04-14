@@ -1,5 +1,5 @@
 /**
- * Workflow Routes — Automated pipelines replacing Zapier steps.
+ * Workflow Routes — Native automated pipelines.
  *
  *   POST /v1/workflows/scaa1 — SCAA-1 Battle Plan Pipeline
  *   POST /v1/workflows/wf3   — WF-3 Investor Escalation
