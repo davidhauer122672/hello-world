@@ -39,6 +39,9 @@ jobs:
       - name: Test API Gateway
         run: npm run test:gateway
 
+      - name: Test Media Automation Pipeline
+        run: node --test ck-api-gateway/src/__tests__/media-automation.test.js
+
       - name: Test Sentinel Webhook
         run: npm run test:sentinel
 

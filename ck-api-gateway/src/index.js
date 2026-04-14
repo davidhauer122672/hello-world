@@ -10,6 +10,14 @@
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
  *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
  *   POST /v1/content/publish    — Publish Content Calendar record to Buffer (WF-2 replacement)
+ *   GET  /v1/coop/committee      — Cooperations Committee charter and dashboard
+ *   GET  /v1/coop/agents         — List all 10 COOP agents
+ *   GET  /v1/coop/agents/:id     — Get single COOP agent
+ *   POST /v1/coop/brief          — Generate CEO meeting preparation brief
+ *   POST /v1/coop/outreach       — Draft warm outreach message for target contact
+ *   POST /v1/coop/network-map    — Analyze CEO relationship network
+ *   GET  /v1/coop/targets        — Target contact categories and priorities
+ *   POST /v1/coop/schedule       — Propose CEO meeting for calendar
  *   GET  /v1/meta-ads/status    — Meta Ads connector health check & diagnostics
  *   POST /v1/meta-ads/boost     — Boost high-engagement post via Meta Ads Manager
  *   GET  /v1/agents             — List/search agents with filtering
@@ -164,7 +172,8 @@ import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleE
 import { handleListMCCOAgents, handleGetMCCOAgent, handleMCCOCommand, handleMCCOFleetStatus, handleMCCODirective, handleMCCOContentCalendar, handleMCCOAudienceProfile, handleMCCOPositioning, handleMCCOMonetization, handleMCCOPost, handleMasterPlan, handleMasterPlanPhase, handleDivisionPlan, handleSovereignDirectiveIssue, handleActivationStatus } from './routes/mcco.js';
 import { handleListFrameworks, handleGetFramework, handleGetFrameworksByCategory, handleFrameworkApply, handleFrameworkContent, handleFrameworkSalesPlaybook, handleFrameworkProductivityPlan, handleVPASEvaluate, handleVPASAudit } from './routes/frameworks.js';
 import {
-  handleTraderDashboard, handleTraderAgent, handleWatchlist, handleQuote, handleSignal,
+  handleTraderDashboard, handleTraderAgent, handleTraderFleet, handleGetTraderById,
+  handleWatchlist, handleQuote, handleSignal,
   handleCapitalCall, handlePortfolio as handleTraderPortfolio, handleTraderNews,
   handleLogTrade, handleTradeHistory, handleCapitalTiers,
 } from './routes/trader.js';
@@ -185,6 +194,7 @@ import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './rou
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, handleRndCompetitors, handleRndSystems } from './routes/rnd-campaign.js';
 import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
+import { handleCoopCommittee, handleListCoopAgents, handleGetCoopAgent, handleCoopBrief, handleCoopOutreach, handleCoopNetworkMap, handleCoopTargets, handleCoopSchedule } from './routes/cooperations.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -737,6 +747,13 @@ export default {
       if (path === '/v1/trader/agent' && method === 'GET') {
         return handleTraderAgent();
       }
+      if (path === '/v1/trader/fleet' && method === 'GET') {
+        return handleTraderFleet(url);
+      }
+      if (path.match(/^\/v1\/trader\/fleet\/[^/]+$/) && method === 'GET') {
+        const traderId = path.split('/v1/trader/fleet/')[1];
+        return handleGetTraderById(traderId);
+      }
       if (path === '/v1/trader/watchlist' && method === 'GET') {
         return handleWatchlist();
       }
@@ -887,6 +904,33 @@ export default {
       }
       if (path === '/v1/ceo/dashboard' && method === 'GET') {
         return handleCeoDashboard();
+      }
+
+      // ── Cooperations Committee ──
+      if (path === '/v1/coop/committee' && method === 'GET') {
+        return handleCoopCommittee();
+      }
+      if (path === '/v1/coop/agents' && method === 'GET') {
+        return handleListCoopAgents(url);
+      }
+      if (path === '/v1/coop/brief' && method === 'POST') {
+        return await handleCoopBrief(request, env, ctx);
+      }
+      if (path === '/v1/coop/outreach' && method === 'POST') {
+        return await handleCoopOutreach(request, env, ctx);
+      }
+      if (path === '/v1/coop/network-map' && method === 'POST') {
+        return await handleCoopNetworkMap(request, env, ctx);
+      }
+      if (path === '/v1/coop/targets' && method === 'GET') {
+        return handleCoopTargets();
+      }
+      if (path === '/v1/coop/schedule' && method === 'POST') {
+        return await handleCoopSchedule(request);
+      }
+      if (path.match(/^\/v1\/coop\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/coop/agents/')[1];
+        return handleGetCoopAgent(agentId);
       }
 
       // ── Meta Ads ──

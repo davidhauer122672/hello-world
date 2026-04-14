@@ -3,6 +3,7 @@ services:
     name: coastal-key-platform
     runtime: node
     plan: free
+    region: ohio
     buildCommand: npm install && node scripts/init-data.js
     startCommand: node server.js
     healthCheckPath: /api/health
@@ -15,6 +16,12 @@ services:
         sync: false
       - key: BUSINESS_NAME
         value: Coastal Key Treasure Coast Asset Management
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: CEO_EMAIL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: STRIPE_PUBLISHABLE_KEY
