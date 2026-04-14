@@ -16,7 +16,7 @@ Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (147 endpoints)
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (162 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
 - **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
 - **Website**: https://coastalkey-pm.com (reverse proxy → Manus origin)
@@ -24,7 +24,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 147 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 162 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, client portal automation, risk mitigation, Treasure Coast intelligence, AI backend tiers (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Dashboard UI for 383-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
@@ -80,6 +80,44 @@ POST /v1/mcco/audience-profile  — Generate audience psychology profile
 POST /v1/mcco/positioning       — Generate authority positioning strategy
 POST /v1/mcco/monetization      — Generate monetization plan
 POST /v1/mcco/post              — Generate high-engagement social post
+```
+
+### Client Portal Automation Engine
+```
+GET  /v1/portal/overview           — Portal engine overview
+GET  /v1/portal/workflows          — All automation workflows (5 workflows)
+GET  /v1/portal/workflows/:id      — Single workflow detail (WF-CP-001 to WF-CP-005)
+GET  /v1/portal/dashboard          — Dashboard module configuration (6 modules)
+GET  /v1/portal/owner-profile      — Seasonal owner profile & value proposition
+GET  /v1/portal/metrics            — Portal KPIs & projections
+```
+
+### Predictive AI Risk Mitigation Engine
+```
+GET  /v1/risk/engine               — Risk engine overview (4 domains)
+GET  /v1/risk/domains              — All risk domains (water, pest, security, insurance)
+GET  /v1/risk/domains/:id          — Single risk domain detail
+GET  /v1/risk/sensors              — Sensor integration specifications
+POST /v1/risk/assess               — AI risk assessment for property profile
+GET  /v1/risk/metrics              — Risk engine KPIs & projections
+```
+
+### Treasure Coast Market Intelligence
+```
+GET  /v1/tc-intel/overview         — Market overview & competitive positioning
+GET  /v1/tc-intel/competitors      — Full competitor analysis (7 competitors)
+GET  /v1/tc-intel/competitors/:id  — Single competitor detail
+GET  /v1/tc-intel/automation-gaps  — Automation gap analysis (7 gaps)
+GET  /v1/tc-intel/metrics          — TAM/SAM/SOM & market metrics
+```
+
+### AI Backend Tier ($3.99 Service)
+```
+GET  /v1/ai-tier/plans             — All service tiers (Free → $3.99 → $29.99 → Managed)
+GET  /v1/ai-tier/plans/:id         — Single tier detail
+GET  /v1/ai-tier/reports           — AI report templates (5 templates)
+GET  /v1/ai-tier/cost-structure    — Infrastructure cost breakdown
+GET  /v1/ai-tier/metrics           — Unit economics & revenue projections
 ```
 
 ## Slack Integration (3 apps, 10 commands, 12 programmatic channels)

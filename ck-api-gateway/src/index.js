@@ -142,6 +142,28 @@
  *   GET  /v1/capital/drip-matrix       — DRIP Matrix delegation framework
  *   GET  /v1/capital/business-model    — Integrated business model
  *   GET  /v1/capital/metrics           — Revenue projections and KPIs
+ *   GET  /v1/portal/overview           — Client Portal engine overview
+ *   GET  /v1/portal/workflows          — All portal automation workflows
+ *   GET  /v1/portal/workflows/:id      — Single workflow detail (WF-CP-001 to WF-CP-005)
+ *   GET  /v1/portal/dashboard          — Portal dashboard module configuration
+ *   GET  /v1/portal/owner-profile      — Seasonal owner profile & value proposition
+ *   GET  /v1/portal/metrics            — Portal KPIs & projections
+ *   GET  /v1/risk/engine               — Risk Mitigation engine overview
+ *   GET  /v1/risk/domains              — All risk domains (water, pest, security, insurance)
+ *   GET  /v1/risk/domains/:id          — Single risk domain detail
+ *   GET  /v1/risk/sensors              — Sensor integration specifications
+ *   POST /v1/risk/assess               — AI risk assessment for property profile
+ *   GET  /v1/risk/metrics              — Risk engine KPIs & projections
+ *   GET  /v1/tc-intel/overview         — Treasure Coast market overview
+ *   GET  /v1/tc-intel/competitors      — Full competitor analysis matrix
+ *   GET  /v1/tc-intel/competitors/:id  — Single competitor detail
+ *   GET  /v1/tc-intel/automation-gaps  — Automation gap analysis
+ *   GET  /v1/tc-intel/metrics          — TAM/SAM/SOM & market metrics
+ *   GET  /v1/ai-tier/plans             — All service tiers (Free → Managed)
+ *   GET  /v1/ai-tier/plans/:id         — Single tier detail
+ *   GET  /v1/ai-tier/reports           — AI report templates
+ *   GET  /v1/ai-tier/cost-structure    — Infrastructure cost breakdown
+ *   GET  /v1/ai-tier/metrics           — Unit economics & projections
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  */
@@ -185,6 +207,10 @@ import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './rou
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, handleRndCompetitors, handleRndSystems } from './routes/rnd-campaign.js';
 import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
+import { handlePortalOverview, handlePortalWorkflows, handlePortalWorkflow, handlePortalDashboard, handleOwnerProfile, handlePortalMetrics } from './routes/client-portal.js';
+import { handleRiskEngine, handleRiskDomains, handleRiskDomain, handleSensorIntegration, handleRiskAssessment, handleRiskMetrics } from './routes/risk-mitigation.js';
+import { handleTCIntelOverview, handleTCIntelCompetitors, handleTCIntelCompetitor, handleTCIntelAutomationGaps, handleTCIntelMetrics } from './routes/treasure-coast-intel.js';
+import { handleAITierPlans, handleAITierPlan, handleAITierReports, handleAITierCostStructure, handleAITierMetrics } from './routes/ai-backend-tier.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -208,7 +234,7 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 382,
+          agents: 383,
           divisions: 10,
           timestamp: new Date().toISOString(),
         });
@@ -296,7 +322,7 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 312,
+        agents: 383,
         divisions: 10,
         checks,
         timestamp: new Date().toISOString(),
@@ -934,6 +960,84 @@ export default {
       if (path.match(/^\/v1\/capital\/pillars\/CE-P[1-3]$/) && method === 'GET') {
         const pillarId = path.split('/v1/capital/pillars/')[1];
         return handleCapitalPillar(pillarId);
+      }
+
+      // ── Client Portal Automation Engine ──
+      if (path === '/v1/portal/overview' && method === 'GET') {
+        return handlePortalOverview();
+      }
+      if (path === '/v1/portal/workflows' && method === 'GET') {
+        return handlePortalWorkflows();
+      }
+      if (path === '/v1/portal/dashboard' && method === 'GET') {
+        return handlePortalDashboard();
+      }
+      if (path === '/v1/portal/owner-profile' && method === 'GET') {
+        return handleOwnerProfile();
+      }
+      if (path === '/v1/portal/metrics' && method === 'GET') {
+        return handlePortalMetrics();
+      }
+      if (path.match(/^\/v1\/portal\/workflows\/WF-CP-\d+$/) && method === 'GET') {
+        const workflowId = path.split('/v1/portal/workflows/')[1];
+        return handlePortalWorkflow(workflowId);
+      }
+
+      // ── Predictive AI Risk Mitigation Engine ──
+      if (path === '/v1/risk/engine' && method === 'GET') {
+        return handleRiskEngine();
+      }
+      if (path === '/v1/risk/domains' && method === 'GET') {
+        return handleRiskDomains();
+      }
+      if (path === '/v1/risk/sensors' && method === 'GET') {
+        return handleSensorIntegration();
+      }
+      if (path === '/v1/risk/assess' && method === 'POST') {
+        return await handleRiskAssessment(request);
+      }
+      if (path === '/v1/risk/metrics' && method === 'GET') {
+        return handleRiskMetrics();
+      }
+      if (path.match(/^\/v1\/risk\/domains\/RISK-[A-Z]+$/) && method === 'GET') {
+        const domainId = path.split('/v1/risk/domains/')[1];
+        return handleRiskDomain(domainId);
+      }
+
+      // ── Treasure Coast Market Intelligence ──
+      if (path === '/v1/tc-intel/overview' && method === 'GET') {
+        return handleTCIntelOverview();
+      }
+      if (path === '/v1/tc-intel/competitors' && method === 'GET') {
+        return handleTCIntelCompetitors();
+      }
+      if (path === '/v1/tc-intel/automation-gaps' && method === 'GET') {
+        return handleTCIntelAutomationGaps();
+      }
+      if (path === '/v1/tc-intel/metrics' && method === 'GET') {
+        return handleTCIntelMetrics();
+      }
+      if (path.match(/^\/v1\/tc-intel\/competitors\/COMP-\d+$/) && method === 'GET') {
+        const competitorId = path.split('/v1/tc-intel/competitors/')[1];
+        return handleTCIntelCompetitor(competitorId);
+      }
+
+      // ── AI Backend Tier ($3.99 Service) ──
+      if (path === '/v1/ai-tier/plans' && method === 'GET') {
+        return handleAITierPlans();
+      }
+      if (path === '/v1/ai-tier/reports' && method === 'GET') {
+        return handleAITierReports();
+      }
+      if (path === '/v1/ai-tier/cost-structure' && method === 'GET') {
+        return handleAITierCostStructure();
+      }
+      if (path === '/v1/ai-tier/metrics' && method === 'GET') {
+        return handleAITierMetrics();
+      }
+      if (path.match(/^\/v1\/ai-tier\/plans\/TIER-[A-Z0-9-]+$/) && method === 'GET') {
+        const tierId = path.split('/v1/ai-tier/plans/')[1];
+        return handleAITierPlan(tierId);
       }
 
       // ── Agent Manifest ──
