@@ -209,6 +209,8 @@ import {
   handleCFOAcquisition, handleCFOContentPlan, handleCFOLeadMagnets,
   handleCFOInvestor, handleCFOProjection, handleCFOValuation, handleCFOChecklist,
 } from './routes/cfo-revenue.js';
+import { handleInspectionDashboard, handleInspectionTypes, handleCreateInspection, handleCompleteInspection, handleListInspectors } from './routes/field-inspection.js';
+import { handleElizaDashboard, handleElizaVoiceConfig, handleElizaAvatarConfig, handleElizaRetellConfig, handleElizaAtlasConfig, handleElizaVideoBrief } from './routes/eliza-ai.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1053,6 +1055,43 @@ export default {
       }
       if (path === '/v1/cfo/checklist' && method === 'GET') {
         return handleCFOChecklist();
+      }
+
+      // ── Field Inspections (S1-001) ──
+      if (path === '/v1/inspections/dashboard' && method === 'GET') {
+        return handleInspectionDashboard();
+      }
+      if (path === '/v1/inspections/types' && method === 'GET') {
+        return handleInspectionTypes();
+      }
+      if (path === '/v1/inspections/create' && method === 'POST') {
+        return await handleCreateInspection(request, env, ctx);
+      }
+      if (path === '/v1/inspections/complete' && method === 'POST') {
+        return await handleCompleteInspection(request, env, ctx);
+      }
+      if (path === '/v1/inspections/inspectors' && method === 'GET') {
+        return handleListInspectors();
+      }
+
+      // ── Eliza AI (S1-003) ──
+      if (path === '/v1/eliza/dashboard' && method === 'GET') {
+        return handleElizaDashboard();
+      }
+      if (path === '/v1/eliza/voice-config' && method === 'GET') {
+        return handleElizaVoiceConfig();
+      }
+      if (path === '/v1/eliza/avatar-config' && method === 'GET') {
+        return handleElizaAvatarConfig();
+      }
+      if (path === '/v1/eliza/retell-config' && method === 'GET') {
+        return handleElizaRetellConfig();
+      }
+      if (path === '/v1/eliza/atlas-config' && method === 'GET') {
+        return handleElizaAtlasConfig();
+      }
+      if (path === '/v1/eliza/video-brief' && method === 'POST') {
+        return await handleElizaVideoBrief(request, env, ctx);
       }
 
       // ── Agent Manifest ──
