@@ -204,6 +204,11 @@ import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, h
 import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
 import { handleMetricsDashboard, handleMetricsTargets, handleMetricsCalculate, handleRevenueLines, handleExpenseCategories, handleCalculateNOI, handleCalculateGrossMargin, handleCalculateCACLTV } from './routes/profit-metrics.js';
 import { handleCoopCommittee, handleListCoopAgents, handleGetCoopAgent, handleCoopBrief, handleCoopOutreach, handleCoopNetworkMap, handleCoopTargets, handleCoopSchedule } from './routes/cooperations.js';
+import {
+  handleCFODashboard, handleCFOChannels, handleCFOProducts, handleCFOBrand,
+  handleCFOAcquisition, handleCFOContentPlan, handleCFOLeadMagnets,
+  handleCFOInvestor, handleCFOProjection, handleCFOValuation, handleCFOChecklist,
+} from './routes/cfo-revenue.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1013,6 +1018,41 @@ export default {
       }
       if (path === '/v1/metrics/cac-ltv' && method === 'POST') {
         return handleCalculateCACLTV(request);
+      }
+
+      // ── CFO Revenue Platform ──
+      if (path === '/v1/cfo/dashboard' && method === 'GET') {
+        return handleCFODashboard();
+      }
+      if (path === '/v1/cfo/channels' && method === 'GET') {
+        return handleCFOChannels();
+      }
+      if (path === '/v1/cfo/products' && method === 'GET') {
+        return handleCFOProducts();
+      }
+      if (path === '/v1/cfo/brand' && method === 'GET') {
+        return handleCFOBrand();
+      }
+      if (path === '/v1/cfo/acquisition' && method === 'GET') {
+        return handleCFOAcquisition();
+      }
+      if (path === '/v1/cfo/content-plan' && method === 'GET') {
+        return handleCFOContentPlan();
+      }
+      if (path === '/v1/cfo/lead-magnets' && method === 'GET') {
+        return handleCFOLeadMagnets();
+      }
+      if (path === '/v1/cfo/investor' && method === 'GET') {
+        return handleCFOInvestor();
+      }
+      if (path === '/v1/cfo/projection' && method === 'POST') {
+        return await handleCFOProjection(request, env, ctx);
+      }
+      if (path === '/v1/cfo/valuation' && method === 'POST') {
+        return await handleCFOValuation(request, env, ctx);
+      }
+      if (path === '/v1/cfo/checklist' && method === 'GET') {
+        return handleCFOChecklist();
       }
 
       // ── Agent Manifest ──
