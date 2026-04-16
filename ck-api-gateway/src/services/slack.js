@@ -678,6 +678,35 @@ export function getChannelsForDivision(division) {
 /**
  * Get full channel architecture summary.
  */
+/**
+ * Create a Slack channel via Bot Token API.
+ * Requires channels:manage scope on the Slack app.
+ * @param {object} env - Worker env bindings
+ * @param {string} name - Channel name (lowercase, no spaces, max 80 chars)
+ * @param {boolean} [isPrivate=false] - Create as private channel
+ * @returns {Promise<object>} - { ok, channel } or { ok: false, error }
+ */
+export async function createChannel(env, name, isPrivate = false) {
+  if (!env.SLACK_BOT_TOKEN) {
+    return { ok: false, error: 'SLACK_BOT_TOKEN not configured' };
+  }
+
+  const response = await fetch('https://slack.com/api/conversations.create', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${env.SLACK_BOT_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name, is_private: isPrivate }),
+  });
+
+  const result = await response.json();
+  if (!result.ok && result.error === 'name_taken') {
+    return { ok: true, channel: null, note: 'Channel already exists' };
+  }
+  return result;
+}
+
 export function getChannelArchitecture() {
   const summary = {};
   for (const [key, ch] of Object.entries(CHANNELS)) {

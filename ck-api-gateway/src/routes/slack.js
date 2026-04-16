@@ -12,7 +12,7 @@
  * Auth: Slack routes use signature verification, not Bearer token.
  */
 
-import { verifySlackSignature, slashResponse, sendMessage, CHANNELS, SLACK_APPS, getChannelArchitecture } from '../services/slack.js';
+import { verifySlackSignature, slashResponse, sendMessage, createChannel, CHANNELS, SLACK_APPS, getChannelArchitecture } from '../services/slack.js';
 import { listRecords, getRecord, TABLES } from '../services/airtable.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 import { writeAudit } from '../utils/audit.js';
@@ -537,4 +537,28 @@ export function handleSlackApps() {
  */
 export function handleSlackAudit() {
   return jsonResponse(SLACK_AUDIT_RECORD);
+}
+
+/**
+ * POST /v1/slack/channels/create — Create a new Slack channel.
+ * Body: { name: string, is_private?: boolean }
+ */
+export async function handleSlackCreateChannel(request, env, ctx) {
+  const body = await request.json();
+  const { name, is_private } = body;
+
+  if (!name) {
+    return errorResponse('Missing required field: name', 400);
+  }
+
+  const channelName = name.toLowerCase().replace(/[^a-z0-9_-]/g, '-').substring(0, 80);
+  const result = await createChannel(env, channelName, !!is_private);
+
+  writeAudit(env, ctx, 'slack.channel_create', { name: channelName, result });
+
+  return jsonResponse({
+    success: result.ok,
+    channel: channelName,
+    ...result,
+  });
 }
