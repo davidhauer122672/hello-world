@@ -9,6 +9,18 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd $CLAUDE_PROJECT_DIR && git status --porcelain | head -1 | grep -q . && echo '{\"systemMessage\": \"Uncommitted changes detected. Consider committing and pushing to main.\"}' || true",
+            "timeout": 10,
+            "statusMessage": "Checking for uncommitted changes..."
+          }
+        ]
+      }
     ]
   }
 }
