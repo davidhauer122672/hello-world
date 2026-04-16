@@ -608,3 +608,145 @@ POST /v1/workflows/wf4                      — WF-4 Long-Tail Nurture
 | `/ck-campaign` | CK Content | Campaign metrics |
 
 ---
+
+## SECTION 5: INTEGRATION ECOSYSTEM
+
+### 5.1 Cloudflare (Edge Infrastructure)
+
+| Resource | Type | ID/Name | Purpose |
+|----------|------|---------|---------|
+| ck-api-gateway | Worker | `david-e59` subdomain | Central API — 147 endpoints |
+| sentinel-webhook | Worker | `david-e59` subdomain | Retell call pipeline |
+| ck-nemotron-worker | Worker | `david-e59` subdomain | NVIDIA inference proxy |
+| coastalkey-pm | Pages | `coastalkey-pm.com` | Website reverse proxy |
+| ck-command-center | Pages | `ck-command-center.pages.dev` | Dashboard + Gazette |
+| CACHE | KV | `2a4a09a04ea146b29fa06ebb9af61609` | Inference result cache |
+| SESSIONS | KV | `c88aa8d5534c4b0cb3f2722f97cceca6` | Session state |
+| RATE_LIMITS | KV | `0acfb96a7aaf49bb92055c143a882506` | 60 RPM sliding window |
+| AUDIT_LOG | KV | `3d722426db4241209fd0444b42f84904` | 30-day operation trail |
+
+### 5.2 Airtable (Central Database)
+
+**Base ID:** `appUSnNgpDkcEOzhN` | **Tables:** 39 | **Access:** Full CRUD via `AIRTABLE_API_KEY`
+
+**Core CRM Tables:**
+- Leads (`tblpNasm0AxreRqLW`) — Pipeline, scoring, segment, source, status
+- Clients, Contacts, Properties, Owners — Relational CRM backbone
+
+**Operations Tables:**
+- Tasks, Maintenance Records/Requests, Inspections, Bookings — Field operations
+
+**Sales & Campaign Tables:**
+- TH Call Log, TH Agent Performance, TH Campaign Analytics, TH Lead Contacts
+- Missed/Failed Calls (`tblWW25r6GmsQe3mQ`) — QA routing for failed engagements
+- Content Calendar — Social media scheduling and publishing pipeline
+
+**Intelligence & Analytics:**
+- Competitive Intel, Property Intelligence, Market Data, Portfolio Data
+- AI Log — Inference history, model usage, token tracking
+
+**Compliance & Vendor:**
+- Vendor Compliance, Lease Applications, Service Providers, Storm Protocols
+
+### 5.3 Slack (Operations Communication)
+
+**Workspace:** Coastal Key Treasure Coast Asset Management (`T0AGWM16Z7V`)
+
+| App | ID | Role | Auth |
+|-----|-----|------|------|
+| Coastal Key | `A0APSJ44NV6` | Primary bot — 6 slash commands, notifications, interactivity | Bot OAuth + Signing Secret |
+| CK Gateway | `A0APKPRBW3U` | System health alerts — 2 slash commands | Webhook URL |
+| CK Content | `A0ANS0760LB` | Content distribution — 2 slash commands | Bot OAuth |
+
+**Programmatic Channels (12):**
+
+| Division | Channel | Visibility | Purpose |
+|----------|---------|-----------|---------|
+| SEN | #sales-alerts | Public | New lead notifications, speed-to-lead |
+| SEN | #investor-escalations | Private | High-value investor lead alerts |
+| SEN | #pipeline-updates | Public | Pipeline status changes |
+| OPS | #ops-alerts | Public | Maintenance, inspection, storm alerts |
+| OPS | #property-ops | Public | Day-to-day property operations |
+| TEC | #tech-alerts | Public | Infrastructure, deployment, error alerts |
+| TEC | #deploy-log | Public | CI/CD deployment history |
+| INT | #intel-briefs | Private | Intelligence officer scan results |
+| INT | #security-alerts | Private | Auth failures, rate limits, anomalies |
+| MKT | #marketing-ops | Public | Content calendar, campaign status |
+| FIN | #finance-alerts | Private | Revenue, budget, financial metrics |
+| EXC | #exec-briefing | Private | CEO standup, strategic directives |
+
+### 5.4 Retell AI & Atlas AI (Voice Campaigns)
+
+**Platform:** youratlas.com | **API Key:** `ATLAS_API_KEY`
+
+**8 Active Campaign Types:**
+
+| # | Campaign | Trigger | Volume | Goal |
+|---|----------|---------|--------|------|
+| 1 | Inbound Receptionist | Incoming call to 772-247-0982 | 24/7 | Qualify and route |
+| 2 | Dead Lead Revival | Lead status = Cold, 14+ days | 200/day | Re-engage dormant leads |
+| 3 | Speed-to-Lead | New lead created | 100/day, 3 retries | Contact within 60 seconds |
+| 4 | Appointment Confirmation | Booking T-24h | 50/day | Confirm or reschedule |
+| 5 | Outbound Prospecting | Scheduled batch | 500/day | Generate 10 qualified/day |
+| 6 | Post-Closing Care | 30/90/365 day triggers | 30/day | Retention and referral |
+| 7 | Tenant Verification | Application submitted | 20/day | Screen and verify |
+| 8 | Maintenance Follow-up | Work order completed | 15/day | Satisfaction + review |
+
+**Sentinel Deployment:** 40 Retell AI agents, Mon-Sat 10:00-15:00 ET, 60 calls/agent/hour = 2,400 daily capacity
+
+**Knowledge Base:** 4 documents (CKPM Master, Market Data, Objection Playbook, FAQ Services)
+
+### 5.5 Anthropic Claude (AI Inference)
+
+| Tier | Model | Use Case | Caching |
+|------|-------|----------|---------|
+| Standard | `claude-sonnet-4-6` | Content generation, objection classification, email compose | KV (CACHE namespace) |
+| Advanced | `claude-opus-4-6` | Strategic planning, MCCO directives, CEO thinking coach | KV (CACHE namespace) |
+
+**Integration Points:** `/v1/inference`, `/v1/content/generate`, `/v1/email/compose`, `/v1/email/classify`, `/v1/mcco/directive`, `/v1/frameworks/apply`, `/v1/thinking-coach/*`, `/v1/deals/strategy`, `/v1/analysis/*`
+
+### 5.6 NVIDIA Nemotron (Secondary Inference)
+
+**Model:** `nvidia/nemotron-4-340b-instruct` | **API:** NVIDIA NIM (`integrate.api.nvidia.com`)
+**Endpoint:** `POST /v1/inference` on `ck-nemotron-worker`
+**Use:** Large-scale data analysis, alternative inference when Claude capacity is constrained
+
+### 5.7 Stripe (Payments)
+
+**Integration:** `lib/stripe.js` + `routes/payments.js`
+**Capabilities:** Checkout session creation, webhook verification (`checkout.session.completed`), payment status tracking
+**Services:** Consultation ($50), Follow-up ($30), Premium ($100)
+**Flow:** Appointment booked → Stripe checkout → webhook confirms → email sent → Google Sheets synced
+
+### 5.8 Twilio (SMS)
+
+**Integration:** `lib/sms.js` | **Use:** Owner daily reports, workflow alerts, escalation notifications
+**Config:** `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER` → `OWNER_PHONE_NUMBER`
+
+### 5.9 Google Sheets (Data Sync)
+
+**Integration:** `lib/sheets.js` | **Direction:** Write-only
+**Capabilities:** Auto-header creation, appointment row append, payment status update
+**Auth:** Service account via `GOOGLE_SERVICE_ACCOUNT_KEY`
+
+### 5.10 Buffer (Social Publishing)
+
+**Integration:** `lib/social-publisher.js` | **Platforms:** Instagram, Facebook, LinkedIn, Alignable
+**Flow:** Draft → Approve → Buffer API push (or manual fallback) → Publish tracker (30-min cron)
+**Fallback:** If `BUFFER_ACCESS_TOKEN` not set, posts marked `approved_manual` with copy-paste instructions
+
+### 5.11 ElevenLabs (Voice Clone)
+
+**Voice:** Tracey Hunter — Coastal Key CEO
+**Profile:** Polished, warm, Southern Florida coastal inflection. Executive authority with approachable warmth.
+**Use Cases:** Content narration, executive briefings, client communications, AI voice agent persona
+**Config:** `elevenlabs-voice-prompt.md` — full voice description, style tags, delivery guidelines
+
+### 5.12 Manus (Website & Knowledge)
+
+**Origin:** `https://coastalkey-awfopuqz.manus.space`
+**Proxy:** `coastalkey-pm.com` via `ck-website/_worker.js`
+**Pages:** `/`, `/services`, `/agents`, `/dashboard`, `/eliza`, `/portal`, `/admin`
+**Features:** URL rewriting, edge caching, SEO canonical injection, HSTS, graceful 503 fallback
+
+---
