@@ -134,8 +134,8 @@ hello-world/
 ├── scripts/                     # Utilities (PDF manifest generator)
 ├── tests/                       # Server test suite
 ├── .github/workflows/deploy.yml # CI/CD: test → preflight → parallel deploy
-├── systems-manifest.json        # Complete system inventory (JSON)
-└── deployment.json              # Deployment architecture reference
+├── config/systems-manifest.json # Complete system inventory (JSON)
+└── config/deployment.json       # Deployment architecture reference
 ```
 
 ### 2.2 Service Map

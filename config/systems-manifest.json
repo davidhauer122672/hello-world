@@ -6,7 +6,7 @@
     "platform": "Unified Operations Platform",
     "classification": "Enterprise Home Watch & Asset Management",
     "mission": "Coastal Key delivers enterprise-grade AI systems that automate operational complexity for working owners—reclaiming their time while multiplying productivity across every business function.",
-    "governance": "GOVERNANCE.md",
+    "governance": "docs/governance/GOVERNANCE.md",
     "standards": ["ferrari_precision", "redbull_optimization", "spacex_engineering"]
   },
   "architecture": {

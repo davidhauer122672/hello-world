@@ -151,15 +151,15 @@ If requested, output as one of the 4 professional avatars.
 
 | Document | Description |
 |----------|-------------|
-| [CLAUDE.md](CLAUDE.md) | AI CEO Operating Authority — technical platform reference |
-| [GOVERNANCE.md](GOVERNANCE.md) | Enterprise Governance & Standards Framework |
-| [MISSION.md](MISSION.md) | Mission Statement & Operating Principles |
-| [MASTER-SPECIFICATION-DOCUMENT.md](MASTER-SPECIFICATION-DOCUMENT.md) | Terminal Bible — complete technical specification |
-| [COASTAL-KEY-SOVEREIGN-GOVERNANCE.md](COASTAL-KEY-SOVEREIGN-GOVERNANCE.md) | R.E.S. Intelligence Co. — Franchise & Global Expansion |
+| [CLAUDE.md](../../CLAUDE.md) | AI CEO Operating Authority — technical platform reference |
+| [GOVERNANCE.md](../governance/GOVERNANCE.md) | Enterprise Governance & Standards Framework |
+| [MISSION.md](../governance/MISSION.md) | Mission Statement & Operating Principles |
+| [MASTER-SPECIFICATION-DOCUMENT.md](../architecture/MASTER-SPECIFICATION-DOCUMENT.md) | Terminal Bible — complete technical specification |
+| [COASTAL-KEY-SOVEREIGN-GOVERNANCE.md](../governance/COASTAL-KEY-SOVEREIGN-GOVERNANCE.md) | R.E.S. Intelligence Co. — Franchise & Global Expansion |
 | [COASTAL-KEY-AUTOMATION-SYSTEM.md](COASTAL-KEY-AUTOMATION-SYSTEM.md) | Social Media Automation Playbook |
-| [COASTAL-KEY-SOCIAL-STRATEGY.md](COASTAL-KEY-SOCIAL-STRATEGY.md) | Social Media Strategy |
-| [COASTAL-KEY-LBO-MODEL.md](COASTAL-KEY-LBO-MODEL.md) | LBO Financial Model |
-| [systems-manifest.json](systems-manifest.json) | Complete system inventory (JSON) |
+| [COASTAL-KEY-SOCIAL-STRATEGY.md](../marketing/COASTAL-KEY-SOCIAL-STRATEGY.md) | Social Media Strategy |
+| [COASTAL-KEY-LBO-MODEL.md](../finance/COASTAL-KEY-LBO-MODEL.md) | LBO Financial Model |
+| [systems-manifest.json](../../config/systems-manifest.json) | Complete system inventory (JSON) |
 
 ---
 
