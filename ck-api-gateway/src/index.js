@@ -200,6 +200,7 @@ import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkin
 import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
 import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
+import { handleSpearTrigger, handleSpearReply, handleSpearStatus, handleSpearDashboard, handleSpearGenerate } from './routes/spear.js';
 import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, handleRndCompetitors, handleRndSystems } from './routes/rnd-campaign.js';
 import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
 import { handleMetricsDashboard, handleMetricsTargets, handleMetricsCalculate, handleRevenueLines, handleExpenseCategories, handleCalculateNOI, handleCalculateGrossMargin, handleCalculateCACLTV } from './routes/profit-metrics.js';
@@ -872,6 +873,24 @@ export default {
       }
       if (path === '/v1/compliance/audit' && method === 'GET') {
         return await handleComplianceAudit(env, ctx);
+      }
+
+      // ── SPEAR Funnel System ──
+      if (path === '/v1/spear/trigger' && method === 'POST') {
+        return await handleSpearTrigger(request, env, ctx);
+      }
+      if (path === '/v1/spear/reply' && method === 'POST') {
+        return await handleSpearReply(request, env, ctx);
+      }
+      if (path === '/v1/spear/dashboard' && method === 'GET') {
+        return handleSpearDashboard();
+      }
+      if (path === '/v1/spear/generate' && method === 'POST') {
+        return await handleSpearGenerate(request, env, ctx);
+      }
+      if (path.match(/^\/v1\/spear\/status\/[^/]+$/) && method === 'GET') {
+        const leadId = path.split('/v1/spear/status/')[1];
+        return await handleSpearStatus(leadId, env);
       }
 
       // ── Thinking Coach ──
