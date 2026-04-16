@@ -211,6 +211,7 @@ import {
 } from './routes/cfo-revenue.js';
 import { handleInspectionDashboard, handleInspectionTypes, handleCreateInspection, handleCompleteInspection, handleListInspectors } from './routes/field-inspection.js';
 import { handleElizaDashboard, handleElizaVoiceConfig, handleElizaAvatarConfig, handleElizaRetellConfig, handleElizaAtlasConfig, handleElizaVideoBrief } from './routes/eliza-ai.js';
+import { getGoogleAdsDashboard } from './engines/google-ads-campaign.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1092,6 +1093,11 @@ export default {
       }
       if (path === '/v1/eliza/video-brief' && method === 'POST') {
         return await handleElizaVideoBrief(request, env, ctx);
+      }
+
+      // ── Google Ads Campaign ──
+      if (path === '/v1/ads/google/dashboard' && method === 'GET') {
+        return jsonResponse(getGoogleAdsDashboard());
       }
 
       // ── Agent Manifest ──
