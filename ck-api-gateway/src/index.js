@@ -213,6 +213,8 @@ import {
 import { handleInspectionDashboard, handleInspectionTypes, handleCreateInspection, handleCompleteInspection, handleListInspectors } from './routes/field-inspection.js';
 import { handleElizaDashboard, handleElizaVoiceConfig, handleElizaAvatarConfig, handleElizaRetellConfig, handleElizaAtlasConfig, handleElizaVideoBrief } from './routes/eliza-ai.js';
 import { getGoogleAdsDashboard } from './engines/google-ads-campaign.js';
+import { handleTokenDashboard, handleTokenScan, handleTokenRegistry } from './routes/token-maintenance.js';
+import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSalesChannels, handleSalesPlaybooks } from './routes/sales-acquisition.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1121,6 +1123,34 @@ export default {
       // ── Google Ads Campaign ──
       if (path === '/v1/ads/google/dashboard' && method === 'GET') {
         return jsonResponse(getGoogleAdsDashboard());
+      }
+
+      // ── Token Maintenance Agent (TEC-026) ──
+      if (path === '/v1/tokens/dashboard' && method === 'GET') {
+        return handleTokenDashboard(env);
+      }
+      if (path === '/v1/tokens/scan' && method === 'POST') {
+        return await handleTokenScan(env, ctx);
+      }
+      if (path === '/v1/tokens/registry' && method === 'GET') {
+        return handleTokenRegistry();
+      }
+
+      // ── Sales & Client Acquisition Engine ──
+      if (path === '/v1/sales/dashboard' && method === 'GET') {
+        return handleSalesDashboard();
+      }
+      if (path === '/v1/sales/score' && method === 'POST') {
+        return await handleScoreLead(request, env, ctx);
+      }
+      if (path === '/v1/sales/pipeline' && method === 'GET') {
+        return handleSalesPipeline();
+      }
+      if (path === '/v1/sales/channels' && method === 'GET') {
+        return handleSalesChannels();
+      }
+      if (path === '/v1/sales/playbooks' && method === 'GET') {
+        return handleSalesPlaybooks();
       }
 
       // ── Agent Manifest ──
