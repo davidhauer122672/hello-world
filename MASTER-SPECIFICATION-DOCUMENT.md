@@ -1165,3 +1165,148 @@ ckos investor-package --property "456 Harbor Dr" --format pdf --send gmail
 ```
 
 ---
+
+## SECTION 10: DEPLOYMENT & OPERATIONS
+
+### 10.1 Environment Configuration
+
+**Required Secrets (all services):**
+
+| Secret | Service | Purpose |
+|--------|---------|---------|
+| `ANTHROPIC_API_KEY` | Gateway | Claude inference |
+| `AIRTABLE_API_KEY` | Gateway, Sentinel | Database operations |
+| `WORKER_AUTH_TOKEN` | Gateway, Sentinel, Nemotron | API authentication |
+| `SLACK_WEBHOOK_URL` | Gateway | Legacy fallback notifications |
+| `SLACK_BOT_TOKEN` | Gateway | Bot API operations (xoxb-...) |
+| `SLACK_SIGNING_SECRET` | Gateway | HMAC-SHA256 signature verification |
+| `NVIDIA_API_KEY` | Nemotron | Nemotron 340B inference |
+| `ATLAS_API_KEY` | Gateway | youratlas.com campaign API |
+| `CLOUDFLARE_API_TOKEN` | CI/CD | Deployment authorization |
+| `CLOUDFLARE_ACCOUNT_ID` | CI/CD | Account targeting |
+| `STRIPE_SECRET_KEY` | Express | Payment processing |
+| `STRIPE_WEBHOOK_SECRET` | Express | Webhook verification |
+| `TWILIO_ACCOUNT_SID` | Express | SMS delivery |
+| `TWILIO_AUTH_TOKEN` | Express | SMS authentication |
+| `GOOGLE_SERVICE_ACCOUNT_KEY` | Express | Sheets sync (JSON) |
+| `ADMIN_TOKEN` | Express | Protected route access |
+
+**Wrangler Config (per worker):**
+```toml
+# ck-api-gateway/wrangler.toml
+[vars]
+AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
+ENVIRONMENT = "production"
+RATE_LIMIT_RPM = "60"
+ATLAS_PLATFORM = "youratlas.com"
+```
+
+### 10.2 Deployment Commands
+
+```bash
+# Full platform deploy (all services)
+npm run deploy
+
+# Individual service deploys
+npm run deploy:gateway        # cd ck-api-gateway && wrangler deploy
+npm run deploy:sentinel       # cd sentinel-webhook && wrangler deploy
+npm run deploy:nemotron       # cd ck-nemotron-worker && wrangler deploy
+npm run deploy:cc             # wrangler pages deploy ck-command-center
+
+# Website deploy (Cloudflare Pages)
+wrangler pages deploy ck-website --project-name=coastalkey-pm
+
+# Local development
+npm run dev:gateway           # wrangler dev (API gateway)
+npm run dev:sentinel          # wrangler dev (Sentinel)
+npm run dev:nemotron          # wrangler dev (Nemotron)
+
+# Testing
+npm test                      # All test suites
+npm run test:gateway          # API gateway tests only
+npm run test:sentinel         # Sentinel tests only
+npm run test:nemotron         # Nemotron tests only
+npm run test:server           # Express server tests only
+```
+
+### 10.3 Health Monitoring
+
+**Gateway Deep Health Check:** `GET /v1/health?deep=true`
+
+Verifies:
+- Airtable connectivity (API call to Leads table)
+- Anthropic connectivity (ping message to Claude)
+- Atlas AI connectivity (list campaigns)
+- KV namespace availability (CACHE, SESSIONS, RATE_LIMITS, AUDIT_LOG)
+
+**Express Health Check:** `GET /api/health`
+
+Verifies:
+- Process uptime and memory usage
+- Data directory writability
+- Data file integrity (6 JSON stores)
+- Environment variable presence
+- Runtime info (Node version, platform, PID)
+
+**Status Levels:** `operational` | `degraded` | `unhealthy`
+
+### 10.4 Data Persistence & Backup
+
+| Store | Location | Protection | Retention |
+|-------|----------|-----------|-----------|
+| appointments.json | `data/` | Mutex-locked writes | Permanent + daily backup |
+| content-calendar.json | `data/` | File-serialized | Permanent + daily backup |
+| drip-sequences.json | `data/` | File-serialized | Permanent + daily backup |
+| visual-briefs.json | `data/` | File-serialized | Permanent + daily backup |
+| call-logs.json | `data/` | File-serialized | Permanent + daily backup |
+| ai-log.json | `data/` | 1000-entry buffer | Permanent + daily backup |
+| ceo-standup-log.json | `data/` | Append-only | 90-day retention |
+| KV: CACHE | Cloudflare edge | TTL-based expiry | Varies by key |
+| KV: AUDIT_LOG | Cloudflare edge | 30-day TTL | Auto-expiring |
+| Backups | `data/backups/YYYY-MM-DD/` | Daily cron 2:00 AM UTC | 7-day retention, auto-pruned |
+
+### 10.5 Monitoring & Alerting
+
+| Signal | Detection | Alert Channel | Response |
+|--------|-----------|--------------|----------|
+| Service down | Deep health check failure | Slack #tech-alerts | Auto-retry, escalate after 3 failures |
+| Rate limit spike | KV RATE_LIMITS threshold | Slack #security-alerts | IO-CHARLIE investigation |
+| Auth failure burst | Audit log pattern | Slack #security-alerts | IP review, potential block |
+| Deployment failure | GitHub Actions job failure | Slack #deploy-log | 3x retry with 15s backoff |
+| Airtable unreachable | Gateway deep health | Slack #tech-alerts | Graceful degradation, queue ops |
+| Backup failure | Cron error log | Slack #tech-alerts | Manual trigger, investigate |
+
+### 10.6 Domain & DNS
+
+| Domain | Type | Target | Purpose |
+|--------|------|--------|---------|
+| `coastalkey-pm.com` | CNAME | Cloudflare Pages | Primary website |
+| `ck-api-gateway.david-e59.workers.dev` | Workers subdomain | Cloudflare Worker | API gateway |
+| `sentinel-webhook.david-e59.workers.dev` | Workers subdomain | Cloudflare Worker | Retell pipeline |
+| `ck-nemotron-worker.david-e59.workers.dev` | Workers subdomain | Cloudflare Worker | NVIDIA inference |
+| `ck-command-center.pages.dev` | Pages subdomain | Cloudflare Pages | Dashboard |
+
+**Subdomain Policy:** All subdomains redirect to `coastalkey-pm.com`. Eliminated: www, app, dashboard, agents, api, admin, old, staging, dev, beta.
+
+---
+
+## DOCUMENT CONTROL
+
+| Field | Value |
+|-------|-------|
+| **Document** | Coastal Key Enterprise Master Specification Document |
+| **Version** | 3.0 |
+| **Classification** | Sovereign Institutional Blueprint |
+| **Authority** | Coastal Key AI CEO |
+| **Governor** | Tracey Merritt Hunter |
+| **Created** | April 2026 |
+| **Platform Version** | 2.1.0 |
+| **Fleet** | 383 Autonomous AI Agents |
+| **API Endpoints** | 147 (Gateway) + 28 (Express) |
+| **Integrations** | 12 platforms |
+| **Airtable Tables** | 39 |
+| **Sections** | 10 |
+
+**This document is the terminal's bible. Every terminal operation, deployment, and business decision references this specification. Sovereign governance. Ferrari precision. Zero defect execution.**
+
+*Coastal Key Property Management — Enterprise-Grade Operations. Boutique-Level Care. 383-Unit Fleet. Treasure Coast Dominance.*
