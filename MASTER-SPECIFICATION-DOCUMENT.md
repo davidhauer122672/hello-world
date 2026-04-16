@@ -367,3 +367,244 @@ CEO/Founder
 **Hierarchy API:** `GET /v1/hierarchy/command-chain`, `GET /v1/hierarchy/fleet-status`, `GET /v1/hierarchy/chain/:agentId`, `GET /v1/hierarchy/reports/:agentId`, `GET /v1/hierarchy/division/:code`
 
 ---
+
+## SECTION 4: API GATEWAY SPECIFICATION
+
+### 4.1 Gateway Overview
+
+**Service:** `ck-api-gateway` | **Runtime:** Cloudflare Worker (ES module) | **Entry:** `src/index.js`
+**Live:** `https://ck-api-gateway.david-e59.workers.dev` | **Endpoints:** 147 | **Route Modules:** 24
+**Auth:** Bearer token (`WORKER_AUTH_TOKEN`) | **Rate Limit:** 60 RPM (KV sliding window)
+**All routes prefixed:** `/v1/`
+
+### 4.2 Complete Route Map (24 Modules)
+
+#### Inference & AI
+```
+POST /v1/inference                          — Claude inference with KV caching (sonnet-4-6 standard, opus-4-6 advanced)
+```
+
+#### Lead Management
+```
+POST /v1/leads                              — Create lead in Airtable
+POST /v1/leads/public                       — Public website contact form (NO AUTH)
+POST /v1/leads/enrich                       — AI-enrich lead (battle plan, segment analysis)
+GET  /v1/leads/:id                          — Fetch lead by Airtable record ID
+```
+
+#### Agent Fleet (383 agents)
+```
+GET  /v1/agents                             — List/search with division, status, role filters
+GET  /v1/agents/metrics                     — Aggregate fleet metrics
+GET  /v1/agents/:id                         — Single agent detail
+POST /v1/agents/:id/action                  — Execute: activate | pause | restart | train
+GET  /v1/dashboard                          — Combined fleet + operations dashboard
+```
+
+#### MCCO Sovereign Command (15 agents)
+```
+GET  /v1/mcco/command                       — Sovereign command dashboard
+GET  /v1/mcco/agents                        — List all 15 MCCO agents
+GET  /v1/mcco/agents/:id                    — Single MCCO agent
+POST /v1/mcco/directive                     — Issue sovereign directive to MKT/SEN
+GET  /v1/mcco/fleet-status                  — Ferrari-standard fleet inspection
+POST /v1/mcco/content-calendar              — Generate 30-day content calendar
+POST /v1/mcco/audience-profile              — Audience psychology profile
+POST /v1/mcco/positioning                   — Authority positioning strategy
+POST /v1/mcco/monetization                  — Monetization plan generation
+POST /v1/mcco/post                          — High-engagement social post
+GET  /v1/mcco/master-plan                   — Full master plan
+GET  /v1/mcco/master-plan/phase/:id         — Phase detail
+GET  /v1/mcco/master-plan/division/:id      — Division plan
+POST /v1/mcco/sovereign-directive           — Issue sovereign-level directive
+GET  /v1/mcco/activation-status             — Fleet activation status
+```
+
+#### Intelligence Officers (50 agents)
+```
+GET  /v1/intel/officers                     — List all 50 officers
+GET  /v1/intel/officers/:id                 — Single officer
+POST /v1/intel/officers/:id/scan            — Trigger officer scan
+GET  /v1/intel/dashboard                    — IO fleet dashboard
+POST /v1/intel/fleet-scan                   — Scan all critical-severity officers
+```
+
+#### Email Agents (20 agents)
+```
+GET  /v1/email/agents                       — List all 20 email agents
+GET  /v1/email/agents/:id                   — Single email agent
+POST /v1/email/compose                      — AI-compose email via Claude
+POST /v1/email/classify                     — Classify/score inbound email
+GET  /v1/email/dashboard                    — Email operations dashboard
+```
+
+#### Atlas AI Campaigns (Retell/youratlas.com)
+```
+GET  /v1/atlas/campaigns                    — List all campaigns
+GET  /v1/atlas/campaigns/:id                — Single campaign
+PUT  /v1/atlas/campaigns/:id/status         — Set campaign status
+GET  /v1/atlas/statistics                   — Overview stats
+GET  /v1/atlas/campaigns/:id/stats          — Campaign-specific stats
+GET  /v1/atlas/campaigns/:id/calls          — Call records
+GET  /v1/atlas/campaigns/:id/calls/:callId  — Single call detail
+POST /v1/atlas/campaigns/:id/schedule       — Schedule a call
+GET  /v1/atlas/campaigns/:id/bookings       — Campaign bookings
+GET  /v1/atlas/kb/files                     — Knowledge base files
+POST /v1/atlas/speed-to-lead               — Trigger 60-second callback
+POST /v1/atlas/campaigns                    — Create new campaign
+GET  /v1/atlas/audit                        — Audit required CKPM campaigns
+GET  /v1/atlas/health                       — Atlas connectivity check
+```
+
+#### Sentinel Campaign Analytics
+```
+GET  /v1/campaign/calls                     — TH Sentinel call log
+GET  /v1/campaign/agents                    — Agent performance metrics
+GET  /v1/campaign/analytics                 — Campaign analytics
+GET  /v1/campaign/contacts                  — Lead contacts
+GET  /v1/campaign/dashboard                 — Combined campaign dashboard
+```
+
+#### Content Generation & Publishing
+```
+POST /v1/content/generate                   — AI content (social, email, script, youtube_*)
+POST /v1/content/publish                    — Push approved content to Buffer API
+```
+
+#### Pricing Engine
+```
+POST /v1/pricing/recommend                  — Dynamic pricing recommendation
+GET  /v1/pricing/zones                      — Zone-level benchmarks (Stuart, Jensen, Vero, Jupiter)
+```
+
+#### Property Intelligence
+```
+GET  /v1/property-intel/search              — ArcGIS commercial parcel search
+POST /v1/property-intel/import              — Fetch + import parcels to Airtable
+GET  /v1/property-intel/stats               — Property intelligence summary
+```
+
+#### Financial Engine
+```
+GET  /v1/financial/models                   — Revenue models, expense categories, benchmarks
+POST /v1/financial/management-fee           — Calculate management fee
+POST /v1/financial/rent-estimate            — Optimal rent estimation
+POST /v1/financial/roi                      — Property ROI (cap rate, cash-on-cash, IRR)
+POST /v1/financial/forecast                 — 12-month financial forecast
+POST /v1/financial/pricing-strategy         — Dynamic pricing strategy by zone
+POST /v1/financial/budget                   — Annual property budget
+```
+
+#### Analysis Suite
+```
+POST /v1/analysis/agent                     — Agent performance analysis
+POST /v1/analysis/fleet                     — Fleet analytics
+POST /v1/analysis/market-trends             — Market trends by zone
+POST /v1/analysis/competitive-intel         — Competitive intelligence
+POST /v1/analysis/lead-pipeline             — Lead pipeline health
+POST /v1/analysis/operational-report        — Division operational report
+GET  /v1/analysis/templates                 — Report templates
+POST /v1/analysis/property-health           — Property health score
+POST /v1/analysis/churn-prediction          — Tenant churn prediction
+```
+
+#### Deal Pipeline
+```
+GET  /v1/deals/stages                       — Pipeline stages & scoring weights
+POST /v1/deals/score                        — Score potential deal
+POST /v1/deals/strategy                     — Generate deal strategy
+POST /v1/deals/comparables                  — Comparable property analysis
+POST /v1/deals/closing-costs                — Florida closing cost calculator
+POST /v1/deals/investor-package             — Generate investor package
+POST /v1/deals/portfolio                    — Portfolio evaluation
+```
+
+#### Agent Hierarchy
+```
+GET  /v1/hierarchy/command-chain            — Full org command chain
+GET  /v1/hierarchy/fleet-status             — 383-agent fleet status
+GET  /v1/hierarchy/chain/:agentId           — Chain of command for agent
+GET  /v1/hierarchy/reports/:agentId         — Direct reports
+GET  /v1/hierarchy/division/:code           — Division hierarchy tree
+```
+
+#### AI Trader
+```
+GET  /v1/trader/dashboard                   — Market overview + signals + capital calls
+GET  /v1/trader/agent                       — FIN-TRADER-001 details
+GET  /v1/trader/watchlist                   — All watchlist categories
+POST /v1/trader/quote                       — Live quote(s)
+POST /v1/trader/signal                      — Trading signal generation
+POST /v1/trader/capital-call                — Capital call prompt
+POST /v1/trader/portfolio                   — Portfolio metrics
+GET  /v1/trader/news                        — Market news + sentiment
+POST /v1/trader/trade                       — Log trade execution
+GET  /v1/trader/history                     — Trade history
+GET  /v1/trader/capital-tiers               — Investment tier definitions
+```
+
+#### Peak Performance Frameworks
+```
+GET  /v1/frameworks                         — List all frameworks
+GET  /v1/frameworks/category/:cat           — By category
+GET  /v1/frameworks/:id                     — Single framework
+POST /v1/frameworks/apply                   — Apply framework to scenario
+POST /v1/frameworks/content                 — Generate content using framework
+POST /v1/frameworks/sales-playbook          — Sales playbook generation
+POST /v1/frameworks/productivity-plan       — Productivity plan generation
+```
+
+#### Thinking Coach
+```
+POST /v1/thinking-coach/*                   — Extended thinking, multi-framework analysis, cognitive OS
+```
+
+#### CEO Directives
+```
+POST /v1/ceo/directive                      — Issue CEO-level strategic directive
+GET  /v1/ceo/operations-review              — Operations review
+GET  /v1/ceo/operating-state                — Current operating state
+GET  /v1/ceo/dashboard                      — CEO dashboard
+```
+
+#### Slack Integration (3 apps, 10 commands)
+```
+POST /v1/slack/commands                     — Slash command dispatcher
+POST /v1/slack/interactions                 — Interactive component callbacks
+POST /v1/slack/events                       — Event subscription (NO AUTH — uses signature)
+GET  /v1/slack/channels                     — Channel architecture (12 programmatic)
+GET  /v1/slack/apps                         — App registry (3 apps)
+GET  /v1/slack/audit                        — Slack audit record
+```
+
+#### Webhooks & System
+```
+POST /v1/webhook/retell                     — Retell call events → Airtable + Slack
+GET  /v1/audit                              — Audit log retrieval (KV, 30-day)
+GET  /v1/health                             — Health check (NO AUTH)
+GET  /v1/health?deep=true                   — Deep health (Airtable, Anthropic, Atlas, KV)
+```
+
+#### Workflow Pipelines
+```
+POST /v1/workflows/scaa1                    — SCAA-1 Battle Plan Pipeline
+POST /v1/workflows/wf3                      — WF-3 Investor Escalation
+POST /v1/workflows/wf4                      — WF-4 Long-Tail Nurture
+```
+
+### 4.3 Slash Commands (10)
+
+| Command | App | Purpose |
+|---------|-----|---------|
+| `/ck-status` | Coastal Key | Fleet status + health summary |
+| `/ck-lead` | Coastal Key | Quick lead lookup/creation |
+| `/ck-agent` | Coastal Key | Agent status/action |
+| `/ck-intel` | Coastal Key | Intelligence briefing |
+| `/ck-workflow` | Coastal Key | Trigger workflow |
+| `/ck-brief` | Coastal Key | Daily briefing on demand |
+| `/ck-health` | CK Gateway | System health check |
+| `/ck-deploy` | CK Gateway | Deployment status |
+| `/ck-content` | CK Content | Content calendar status |
+| `/ck-campaign` | CK Content | Campaign metrics |
+
+---
