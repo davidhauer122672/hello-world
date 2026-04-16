@@ -750,3 +750,107 @@ POST /v1/workflows/wf4                      — WF-4 Long-Tail Nurture
 **Features:** URL rewriting, edge caching, SEO canonical injection, HSTS, graceful 503 fallback
 
 ---
+
+## SECTION 6: SALES & CLIENT ACQUISITION ENGINE
+
+### 6.1 Lead Lifecycle Pipeline
+
+```
+[Source] → [Capture] → [Qualify] → [Nurture] → [Convert] → [Onboard] → [Retain]
+
+Sources:                    Qualification:              Conversion:
+  Website form (/leads/public)  SCAA-1 Battle Plan          Speed-to-Lead (60s callback)
+  Retell inbound call           Segment analysis            Tracey Hunter closes
+  Atlas outbound campaign       AI scoring (Claude)         Stripe payment
+  Sentinel prospecting          IO-DELTA revenue scan       Google Sheets sync
+  Referral/Alignable            Manual CEO override         Drip → appointment
+```
+
+### 6.2 SCAA-1 Battle Plan Pipeline
+
+**Trigger:** New lead from Retell, website, or manual creation
+**Endpoint:** `POST /v1/workflows/scaa1`
+
+**7-Step Pre-Flight Checklist:**
+1. Lead data validation (name, phone, email, property address)
+2. Property value lookup (ArcGIS parcel scan for Saint Lucie commercial)
+3. Segment classification (absentee, luxury, investor, snowbird, STR)
+4. Competitive landscape scan (existing PM companies in area)
+5. Battle plan generation (Claude AI — personalized approach strategy)
+6. CEO notification (SMS + email with battle plan summary)
+7. Drip enrollment (90-day nurture sequence auto-started)
+
+**Output:** Structured battle plan with: lead profile, property intel, competitive analysis, recommended approach, urgency score, and follow-up timeline.
+
+### 6.3 Speed-to-Lead Protocol
+
+**Target:** Contact every new lead within 60 seconds of creation
+**Mechanism:** `POST /v1/atlas/speed-to-lead` triggers Atlas AI voice call
+**Retries:** 3 attempts with escalating intervals
+**Fallback:** If no answer after 3 attempts → route to 90-day drip sequence
+**Transfer:** Qualified leads transfer to Tracey Hunter at 772-763-8900
+**KPI:** 20% connection rate, 5% qualification rate, 8 transfers/day target
+
+### 6.4 Sentinel Sales Division (40 Agents)
+
+**Schedule:** Mon-Sat, 10:00-15:00 ET | **Capacity:** 60 calls/agent/hour = 2,400 daily
+**Regions:** Stuart, Jensen Beach, Vero Beach, Fort Pierce, Port St. Lucie (primary); Jupiter, Palm Beach Gardens, Sebastian, Fellsmere (secondary)
+**Property Minimum:** $200K value
+**KPIs:** 20% connection, 5% qualification, 4 appointments/day
+
+**Campaign Config:** `th-sentinel-campaign/campaign-config.json`
+**Airtable Tables:** TH Call Log, TH Agent Performance, TH Campaign Analytics, TH Lead Contacts
+
+### 6.5 SMS Escalation Matrix
+
+| Priority | Trigger | Response SLA | Channel |
+|----------|---------|-------------|---------|
+| **P1 — Critical** | Investor lead >$1M, storm damage, legal threat | Immediate | SMS + Slack #investor-escalations + email |
+| **P2 — Urgent** | Qualified lead, appointment request, vendor emergency | 4 hours | SMS + Slack #sales-alerts |
+| **P3 — Standard** | New lead, drip milestone, content approval | 24 hours | Slack channel only |
+
+### 6.6 90-Day Drip Nurture Engine
+
+**Replaces:** Constant Contact | **Engine:** `lib/drip-engine.js` | **Schedule:** Hourly cron
+
+**Sequence (7 emails across 90 days):**
+
+| Day | Subject Theme | Purpose |
+|-----|--------------|---------|
+| 1 | Risk Awareness | "Unmonitored Properties Lose Value" — urgency hook |
+| 7 | Case Study | "$200 leak → $47K remediation" — fear of inaction |
+| 14 | Service Overview | Coastal Key vs. competitors — differentiation |
+| 30 | Seasonal Urgency | Hurricane prep / seasonal maintenance — timing |
+| 45 | Social Proof | Testimonials and client results |
+| 60 | Pricing Transparency | Service tiers and ROI framing |
+| 90 | CEO Close | Personal invitation from Tracey Hunter |
+
+**Segments:** absentee_homeowners, luxury_1m_plus, investor_family_office, seasonal_snowbirds, str_vacation_rental
+
+**Brand Voice:** Institutional tone, risk-first framing, 9th grade reading level, no exclamation points, consequence-statement closings.
+
+### 6.7 Objection Handling (Real-Time AI)
+
+**Engine:** `lib/objection-handler.js` | **AI Model:** claude-sonnet-4-6
+**Integration:** Retell AI webhook → real-time classification → scripted/AI reframe
+
+| Objection Type | Keyword Fast-Path | Claude Fallback |
+|---------------|-------------------|-----------------|
+| competition_neighbor | "neighbor", "friend manages" | Yes |
+| price | "expensive", "too much", "cost" | Yes |
+| urgency_absence | "not urgent", "fine for now" | Yes |
+| delay_think | "think about it", "not sure" | Yes |
+| delay_next_season | "next year", "next season" | Yes |
+| competition_pm_company | "already have", "current company" | Yes |
+
+**Performance:** Keyword fast-path <50ms, Claude fallback <2s
+
+### 6.8 Content-to-Lead Funnel
+
+**Weekly Output:** ~112 posts across 8 platforms (Instagram 21, Facebook 14, LinkedIn 7, YouTube 3, TikTok 14, X 21, Mighty Networks 7, Alignable 7)
+
+**Repurposing:** 1 YouTube video (8 min) → 21 content pieces across all platforms
+
+**Conversion Path:** Content → awareness → inbound lead → Speed-to-Lead (60s) → Sentinel qualifies → Tracey closes → client enters AI ecosystem → testimonial content → flywheel
+
+---
