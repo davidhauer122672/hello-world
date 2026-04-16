@@ -1050,3 +1050,118 @@ Priority 4: Market Expansion (Y2+)
 **Use Cases:** Strategic planning, acquisition evaluation, market entry decisions, technology investments, competitive positioning
 
 ---
+
+## SECTION 9: TERMINAL ORCHESTRATION LAYER
+
+### 9.1 Architecture Philosophy
+
+The terminal is the **orchestration layer**, not the execution layer. It dispatches commands, receives structured outputs, and routes results to deployment. Every business function becomes a callable endpoint.
+
+```
+Terminal (Claude Code CLI)
+  │
+  ├─→ Claude Code API ──→ Code generation, business logic, spec context
+  │
+  ├─→ N8N Automation ──→ Workflow routing between all systems
+  │     ├─→ Airtable (data ops)
+  │     ├─→ Slack (notifications)
+  │     ├─→ Gmail (email ops)
+  │     ├─→ Atlas/Retell (voice campaigns)
+  │     ├─→ Buffer (social publishing)
+  │     ├─→ Stripe (payments)
+  │     └─→ Cloudflare (deployments)
+  │
+  ├─→ Lovable App ──→ Frontend generation from plain English
+  │
+  └─→ CK API Gateway ──→ 147 endpoints, all business operations
+```
+
+### 9.2 Context Injection Layer
+
+Every terminal request automatically passes the relevant Master Spec section as context to Claude Code. Claude Code always knows what business it's operating in and generates Coastal Key-specific outputs.
+
+**Injection Protocol:**
+1. Terminal fires request (e.g., "generate investor package for 123 Ocean Blvd")
+2. Context injector identifies relevant spec sections (Section 7: Financial, Section 6: Sales)
+3. Request + spec context sent to Claude Code API
+4. Claude Code generates output with full Coastal Key business knowledge
+5. Output routed to destination (Airtable record, Slack message, email, PDF)
+
+**Context Segments (auto-selected by request type):**
+
+| Request Category | Injected Context |
+|-----------------|-----------------|
+| Lead operations | Sections 3 (fleet), 6 (sales engine), 5.2 (Airtable) |
+| Content generation | Sections 3.2 (MCCO), 5.10 (Buffer), 8.3 (workflows) |
+| Financial analysis | Sections 7 (financial), 4.2 (financial engine API) |
+| Fleet management | Sections 3 (fleet), 4.2 (agent API), 8.1 (standup) |
+| Deployment | Sections 2 (architecture), 10 (deployment), 2.5 (CI/CD) |
+| Client communication | Sections 1.3 (authority matrix), 5.11 (ElevenLabs), 6.6 (drip) |
+
+### 9.3 N8N Automation Backbone
+
+N8N sits in the middle as the automation backbone, routing data between every system. The terminal sends triggers to N8N, N8N distributes tasks to the right tool, results flow back to the dashboard.
+
+**Core N8N Workflows to Build:**
+
+| Workflow | Trigger | Route | Output |
+|----------|---------|-------|--------|
+| Lead Intake | Airtable new record | → Claude (SCAA-1) → Slack → Gmail → Atlas | Battle plan + notifications |
+| Content Pipeline | Cron (daily 5 AM) | → Claude (generate) → Airtable → Buffer | Scheduled posts |
+| Campaign Monitor | Cron (hourly) | → Atlas API → Airtable → Slack | Campaign metrics |
+| Financial Report | Cron (weekly) | → Gateway API → Claude → Gmail → Slack | PDF report |
+| Fleet Health | Cron (every 15 min) | → Gateway /v1/health → Slack #tech-alerts | Health alerts |
+| Standup Delivery | Cron (6 AM EST) | → Gateway /api/standup → Slack #exec-briefing → SMS | Daily briefing |
+| Storm Watch | NWS API trigger | → OPS division → Slack → SMS → Email | Emergency protocol |
+| Investor Alert | Airtable field change | → Claude (analysis) → Slack #investor-escalations → SMS | Escalation |
+
+### 9.4 Lovable App (Frontend Generation)
+
+Lovable generates client-facing interfaces from plain English descriptions. You describe the experience, it builds the UI, Claude Code handles the backend logic.
+
+**Target Interfaces:**
+1. **Owner Portal** — Property status, maintenance requests, financial reports, document access
+2. **Tenant Portal** — Rent payments, maintenance requests, lease documents, communication
+3. **Investor Dashboard** — Portfolio performance, market intelligence, capital call status
+4. **Vendor Portal** — Work orders, compliance documents, payment history
+5. **Prospect Landing** — Service overview, CMA request, consultation booking
+
+**Integration Pattern:**
+```
+Lovable (UI generation) ←→ CK API Gateway (business logic) ←→ Airtable (data)
+```
+
+### 9.5 Apex-Style Unified Application
+
+Build like `apex.host` — a single unified operating layer across every business function. The terminal plugs into one system rather than building separate integrations for each tool.
+
+**Coastal Key Operating System (CKOS) Specification:**
+
+| Layer | Function | Implementation |
+|-------|----------|---------------|
+| **Command** | Terminal input + context injection | Claude Code API + Master Spec |
+| **Orchestration** | Workflow routing + task distribution | N8N + CK API Gateway |
+| **Execution** | Business logic + AI inference | Cloudflare Workers + Claude + Nemotron |
+| **Presentation** | Dashboards + portals + reports | Command Center + Lovable + Gazette |
+| **Data** | Persistence + sync + backup | Airtable + KV + JSON stores |
+| **Communication** | Notifications + alerts + reports | Slack + SMS + Email + Voice |
+
+**Single Command Examples:**
+```bash
+# Generate and publish weekly market report
+ckos market-report --zone stuart --format pdf --distribute slack,email
+
+# Score and qualify new lead
+ckos lead-intake --name "John Smith" --property "123 Ocean Blvd" --value 850000
+
+# Deploy content calendar for next 30 days
+ckos content-deploy --days 30 --platforms all --approve auto
+
+# Run fleet health scan and report
+ckos fleet-scan --severity critical --report slack --channel exec-briefing
+
+# Generate investor package
+ckos investor-package --property "456 Harbor Dr" --format pdf --send gmail
+```
+
+---
