@@ -930,3 +930,123 @@ Priority 4: Market Expansion (Y2+)
 ```
 
 ---
+
+## SECTION 8: OPERATIONAL PLAYBOOKS
+
+### 8.1 CEO Daily Standup (Sovereign Operations Briefing)
+
+**Schedule:** Daily 6:00 AM EST (11:00 UTC) — automatic, no exceptions
+**Engine:** `lib/ceo-standup.js` | **API:** `GET /api/standup`, `GET /api/standup/text`, `GET /api/standup/history`
+
+**Briefing Contents:**
+1. Fleet status (383/383 active, operational readiness percentage)
+2. Division-by-division 24h accomplishments (all 10 divisions + special units)
+3. System health audit (data integrity, backup recency, service uptime)
+4. Revenue summary (today's schedule, paid appointments, pipeline value)
+5. Agent health triage with priority classification for inactive agents
+6. CEO action items requiring human review
+
+**Data Sources:** appointments.json, drip-sequences.json, content-calendar.json, visual-briefs.json, call-logs.json, ceo-standup-log.json
+
+### 8.2 Automated Scheduler Matrix
+
+| Schedule | Time | Engine | Purpose |
+|----------|------|--------|---------|
+| CEO Standup | 6:00 AM EST | `ceo-standup.js` | Sovereign operations briefing |
+| Daily Report | 9:00 AM UTC | `daily-report.js` | SMS revenue + schedule summary |
+| Drip Processing | Every hour | `drip-engine.js` | Send due nurture emails |
+| Publish Tracker | Every 30 min | `social-publisher.js` | Poll Buffer for publish confirmations |
+| Data Backup | 2:00 AM UTC | `backup.js` | JSON snapshot, 7-day retention |
+
+### 8.3 Workflow Engine (7 Pipelines — Replaced Zapier)
+
+| ID | Name | Trigger | Actions |
+|----|------|---------|---------|
+| WF-1 | New Lead Nurture | `POST /api/workflows/wf1` | Battle plan, email CEO, SMS alert, drip enrollment |
+| WF-2 | Social Approval | `POST /api/workflows/wf2` | Buffer push (or manual), SMS notify |
+| WF-3 | Investor Escalation | `POST /api/workflows/wf3` | Urgent SMS, red-flag email, 4h follow-up |
+| WF-4 | Buffer Published | `POST /api/workflows/wf4` | Mark published in calendar |
+| WF-5 | Video Production | `POST /api/workflows/wf5` | Thumbnail brief, social briefs, email production brief |
+| WF-6 | Podcast Publish | `POST /api/workflows/wf6` | Create social drafts, SMS notify |
+| WF-7 | AI Log Write | `POST /api/workflows/wf7` | Log inference to ai-log.json (1000-entry buffer) |
+
+**Integration:** Airtable automations POST to workflow endpoints. No external orchestration platform required.
+
+### 8.4 Multi-Market Expansion Playbook
+
+**Sequence:** Density → Adjacency → Luxury Pilot
+
+| Phase | Market | Doors Target | Timeline | Gate Criteria |
+|-------|--------|-------------|----------|---------------|
+| **Current** | Martin, St. Lucie, Indian River | 500 | Y1-Y2 | Tri-county saturation |
+| **Phase 2** | Palm Beach County | +300 | Y2-Y3 | 500 doors achieved, positive EBITDA |
+| **Phase 3** | Vero Beach (deep) | +200 | Y3-Y4 | Palm Beach stabilized |
+| **Phase 4** | Naples / SW Florida | +300 | Y3-Y5 | Multi-county ops proven |
+| **Phase 5** | Aspen (luxury pilot) | +50 | Y4-Y5 | $8M+ ARR, luxury segment validated |
+
+**Per-Market Activation Checklist:**
+1. Local vendor network (HVAC, plumbing, landscaping, cleaning, insurance) — VEN division
+2. Regulatory compliance scan — INT-CHARLIE squad
+3. Market intelligence baseline — INT-DELTA squad
+4. Dedicated OPS team assignment (minimum 5 agents)
+5. Local Sentinel campaign configured (Atlas AI)
+6. Airtable tables extended for new zone
+7. Pricing zones added to financial engine
+
+### 8.5 Property Risk Scoring Model
+
+**6 Categories, Weighted Scoring, 4 Risk Tiers**
+
+| Category | Weight | Factors |
+|----------|--------|---------|
+| Vacancy Risk | 25% | Days vacant, seasonal patterns, listing quality |
+| Maintenance Risk | 20% | Property age, inspection history, deferred maintenance |
+| Weather Risk | 20% | Flood zone, hurricane exposure, storm history |
+| Financial Risk | 15% | Rent collection rate, late payments, eviction history |
+| Tenant Risk | 10% | Screening score, lease compliance, complaint history |
+| Market Risk | 10% | Neighborhood trends, comparable values, demand indicators |
+
+**Risk Tiers:** GREEN (0-25), YELLOW (26-50), ORANGE (51-75), RED (76-100)
+**API:** `POST /v1/analysis/property-health`
+
+### 8.6 Storm Protocol & Emergency Response
+
+**Trigger:** National Weather Service hurricane watch/warning for Treasure Coast
+**Auto-Activation:** OPS division storm protocol agents activate
+
+**Pre-Storm (48-72h):**
+- Property inventory scan — identify vulnerable properties
+- Vendor pre-positioning — confirm emergency contractor availability
+- Owner notification sequence — automated calls via Atlas AI
+- Documentation sweep — photo/video baseline of all managed properties
+
+**During Storm:**
+- Real-time Slack updates to #ops-alerts
+- Property damage reports routed to #property-ops
+- Emergency vendor dispatch queue activated
+- Client communication on hold (safety priority)
+
+**Post-Storm (0-72h):**
+- Damage assessment sweep (all managed properties)
+- Insurance documentation generation
+- FEMA coordination (if applicable)
+- Vendor dispatch for emergency repairs
+- Owner status reports via SMS + email
+
+### 8.7 Thinking Coach (7-Playbook Ferrari-Standard Execution)
+
+**Engine:** `src/services/thinking-coach.js` | **API:** `POST /v1/thinking-coach/*`
+
+| Framework | Purpose |
+|-----------|---------|
+| First Principles | Decompose complex problems to fundamental truths |
+| Systems Thinking | Map interdependencies and feedback loops |
+| Inversion | Identify failure modes by thinking backward |
+| Opportunity Cost | Evaluate trade-offs and resource allocation |
+| Second-Order Effects | Anticipate downstream consequences |
+| Regret Minimization | Long-term decision validation |
+| Red Team | Adversarial analysis and stress-testing |
+
+**Use Cases:** Strategic planning, acquisition evaluation, market entry decisions, technology investments, competitive positioning
+
+---
