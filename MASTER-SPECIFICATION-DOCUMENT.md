@@ -854,3 +854,79 @@ Sources:                    Qualification:              Conversion:
 **Conversion Path:** Content → awareness → inbound lead → Speed-to-Lead (60s) → Sentinel qualifies → Tracey closes → client enters AI ecosystem → testimonial content → flywheel
 
 ---
+
+## SECTION 7: FINANCIAL ARCHITECTURE
+
+### 7.1 Five-Year Recapitalization Model
+
+| Year | ARR Target | Doors | EBITDA | Valuation (6-10x) | Key Milestone |
+|------|-----------|-------|--------|-------------------|---------------|
+| **Y1 (2026)** | $500K | 75-100 | $150K (30%) | $900K-$1.5M | Platform operational, first acquisitions |
+| **Y2 (2027)** | $1.5M | 200-250 | $500K (33%) | $3M-$5M | Martin County saturated, Palm Beach entry |
+| **Y3 (2028)** | $4M | 400-500 | $1.4M (35%) | $8.4M-$14M | Multi-county, STR portfolio scaled |
+| **Y4 (2029)** | $8M | 800-1000 | $3.2M (40%) | $19M-$32M | Vero Beach + Naples, investor advisory |
+| **Y5 (2030)** | $15M | 1500+ | $6M (40%) | $36M-$60M | Regional leader, Aspen luxury pilot |
+
+### 7.2 Revenue Model
+
+**Recurring Revenue Target: >70% of total**
+
+| Stream | Type | Margin | Revenue Contribution |
+|--------|------|--------|---------------------|
+| Full-Service PM Contracts | Recurring | 8-12% of rent collected | 50-60% |
+| STR Management | Recurring | 15-25% of gross booking | 15-20% |
+| Leasing Fees | Transactional | 50-100% of first month | 10-15% |
+| Maintenance Margins | Recurring | 10-20% markup on vendor | 5-10% |
+| Real Estate Commissions | Transactional | 2.5-3% of sale | 10-15% |
+| Investor Advisory | Recurring | Retainer + performance | 5-10% (Y3+) |
+
+### 7.3 Sensitivity Analysis
+
+**Base Case: $7M EBITDA at Year 5**
+
+| Multiple | Valuation | Scenario |
+|----------|-----------|----------|
+| 6x EBITDA | $42M | Conservative — regional PM, no tech premium |
+| 7x EBITDA | $49M | Base — strong recurring, moderate tech |
+| 8x EBITDA | $56M | Growth — AI moat recognized, multi-market |
+| 10x EBITDA | $70M | Premium — SaaS-like margins, platform licensing |
+
+**Downside Protection:** At 500 doors with $1,500 avg rent, 10% fee = $900K ARR floor. Platform costs fixed at ~$200K/year. Breakeven at ~150 doors.
+
+### 7.4 Financial Engine API
+
+All calculations available via API for real-time decision support:
+
+| Endpoint | Calculation |
+|----------|-------------|
+| `POST /v1/financial/management-fee` | Fee structure by property type, zone, tier |
+| `POST /v1/financial/rent-estimate` | Optimal rent via comparables + zone data |
+| `POST /v1/financial/roi` | Cap rate, cash-on-cash, IRR analysis |
+| `POST /v1/financial/forecast` | 12-month P&L projection |
+| `POST /v1/financial/pricing-strategy` | Dynamic pricing by zone and season |
+| `POST /v1/financial/budget` | Annual property budget generation |
+| `POST /v1/deals/score` | Deal scoring (weighted multi-factor) |
+| `POST /v1/deals/closing-costs` | Florida closing cost calculator |
+| `POST /v1/deals/investor-package` | Automated investor presentation |
+
+### 7.5 Capital Allocation Priorities
+
+```
+Priority 1: Automation (15-20% of revenue)
+  → Platform development, fleet expansion, inference costs
+  → ROI threshold: 3x within 12 months
+
+Priority 2: Accretive Acquisitions (when available)
+  → PM books at 4-6x EBITDA, minimum 50 doors
+  → Integration: 90 days to full fleet coverage
+
+Priority 3: Density Before Expansion
+  → Saturate Martin/St. Lucie/Indian River before new markets
+  → Target: 500 doors in tri-county before Palm Beach entry
+
+Priority 4: Market Expansion (Y2+)
+  → Palm Beach → Vero Beach → Naples → Aspen (luxury pilot)
+  → Each market requires: dedicated OPS team, local vendor network, regulatory compliance
+```
+
+---
