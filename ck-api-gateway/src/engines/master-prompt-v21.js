@@ -13,6 +13,8 @@
  * Governance: 100% aligned with Sovereign Governance, Mission, 4 Core Goals.
  */
 
+import { getCollectionsAgentStatus } from './collections-agent.js';
+
 // ── Executive Administrator Avatars ────────────────────────────────────────
 
 export const AVATARS = {
@@ -288,12 +290,14 @@ export function getMasterPromptDashboard() {
     },
     researchGaps: INDUSTRY_GAPS,
     noiModel: calculateNOIGapImpact(30),
+    collectionsAgent: getCollectionsAgentStatus(),
     processExecuted: 'Create → Plan → Build → Test → Audit → Reconfigure → Deploy → Test → Audit → Reconfigure → Push to Production → Final Test/Audit/Reconfigure → Zero failures → Live',
     nextActions: [
       { avatar: 'Daphne', action: 'Prepare Investor PDF V3 for external sharing' },
       { avatar: 'Stephanie', action: 'Monitor first RPA research loop output' },
       { avatar: 'Twin', action: 'Run sensitivity analysis on NOI model with latest 2026 insurance data' },
       { avatar: 'Orchestrator', action: 'Deliver Q2 scaling brief and log Founder feedback' },
+      { avatar: 'Twin', action: 'Monitor Collections Agent KPIs (RPC rate, promise-to-pay, kept promises) weekly' },
     ],
     timestamp: new Date().toISOString(),
   };

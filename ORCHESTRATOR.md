@@ -87,12 +87,24 @@ V2.1 is a dual-layer system. This document is the governance charter. The runtim
 
 | Method | Path | Purpose |
 |--------|------|---------|
-| GET | `/v1/orchestrator/dashboard` | Full V2.1 production dashboard (status, metrics, avatars, assets, gaps, NOI, next actions) |
+| GET | `/v1/orchestrator/dashboard` | Full V2.1 production dashboard (status, metrics, avatars, assets, gaps, NOI, collections agent, next actions) |
 | GET | `/v1/orchestrator/assets` | Marketing assets registry with status counts |
 | GET | `/v1/orchestrator/avatars` | Executive Administrator avatars (Daphne, Stephanie, Twin, Master Orchestrator) |
 | GET | `/v1/orchestrator/gaps` | Top 1% industry gap analysis from Notebook LM research |
 | GET | `/v1/orchestrator/noi-model` | NOI impact model at 30-property baseline |
 | POST | `/v1/orchestrator/noi-model` | NOI calculation at custom portfolio size. Body: `{ "portfolioSize": <int> }` |
+
+### Collections Agent (FIN Division, registered with Orchestrator)
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET | `/v1/collections/config` | Voice agent configuration. Bug fixes applied: `max_tokens: -1`, no hard-coded customer_name placeholder, duplicate prompt prefix removed. |
+| GET | `/v1/collections/guardrails` | 7 compliance controls (FDCPA best-practice, TCPA, Florida FCCPA, CFPB Reg F, PCI-DSS) |
+| GET | `/v1/collections/status` | Agent status, KPI baseline vs industry P50, governance posture |
+| POST | `/v1/collections/eligibility` | Pre-call check. Body: `{ "localTimeHour": <0-23>, "attemptsLast7Days": <int>, "onDoNotCallList": <bool> }` |
+| POST | `/v1/collections/session` | Log call outcome. Body: `{ "account_id": <str>, "outcome": <taxonomy>, ... }` |
+
+Agent identity: `COLL-001`. Division: FIN. Reports to MCCO-000 Master Orchestrator. Appears in `getMasterPromptDashboard()` under `collectionsAgent` so the Orchestrator and any dashboard consumer see the agent live. Build plan and compliance research synthesis: `docs/collections-agent-plan.md`.
 
 Authoritative constants exported by the engine:
 
@@ -142,6 +154,7 @@ Maintain these living documents inside the Claude Project. Update them in every 
 | Investment Acquisition Questions | `docs/investment-acquisition-questions.md` | Acquisition due diligence framework |
 | Marketing Assets Library | `docs/marketing-assets-library.md` | 13 refined marketing assets registry |
 | V1 Campaign Pack (Doc Layer) | `docs/marketing-assets-v1-polished.md` | 10 governance-compliant execution-ready deliverables. Complements runtime `MARKETING_ASSETS` constant. |
+| Collections Agent Plan | `docs/collections-agent-plan.md` | First-party AR voice agent build plan, compliance research synthesis, 13-step cadence record |
 | Phase Status Dashboard | `docs/phase-status-dashboard.md` | Current phase, live metrics, friction log |
 
 ---
@@ -212,6 +225,7 @@ User input will follow. Execute with ruthless precision and zero tolerance for d
 |---------|------|--------|
 | 1.0.0 | 2026-04-15 | Initial Enterprise Orchestrator document. |
 | 2.1.0 | 2026-04-17 | Promoted to Master System Prompt. Grok SuperGrok AI agent codified as primary Automation First tool. 6-step Response Protocol with Avatar Briefing. Session Activation Protocol added. iPhone 16 Grok Mobile App and 13-step cadence in Deployment Mandate. Runtime Engine section added with pointers to `ck-api-gateway/src/engines/master-prompt-v21.js` and 6 `/v1/orchestrator/*` endpoints. Avatar, asset, and gap tables mirror engine constants. V1 Campaign Pack registered in Persistent Operating System. |
+| 2.1.1 | 2026-04-17 | Collections Agent COLL-001 integrated. UiPath collections reference architecture applied. 7 compliance controls (FDCPA best-practice, TCPA, Florida FCCPA, CFPB Reg F, PCI-DSS). 5 endpoints under `/v1/collections/*`. Registered in `getMasterPromptDashboard()` under `collectionsAgent`. Voice config bug fixes against incoming diff: `max_tokens: 10 → -1`, hard-coded `customer_name` removed, duplicated Fortune 500 prompt prefix removed. 21 new tests. Gateway suite 325 passing. |
 
 ---
 

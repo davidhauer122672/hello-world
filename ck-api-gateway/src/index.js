@@ -217,6 +217,7 @@ import { handleTokenDashboard, handleTokenScan, handleTokenRegistry } from './ro
 import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSalesChannels, handleSalesPlaybooks } from './routes/sales-acquisition.js';
 import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramework } from './routes/market-strategy.js';
 import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
+import { handleCollectionsConfig, handleCollectionsGuardrails, handleCollectionsStatus, handleCollectionsEligibility, handleCollectionsSession } from './routes/collections.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1184,6 +1185,23 @@ export default {
       }
       if (path === '/v1/orchestrator/noi-model' && method === 'POST') {
         return await handleOrchestratorNOICalculate(request, env, ctx);
+      }
+
+      // ── Collections Agent (FIN Division, reports to MCCO-000) ──
+      if (path === '/v1/collections/config' && method === 'GET') {
+        return handleCollectionsConfig();
+      }
+      if (path === '/v1/collections/guardrails' && method === 'GET') {
+        return handleCollectionsGuardrails();
+      }
+      if (path === '/v1/collections/status' && method === 'GET') {
+        return handleCollectionsStatus();
+      }
+      if (path === '/v1/collections/eligibility' && method === 'POST') {
+        return await handleCollectionsEligibility(request, env, ctx);
+      }
+      if (path === '/v1/collections/session' && method === 'POST') {
+        return await handleCollectionsSession(request, env, ctx);
       }
 
       // ── Agent Manifest ──
