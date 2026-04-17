@@ -1,0 +1,116 @@
+{
+  "id": "ck-wallpaper-03-treasure-coast-dawn",
+  "title": "Treasure Coast Dawn — Live Wallpaper",
+  "role": "Brand-aligned iPhone 16 Pro live wallpaper for the Coastal Key CEO device.",
+  "version": "1.0.0",
+  "generated": "2026-04-17",
+  "targetPlatforms": [
+    "iphone_16_pro_wallpaper"
+  ],
+  "renderer": "banana_pro_ai",
+  "technicalStandards": {
+    "resolution": {
+      "width": 1179,
+      "height": 2556,
+      "label": "iPhone 16 Pro native portrait"
+    },
+    "frameRate": 60,
+    "loopDurationSeconds": {
+      "min": 3,
+      "max": 5
+    },
+    "container": "mov",
+    "codec": "H.265/HEVC",
+    "colorSpace": "Display P3",
+    "dynamicRange": "HDR10",
+    "pipeline": {
+      "skin": [
+        "multi-layer subsurface scattering (epidermis, dermis, subcutaneous)",
+        "pore-level albedo and normal maps",
+        "vellus hair / peach fuzz visible in rim lighting"
+      ],
+      "eyes": [
+        "corneal refraction with environment reflection",
+        "scleral vein network at natural density",
+        "iris caustics from key light",
+        "tear film moisture on lower lid"
+      ],
+      "hair": [
+        "strand-level simulation (>= 100,000 strands)",
+        "wind and gravity dynamics",
+        "specular highlights from key light"
+      ],
+      "motion": [
+        "natural breathing cycle (12-16 breaths/min)",
+        "micro-expressions (brow, lip corner, nostril)",
+        "blink cycle (15-20/min, varied timing)",
+        "subtle weight shift / idle sway"
+      ],
+      "lighting": [
+        "three-point cinematic (warm key, cool fill, soft rim)",
+        "global illumination for skin bounce"
+      ]
+    },
+    "referenceStandards": [
+      "Weta FX digital-human pipeline",
+      "ILM facial animation standards",
+      "DNEG photorealistic compositing",
+      "Digital Domain real-time digital humans"
+    ]
+  },
+  "subject": {
+    "name": "Treasure Coast Dawn",
+    "kind": "non_human",
+    "contentRating": "G",
+    "description": [
+      "Wide Treasure Coast shoreline at civil twilight into sunrise",
+      "Foreground: damp sand with receding wash, scattered shell fragments",
+      "Midground: glassy shorebreak with low foam lines",
+      "Background: flat horizon with scattered low cumulus catching warm light",
+      "No people, no boats, no structures"
+    ]
+  },
+  "wardrobe": null,
+  "environment": [
+    "Sun rising 3-8 degrees above horizon, warm amber to soft gold gradient",
+    "Sky gradient: deep indigo at top transitioning to warm gold at horizon",
+    "Two to three silhouetted seabirds drifting across upper third of frame",
+    "Palm frond edge visible in top-right corner, gently swaying",
+    "Subtle volumetric haze over water"
+  ],
+  "camera": {
+    "framing": "wide environmental, horizon on lower third",
+    "angle": "locked, eye-level with horizon",
+    "orientation": "portrait 1179 x 2556",
+    "lens": "equivalent 28mm full-frame, f/8, deep focus"
+  },
+  "animation": {
+    "loopSeconds": 5,
+    "idleBehaviors": [
+      "wave wash advances and recedes over 4-second cycle",
+      "cloud drift at 2 degrees per second, left to right",
+      "palm frond sway at 0.3 Hz",
+      "seabird silhouettes complete one pass per loop",
+      "sun position static (loop point fixed at dawn)"
+    ]
+  },
+  "voice": null,
+  "deliveryProfile": {
+    "tone": "environmental, calm, brand-aligned",
+    "cadence": "slow, meditative motion; no startle cuts",
+    "prohibited": [
+      "hard zooms",
+      "lens flares beyond subtle bloom",
+      "visible text or watermarks"
+    ]
+  },
+  "qualityGates": [
+    "Skin: no waxy plastic appearance; visible pores; natural variation",
+    "Eyes: visible corneal reflection; tear film on lower lid",
+    "Hair: strand-level; no clumping artifacts",
+    "Loop: first and last frames match perfectly",
+    "Resolution: pixel-perfect 1179x2556; no upscaling artifacts",
+    "Frame rate: steady 60 fps; no judder",
+    "Content: no sexualized framing; PG-13 ceiling"
+  ]
+}
