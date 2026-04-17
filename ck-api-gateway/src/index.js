@@ -217,6 +217,7 @@ import { handleTokenDashboard, handleTokenScan, handleTokenRegistry } from './ro
 import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSalesChannels, handleSalesPlaybooks } from './routes/sales-acquisition.js';
 import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramework } from './routes/market-strategy.js';
 import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
+import { handleDeliveryDashboard, handleDeliveryExecute, handleDeliveryTemplate, handleDeliveryGovernance } from './routes/delivery-protocol.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1184,6 +1185,20 @@ export default {
       }
       if (path === '/v1/orchestrator/noi-model' && method === 'POST') {
         return await handleOrchestratorNOICalculate(request, env, ctx);
+      }
+
+      // ── Delivery Protocol (SGR-001) ──
+      if (path === '/v1/delivery/dashboard' && method === 'GET') {
+        return handleDeliveryDashboard();
+      }
+      if (path === '/v1/delivery/execute' && method === 'POST') {
+        return await handleDeliveryExecute(request, env, ctx);
+      }
+      if (path === '/v1/delivery/template' && method === 'GET') {
+        return handleDeliveryTemplate();
+      }
+      if (path === '/v1/delivery/governance' && method === 'GET') {
+        return handleDeliveryGovernance();
       }
 
       // ── Agent Manifest ──
