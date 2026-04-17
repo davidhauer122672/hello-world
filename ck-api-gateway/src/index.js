@@ -201,6 +201,7 @@ import { handleCeoDirective, handleOperationsReview, handleOperatingState, handl
 import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { handleSpearTrigger, handleSpearReply, handleSpearStatus, handleSpearDashboard, handleSpearGenerate } from './routes/spear.js';
+import { handleSpearEmailTrigger, handleSpearEmailReply, handleSpearEmailStatus, handleSpearEmailDashboard } from './routes/spear-email.js';
 import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, handleRndCompetitors, handleRndSystems } from './routes/rnd-campaign.js';
 import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
 import { handleMetricsDashboard, handleMetricsTargets, handleMetricsCalculate, handleRevenueLines, handleExpenseCategories, handleCalculateNOI, handleCalculateGrossMargin, handleCalculateCACLTV } from './routes/profit-metrics.js';
@@ -893,6 +894,21 @@ export default {
       if (path.match(/^\/v1\/spear\/status\/[^/]+$/) && method === 'GET') {
         const leadId = path.split('/v1/spear/status/')[1];
         return await handleSpearStatus(leadId, env);
+      }
+
+      // ── SPEAR-Email Funnel (TCPA-safe email variant) ──
+      if (path === '/v1/spear-email/trigger' && method === 'POST') {
+        return await handleSpearEmailTrigger(request, env, ctx);
+      }
+      if (path === '/v1/spear-email/reply' && method === 'POST') {
+        return await handleSpearEmailReply(request, env, ctx);
+      }
+      if (path === '/v1/spear-email/dashboard' && method === 'GET') {
+        return handleSpearEmailDashboard();
+      }
+      if (path.match(/^\/v1\/spear-email\/status\/[^/]+$/) && method === 'GET') {
+        const leadId = path.split('/v1/spear-email/status/')[1];
+        return await handleSpearEmailStatus(leadId, env);
       }
 
       // ── Thinking Coach ──
