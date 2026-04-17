@@ -216,6 +216,7 @@ import { getGoogleAdsDashboard } from './engines/google-ads-campaign.js';
 import { handleTokenDashboard, handleTokenScan, handleTokenRegistry } from './routes/token-maintenance.js';
 import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSalesChannels, handleSalesPlaybooks } from './routes/sales-acquisition.js';
 import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramework } from './routes/market-strategy.js';
+import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1163,6 +1164,26 @@ export default {
       }
       if (path === '/v1/strategy/framework' && method === 'GET') {
         return handleStrategyFramework();
+      }
+
+      // ── Master Orchestrator V2.1 ──
+      if (path === '/v1/orchestrator/dashboard' && method === 'GET') {
+        return handleOrchestratorDashboard();
+      }
+      if (path === '/v1/orchestrator/assets' && method === 'GET') {
+        return handleOrchestratorAssets();
+      }
+      if (path === '/v1/orchestrator/avatars' && method === 'GET') {
+        return handleOrchestratorAvatars();
+      }
+      if (path === '/v1/orchestrator/gaps' && method === 'GET') {
+        return handleOrchestratorGaps();
+      }
+      if (path === '/v1/orchestrator/noi-model' && method === 'GET') {
+        return handleOrchestratorNOIModel();
+      }
+      if (path === '/v1/orchestrator/noi-model' && method === 'POST') {
+        return await handleOrchestratorNOICalculate(request, env, ctx);
       }
 
       // ── Agent Manifest ──
