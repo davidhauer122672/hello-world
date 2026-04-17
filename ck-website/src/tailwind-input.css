@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+/* ── Coastal Key Brand Tokens ─────────────────────────────────────────── */
+
+@theme {
+  --color-navy: #0a1628;
+  --color-navy-50: #e8ecf4;
+  --color-navy-100: #c5cfe3;
+  --color-navy-400: #5a79af;
+  --color-navy-800: #0f2143;
+  --color-navy-900: #0a1628;
+
+  --color-gold: #c9a84c;
+  --color-gold-light: #e2c97e;
+  --color-gold-50: #fdf8eb;
+
+  --color-teal: #38bdf8;
+  --color-coastal-sand: #f5f0e8;
+  --color-coastal-foam: #e0f2fe;
+  --color-coastal-deep: #0d1f3c;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --shadow-card: 0 4px 24px rgba(10, 22, 40, 0.08);
+  --shadow-elevated: 0 8px 40px rgba(10, 22, 40, 0.12);
+
+  --radius-card: 12px;
+}
+
+/* ── BEM Migration Wrappers (Phase 1 Coexistence) ─────────────────────── */
+
+.ck-container {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.ck-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.ck-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-gold);
+}
+
+.ck-heading {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  color: var(--color-navy-900);
+  line-height: 1.15;
+}
+
+.ck-subheading {
+  font-size: 1.125rem;
+  color: var(--color-navy-400);
+  line-height: 1.6;
+  max-width: 42rem;
+}
+
+.ck-card {
+  background: #fff;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+  border: 1px solid rgba(10, 22, 40, 0.06);
+}
+
+.ck-card-elevated {
+  background: #fff;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-elevated);
+  padding: 2rem;
+  border: 1px solid rgba(10, 22, 40, 0.06);
+}
+
+.ck-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-gold);
+  color: var(--color-navy-900);
+  font-weight: 600;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.ck-btn-primary:hover {
+  background: var(--color-gold-light);
+}
+
+.ck-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--color-gold);
+  color: var(--color-gold);
+  font-weight: 600;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.ck-btn-secondary:hover {
+  background: var(--color-gold);
+  color: var(--color-navy-900);
+}
+
+.ck-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-navy-800);
+  color: var(--color-gold);
+}
+
+.ck-stat-value {
+  font-size: 2.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+.ck-stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-navy-400);
+  margin-top: 0.25rem;
+}
+
+.ck-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-800) 50%, var(--color-coastal-deep) 100%);
+  color: #fff;
+  padding: 1rem;
+}
