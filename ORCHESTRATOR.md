@@ -108,7 +108,8 @@ These living documents are maintained and updated with every relevant operation:
 | Ops Flowchart & RACI | `docs/ops-flowchart-raci.md` | Visual flowchart + RACI matrix for all operations |
 | Retail Blueprint | `docs/retail-blueprint.md` | 1,200 sq ft financial model, SKU strategy |
 | Investment Acquisition Questions | `docs/investment-acquisition-questions.md` | Acquisition due diligence framework |
-| Marketing Assets Library | `docs/marketing-assets-library.md` | 10+ refined marketing assets registry |
+| Marketing Assets Library | `docs/marketing-assets-library.md` | 13 refined marketing assets registry |
+| V1 Campaign Pack | `docs/marketing-assets-v1-polished.md` | 10 governance-compliant execution-ready deliverables |
 | Phase Status Dashboard | `docs/phase-status-dashboard.md` | Current phase, live metrics, friction log |
 
 ---
