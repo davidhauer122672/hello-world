@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://coastalkey-pm.com/schemas/orchestrator/agent-communication/v1.0.0",
+  "title": "Coastal Key Orchestrator — Cross-Agent Communication Schemas",
+  "version": "1.0.0",
+  "effective": "2026-04-17",
+  "description": "Canonical JSON schemas for envelopes exchanged between the Master Orchestrator and the Sentry, Ledger, Acquisition, and Report agents.",
+  "$defs": {
+    "Envelope": {
+      "type": "object",
+      "required": ["envelope_id", "issued_at", "issuer", "recipient", "priority", "risk_class", "action", "payload", "signature"],
+      "properties": {
+        "envelope_id": {"type": "string", "pattern": "^env_[A-Za-z0-9]{16,}$"},
+        "issued_at": {"type": "string", "format": "date-time"},
+        "issuer": {"type": "string", "enum": ["orchestrator", "sentry-agent", "ledger-agent", "acquisition-agent", "report-agent", "ceo", "scheduler"]},
+        "recipient": {"type": "string", "enum": ["orchestrator", "sentry-agent", "ledger-agent", "acquisition-agent", "report-agent", "dashboard", "ceo"]},
+        "priority": {"type": "string", "enum": ["P0", "P1", "P2", "P3"]},
+        "risk_class": {"type": "string", "enum": ["R0", "R1", "R2", "R3"]},
+        "goal_alignment": {
+          "type": "array",
+          "items": {"type": "string", "enum": ["G1_automation", "G2_risk", "G3_financial", "G4_market"]},
+          "minItems": 1
+        },
+        "hitl_required": {"type": "boolean"},
+        "hitl_reason": {"type": "string"},
+        "action": {"type": "string", "description": "Verb-noun action identifier, e.g. dispatch_work_order, enroll_lead"},
+        "payload": {"type": "object", "description": "Action-specific payload; see per-action schemas below"},
+        "correlation_id": {"type": "string", "description": "Links related envelopes (same incident, same lead, same invoice)"},
+        "ttl_seconds": {"type": "integer", "minimum": 1, "maximum": 86400},
+        "signature": {"type": "string", "description": "HMAC-SHA256 of canonicalized envelope using ORCHESTRATOR_KEY"}
+      }
+    },
+    "MoneyAmount": {
+      "type": "object",
+      "required": ["amount_cents", "currency"],
+      "properties": {
+        "amount_cents": {"type": "integer", "minimum": 0},
+        "currency": {"type": "string", "enum": ["USD"]}
+      }
+    },
+    "Property": {
+      "type": "object",
+      "required": ["property_id", "county"],
+      "properties": {
+        "property_id": {"type": "string", "pattern": "^prop_[A-Za-z0-9]{8,}$"},
+        "address_line_1": {"type": "string"},
+        "city": {"type": "string"},
+        "county": {"type": "string", "enum": ["Martin", "St. Lucie", "Indian River"]},
+        "state": {"type": "string", "const": "FL"},
+        "zip": {"type": "string", "pattern": "^[0-9]{5}(-[0-9]{4})?$"},
+        "owner_contact_id": {"type": "string"},
+        "llc_owner": {"type": "string"}
+      }
+    }
+  },
+  "schemas": {
+    "SentryTelemetryEvent": {
+      "description": "Inbound sensor reading from a property",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "telemetry_ingest"},
+        "payload": {
+          "type": "object",
+          "required": ["property_id", "sensor_type", "reading", "unit", "captured_at"],
+          "properties": {
+            "property_id": {"type": "string"},
+            "sensor_id": {"type": "string"},
+            "sensor_type": {"type": "string", "enum": ["water", "humidity", "temperature", "door", "window", "power", "smoke", "motion"]},
+            "reading": {"type": "number"},
+            "unit": {"type": "string"},
+            "threshold_breached": {"type": "boolean"},
+            "captured_at": {"type": "string", "format": "date-time"},
+            "battery_pct": {"type": "integer", "minimum": 0, "maximum": 100}
+          }
+        }
+      }
+    },
+    "SentryDispatchWorkOrder": {
+      "description": "Orchestrator-issued directive to dispatch a vendor",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "dispatch_work_order"},
+        "payload": {
+          "type": "object",
+          "required": ["property_id", "trade", "urgency", "estimated_cost"],
+          "properties": {
+            "property_id": {"type": "string"},
+            "trade": {"type": "string", "enum": ["plumbing", "electrical", "hvac", "roofing", "pest", "general", "security"]},
+            "urgency": {"type": "string", "enum": ["emergency", "same_day", "48_hour", "scheduled"]},
+            "estimated_cost": {"$ref": "#/$defs/MoneyAmount"},
+            "vendor_id": {"type": "string"},
+            "scope_of_work": {"type": "string"},
+            "photo_evidence_urls": {"type": "array", "items": {"type": "string", "format": "uri"}},
+            "owner_notification_required": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "LedgerBillPay": {
+      "description": "Ledger-Agent pay request; HITL required if amount_cents > 500000",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "bill_pay_execute"},
+        "payload": {
+          "type": "object",
+          "required": ["invoice_id", "payee", "amount", "llc_entity"],
+          "properties": {
+            "invoice_id": {"type": "string"},
+            "payee": {"type": "string"},
+            "payee_ein_last4": {"type": "string"},
+            "amount": {"$ref": "#/$defs/MoneyAmount"},
+            "llc_entity": {"type": "string", "enum": ["CKPM_LLC", "CKHW_LLC", "CKTC_HOLDING"]},
+            "gl_account": {"type": "string"},
+            "due_date": {"type": "string", "format": "date"},
+            "expense_category": {"type": "string"},
+            "requires_hitl": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "LedgerTaxProvision": {
+      "description": "Quarterly tax provision calculation output",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "tax_provision_calculate"},
+        "payload": {
+          "type": "object",
+          "required": ["quarter", "year", "llc_entity", "taxable_income", "estimated_tax"],
+          "properties": {
+            "quarter": {"type": "integer", "enum": [1, 2, 3, 4]},
+            "year": {"type": "integer", "minimum": 2026},
+            "llc_entity": {"type": "string"},
+            "taxable_income": {"$ref": "#/$defs/MoneyAmount"},
+            "estimated_tax": {"$ref": "#/$defs/MoneyAmount"},
+            "filing_deadline": {"type": "string", "format": "date"}
+          }
+        }
+      }
+    },
+    "AcquisitionLeadEnriched": {
+      "description": "Enriched lead record emitted by Acquisition-Agent",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "lead_enriched"},
+        "payload": {
+          "type": "object",
+          "required": ["lead_id", "source", "confidence_score", "property"],
+          "properties": {
+            "lead_id": {"type": "string"},
+            "source": {"type": "string", "enum": ["mls", "public_records", "luxury_portal", "referral", "web_form", "retell_call"]},
+            "source_url": {"type": "string", "format": "uri"},
+            "confidence_score": {"type": "number", "minimum": 0, "maximum": 1},
+            "estimated_net_worth_band": {"type": "string", "enum": ["1-5M", "5-10M", "10-25M", "25M+"]},
+            "segment": {"type": "string", "enum": ["absentee_homeowners", "luxury_1m_plus", "investor_family_office", "seasonal_snowbirds", "str_vacation_rental"]},
+            "property": {"$ref": "#/$defs/Property"},
+            "contact": {
+              "type": "object",
+              "properties": {
+                "full_name": {"type": "string"},
+                "email": {"type": "string", "format": "email"},
+                "phone_e164": {"type": "string", "pattern": "^\\+[1-9][0-9]{7,14}$"},
+                "can_spam_ok": {"type": "boolean"},
+                "do_not_contact": {"type": "boolean"}
+              }
+            },
+            "recommended_sequence": {"type": "string", "enum": ["drip_90d_risk_first", "drip_90d_luxury", "direct_sen_outreach", "hold"]}
+          }
+        }
+      }
+    },
+    "ReportPropertyUpdate": {
+      "description": "Weekly AI-narrated report artifact metadata",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "report_published"},
+        "payload": {
+          "type": "object",
+          "required": ["property_id", "period_start", "period_end", "narration_url", "pdf_url", "incident_count"],
+          "properties": {
+            "property_id": {"type": "string"},
+            "period_start": {"type": "string", "format": "date"},
+            "period_end": {"type": "string", "format": "date"},
+            "narration_url": {"type": "string", "format": "uri"},
+            "pdf_url": {"type": "string", "format": "uri"},
+            "video_url": {"type": "string", "format": "uri"},
+            "incident_count": {"type": "integer", "minimum": 0},
+            "work_orders_completed": {"type": "integer", "minimum": 0},
+            "photo_count": {"type": "integer", "minimum": 0},
+            "owner_nps_ask": {"type": "boolean"},
+            "sent_channels": {
+              "type": "array",
+              "items": {"type": "string", "enum": ["email", "sms", "portal"]}
+            }
+          }
+        }
+      }
+    },
+    "HITLApprovalRequest": {
+      "description": "Orchestrator → CEO approval request",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "hitl_request"},
+        "payload": {
+          "type": "object",
+          "required": ["blocked_envelope_id", "reason", "decision_url", "expires_at"],
+          "properties": {
+            "blocked_envelope_id": {"type": "string"},
+            "reason": {"type": "string"},
+            "risk_summary": {"type": "string"},
+            "financial_exposure": {"$ref": "#/$defs/MoneyAmount"},
+            "decision_url": {"type": "string", "format": "uri"},
+            "expires_at": {"type": "string", "format": "date-time"},
+            "escalation_channels": {
+              "type": "array",
+              "items": {"type": "string", "enum": ["sms", "slack", "email", "phone"]}
+            }
+          }
+        }
+      }
+    },
+    "HITLApprovalResponse": {
+      "description": "CEO decision returned to Orchestrator",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "hitl_decision"},
+        "payload": {
+          "type": "object",
+          "required": ["blocked_envelope_id", "decision", "decided_at", "approver_id"],
+          "properties": {
+            "blocked_envelope_id": {"type": "string"},
+            "decision": {"type": "string", "enum": ["approve", "reject", "defer"]},
+            "decided_at": {"type": "string", "format": "date-time"},
+            "approver_id": {"type": "string"},
+            "rationale": {"type": "string"},
+            "modified_payload": {"type": "object"}
+          }
+        }
+      }
+    },
+    "OrchestratorAuditEntry": {
+      "description": "Immutable audit record written to KV AUDIT_LOG with 30-day TTL",
+      "allOf": [{"$ref": "#/$defs/Envelope"}],
+      "properties": {
+        "action": {"const": "audit_log"},
+        "payload": {
+          "type": "object",
+          "required": ["event_envelope_id", "routing_agent", "outcome"],
+          "properties": {
+            "event_envelope_id": {"type": "string"},
+            "routing_agent": {"type": "string"},
+            "outcome": {"type": "string", "enum": ["dispatched", "quarantined", "hitl_pending", "hitl_approved", "hitl_rejected", "throttled", "errored"]},
+            "latency_ms": {"type": "integer"},
+            "error_code": {"type": "string"},
+            "goal_alignment_passed": {"type": "boolean"}
+          }
+        }
+      }
+    }
+  },
+  "rate_limits": {
+    "sentry-agent": {"rpm": 60, "daily": 2000, "burst": 10},
+    "ledger-agent": {"rpm": 20, "daily": 500, "burst": 5},
+    "acquisition-agent": {"rpm": 30, "daily": 100, "burst": 5},
+    "report-agent": {"rpm": 10, "daily": 50, "burst": 3},
+    "orchestrator": {"rpm": 600, "daily": null, "burst": 60}
+  },
+  "hitl_thresholds": {
+    "financial_transfer_single_cents": 500000,
+    "financial_transfer_aggregate_24h_cents": 500000,
+    "new_vendor_contract_cents": 250000,
+    "acquisition_outbound_daily_cap": 100,
+    "priority_p0_always": true,
+    "inter_llc_transfer_always": true,
+    "insurance_claim_always": true
+  }
+}

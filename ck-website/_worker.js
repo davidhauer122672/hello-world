@@ -58,6 +58,12 @@ function rewriteUrls(body, siteOrigin, siteHost) {
 function injectSEO(html, pathname, siteOrigin) {
   const canonicalUrl = siteOrigin + pathname;
   const canonicalTag = `<link rel="canonical" href="${canonicalUrl}">`;
+  const tailwindTag = `<link rel="stylesheet" href="/dist/tailwind-output.css">`;
+
+  // Inject Tailwind CSS after any existing stylesheets (Phase 1 coexistence)
+  if (!html.includes('tailwind-output.css')) {
+    html = html.replace('</head>', `  ${tailwindTag}\n</head>`);
+  }
 
   // Inject canonical if not already present
   if (!html.includes('rel="canonical"')) {
