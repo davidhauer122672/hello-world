@@ -53,6 +53,31 @@ function main() {
     specs: results.map((r) => ({ id: r.id, json: path.relative(path.dirname(indexPath), r.jsonPath) })),
   }, null, 2));
   console.log(`\n[index] ${results.length} spec(s) -> ${path.relative(process.cwd(), indexPath)}`);
+
+  const bundleParts = [
+    '# Coastal Key Avatar Studio — All Builds Bundle',
+    '',
+    'This file concatenates every built prompt in one paste-ready document.',
+    'Paste each section into Banana Pro AI as a separate generation.',
+    '',
+    `Generated: ${new Date().toISOString()}`,
+    `Build count: ${results.length}`,
+    '',
+    '---',
+    '',
+  ];
+  for (const r of results) {
+    const body = fs.readFileSync(r.promptPath, 'utf8').trimEnd();
+    bundleParts.push(`<!-- BEGIN ${r.id} -->`);
+    bundleParts.push(body);
+    bundleParts.push(`<!-- END ${r.id} -->`);
+    bundleParts.push('');
+    bundleParts.push('---');
+    bundleParts.push('');
+  }
+  const bundlePath = path.join(PROMPT_DIR, 'ALL-BUILDS.prompt.md');
+  fs.writeFileSync(bundlePath, bundleParts.join('\n'));
+  console.log(`[bundle] -> ${path.relative(process.cwd(), bundlePath)}`);
 }
 
 if (require.main === module) {
