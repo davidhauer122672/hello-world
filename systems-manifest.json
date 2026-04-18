@@ -346,6 +346,70 @@
       "manual_report_trigger": true
     }
   },
+  "avatar_studio": {
+    "status": "operational",
+    "version": "1.0.0",
+    "description": "Renderer-agnostic avatar and live-wallpaper spec factory. Emits validated JSON payloads and pasteable prompts for Banana Pro AI, Runway, and Grok companion integration.",
+    "files": [
+      "lib/avatar-spec.js",
+      "avatar-studio/README.md",
+      "avatar-studio/scripts/build-specs.js",
+      "avatar-studio/specs/01-executive-communications-avatar.config.js",
+      "avatar-studio/specs/02-executive-administrator-avatar.config.js",
+      "avatar-studio/specs/03-treasure-coast-dawn-wallpaper.config.js",
+      "avatar-studio/specs/04-ceo-avatar.config.js",
+      "tests/avatar-spec.test.js"
+    ],
+    "builds": [
+      {
+        "id": "ck-avatar-01-exec-comms",
+        "kind": "fictional",
+        "title": "Executive Communications Avatar",
+        "role": "CEO-approved executive communications and briefings"
+      },
+      {
+        "id": "ck-avatar-02-exec-admin",
+        "kind": "fictional",
+        "title": "Executive Administrator Avatar",
+        "role": "Operations status, incident summaries, workflow reports"
+      },
+      {
+        "id": "ck-wallpaper-03-treasure-coast-dawn",
+        "kind": "non_human",
+        "title": "Treasure Coast Dawn Live Wallpaper",
+        "role": "Brand-aligned iPhone 16 Pro live wallpaper (no people)"
+      },
+      {
+        "id": "ck-avatar-04-ceo-self",
+        "kind": "self",
+        "title": "CEO Avatar (Self-Likeness)",
+        "role": "Operator-authorized self-likeness. Requires authorized source files; pipeline aborts if missing."
+      }
+    ],
+    "technical_standards": {
+      "resolution": "1179x2556",
+      "frame_rate": 60,
+      "container": "mov",
+      "codec": "H.265/HEVC",
+      "color_space": "Display P3",
+      "dynamic_range": "HDR10",
+      "reference_pipelines": ["Weta FX", "ILM", "DNEG", "Digital Domain"]
+    },
+    "content_policy": {
+      "subject_kinds_allowed": ["fictional", "self", "non_human"],
+      "real_person_likeness": "rejected",
+      "content_rating_ceiling": "PG-13",
+      "descriptor_blocklist": "enforced at build time via enforceContentPolicy",
+      "self_subject_requires": ["consentStatement", "sourceFiles"]
+    },
+    "build_command": "node avatar-studio/scripts/build-specs.js",
+    "artifacts": {
+      "json_payloads": "avatar-studio/specs/built/*.json",
+      "prompt_blocks": "avatar-studio/prompts/*.prompt.md",
+      "index": "avatar-studio/specs/built/index.json"
+    },
+    "render_pipeline_handoff": "External (Banana Pro AI, Runway, Gaussian-splat tooling). Avatar Studio produces the spec and prompt; rendering and deployment to iPhone/Grok occurs outside this repo."
+  },
   "cfo_revenue_platform": {
     "status": "operational",
     "version": "1.0.0",
