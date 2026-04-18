@@ -46,6 +46,92 @@ function isTextContent(contentType) {
     || contentType.includes('application/xml');
 }
 
+// ── Phase 3: BEM → Tailwind class rewriting at edge ────────────────────
+
+const BEM_TO_TAILWIND = [
+  ['section-header', 'ck-section'],
+  ['section-label--light', 'ck-label text-gold-light'],
+  ['section-label', 'ck-label'],
+  ['section-heading', 'ck-heading'],
+  ['hero__overlay', 'ck-hero-overlay'],
+  ['hero__bg-img', 'ck-hero-bg-img'],
+  ['hero__bg', 'ck-hero-bg'],
+  ['hero__content', 'ck-hero-content'],
+  ['hero__eyebrow', 'ck-hero-eyebrow'],
+  ['hero__headline', 'ck-hero-headline'],
+  ['hero__subhead', 'ck-hero-subhead'],
+  ['hero__ctas', 'ck-hero-ctas'],
+  ['hero__scroll-line', 'ck-hero-scroll-line'],
+  ['hero__scroll-cue', 'ck-hero-scroll'],
+  ['hero', 'ck-hero'],
+  ['nav__logo-img', 'ck-nav-logo-img'],
+  ['nav__logo-text', 'ck-nav-logo-text'],
+  ['nav__logo', 'ck-nav-logo'],
+  ['nav__links', 'ck-nav-links'],
+  ['nav__link', 'ck-nav-link'],
+  ['nav__cta-link', 'ck-nav-cta'],
+  ['nav__toggle', 'ck-nav-toggle'],
+  ['nav__inner', 'ck-nav-inner'],
+  ['service-card__icon', 'ck-service-icon'],
+  ['service-card__title', 'ck-service-title'],
+  ['service-card__body', 'ck-service-body'],
+  ['service-card__detail', 'ck-service-tags'],
+  ['service-card', 'ck-service-card'],
+  ['services__grid', 'ck-services-grid'],
+  ['leader-card__photo', 'ck-leader-photo'],
+  ['leader-card__role', 'ck-leader-role'],
+  ['leader-card__license', 'ck-leader-license'],
+  ['leader-card__bio', 'ck-leader-bio'],
+  ['leader-card__quote', 'ck-leader-quote'],
+  ['leader-card__stats', 'ck-leader-stats'],
+  ['leader-card--dark', 'ck-leader-card-dark'],
+  ['leader-card', 'ck-leader-card'],
+  ['leadership__grid', 'ck-leadership-grid'],
+  ['contact__detail-item', 'ck-contact-detail-item'],
+  ['contact__details', 'ck-contact-details'],
+  ['contact__body', 'ck-contact-body'],
+  ['contact__text', 'ck-contact-text'],
+  ['contact__form-wrap', 'ck-contact-form-wrap'],
+  ['contact__form', 'ck-contact-form'],
+  ['contact__inner', 'ck-contact-inner'],
+  ['form-group', 'ck-form-group'],
+  ['form__note', 'ck-form-note'],
+  ['footer__brand-tagline', 'ck-footer-brand-tagline'],
+  ['footer__brand', 'ck-footer-brand'],
+  ['footer__logo', 'ck-footer-logo'],
+  ['footer__tagline', 'ck-footer-tagline'],
+  ['footer__nav', 'ck-footer-nav'],
+  ['footer__middle', 'ck-footer-middle'],
+  ['footer__social', 'ck-footer-social'],
+  ['footer__nhwa', 'ck-footer-nhwa'],
+  ['footer__bottom', 'ck-footer-bottom'],
+  ['footer__copy', 'ck-footer-copy'],
+  ['footer__licenses', 'ck-footer-licenses'],
+  ['footer__top', 'ck-footer-top'],
+  ['footer', 'ck-footer'],
+  ['btn--gold-outline', 'ck-btn'],
+  ['btn--gold', 'ck-btn-gold'],
+  ['btn--full', 'ck-btn ck-btn-full'],
+  ['btn--sm', 'ck-btn ck-btn-sm'],
+  ['btn', 'ck-btn'],
+  ['reveal-up', 'ck-reveal-up'],
+  ['reveal-left', 'ck-reveal-left'],
+  ['reveal-right', 'ck-reveal-right'],
+  ['delay-1', 'ck-delay-1'],
+  ['delay-2', 'ck-delay-2'],
+  ['container', 'ck-container'],
+];
+
+function rewriteBEMClasses(html) {
+  for (const [bem, tw] of BEM_TO_TAILWIND) {
+    const regex = new RegExp('\\bclass="([^"]*?)\\b' + bem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'g');
+    html = html.replace(regex, (match, prefix) => {
+      return 'class="' + prefix + tw;
+    });
+  }
+  return html;
+}
+
 function rewriteUrls(body, siteOrigin, siteHost) {
   return body
     .replaceAll(MANUS_ORIGIN, siteOrigin)
@@ -60,7 +146,10 @@ function injectSEO(html, pathname, siteOrigin) {
   const canonicalTag = `<link rel="canonical" href="${canonicalUrl}">`;
   const tailwindTag = `<link rel="stylesheet" href="/dist/tailwind-output.css">`;
 
-  // Inject Tailwind CSS after any existing stylesheets (Phase 1 coexistence)
+  // Phase 3: Strip legacy BEM stylesheet from origin HTML
+  html = html.replace(/<link[^>]*href="[^"]*style\.css[^"]*"[^>]*>/gi, '<!-- legacy BEM removed by edge -->');
+
+  // Phase 3: Inject Tailwind CSS as sole stylesheet
   if (!html.includes('tailwind-output.css')) {
     html = html.replace('</head>', `  ${tailwindTag}\n</head>`);
   }
@@ -225,8 +314,9 @@ export default {
         let body = await response.text();
         body = rewriteUrls(body, siteOrigin, siteHost);
 
-        // Inject SEO for HTML
+        // Inject SEO and rewrite BEM classes for HTML
         if (contentType.includes('text/html')) {
+          body = rewriteBEMClasses(body);
           body = injectSEO(body, url.pathname, siteOrigin);
         }
 
