@@ -42,7 +42,7 @@ const UNSUBSCRIBE_FOOTER = `
 
 —
 David Hauer | Coastal Key Property Management
-Stuart, FL 34994
+1407 SE Legacy Cove Circle, Suite 101, Stuart, FL 34997
 To stop receiving these messages, reply with "unsubscribe".`;
 
 const TIER_QUICK_FACTS = {
