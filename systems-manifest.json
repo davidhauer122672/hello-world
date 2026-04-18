@@ -4,7 +4,7 @@
     "generated": "2026-04-08",
     "organization": "Coastal Key Treasure Coast Asset Management",
     "platform": "Unified Operations Platform",
-    "classification": "Enterprise Home Watch & Asset Management"
+    "classification": "Estate Management Enterprise"
   },
   "architecture": {
     "runtime": "Node.js + Express 5",
@@ -85,9 +85,8 @@
         "files": ["lib/social-publisher.js", "routes/social.js"],
         "platforms": ["instagram", "facebook", "linkedin", "alignable"],
         "content_pillars": ["brand", "ceo_journey"],
-        "modes": ["buffer_api_automated", "manual_copy_paste_fallback"],
-        "capabilities": ["draft_creation", "approval_workflow", "buffer_push", "publish_tracking", "calendar_view"],
-        "schedule": "*/30 * * * * (publish status polling)",
+        "modes": ["direct_platform_posting"],
+        "capabilities": ["draft_creation", "approval_workflow", "direct_posting", "publish_tracking", "calendar_view"],
         "endpoints": [
           "POST /api/social/draft",
           "POST /api/social/approve/:id",
@@ -217,11 +216,6 @@
         "purpose": "Payment processing",
         "capabilities": ["checkout_sessions", "webhook_verification"]
       },
-      "buffer": {
-        "purpose": "Social media scheduling",
-        "capabilities": ["post_creation", "publish_status_polling"],
-        "fallback": "manual_mode"
-      },
       "anthropic_claude": {
         "purpose": "Sales objection AI",
         "model": "claude-sonnet-4-20250514",
@@ -247,9 +241,9 @@
     "files": ["lib/workflows.js", "routes/workflows.js"],
     "workflows": {
       "wf1": {"name": "New Lead Nurture", "trigger": "POST /api/workflows/wf1", "actions": ["generate_battle_plan", "email_ceo", "sms_alert", "drip_enrollment"]},
-      "wf2": {"name": "Social Approval", "trigger": "POST /api/workflows/wf2", "actions": ["buffer_push_or_manual", "sms_notify"]},
+      "wf2": {"name": "Social Approval", "trigger": "POST /api/workflows/wf2", "actions": ["direct_platform_posting", "sms_notify"]},
       "wf3": {"name": "Investor Escalation", "trigger": "POST /api/workflows/wf3", "actions": ["sms_urgent", "email_ceo_investor_brief"]},
-      "wf4": {"name": "Buffer Published", "trigger": "POST /api/workflows/wf4", "actions": ["mark_published"]},
+      "wf4": {"name": "Content Published", "trigger": "POST /api/workflows/wf4", "actions": ["mark_published"]},
       "wf5": {"name": "Video Production", "trigger": "POST /api/workflows/wf5", "actions": ["generate_thumbnail", "generate_social_briefs", "email_production_brief", "sms_notify"]},
       "wf6": {"name": "Podcast Publish", "trigger": "POST /api/workflows/wf6", "actions": ["create_social_drafts", "sms_notify"]},
       "wf7": {"name": "AI Log Write", "trigger": "POST /api/workflows/wf7", "actions": ["log_to_file"]}
@@ -282,7 +276,7 @@
   "cron_schedules": {
     "daily_report": "0 9 * * * — Owner SMS at 9 AM",
     "drip_processing": "0 * * * * — Hourly email sends",
-    "publish_tracker": "*/30 * * * * — Buffer status polling",
+    "publish_tracker": "*/30 * * * * — Content publish status tracking",
     "data_backup": "0 2 * * * — Daily snapshot at 2 AM"
   },
   "tech_stack": {
@@ -299,11 +293,19 @@
       "twilio": "SMS delivery"
     },
     "zero_dependency_additions": ["mutex", "rate_limiter", "security_headers", "cors", "error_handler", "health_check", "backup_system", "graceful_shutdown", "workflow_engine"],
+    "ai_stack": {
+      "claude": "Primary AI reasoning and inference (Anthropic Claude Opus/Sonnet)",
+      "atlas_ai": "Voice AI campaigns and outbound sales automation",
+      "grok": "Market intelligence and real-time analysis",
+      "gemini": "Multi-modal analysis and JetBrains IDE integration (Gemini 3.1)",
+      "notebooklm": "Knowledge base synthesis and research aggregation",
+      "jetbrains": "Enterprise IDE with Gemini 3.1 AI code assistance"
+    },
     "platform_note": "All workflows run natively via lib/workflows.js — no external orchestration"
   },
   "environment_variables": {
     "required": ["PORT", "STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_WEBHOOK_SECRET", "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER", "OWNER_PHONE_NUMBER", "GOOGLE_SERVICE_ACCOUNT_KEY", "GOOGLE_SHEET_ID", "SITE_URL", "BUSINESS_NAME", "ANTHROPIC_API_KEY"],
-    "optional": ["GOOGLE_SHEET_NAME", "BUFFER_ACCESS_TOKEN", "BUFFER_PROFILE_INSTAGRAM", "BUFFER_PROFILE_FACEBOOK", "BUFFER_PROFILE_LINKEDIN", "BUFFER_PROFILE_ALIGNABLE", "CORS_ORIGIN", "NODE_ENV"]
+    "optional": ["GOOGLE_SHEET_NAME", "CORS_ORIGIN", "NODE_ENV"]
   },
   "compliance": {
     "security": {

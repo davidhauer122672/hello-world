@@ -9,7 +9,7 @@
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
  *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
- *   POST /v1/content/publish    — Publish Content Calendar record to Buffer (WF-2 replacement)
+ *   POST /v1/content/publish    — Publish Content Calendar record for direct platform posting (WF-2)
  *   GET  /v1/meta-ads/status    — Meta Ads connector health check & diagnostics
  *   POST /v1/meta-ads/boost     — Boost high-engagement post via Meta Ads Manager
  *   GET  /v1/agents             — List/search agents with filtering
@@ -259,13 +259,6 @@ export default {
         if (!env.META_AD_ACCOUNT_ID) metaMissing.push('META_AD_ACCOUNT_ID');
         if (!env.META_PAGE_ID) metaMissing.push('META_PAGE_ID');
         checks.metaAds = { status: 'not_configured', missing: metaMissing };
-      }
-
-      // Buffer
-      if (env.BUFFER_ACCESS_TOKEN) {
-        checks.buffer = { status: 'configured' };
-      } else {
-        checks.buffer = { status: 'not_configured', impact: 'Content publish falls back to manual mode' };
       }
 
       // KV stores

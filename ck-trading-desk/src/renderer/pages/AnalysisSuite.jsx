@@ -21,7 +21,7 @@ function OverviewGrid({ onSelect }) {
     <div>
       <div className="card" style={{ marginBottom: '16px' }}>
         <div className="card-header"><span className="card-title">Financial Analysis Suite</span><span className="badge badge-green">10 ENGINES ACTIVE</span></div>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>Institutional-grade analysis across 10 Wall Street methodologies. All engines operate 24/7 generating signals for the CK Trading Desk.</p>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>Enterprise-grade analysis across 10 Wall Street methodologies. All engines operate 24/7 generating signals for the CK Trading Desk.</p>
       </div>
       <div className="grid-auto">
         {MODULE_INFO.map(m => (
@@ -59,7 +59,7 @@ function GoldmanSachsView() {
   return (
     <div>
       <div className="card" style={{ marginBottom: '16px' }}>
-        <div className="card-header"><span className="card-title">Goldman Sachs Stock Screener</span><span className="badge badge-gold">INSTITUTIONAL GRADE</span></div>
+        <div className="card-header"><span className="card-title">Goldman Sachs Stock Screener</span><span className="badge badge-gold">ENTERPRISE GRADE</span></div>
       </div>
       <div className="card">
         <table className="data-table">

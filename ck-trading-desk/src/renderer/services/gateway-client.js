@@ -89,7 +89,7 @@ export class GatewayClient {
     if (!prompt) throw new Error(`Unknown analysis type: ${analysisType}`);
 
     return this.runInference(prompt, {
-      system: `You are operating as part of the CK Trading Desk autonomous financial analysis platform. You are the ${analysisType} analysis engine. Provide institutional-grade analysis. Return ONLY valid JSON. Be precise with numbers. This analysis drives automated trading decisions.`,
+      system: `You are operating as part of the CK Trading Desk autonomous financial analysis platform. You are the ${analysisType} analysis engine. Provide enterprise-grade analysis. Return ONLY valid JSON. Be precise with numbers. This analysis drives automated trading decisions.`,
       maxTokens: 8192,
     });
   }

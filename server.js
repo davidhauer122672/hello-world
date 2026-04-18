@@ -26,7 +26,6 @@ const standupRouter = require('./routes/standup');
 const { startDailyReport, buildReport } = require('./lib/daily-report');
 const { sendSMS } = require('./lib/sms');
 const { startDripScheduler } = require('./lib/drip-engine');
-const { startPublishTracker } = require('./lib/social-publisher');
 const { startBackupScheduler, runBackup } = require('./lib/backup');
 const { startCeoStandup } = require('./lib/ceo-standup');
 
@@ -131,7 +130,6 @@ server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   startDailyReport();
   startDripScheduler();
-  startPublishTracker();
   startBackupScheduler();
   startCeoStandup();
 });

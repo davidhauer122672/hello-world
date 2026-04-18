@@ -12,8 +12,17 @@
 - **Operate** — Run day-to-day platform operations across all systems
 
 ## Project Overview
-Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
+Coastal Key Property Management (CKPM) — Estate Management Enterprise on Florida's Treasure Coast.
+Serving absentee homeowners, seasonal residents, real estate investors, HOA boards, and trust executors with properties valued at $1M+.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
+
+## AI Tech Stack
+- **Claude** (Anthropic) — Primary AI reasoning, inference, and enterprise operations
+- **Atlas.AI** — Voice AI campaigns, outbound sales automation, appointment confirmation
+- **Grok** — Market intelligence and real-time analysis
+- **Gemini 3.1** — Multi-modal analysis and JetBrains IDE integration
+- **NotebookLM** — Knowledge base synthesis and research aggregation
+- **JetBrains** — Enterprise IDE with Gemini 3.1 AI code assistance
 
 ## Live Endpoints
 - **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (147 endpoints)
@@ -159,7 +168,7 @@ GET  /api/standup              — CEO daily standup briefing
 ## Operational Schedulers
 - **Daily Report**: 9:00 AM UTC — SMS revenue + schedule summary
 - **Drip Engine**: Every hour — process 90-day email nurture sequences
-- **Publish Tracker**: Every 30 min — poll Buffer for publish confirmations
+- **Publish Tracker**: Every 30 min — content publish status tracking
 - **Backup**: 2:00 AM UTC — JSON data backup with 7-day retention
 - **CEO Standup**: 6:00 AM EST (11:00 UTC) — sovereign operations briefing
 

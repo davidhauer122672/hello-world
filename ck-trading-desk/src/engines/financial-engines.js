@@ -1,5 +1,5 @@
 /**
- * CK Trading Desk - 10 Institutional-Grade Financial Analysis Engines
+ * CK Trading Desk - 10 Enterprise-Grade Financial Analysis Engines
  * Ferrari-Standard Execution - Works 24/7/365
  */
 
