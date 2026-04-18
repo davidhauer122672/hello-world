@@ -219,6 +219,7 @@ import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramewor
 import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
 import { handleCollectionsConfig, handleCollectionsGuardrails, handleCollectionsStatus, handleCollectionsEligibility, handleCollectionsSession } from './routes/collections.js';
 import { handleDeliveryDashboard, handleDeliveryExecute, handleDeliveryTemplate, handleDeliveryGovernance } from './routes/delivery-protocol.js';
+import { handlePaymentDashboard, handlePublicPricing, handleCreatePaymentLink } from './routes/payments.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -340,6 +341,9 @@ export default {
     // ── Public routes (no auth) ──
     if (path === '/v1/leads/public' && method === 'POST') {
       return await handlePublicLead(request, env, ctx);
+    }
+    if (path === '/v1/payments/pricing' && method === 'GET') {
+      return handlePublicPricing();
     }
 
     // ── Slack routes (use signature verification, not Bearer token) ──
@@ -1217,6 +1221,14 @@ export default {
       }
       if (path === '/v1/delivery/governance' && method === 'GET') {
         return handleDeliveryGovernance();
+      }
+
+      // ── Payments (Stripe) ──
+      if (path === '/v1/payments/dashboard' && method === 'GET') {
+        return handlePaymentDashboard(env);
+      }
+      if (path === '/v1/payments/link' && method === 'POST') {
+        return await handleCreatePaymentLink(request, env, ctx);
       }
 
       // ── Agent Manifest ──

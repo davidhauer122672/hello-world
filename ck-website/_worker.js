@@ -146,8 +146,10 @@ function injectSEO(html, pathname, siteOrigin) {
   const canonicalTag = `<link rel="canonical" href="${canonicalUrl}">`;
   const tailwindTag = `<link rel="stylesheet" href="/dist/tailwind-output.css">`;
 
-  // Phase 3: Strip legacy BEM stylesheet from origin HTML
-  html = html.replace(/<link[^>]*href="[^"]*style\.css[^"]*"[^>]*>/gi, '<!-- legacy BEM removed by edge -->');
+  // Phase 3 complete: Strip ALL legacy BEM stylesheets from origin HTML
+  html = html.replace(/<link[^>]*href="[^"]*style\.css[^"]*"[^>]*>/gi, '');
+  html = html.replace(/<link[^>]*href="[^"]*styles\.css[^"]*"[^>]*>/gi, '');
+  html = html.replace(/<link[^>]*href="[^"]*main\.css[^"]*"[^>]*>/gi, '');
 
   // Phase 3: Inject Tailwind CSS as sole stylesheet
   if (!html.includes('tailwind-output.css')) {
