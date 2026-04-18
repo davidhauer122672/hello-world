@@ -1,0 +1,58 @@
+{
+  "id": "02-ceo-operations",
+  "title": "CEO Operations Administrator",
+  "filename": "CoastalKey_CEO_Operations.mov",
+  "requires_ceo_source_files": false,
+  "identity": {
+    "source": "ceo-self-likeness",
+    "reference_files": [
+      "manus-documents/ceo/reference-front.jpg",
+      "manus-documents/ceo/reference-side.jpg"
+    ],
+    "voice_sample": "manus-documents/ceo/voice-sample.wav",
+    "bio_reference": "manus-documents/ceo/bio.md"
+  },
+  "persona": {
+    "role": "Operations and Automation Administrator",
+    "tone": "Crisp, decisive, action-oriented executive",
+    "personality": "Red Bull Racing optimization mindset, zero-incident operator"
+  },
+  "wardrobe": {
+    "outfit": "Polished business casual: tailored open-collar shirt and navy trousers",
+    "accessories": "Minimal, professional watch on left wrist"
+  },
+  "environment": {
+    "setting": "Operations hub with live telemetry displays showing property risk scores",
+    "time_of_day": "Midday",
+    "palette": "Cool neutrals with Coastal Key blue accent light"
+  },
+  "animation": {
+    "idle": [
+      "Ready stance, shoulders back, 3.5s breathing cycle",
+      "Subtle weight shift every 8 seconds",
+      "Direct engaged eye contact with natural saccades"
+    ],
+    "speaking": [
+      "Frame-perfect lip sync at 60 fps",
+      "Moderate head motion on emphasis beats",
+      "Single-hand reference gesture when citing Ops Flowchart nodes"
+    ]
+  },
+  "technical": {
+    "resolution": "1179x2556",
+    "fps": 60,
+    "loop_duration_s": 15,
+    "format": "mov",
+    "codec": "H.265/HEVC",
+    "color_space": "Display P3",
+    "bit_depth": 10,
+    "hdr": "HDR10"
+  },
+  "governance": {
+    "mission_filter": true,
+    "core_goals_filter": true,
+    "content_policy": "ceo-self-likeness-only",
+    "tone_constraint": "Formal executive register only; informal, intimate, or non-business tone is rejected"
+  },
+  "prompt": "Senior Weta FX technical director brief. Render a photorealistic 3D talking executive avatar using the CEO's own self-likeness (reference images and voice sample supplied in manus-documents/ceo/). Role is Operations and Automation Administrator. Wardrobe: polished business-casual, tailored open-collar shirt with navy trousers and a minimal professional watch. Environment: operations hub backdrop with live telemetry panels showing property risk scores in Coastal Key blue, soft cool key light with a subtle accent rim. Animation: ready stance with a 3.5-second breathing cycle, subtle weight shift, engaged eye contact with natural saccades and 15-20 bpm blink rate, frame-perfect lip sync at 60 fps, moderate head motion on emphasis, single-hand reference gesture when citing workflow nodes. Voice cloned from supplied sample, crisp and decisive at 155-170 wpm. Technical output: 1179x2556, 60 fps, 15-second seamless loop, H.265/HEVC, HDR10, Display P3, 10-bit. Filename CoastalKey_CEO_Operations.mov. Every spoken line must reference the Operations Manager Flowchart or zero-incident protocols and must pass the mission and four-goals filter. Professional executive tone only."
+}

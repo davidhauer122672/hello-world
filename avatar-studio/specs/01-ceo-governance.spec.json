@@ -1,0 +1,59 @@
+{
+  "id": "01-ceo-governance",
+  "title": "CEO Governance Administrator",
+  "filename": "CoastalKey_CEO_Governance.mov",
+  "requires_ceo_source_files": false,
+  "identity": {
+    "source": "ceo-self-likeness",
+    "reference_files": [
+      "manus-documents/ceo/reference-front.jpg",
+      "manus-documents/ceo/reference-side.jpg"
+    ],
+    "voice_sample": "manus-documents/ceo/voice-sample.wav",
+    "bio_reference": "manus-documents/ceo/bio.md"
+  },
+  "persona": {
+    "role": "Strategic Alignment and Sovereign Governance Administrator",
+    "tone": "Calm, authoritative, measured CEO-level precision",
+    "personality": "Ruthless clarity, data-driven, governance-first"
+  },
+  "wardrobe": {
+    "outfit": "Tailored navy executive suit, white shirt, subtle Coastal Key lapel accent",
+    "fabric": "Italian wool-silk blend",
+    "shoes": "Dark leather oxfords (off-frame)"
+  },
+  "environment": {
+    "setting": "Minimalist Treasure Coast executive office with ocean view",
+    "time_of_day": "Golden hour",
+    "palette": "Navy, white, warm gold"
+  },
+  "animation": {
+    "idle": [
+      "Natural 3.5s breathing cycle",
+      "Composed upright posture with minimal weight shift",
+      "Direct eye engagement with natural saccades and 15-20 bpm blink rate"
+    ],
+    "speaking": [
+      "Frame-perfect lip sync at 60 fps",
+      "Controlled head nods for emphasis (3-5 degree range)",
+      "Subtle hand gestures on data references only"
+    ]
+  },
+  "technical": {
+    "resolution": "1179x2556",
+    "fps": 60,
+    "loop_duration_s": 15,
+    "format": "mov",
+    "codec": "H.265/HEVC",
+    "color_space": "Display P3",
+    "bit_depth": 10,
+    "hdr": "HDR10"
+  },
+  "governance": {
+    "mission_filter": true,
+    "core_goals_filter": true,
+    "content_policy": "ceo-self-likeness-only",
+    "tone_constraint": "Formal executive register only; informal, intimate, or non-business tone is rejected"
+  },
+  "prompt": "Senior Weta FX technical director brief. Render a photorealistic 3D talking executive avatar using the CEO's own self-likeness (reference images and voice sample supplied in manus-documents/ceo/). Role is Strategic Alignment and Sovereign Governance Administrator. Wardrobe: tailored navy executive suit with white shirt and a subtle Coastal Key lapel accent. Environment: minimalist Treasure Coast executive office with an ocean view at golden hour. Lighting is warm key from camera-right through glass, soft fill, gentle rim. Animation: composed upright posture, 3.5-second breathing cycle, natural 15-20 bpm blink rate, saccadic eye tracking, frame-perfect lip sync at 60 fps, controlled head nods for emphasis. Voice cloned from supplied sample, calm and authoritative at 140-155 wpm, zero regional accent. Technical output: 1179x2556, 60 fps, 15-second seamless loop, H.265/HEVC, HDR10, Display P3, 10-bit. Filename CoastalKey_CEO_Governance.mov. All spoken content must validate against the Coastal Key mission and the four core goals before delivery. Professional executive tone only."
+}

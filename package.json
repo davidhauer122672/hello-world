@@ -27,6 +27,9 @@
           "deploy:nemotron": "cd ck-nemotron-worker && npm run deploy",
           "test": "npm run test:server && npm run test:gateway && npm run test:sentinel && npm run test:nemotron",
           "test:server": "node --test tests/*.test.js",
+          "avatar:preflight": "node avatar-studio/scripts/preflight-ceo.js",
+          "avatar:build": "node avatar-studio/scripts/build.js",
+          "avatar:render": "node avatar-studio/scripts/render-via-banana-pro.js",
           "test:gateway": "cd ck-api-gateway && npm test",
           "test:sentinel": "cd sentinel-webhook && npm test",
           "test:nemotron": "cd ck-nemotron-worker && npm test"
