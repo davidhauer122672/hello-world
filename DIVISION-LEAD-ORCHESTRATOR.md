@@ -25,10 +25,10 @@ customer outcome, your week did not happen.
 ## Your Week, Fixed Format
 
 **Monday 07:00 local.** File your Division Status record in Airtable base
-`appUSnNgpDkcEOzhN`, table `[TBL_DIVISION_STATUS]` (pending creation — see
-Airtable Wiring below). Required fields: `status` (green / yellow / red),
-`top_three_in_flight`, `top_blocker`, `eta_on_blocker`,
-`metric_delta_vs_last_week`. A missing record is treated as red.
+`appUSnNgpDkcEOzhN`, table `tblZGLkgQ2qsGXNyJ` (Division Status). Required
+fields: `status` (green / yellow / red), `top_three_in_flight`,
+`top_blocker`, `eta_on_blocker`, `metric_delta_vs_last_week`. A missing
+record is treated as red.
 
 **Tuesday through Thursday.** Execute the queue. Every in-flight item must
 have an owner on your team, an ETA, and a definition of done written before
@@ -44,8 +44,8 @@ logged in the record.
 
 ## What You Own
 
-- The queue for your division in Airtable `[TBL_DIVISION_QUEUE_<DIVISION>]`
-  (pending creation — see Airtable Wiring below).
+- Your division's queue in Airtable `tblloR93chkzuBGON` (Division Queue),
+  filtered to your division via the `division` field.
 - Your division's metrics dashboard view.
 - Approval authority for any customer-facing output tagged to your division.
 - Escalation to CEO for anything red.
@@ -158,45 +158,50 @@ If it does not, no amount of activity compensates.
 
 ## Airtable Wiring
 
-Base: `appUSnNgpDkcEOzhN` (live, 59 tables verified).
+Base: `appUSnNgpDkcEOzhN`. All placeholders resolved.
 
-| Placeholder | Status | Table ID / Action |
-|-------------|--------|-------------------|
-| `[BASE_ID]` | resolved | `appUSnNgpDkcEOzhN` |
-| `[TBL_AI_LOG]` | resolved | `tblZ0bgRmH7KQiZyf` ("AI Log") |
-| `[TBL_DIVISION_STATUS]` | **pending creation** | Create new table "Division Status" |
-| `[TBL_DIVISION_QUEUE_<DIVISION>]` | **pending creation** | Create per-division queue tables or one shared "Division Queue" with a per-division filter view |
+| Placeholder | Table ID | Table name |
+|-------------|----------|------------|
+| `[BASE_ID]` | `appUSnNgpDkcEOzhN` | — |
+| `[TBL_AI_LOG]` | `tblZ0bgRmH7KQiZyf` | AI Log |
+| `[TBL_DIVISION_STATUS]` | `tblZGLkgQ2qsGXNyJ` | Division Status |
+| `[TBL_DIVISION_QUEUE_<DIVISION>]` | `tblloR93chkzuBGON` | Division Queue (shared, filter by `division`) |
 
-### Required schema — Division Status (create)
+### Schema — Division Status (`tblZGLkgQ2qsGXNyJ`)
 
 | Field | Type | Notes |
 |-------|------|-------|
+| week_key (primary) | singleLineText | Composite key, e.g. `EXC-2026-W17` |
 | division | singleSelect | EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB, MCCO |
-| week_of | date | Monday of the reporting week |
+| week_of | date | Monday of the reporting week (ISO) |
 | status | singleSelect | green / yellow / red |
-| top_three_in_flight | longText | Free-form list |
-| top_blocker | longText | One sentence |
-| eta_on_blocker | date | |
-| metric_delta_vs_last_week | longText | Numbers, not adjectives |
+| top_three_in_flight | multilineText | Free-form list |
+| top_blocker | multilineText | One sentence |
+| eta_on_blocker | date | ISO |
+| metric_delta_vs_last_week | multilineText | Numbers, not adjectives |
 | filed_by | singleCollaborator | Division Lead |
-| filed_at | createdTime | Auto |
 
-### Required schema — Division Queue (create)
+Add via Airtable UI when ready: `filed_at` (createdTime, auto).
+
+### Schema — Division Queue (`tblloR93chkzuBGON`)
 
 | Field | Type | Notes |
 |-------|------|-------|
+| item (primary) | singleLineText | Ticket title |
 | division | singleSelect | As above |
-| item | shortText | Ticket title |
 | owner | singleCollaborator | Team member |
-| eta | date | |
-| definition_of_done | longText | Written before work starts |
+| eta | date | ISO |
+| definition_of_done | multilineText | Written before work starts |
 | status | singleSelect | backlog / in_flight / blocked / shipped / slipped |
-| opened_at | createdTime | Auto |
 | shipped_at | date | Set when Definition of Done is met |
 | announce_link | url | PR, Airtable record, or deployed artifact |
-| days_open | formula | `DATETIME_DIFF(TODAY(),opened_at,'days')` |
 
-### Required schema — AI Log (existing, verify)
+Add via Airtable UI when ready: `opened_at` (createdTime, auto),
+`days_open` (formula `DATETIME_DIFF(TODAY(),opened_at,'days')`). Airtable's
+create-table API does not support formula/createdTime fields; add them in
+the UI.
+
+### Schema — AI Log (`tblZ0bgRmH7KQiZyf`, existing)
 
 Existing table `tblZ0bgRmH7KQiZyf`. Confirm these columns exist for
 Division Lead logging; add any missing: `endpoint`, `timestamp`,

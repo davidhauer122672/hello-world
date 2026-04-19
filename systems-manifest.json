@@ -347,7 +347,7 @@
     }
   },
   "division_lead_orchestrator": {
-    "status": "installed_doc_only",
+    "status": "operational",
     "version": "2.0",
     "effective": "2026-04-19",
     "description": "Division-level operating contract for the ten Coastal Key division leads. Governs weekly cadence, queue ownership, decision rules, quality gates, and escalation. Companion to ORCHESTRATOR.md (sovereign) and CEO-OPERATING-DISCIPLINE.md (CEO contract).",
@@ -357,11 +357,9 @@
     "airtable": {
       "base_id": "appUSnNgpDkcEOzhN",
       "resolved_tables": {
-        "ai_log": "tblZ0bgRmH7KQiZyf"
-      },
-      "pending_tables": {
-        "division_status": "not_yet_created",
-        "division_queue": "not_yet_created"
+        "ai_log": "tblZ0bgRmH7KQiZyf",
+        "division_status": "tblZGLkgQ2qsGXNyJ",
+        "division_queue": "tblloR93chkzuBGON"
       }
     },
     "divisions": [
@@ -383,9 +381,8 @@
     },
     "quality_gates": ["G1 Correctness", "G2 Completeness", "G3 Executability", "G4 Auditability", "G5 Compression"],
     "operational_blockers": [
-      "Create Airtable table 'Division Status' in base appUSnNgpDkcEOzhN",
-      "Create Airtable table 'Division Queue' (or per-division queues) in base appUSnNgpDkcEOzhN",
-      "Assign Division Lead names for each of the ten divisions (commander codes resolved; human names not yet assigned in repo)"
+      "Assign Division Lead names for each of the ten divisions (commander codes resolved; human names not yet assigned in repo)",
+      "Add auto fields via Airtable UI: Division Status.filed_at (createdTime); Division Queue.opened_at (createdTime), days_open (formula)"
     ]
   },
   "avatar_studio": {
