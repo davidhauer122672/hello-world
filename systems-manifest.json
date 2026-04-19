@@ -346,6 +346,48 @@
       "manual_report_trigger": true
     }
   },
+  "division_lead_orchestrator": {
+    "status": "installed_doc_only",
+    "version": "2.0",
+    "effective": "2026-04-19",
+    "description": "Division-level operating contract for the ten Coastal Key division leads. Governs weekly cadence, queue ownership, decision rules, quality gates, and escalation. Companion to ORCHESTRATOR.md (sovereign) and CEO-OPERATING-DISCIPLINE.md (CEO contract).",
+    "files": ["DIVISION-LEAD-ORCHESTRATOR.md"],
+    "runtime_engine": null,
+    "runtime_engine_note": "Docs-only at installation. Runtime engine under ck-api-gateway/src/engines/ pending CEO authorization.",
+    "airtable": {
+      "base_id": "appUSnNgpDkcEOzhN",
+      "resolved_tables": {
+        "ai_log": "tblZ0bgRmH7KQiZyf"
+      },
+      "pending_tables": {
+        "division_status": "not_yet_created",
+        "division_queue": "not_yet_created"
+      }
+    },
+    "divisions": [
+      { "code": "EXC", "name": "Executive", "commander": "EXC-001" },
+      { "code": "SEN", "name": "Sentinel Sales", "commander": "SEN-001" },
+      { "code": "OPS", "name": "Operations", "commander": "OPS-001" },
+      { "code": "INT", "name": "Intelligence", "commander": "INT-001" },
+      { "code": "MKT", "name": "Marketing", "commander": "MKT-001" },
+      { "code": "FIN", "name": "Finance", "commander": "FIN-001" },
+      { "code": "VEN", "name": "Vendor", "commander": "VEN-001" },
+      { "code": "TEC", "name": "Technology", "commander": "TEC-001" },
+      { "code": "WEB", "name": "Website", "commander": "WEB-001" },
+      { "code": "MCCO", "name": "Sovereign Command", "commander": "MCCO-000" }
+    ],
+    "weekly_cadence": {
+      "monday_07_00_local": "File Division Status record",
+      "tue_thu": "Execute queue",
+      "friday_16_00_local": "Close the week"
+    },
+    "quality_gates": ["G1 Correctness", "G2 Completeness", "G3 Executability", "G4 Auditability", "G5 Compression"],
+    "operational_blockers": [
+      "Create Airtable table 'Division Status' in base appUSnNgpDkcEOzhN",
+      "Create Airtable table 'Division Queue' (or per-division queues) in base appUSnNgpDkcEOzhN",
+      "Assign Division Lead names for each of the ten divisions (commander codes resolved; human names not yet assigned in repo)"
+    ]
+  },
   "avatar_studio": {
     "status": "operational",
     "version": "1.0.0",
