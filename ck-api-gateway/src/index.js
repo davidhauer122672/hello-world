@@ -220,6 +220,7 @@ import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestrat
 import { handleCollectionsConfig, handleCollectionsGuardrails, handleCollectionsStatus, handleCollectionsEligibility, handleCollectionsSession } from './routes/collections.js';
 import { handleDeliveryDashboard, handleDeliveryExecute, handleDeliveryTemplate, handleDeliveryGovernance } from './routes/delivery-protocol.js';
 import { handlePaymentDashboard, handlePublicPricing, handleCreatePaymentLink } from './routes/payments.js';
+import { handleAvatarDashboard, handleAvatarGenerate, handleAvatarStatus } from './routes/banana-avatar.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1229,6 +1230,17 @@ export default {
       }
       if (path === '/v1/payments/link' && method === 'POST') {
         return await handleCreatePaymentLink(request, env, ctx);
+      }
+
+      // ── Banana Pro AI Avatar Generation ──
+      if (path === '/v1/avatar/dashboard' && method === 'GET') {
+        return handleAvatarDashboard(env);
+      }
+      if (path === '/v1/avatar/generate' && method === 'POST') {
+        return await handleAvatarGenerate(request, env, ctx);
+      }
+      if (path.startsWith('/v1/avatar/status/') && method === 'GET') {
+        return await handleAvatarStatus(request, env);
       }
 
       // ── Agent Manifest ──
