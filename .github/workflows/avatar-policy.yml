@@ -1,0 +1,35 @@
+name: Avatar Studio Policy
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: avatar-policy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Spec build + content policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Build avatar specs (content-policy gate)
+        run: npm run avatar:build
+
+      - name: Run avatar-spec unit tests
+        run: node --test tests/avatar-spec.test.js
+
+      - name: Run render-via-banana-pro unit tests
+        run: node --test tests/render-via-banana-pro.test.js

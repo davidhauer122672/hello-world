@@ -30,6 +30,9 @@
     "test:gateway": "cd ck-api-gateway && npm test",
     "test:sentinel": "cd sentinel-webhook && npm test",
     "test:nemotron": "cd ck-nemotron-worker && npm test",
+    "avatar:build": "node avatar-studio/scripts/build-specs.js",
+    "avatar:preflight": "node avatar-studio/scripts/preflight-ceo.js",
+    "avatar:render": "node avatar-studio/scripts/render-via-banana-pro.js",
     "build:tailwind": "npx tailwindcss -i ck-website/src/tailwind-input.css -o ck-website/dist/tailwind-output.css --minify",
     "watch:tailwind": "npx tailwindcss -i ck-website/src/tailwind-input.css -o ck-website/dist/tailwind-output.css --watch"
   },
