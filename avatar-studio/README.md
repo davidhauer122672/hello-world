@@ -1,69 +1,78 @@
-# avatar-studio
+# Coastal Key Avatar Studio
 
-Coastal Key executive avatar pipeline. Four CEO-self-likeness specs, built
-and policy-gated locally, rendered via the Banana Pro API.
+Renderer-agnostic specifications for the CEO's photorealistic avatar and
+live-wallpaper fleet. This module produces structured specs and pasteable
+prompt blocks; it does not itself render video. Rendering is done by the
+external pipeline (Banana Pro AI, Runway, etc.) fed with the artifacts
+produced here.
 
-## Directory layout
+## Build Inventory
+
+| ID | Subject kind | Description |
+|----|--------------|-------------|
+| `ck-avatar-01-exec-comms` | fictional | Executive Communications Avatar ("Avery North") |
+| `ck-avatar-02-exec-admin` | fictional | Executive Administrator Avatar ("Marcus Reyes") |
+| `ck-wallpaper-03-treasure-coast-dawn` | non_human | Treasure Coast dawn live wallpaper |
+| `ck-avatar-04-ceo-self` | self | CEO self-likeness avatar (operator-authorized inputs only) |
+
+## Content Policy (Enforced by `lib/avatar-spec.js`)
+
+1. Every subject must be `fictional`, `self`, or `non_human`. Subjects based
+   on a real third party are rejected — no "X% different" bypass.
+2. Every subject must declare `contentRating`. Only `G`, `PG`, and `PG-13`
+   are accepted.
+3. The spec tree is scanned for sexualized or objectifying descriptors.
+   Matches cause `buildAvatarSpec` to throw.
+4. `self` subjects must supply `selfInputs.consentStatement` and
+   `selfInputs.sourceFiles`. The rendering pipeline must abort if any
+   source file is missing rather than substituting likeness.
+
+These gates are enforced at build time, which means the Orchestrator cannot
+route a bad spec into production.
+
+## Build
+
+```bash
+node avatar-studio/scripts/build-specs.js
+```
+
+Outputs:
+
+- `avatar-studio/specs/built/*.json` — machine-readable spec payloads
+- `avatar-studio/prompts/*.prompt.md` — pasteable prompt blocks
+- `avatar-studio/specs/built/index.json` — manifest of all built specs
+
+## Render Pipeline (External)
+
+The build artifacts are the input to the render pipeline. The studio itself
+does not call external APIs; the Orchestrator does. Expected flow:
 
 ```
-avatar-studio/
-├── config.json                       # Banana Pro transport + field config
-├── specs/
-│   ├── 01-ceo-governance.spec.json
-│   ├── 02-ceo-operations.spec.json
-│   ├── 03-ceo-retail-finance.spec.json
-│   └── 04-ceo-orchestrator.spec.json  # requires CEO source files
-├── lib/
-│   ├── content-policy.js             # identity + descriptor rules
-│   └── build-payload.js              # buildRequestPayload()
-├── scripts/
-│   ├── preflight-ceo.js              # checks manus-documents/ceo/
-│   ├── build.js                      # policy + preflight gate
-│   └── render-via-banana-pro.js      # submit to Banana Pro API
-└── build/                            # generated (gitignored)
+config.js (authored)
+   → buildAvatarSpec()        [validate + assemble]
+   → specs/built/*.json       [machine payload]
+   → prompts/*.prompt.md      [pasteable prompt]
+   → Banana Pro / Runway      [render]
+   → *.mov (1179x2556, 60fps) [artifact]
+   → intoLive (iPhone)        [Live Photo conversion]
+   → Wallpaper or Grok        [deployment]
 ```
 
-## Commands
+## CEO Self-Avatar Inputs
 
-| Command | Purpose |
-|---|---|
-| `npm run avatar:preflight` | Enumerate missing CEO source files |
-| `npm run avatar:build`     | Policy-gate all specs, write `build/*.prompt.json` |
-| `npm run avatar:render -- --dry-run` | Print payload shape without touching network |
-| `npm run avatar:render -- --only 04-ceo-orchestrator` | Submit one spec |
+The CEO avatar (spec 04) requires these authorized source files to exist
+before render:
 
-## Content policy
+- `manus-documents/ceo/bio.md`
+- `manus-documents/ceo/video-reference/*.mov`
+- `manus-documents/ceo/voice-samples/*.wav`
+- `notebooklm-exports/ceo-profile.md`
 
-Every spec is walked string-by-string and checked against:
+If any of those files are missing, the preflight check fails and no render
+proceeds. The pipeline never substitutes likeness or voice from any other
+source.
 
-1. Identity source must be `ceo-self-likeness`.
-2. No third-party real-person names (see
-   `avatar-studio/lib/content-policy.js` for the full pattern list).
-3. No sexualized or seductive descriptors.
-4. Required schema fields present.
+## Testing
 
-A single violation fails the build (exit 1), which fails the CI job.
-
-## Config — Banana Pro
-
-Set once per environment, either in `avatar-studio/config.json` or via env:
-
-| Env var | Meaning |
-|---|---|
-| `BANANA_PRO_BASE_URL` | API base URL |
-| `BANANA_PRO_GENERATE_PATH` | POST path for generation |
-| `BANANA_PRO_STATUS_PATH` | GET path for job status |
-| `BANANA_PRO_AUTH_HEADER` | Full `Authorization` header value |
-| `BANANA_PRO_PROMPT_FIELD` | Body field name for prompt text |
-| `BANANA_PRO_METADATA_FIELD` | Body field name for metadata |
-| `BANANA_PRO_OUTPUT_FORMAT_FIELD` | Body field name for output format |
-| `BANANA_PRO_API_KEY` | Required unless `--dry-run` |
-
-## Preflight — `manus-documents/ceo/`
-
-Build 04 aborts until every file resolves:
-
-- `reference-front.{jpg,jpeg,png}`
-- `reference-side.{jpg,jpeg,png}`
-- `voice-sample.{wav,mp3,m4a}`
-- `bio.md`
+Tests for the spec generator live in `tests/avatar-spec.test.js` and run
+under the standard `npm run test:server` suite.

@@ -194,16 +194,33 @@ import {
   handleCommandChain, handleFleetStatusEndpoint, handleChainOfCommand, handleDirectReports, handleDivisionHierarchyEndpoint,
 } from './routes/engines.js';
 import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
-import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit } from './routes/slack.js';
+import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit, handleSlackCreateChannel } from './routes/slack.js';
 import { handleMetaAdsStatus, handleMetaAdsBoost, handleMetaAdsCampaigns } from './routes/meta-ads.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
 import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
+import { handleSpearTrigger, handleSpearReply, handleSpearStatus, handleSpearDashboard, handleSpearGenerate } from './routes/spear.js';
 import { handleRndCampaignPlan, handleRndCampaignStatus, handleRndCampaignDay, handleRndCompetitors, handleRndSystems } from './routes/rnd-campaign.js';
 import { handleCapitalEngine, handleCapitalPillar, handleDRIPMatrix, handleBusinessModel, handleCapitalMetrics } from './routes/capital-engine.js';
 import { handleMetricsDashboard, handleMetricsTargets, handleMetricsCalculate, handleRevenueLines, handleExpenseCategories, handleCalculateNOI, handleCalculateGrossMargin, handleCalculateCACLTV } from './routes/profit-metrics.js';
 import { handleCoopCommittee, handleListCoopAgents, handleGetCoopAgent, handleCoopBrief, handleCoopOutreach, handleCoopNetworkMap, handleCoopTargets, handleCoopSchedule } from './routes/cooperations.js';
+import {
+  handleCFODashboard, handleCFOChannels, handleCFOProducts, handleCFOBrand,
+  handleCFOAcquisition, handleCFOContentPlan, handleCFOLeadMagnets,
+  handleCFOInvestor, handleCFOProjection, handleCFOValuation, handleCFOChecklist,
+} from './routes/cfo-revenue.js';
+import { handleInspectionDashboard, handleInspectionTypes, handleCreateInspection, handleCompleteInspection, handleListInspectors } from './routes/field-inspection.js';
+import { handleElizaDashboard, handleElizaVoiceConfig, handleElizaAvatarConfig, handleElizaRetellConfig, handleElizaAtlasConfig, handleElizaVideoBrief } from './routes/eliza-ai.js';
+import { getGoogleAdsDashboard } from './engines/google-ads-campaign.js';
+import { handleTokenDashboard, handleTokenScan, handleTokenRegistry } from './routes/token-maintenance.js';
+import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSalesChannels, handleSalesPlaybooks } from './routes/sales-acquisition.js';
+import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramework } from './routes/market-strategy.js';
+import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
+import { handleCollectionsConfig, handleCollectionsGuardrails, handleCollectionsStatus, handleCollectionsEligibility, handleCollectionsSession } from './routes/collections.js';
+import { handleDeliveryDashboard, handleDeliveryExecute, handleDeliveryTemplate, handleDeliveryGovernance } from './routes/delivery-protocol.js';
+import { handlePaymentDashboard, handlePublicPricing, handleCreatePaymentLink } from './routes/payments.js';
+import { handleAvatarDashboard, handleAvatarGenerate, handleAvatarStatus } from './routes/banana-avatar.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -325,6 +342,9 @@ export default {
     // ── Public routes (no auth) ──
     if (path === '/v1/leads/public' && method === 'POST') {
       return await handlePublicLead(request, env, ctx);
+    }
+    if (path === '/v1/payments/pricing' && method === 'GET') {
+      return handlePublicPricing();
     }
 
     // ── Slack routes (use signature verification, not Bearer token) ──
@@ -822,6 +842,10 @@ export default {
         return handleSlackAudit();
       }
 
+      if (path === '/v1/slack/channels/create' && method === 'POST') {
+        return await handleSlackCreateChannel(request, env, ctx);
+      }
+
       // ── Gmail OAuth Email Operations ──
       if (path === '/v1/email/send' && method === 'POST') {
         return await handleEmailSend(request, env, ctx);
@@ -860,6 +884,24 @@ export default {
       }
       if (path === '/v1/compliance/audit' && method === 'GET') {
         return await handleComplianceAudit(env, ctx);
+      }
+
+      // ── SPEAR Funnel System ──
+      if (path === '/v1/spear/trigger' && method === 'POST') {
+        return await handleSpearTrigger(request, env, ctx);
+      }
+      if (path === '/v1/spear/reply' && method === 'POST') {
+        return await handleSpearReply(request, env, ctx);
+      }
+      if (path === '/v1/spear/dashboard' && method === 'GET') {
+        return handleSpearDashboard();
+      }
+      if (path === '/v1/spear/generate' && method === 'POST') {
+        return await handleSpearGenerate(request, env, ctx);
+      }
+      if (path.match(/^\/v1\/spear\/status\/[^/]+$/) && method === 'GET') {
+        const leadId = path.split('/v1/spear/status/')[1];
+        return await handleSpearStatus(leadId, env);
       }
 
       // ── Thinking Coach ──
@@ -1013,6 +1055,192 @@ export default {
       }
       if (path === '/v1/metrics/cac-ltv' && method === 'POST') {
         return handleCalculateCACLTV(request);
+      }
+
+      // ── CFO Revenue Platform ──
+      if (path === '/v1/cfo/dashboard' && method === 'GET') {
+        return handleCFODashboard();
+      }
+      if (path === '/v1/cfo/channels' && method === 'GET') {
+        return handleCFOChannels();
+      }
+      if (path === '/v1/cfo/products' && method === 'GET') {
+        return handleCFOProducts();
+      }
+      if (path === '/v1/cfo/brand' && method === 'GET') {
+        return handleCFOBrand();
+      }
+      if (path === '/v1/cfo/acquisition' && method === 'GET') {
+        return handleCFOAcquisition();
+      }
+      if (path === '/v1/cfo/content-plan' && method === 'GET') {
+        return handleCFOContentPlan();
+      }
+      if (path === '/v1/cfo/lead-magnets' && method === 'GET') {
+        return handleCFOLeadMagnets();
+      }
+      if (path === '/v1/cfo/investor' && method === 'GET') {
+        return handleCFOInvestor();
+      }
+      if (path === '/v1/cfo/projection' && method === 'POST') {
+        return await handleCFOProjection(request, env, ctx);
+      }
+      if (path === '/v1/cfo/valuation' && method === 'POST') {
+        return await handleCFOValuation(request, env, ctx);
+      }
+      if (path === '/v1/cfo/checklist' && method === 'GET') {
+        return handleCFOChecklist();
+      }
+
+      // ── Field Inspections (S1-001) ──
+      if (path === '/v1/inspections/dashboard' && method === 'GET') {
+        return handleInspectionDashboard();
+      }
+      if (path === '/v1/inspections/types' && method === 'GET') {
+        return handleInspectionTypes();
+      }
+      if (path === '/v1/inspections/create' && method === 'POST') {
+        return await handleCreateInspection(request, env, ctx);
+      }
+      if (path === '/v1/inspections/complete' && method === 'POST') {
+        return await handleCompleteInspection(request, env, ctx);
+      }
+      if (path === '/v1/inspections/inspectors' && method === 'GET') {
+        return handleListInspectors();
+      }
+
+      // ── Eliza AI (S1-003) ──
+      if (path === '/v1/eliza/dashboard' && method === 'GET') {
+        return handleElizaDashboard();
+      }
+      if (path === '/v1/eliza/voice-config' && method === 'GET') {
+        return handleElizaVoiceConfig();
+      }
+      if (path === '/v1/eliza/avatar-config' && method === 'GET') {
+        return handleElizaAvatarConfig();
+      }
+      if (path === '/v1/eliza/retell-config' && method === 'GET') {
+        return handleElizaRetellConfig();
+      }
+      if (path === '/v1/eliza/atlas-config' && method === 'GET') {
+        return handleElizaAtlasConfig();
+      }
+      if (path === '/v1/eliza/video-brief' && method === 'POST') {
+        return await handleElizaVideoBrief(request, env, ctx);
+      }
+
+      // ── Google Ads Campaign ──
+      if (path === '/v1/ads/google/dashboard' && method === 'GET') {
+        return jsonResponse(getGoogleAdsDashboard());
+      }
+
+      // ── Token Maintenance Agent (TEC-026) ──
+      if (path === '/v1/tokens/dashboard' && method === 'GET') {
+        return handleTokenDashboard(env);
+      }
+      if (path === '/v1/tokens/scan' && method === 'POST') {
+        return await handleTokenScan(env, ctx);
+      }
+      if (path === '/v1/tokens/registry' && method === 'GET') {
+        return handleTokenRegistry();
+      }
+
+      // ── Sales & Client Acquisition Engine ──
+      if (path === '/v1/sales/dashboard' && method === 'GET') {
+        return handleSalesDashboard();
+      }
+      if (path === '/v1/sales/score' && method === 'POST') {
+        return await handleScoreLead(request, env, ctx);
+      }
+      if (path === '/v1/sales/pipeline' && method === 'GET') {
+        return handleSalesPipeline();
+      }
+      if (path === '/v1/sales/channels' && method === 'GET') {
+        return handleSalesChannels();
+      }
+      if (path === '/v1/sales/playbooks' && method === 'GET') {
+        return handleSalesPlaybooks();
+      }
+
+      // ── Market Strategy Skill ──
+      if (path === '/v1/strategy/dashboard' && method === 'GET') {
+        return handleStrategyDashboard();
+      }
+      if (path === '/v1/strategy/generate' && method === 'POST') {
+        return await handleStrategyGenerate(request, env, ctx);
+      }
+      if (path === '/v1/strategy/framework' && method === 'GET') {
+        return handleStrategyFramework();
+      }
+
+      // ── Master Orchestrator V2.1 ──
+      if (path === '/v1/orchestrator/dashboard' && method === 'GET') {
+        return handleOrchestratorDashboard();
+      }
+      if (path === '/v1/orchestrator/assets' && method === 'GET') {
+        return handleOrchestratorAssets();
+      }
+      if (path === '/v1/orchestrator/avatars' && method === 'GET') {
+        return handleOrchestratorAvatars();
+      }
+      if (path === '/v1/orchestrator/gaps' && method === 'GET') {
+        return handleOrchestratorGaps();
+      }
+      if (path === '/v1/orchestrator/noi-model' && method === 'GET') {
+        return handleOrchestratorNOIModel();
+      }
+      if (path === '/v1/orchestrator/noi-model' && method === 'POST') {
+        return await handleOrchestratorNOICalculate(request, env, ctx);
+      }
+
+      // ── Collections Agent (FIN Division, reports to MCCO-000) ──
+      if (path === '/v1/collections/config' && method === 'GET') {
+        return handleCollectionsConfig();
+      }
+      if (path === '/v1/collections/guardrails' && method === 'GET') {
+        return handleCollectionsGuardrails();
+      }
+      if (path === '/v1/collections/status' && method === 'GET') {
+        return handleCollectionsStatus();
+      }
+      if (path === '/v1/collections/eligibility' && method === 'POST') {
+        return await handleCollectionsEligibility(request, env, ctx);
+      }
+      if (path === '/v1/collections/session' && method === 'POST') {
+        return await handleCollectionsSession(request, env, ctx);
+      }
+
+      // ── Delivery Protocol (SGR-001) ──
+      if (path === '/v1/delivery/dashboard' && method === 'GET') {
+        return handleDeliveryDashboard();
+      }
+      if (path === '/v1/delivery/execute' && method === 'POST') {
+        return await handleDeliveryExecute(request, env, ctx);
+      }
+      if (path === '/v1/delivery/template' && method === 'GET') {
+        return handleDeliveryTemplate();
+      }
+      if (path === '/v1/delivery/governance' && method === 'GET') {
+        return handleDeliveryGovernance();
+      }
+
+      // ── Payments (Stripe) ──
+      if (path === '/v1/payments/dashboard' && method === 'GET') {
+        return handlePaymentDashboard(env);
+      }
+      if (path === '/v1/payments/link' && method === 'POST') {
+        return await handleCreatePaymentLink(request, env, ctx);
+      }
+
+      // ── Banana Pro AI Avatar Generation ──
+      if (path === '/v1/avatar/dashboard' && method === 'GET') {
+        return handleAvatarDashboard(env);
+      }
+      if (path === '/v1/avatar/generate' && method === 'POST') {
+        return await handleAvatarGenerate(request, env, ctx);
+      }
+      if (path.startsWith('/v1/avatar/status/') && method === 'GET') {
+        return await handleAvatarStatus(request, env);
       }
 
       // ── Agent Manifest ──

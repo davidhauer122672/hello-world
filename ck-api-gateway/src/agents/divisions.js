@@ -85,4 +85,11 @@ export const DIVISIONS = [
     icon: 'handshake',
     description: 'CEO external engagement coordination — strategic contacts, meeting preparation, outreach drafting, relationship network analysis, and social calendar management. 3 squads: Outreach (4 agents), Engagement (3 agents), Intelligence (3 agents). Reports directly to CEO.',
   },
+  {
+    id: 'CDX',
+    name: 'Content Domination',
+    color: '#dc2626',
+    icon: 'target',
+    description: 'Continuous market research, competitive intelligence, YouTube/web channel scanning, data integrity enforcement, and end-to-end system validation. 3 squads: Research (4 agents), Scan (3 agents), Integrity (3 agents). Reports to MCCO-000 Sovereign.',
+  },
 ];

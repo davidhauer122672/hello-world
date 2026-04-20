@@ -17,16 +17,30 @@ const {
 function fakeSpec(overrides) {
   return Object.assign(
     {
-      id: '01-ceo-governance',
-      title: 'CEO Governance Administrator',
-      filename: 'CoastalKey_CEO_Governance.mov',
-      prompt: 'Render executive avatar with CEO self-likeness.',
-      technical: { resolution: '1179x2556', fps: 60, loop_duration_s: 15, format: 'mov', color_space: 'Display P3', hdr: 'HDR10' },
-      identity: { source: 'ceo-self-likeness' },
-      governance: { content_policy: 'ceo-self-likeness-only' },
+      id: 'ck-avatar-01-exec-comms',
+      title: 'Coastal Key Executive Communications Avatar',
+      version: '1.0.0',
+      renderer: 'banana_pro_ai',
+      targetPlatforms: ['iphone_16_pro_wallpaper'],
+      technicalStandards: {
+        resolution: { width: 1179, height: 2556, label: 'iPhone 16 Pro native portrait' },
+        frameRate: 60,
+        container: 'mov',
+        codec: 'H.265/HEVC',
+        colorSpace: 'Display P3',
+        dynamicRange: 'HDR10',
+      },
+      subject: { name: 'Avery North', kind: 'fictional', contentRating: 'PG' },
     },
     overrides || {},
   );
+}
+
+const PROMPT_TEXT = '# Avatar prompt\nRole: Executive communications.';
+
+function fakeEntry(overrides) {
+  const spec = fakeSpec(overrides);
+  return { filename: spec.id + '.json', spec };
 }
 
 describe('parseArgs', () => {
@@ -35,22 +49,16 @@ describe('parseArgs', () => {
     assert.equal(a.dryRun, false);
     assert.equal(a.only, null);
   });
-  it('recognizes --dry-run', () => {
-    assert.equal(parseArgs(['--dry-run']).dryRun, true);
-  });
-  it('recognizes --only <name>', () => {
-    assert.equal(parseArgs(['--only', '02-ceo-operations']).only, '02-ceo-operations');
-  });
-  it('recognizes --only=<name>', () => {
-    assert.equal(parseArgs(['--only=04-ceo-orchestrator']).only, '04-ceo-orchestrator');
-  });
+  it('recognizes --dry-run', () => { assert.equal(parseArgs(['--dry-run']).dryRun, true); });
+  it('recognizes --only <id>', () => { assert.equal(parseArgs(['--only', 'ck-avatar-04-ceo-self']).only, 'ck-avatar-04-ceo-self'); });
+  it('recognizes --only=<id>', () => { assert.equal(parseArgs(['--only=ck-avatar-04-ceo-self']).only, 'ck-avatar-04-ceo-self'); });
 });
 
 describe('buildRequestPayload', () => {
   const config = { fields: { promptField: 'prompt', metadataField: 'metadata', outputFormatField: 'output_format' } };
 
-  it('returns the configured three field names', () => {
-    const payload = buildRequestPayload(fakeSpec(), config);
+  it('returns exactly the configured three field names', () => {
+    const payload = buildRequestPayload(fakeSpec(), PROMPT_TEXT, config);
     assert.equal(Object.keys(payload).length, 3);
     assert.ok('prompt' in payload);
     assert.ok('metadata' in payload);
@@ -59,7 +67,7 @@ describe('buildRequestPayload', () => {
 
   it('honors custom field names from config', () => {
     const custom = { fields: { promptField: 'text', metadataField: 'meta', outputFormatField: 'fmt' } };
-    const payload = buildRequestPayload(fakeSpec(), custom);
+    const payload = buildRequestPayload(fakeSpec(), PROMPT_TEXT, custom);
     assert.ok('text' in payload);
     assert.ok('meta' in payload);
     assert.ok('fmt' in payload);
@@ -67,40 +75,44 @@ describe('buildRequestPayload', () => {
   });
 
   it('carries required metadata from the spec', () => {
-    const payload = buildRequestPayload(fakeSpec(), config);
-    assert.equal(payload.metadata.id, '01-ceo-governance');
-    assert.equal(payload.metadata.filename, 'CoastalKey_CEO_Governance.mov');
+    const payload = buildRequestPayload(fakeSpec(), PROMPT_TEXT, config);
+    assert.equal(payload.metadata.id, 'ck-avatar-01-exec-comms');
     assert.equal(payload.metadata.resolution, '1179x2556');
-    assert.equal(payload.metadata.fps, 60);
-    assert.equal(payload.metadata.identity_source, 'ceo-self-likeness');
+    assert.equal(payload.metadata.frame_rate, 60);
+    assert.equal(payload.metadata.subject_kind, 'fictional');
+    assert.equal(payload.metadata.content_rating, 'PG');
+    assert.equal(payload.metadata.renderer, 'banana_pro_ai');
   });
 
-  it('uses the spec technical.format as output_format', () => {
-    const payload = buildRequestPayload(fakeSpec(), config);
-    assert.equal(payload.output_format, 'mov');
+  it('uses technicalStandards.container as the output format', () => {
+    assert.equal(buildRequestPayload(fakeSpec(), PROMPT_TEXT, config).output_format, 'mov');
   });
 
-  it('throws when spec.prompt is missing', () => {
-    assert.throws(() => buildRequestPayload(fakeSpec({ prompt: '' }), config), /prompt is missing/);
+  it('throws when promptText is missing', () => {
+    assert.throws(() => buildRequestPayload(fakeSpec(), '', config), /promptText is missing/);
   });
 });
 
 describe('run() dry-run path', () => {
   it('builds payloads for every spec and makes no network calls', async () => {
     let fetchCalls = 0;
-    const specs = [fakeSpec(), fakeSpec({ id: '02-ceo-operations', filename: 'CoastalKey_CEO_Operations.mov' })];
+    const specs = [
+      fakeEntry({ id: 'ck-avatar-01-exec-comms' }),
+      fakeEntry({ id: 'ck-avatar-02-exec-admin' }),
+    ];
+    const prompts = {
+      'ck-avatar-01-exec-comms.prompt.md': PROMPT_TEXT,
+      'ck-avatar-02-exec-admin.prompt.md': PROMPT_TEXT,
+    };
     const result = await run({
-      dryRun: true,
-      only: null,
-      apiKey: null,
-      specs,
+      dryRun: true, only: null, apiKey: null, specs, prompts,
       config: { fields: {} },
       fetchImpl: async () => { fetchCalls += 1; return { ok: true, status: 200 }; },
+      preflightImpl: () => ({ ok: true }),
     });
     assert.equal(fetchCalls, 0, 'fetch must not be called in dry-run');
     assert.equal(result.dryRun, true);
     assert.equal(result.count, 2);
-    assert.equal(result.results.length, 2);
     assert.ok(result.results.every((r) => r.dryRun === true));
     assert.ok(result.results[0].payload);
   });
@@ -109,19 +121,54 @@ describe('run() dry-run path', () => {
 describe('run() --only filter', () => {
   it('selects only the named spec', async () => {
     const specs = [
-      fakeSpec({ id: '01-ceo-governance' }),
-      fakeSpec({ id: '02-ceo-operations' }),
-      fakeSpec({ id: '04-ceo-orchestrator' }),
+      fakeEntry({ id: 'ck-avatar-01-exec-comms' }),
+      fakeEntry({ id: 'ck-avatar-02-exec-admin' }),
+      fakeEntry({ id: 'ck-avatar-04-ceo-self', subject: { name: 'CEO', kind: 'self', contentRating: 'PG' } }),
     ];
-    const result = await run({ dryRun: true, only: '04-ceo-orchestrator', specs, config: { fields: {} } });
+    const prompts = {
+      'ck-avatar-01-exec-comms.prompt.md': PROMPT_TEXT,
+      'ck-avatar-02-exec-admin.prompt.md': PROMPT_TEXT,
+      'ck-avatar-04-ceo-self.prompt.md': PROMPT_TEXT,
+    };
+    const result = await run({
+      dryRun: true, only: 'ck-avatar-02-exec-admin', specs, prompts,
+      config: { fields: {} }, preflightImpl: () => ({ ok: true }),
+    });
     assert.equal(result.count, 1);
-    assert.equal(result.results[0].id, '04-ceo-orchestrator');
+    assert.equal(result.results[0].id, 'ck-avatar-02-exec-admin');
   });
 
   it('returns zero results when --only matches nothing', async () => {
-    const result = await run({ dryRun: true, only: 'does-not-exist', specs: [fakeSpec()], config: { fields: {} } });
+    const result = await run({
+      dryRun: true, only: 'does-not-exist',
+      specs: [fakeEntry()], prompts: {}, config: { fields: {} }, preflightImpl: () => ({ ok: true }),
+    });
     assert.equal(result.count, 0);
     assert.equal(result.results.length, 0);
+  });
+});
+
+describe('run() self-likeness preflight gate', () => {
+  it('skips self-kind spec when preflight fails', async () => {
+    const specs = [fakeEntry({ id: 'ck-avatar-04-ceo-self', subject: { name: 'CEO', kind: 'self', contentRating: 'PG' } })];
+    const prompts = { 'ck-avatar-04-ceo-self.prompt.md': PROMPT_TEXT };
+    const result = await run({
+      dryRun: true, specs, prompts, config: { fields: {} },
+      preflightImpl: () => ({ ok: false, missing: [{ pattern: 'manus-documents/ceo/bio.md' }] }),
+    });
+    assert.equal(result.count, 0);
+    assert.equal(result.skipped.length, 1);
+    assert.match(result.skipped[0].reason, /preflight-ceo/);
+  });
+
+  it('runs self-kind spec when preflight passes', async () => {
+    const specs = [fakeEntry({ id: 'ck-avatar-04-ceo-self', subject: { name: 'CEO', kind: 'self', contentRating: 'PG' } })];
+    const prompts = { 'ck-avatar-04-ceo-self.prompt.md': PROMPT_TEXT };
+    const result = await run({
+      dryRun: true, specs, prompts, config: { fields: {} }, preflightImpl: () => ({ ok: true }),
+    });
+    assert.equal(result.count, 1);
+    assert.equal(result.skipped.length, 0);
   });
 });
 
@@ -130,11 +177,11 @@ describe('run() missing API key path', () => {
     let fetchCalls = 0;
     await assert.rejects(
       () => run({
-        dryRun: false,
-        apiKey: null,
-        specs: [fakeSpec()],
+        dryRun: false, apiKey: null,
+        specs: [fakeEntry()], prompts: { [fakeEntry().filename.replace(/\.json$/, '.prompt.md')]: PROMPT_TEXT },
         config: { fields: {} },
         fetchImpl: async () => { fetchCalls += 1; return { ok: true, status: 200 }; },
+        preflightImpl: () => ({ ok: true }),
       }),
       (err) => err.code === 'MISSING_API_KEY',
     );
@@ -143,13 +190,14 @@ describe('run() missing API key path', () => {
 
   it('throws MISSING_TRANSPORT_CONFIG when apiKey present but transport fields unset', async () => {
     let fetchCalls = 0;
+    const entry = fakeEntry();
     await assert.rejects(
       () => run({
-        dryRun: false,
-        apiKey: 'fake-key',
-        specs: [fakeSpec()],
+        dryRun: false, apiKey: 'fake-key',
+        specs: [entry], prompts: { [entry.filename.replace(/\.json$/, '.prompt.md')]: PROMPT_TEXT },
         config: { fields: {} },
         fetchImpl: async () => { fetchCalls += 1; return { ok: true, status: 200 }; },
+        preflightImpl: () => ({ ok: true }),
       }),
       (err) => err.code === 'MISSING_TRANSPORT_CONFIG',
     );
@@ -189,10 +237,7 @@ describe('missingTransportConfig', () => {
   });
   it('returns empty when all fields are set', () => {
     const missing = missingTransportConfig({
-      baseUrl: 'https://example.test',
-      generatePath: '/g',
-      statusPath: '/s',
-      authHeader: 'Bearer x',
+      baseUrl: 'https://example.test', generatePath: '/g', statusPath: '/s', authHeader: 'Bearer x',
     });
     assert.deepEqual(missing, []);
   });

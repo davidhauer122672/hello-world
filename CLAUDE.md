@@ -11,6 +11,9 @@
 - **Push** — Push code to GitHub repositories and branches
 - **Operate** — Run day-to-day platform operations across all systems
 
+## Master Orchestrator Routing (Permanent Rule)
+All Claude build sequences, creations, audits, reconfigurations, activities, testing, deployments, pushes into production, and pull requests to go live are **indefinitely routed through the Coastal Key Master Orchestrator**. Every Claude-initiated operation on this repo executes under Orchestrator authority. Non-Orchestrator-routed actions are prohibited. The Orchestrator's manifest is at `systems-manifest.json` and its charter is in `ORCHESTRATOR.md`.
+
 ## Project Overview
 Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.

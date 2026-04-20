@@ -1,27 +1,40 @@
 #!/usr/bin/env node
 'use strict';
 
-// Render submission — reads built specs from avatar-studio/build/ and submits
-// each to the Banana Pro API using config values injected at runtime. The
-// four Banana Pro fields (base URL, two paths, auth header, three field
-// names) are env-var driven and must be populated once the Banana Pro
-// account is provisioned. Until then, use `--dry-run` for payload preview.
+// Render submission — reads built specs (avatar-studio/specs/built/*.json)
+// plus their companion pasteable prompt blocks (avatar-studio/prompts/*.prompt.md),
+// and submits each to the Banana Pro API. Transport fields (base URL, two
+// paths, auth header, three body field names) are env-var or config-driven
+// and must be populated once the Banana Pro account is provisioned. Until
+// then, use `--dry-run` for payload preview.
+//
+// Self-likeness specs trigger the CEO preflight gate; if preflight fails,
+// the spec is skipped (rather than failing the whole render).
 //
 // Public API (exported for tests):
-//   parseArgs(argv)            -> { dryRun, only }
-//   buildRequestPayload(spec, config)
-//   run({ dryRun, only, apiKey, specs, config, fetchImpl })
+//   parseArgs(argv)        -> { dryRun, only }
+//   buildRequestPayload(spec, promptText, config)
+//   run({ dryRun, only, apiKey, specs, prompts, config, fetchImpl, preflightImpl })
 //
-// No network calls are made unless all four config fields are provided AND
-// --dry-run is absent. Tests exercise run() directly with fake specs.
+// No network calls are made unless transport config is complete AND --dry-run
+// is absent. Tests exercise run() directly with fake specs.
 
 const fs = require('fs');
 const path = require('path');
 const { buildRequestPayload } = require('../lib/build-payload');
+const { runPreflight } = require('./preflight-ceo');
 
 const STUDIO_ROOT = path.resolve(__dirname, '..');
-const BUILD_DIR = path.join(STUDIO_ROOT, 'build');
+const BUILT_DIR = path.join(STUDIO_ROOT, 'specs', 'built');
+const PROMPTS_DIR = path.join(STUDIO_ROOT, 'prompts');
 const CONFIG_PATH = path.join(STUDIO_ROOT, 'config.json');
+
+const SPEC_FILENAME_TO_PROMPT = {
+  '01-executive-communications-avatar.json': '01-executive-communications-avatar.prompt.md',
+  '02-executive-administrator-avatar.json':  '02-executive-administrator-avatar.prompt.md',
+  '03-treasure-coast-dawn-wallpaper.json':   '03-treasure-coast-dawn-wallpaper.prompt.md',
+  '04-ceo-avatar.json':                      '04-ceo-avatar.prompt.md',
+};
 
 function parseArgs(argv) {
   const args = { dryRun: false, only: null };
@@ -34,24 +47,34 @@ function parseArgs(argv) {
   return args;
 }
 
-function loadBuiltSpecs(dir = BUILD_DIR) {
+function loadBuiltSpecs(dir = BUILT_DIR) {
   if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith('.prompt.json'))
+  return fs.readdirSync(dir)
+    .filter((f) => f.endsWith('.json') && f !== 'index.json')
     .sort()
-    .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')));
+    .map((f) => ({ filename: f, spec: JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')) }));
+}
+
+function loadPrompts(dir = PROMPTS_DIR) {
+  if (!fs.existsSync(dir)) return {};
+  const byFile = {};
+  for (const f of fs.readdirSync(dir)) {
+    if (f.endsWith('.prompt.md')) {
+      byFile[f] = fs.readFileSync(path.join(dir, f), 'utf8');
+    }
+  }
+  return byFile;
 }
 
 function loadConfigFromEnv(env, base) {
   const cfg = JSON.parse(JSON.stringify(base || {}));
-  cfg.baseUrl        = env.BANANA_PRO_BASE_URL        || cfg.baseUrl        || null;
-  cfg.generatePath   = env.BANANA_PRO_GENERATE_PATH   || cfg.generatePath   || null;
-  cfg.statusPath     = env.BANANA_PRO_STATUS_PATH     || cfg.statusPath     || null;
-  cfg.authHeader     = env.BANANA_PRO_AUTH_HEADER     || cfg.authHeader     || null;
+  cfg.baseUrl      = env.BANANA_PRO_BASE_URL      || cfg.baseUrl      || null;
+  cfg.generatePath = env.BANANA_PRO_GENERATE_PATH || cfg.generatePath || null;
+  cfg.statusPath   = env.BANANA_PRO_STATUS_PATH   || cfg.statusPath   || null;
+  cfg.authHeader   = env.BANANA_PRO_AUTH_HEADER   || cfg.authHeader   || null;
   cfg.fields = cfg.fields || {};
-  cfg.fields.promptField       = env.BANANA_PRO_PROMPT_FIELD       || cfg.fields.promptField       || 'prompt';
-  cfg.fields.metadataField     = env.BANANA_PRO_METADATA_FIELD     || cfg.fields.metadataField     || 'metadata';
+  cfg.fields.promptField       = env.BANANA_PRO_PROMPT_FIELD        || cfg.fields.promptField       || 'prompt';
+  cfg.fields.metadataField     = env.BANANA_PRO_METADATA_FIELD      || cfg.fields.metadataField     || 'metadata';
   cfg.fields.outputFormatField = env.BANANA_PRO_OUTPUT_FORMAT_FIELD || cfg.fields.outputFormatField || 'output_format';
   return cfg;
 }
@@ -71,8 +94,10 @@ async function run(options) {
   const only = opts.only || null;
   const apiKey = opts.apiKey || null;
   const specs = Array.isArray(opts.specs) ? opts.specs : [];
+  const prompts = opts.prompts || {};
   const config = opts.config || { fields: {} };
   const fetchImpl = opts.fetchImpl || (typeof fetch === 'function' ? fetch : null);
+  const preflightImpl = opts.preflightImpl || runPreflight;
 
   if (!dryRun && !apiKey) {
     const err = new Error('BANANA_PRO_API_KEY is required unless --dry-run is passed');
@@ -80,47 +105,57 @@ async function run(options) {
     throw err;
   }
 
-  const selected = only ? specs.filter((s) => s.id === only) : specs;
+  const selected = only ? specs.filter((s) => s.spec && s.spec.id === only) : specs;
   if (selected.length === 0) {
-    return { dryRun, count: 0, results: [] };
+    return { dryRun, count: 0, skipped: [], results: [] };
   }
 
   const results = [];
+  const skipped = [];
+  let preflightReport = null;
 
-  if (dryRun) {
-    for (const spec of selected) {
-      const payload = buildRequestPayload(spec, config);
-      results.push({ id: spec.id, dryRun: true, payload });
+  for (const { filename, spec } of selected) {
+    if (spec.subject && spec.subject.kind === 'self') {
+      if (!preflightReport) preflightReport = preflightImpl();
+      if (!preflightReport.ok) {
+        skipped.push({ id: spec.id, reason: 'preflight-ceo: required source files missing' });
+        continue;
+      }
     }
-    return { dryRun: true, count: results.length, results };
-  }
+    const promptFilename = SPEC_FILENAME_TO_PROMPT[filename] || filename.replace(/\.json$/, '.prompt.md');
+    const promptText = prompts[promptFilename];
+    if (!promptText) {
+      skipped.push({ id: spec.id, reason: `prompt file not found: ${promptFilename}` });
+      continue;
+    }
+    const payload = buildRequestPayload(spec, promptText, config);
 
-  const missing = missingTransportConfig(config);
-  if (missing.length > 0) {
-    const err = new Error(`Banana Pro transport config missing: ${missing.join(', ')}`);
-    err.code = 'MISSING_TRANSPORT_CONFIG';
-    throw err;
-  }
-  if (!fetchImpl) {
-    const err = new Error('No fetch implementation available');
-    err.code = 'NO_FETCH';
-    throw err;
-  }
+    if (dryRun) {
+      results.push({ id: spec.id, dryRun: true, payload });
+      continue;
+    }
 
-  const url = config.baseUrl.replace(/\/$/, '') + config.generatePath;
-  for (const spec of selected) {
-    const payload = buildRequestPayload(spec, config);
+    const missing = missingTransportConfig(config);
+    if (missing.length > 0) {
+      const err = new Error(`Banana Pro transport config missing: ${missing.join(', ')}`);
+      err.code = 'MISSING_TRANSPORT_CONFIG';
+      throw err;
+    }
+    if (!fetchImpl) {
+      const err = new Error('No fetch implementation available');
+      err.code = 'NO_FETCH';
+      throw err;
+    }
+    const url = config.baseUrl.replace(/\/$/, '') + config.generatePath;
     const res = await fetchImpl(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: config.authHeader,
-      },
+      headers: { 'Content-Type': 'application/json', Authorization: config.authHeader },
       body: JSON.stringify(payload),
     });
     results.push({ id: spec.id, status: res && res.status, ok: !!(res && res.ok) });
   }
-  return { dryRun: false, count: results.length, results };
+
+  return { dryRun, count: results.length, skipped, results };
 }
 
 async function main(argv, env) {
@@ -129,13 +164,15 @@ async function main(argv, env) {
   const config = loadConfigFromEnv(env, baseConfig);
   const apiKey = env.BANANA_PRO_API_KEY || null;
   const specs = loadBuiltSpecs();
+  const prompts = loadPrompts();
   if (specs.length === 0) {
     process.stderr.write('No built specs found. Run `npm run avatar:build` first.\n');
     return 1;
   }
   try {
-    const result = await run({ dryRun, only, apiKey, specs, config });
+    const result = await run({ dryRun, only, apiKey, specs, prompts, config });
     process.stdout.write(`avatar-studio render: ${result.count} spec(s), dryRun=${result.dryRun}\n`);
+    for (const s of result.skipped) process.stdout.write(`  SKIPPED ${s.id}: ${s.reason}\n`);
     for (const r of result.results) {
       if (r.dryRun) {
         process.stdout.write(`  [dry-run] ${r.id} (${Object.keys(r.payload).length} payload fields)\n`);
@@ -160,7 +197,10 @@ module.exports = {
   run,
   main,
   loadBuiltSpecs,
+  loadPrompts,
   loadConfigFromEnv,
   missingTransportConfig,
-  BUILD_DIR,
+  BUILT_DIR,
+  PROMPTS_DIR,
+  SPEC_FILENAME_TO_PROMPT,
 };

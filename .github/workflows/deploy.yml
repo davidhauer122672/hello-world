@@ -42,6 +42,7 @@ jobs:
 
       - name: Test Media Automation Pipeline
         run: node --test ck-api-gateway/src/__tests__/media-automation.test.js
+        continue-on-error: false
 
       - name: Test Sentinel Webhook
         run: npm run test:sentinel
@@ -66,16 +67,31 @@ jobs:
 
       - name: Validate Cloudflare token
         run: |
-          echo "Runner IP: $(curl -s https://ifconfig.me)"
-          echo "Account ID length: ${#CLOUDFLARE_ACCOUNT_ID}"
-          echo "API Token length: ${#CLOUDFLARE_API_TOKEN}"
-          if ! wrangler whoami 2>&1; then
-            echo ""
-            echo "::error::Cloudflare API token validation failed."
-            echo "::error::This is likely due to IP restrictions on the API token (error 9109)."
-            echo "::error::Fix: Cloudflare Dashboard > My Profile > API Tokens > Edit token > Remove IP restriction or add GitHub Actions runner IPs."
+          echo "Runner IP: $(curl -s https://ifconfig.me || echo 'unknown')"
+          echo "Account ID configured: $([ -n "$CLOUDFLARE_ACCOUNT_ID" ] && echo 'yes' || echo 'NO — MISSING')"
+          echo "API Token configured: $([ -n "$CLOUDFLARE_API_TOKEN" ] && echo 'yes' || echo 'NO — MISSING')"
+
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN secret is not set. Add it in GitHub repo Settings > Secrets."
             exit 1
           fi
+
+          for attempt in 1 2 3; do
+            if wrangler whoami 2>&1; then
+              echo "Cloudflare token validated successfully."
+              exit 0
+            fi
+            echo "Attempt $attempt failed. Retrying in $((attempt * 5))s..."
+            sleep $((attempt * 5))
+          done
+
+          echo ""
+          echo "::error::Cloudflare API token validation failed after 3 attempts."
+          echo "::error::Common causes:"
+          echo "::error::  1. Token has IP restrictions — remove them in Cloudflare Dashboard > My Profile > API Tokens"
+          echo "::error::  2. Token expired — generate a new one with Workers edit permissions"
+          echo "::error::  3. Token lacks required permissions — needs Account:Workers Scripts:Edit, Zone:Workers Routes:Edit"
+          exit 1
 
   deploy-website:
     name: Deploy Website
