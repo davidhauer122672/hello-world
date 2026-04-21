@@ -100,7 +100,7 @@ export async function runReinforcementScan(env, ctx) {
 ENTERPRISE DATA:
 ${dataSummary}
 
-FLEET: 350 agents across 12 divisions (EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB, DEL, UPG, ENF)
+FLEET: 396 agents across 13 divisions (EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB, DEL, UPG, ENF, CFP)
 INTEGRATIONS: Airtable (38 tables), Cloudflare Workers, Claude API, Retell AI, Slack, Buffer, Twitter/X, Constant Contact
 MCP READY: Google Calendar, Gmail, Canva, Gamma, Zapier Tables, Google Sheets, Manus AI
 
@@ -255,7 +255,7 @@ export async function generateNextGoalCycle(env, ctx) {
     prompt: `GOAL CYCLE REGENERATION at ${timestamp}
 
 COMPLETED ENF OPERATIONS: ${completedCount} of ${recentOps.length} total
-FLEET: 350 agents, 12 divisions, 13+ integrations, 38 Airtable tables
+FLEET: 396 agents, 13 divisions, 13+ integrations, 38 Airtable tables
 
 All current objectives are considered met. Scan the enterprise state and generate the NEXT GOAL CYCLE.
 

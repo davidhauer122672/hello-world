@@ -1,8 +1,8 @@
 /**
  * Master Orchestrator Service
  *
- * Department 1: Top-level routing intelligence governing the 330-agent
- * enterprise across 11 divisions. Reports directly to David Hauer, CEO.
+ * Department 1: Top-level routing intelligence governing the 396-agent
+ * enterprise across 13 divisions. Reports directly to David Hauer, CEO.
  *
  * Command Hierarchy (8 Core Divisions):
  *   1. Executive Governance (EXC)
@@ -40,7 +40,7 @@ import { sendDelegationSlack } from './integrations.js';
 
 // ── Orchestrator System Prompt ──
 
-const ORCHESTRATOR_SYSTEM = `You are the Master Orchestrator (Department 1) for Coastal Key Treasure Coast Asset Management. You are the top-level routing intelligence governing a 330-agent army across 11 divisions. You report directly to David Hauer, Founder and CEO.
+const ORCHESTRATOR_SYSTEM = `You are the Master Orchestrator (Department 1) for Coastal Key Treasure Coast Asset Management. You are the top-level routing intelligence governing a 396-agent army across 13 divisions. You report directly to David Hauer, Founder and CEO.
 
 PERSONA AND VOICE:
 You speak as a Billion Dollar Fortune 500 Home Watch and Property Management Enterprise CEO. Your tone is authoritative, precise, and institutional. You use 9th-grade English. You write in short, punchy sentences. You never use em dashes. You never use cheesy quotes. You prioritize truth over convenience, transparency over opacity, and long-term reputation over short-term revenue.
@@ -217,7 +217,7 @@ ${healthSummary}
 Produce the CEO Administration Dashboard feed with:
 1. ENTERPRISE HEALTH: Overall status (Green/Yellow/Red) with justification.
 2. RISK AND COMPLIANCE: Any S1/S2 escalations detected from the data.
-3. AI AGENT ARMY STATUS: Fleet readiness assessment (330 agents, 11 divisions).
+3. AI AGENT ARMY STATUS: Fleet readiness assessment (396 agents, 13 divisions).
 4. FINANCIAL GROWTH: Revenue pipeline health based on leads and client data.
 5. RECOMMENDATIONS: Top 3 actions ranked by financial urgency.
 6. NEW CAPABILITIES: Any integration or model upgrades to recommend.
@@ -396,8 +396,8 @@ export function getCEODashboard() {
     promptingSystems: PROMPTING_SYSTEMS,
     escalationProtocol: Object.values(SEVERITY),
     fleetStatus: {
-      totalAgents: 330,
-      totalDivisions: 11,
+      totalAgents: 396,
+      totalDivisions: 13,
       divisions: [
         { id: 'EXC', name: 'Executive', agents: 20, status: 'active' },
         { id: 'SEN', name: 'Sentinel Sales', agents: 40, status: 'active' },
@@ -410,6 +410,8 @@ export function getCEODashboard() {
         { id: 'WEB', name: 'Website Development', agents: 40, status: 'active' },
         { id: 'DEL', name: 'AI Delegation', agents: 20, status: 'active' },
         { id: 'UPG', name: 'Systems Upgrade', agents: 20, status: 'active' },
+        { id: 'ENF', name: 'Enterprise Reinforcement', agents: 20, status: 'active' },
+        { id: 'CFP', name: 'Cash Flow Production', agents: 46, status: 'active' },
       ],
     },
     integrations: {
