@@ -69,6 +69,8 @@ cmd_help() {
   echo -e "  ${CYAN}diff${RESET}                          Show uncommitted changes"
   echo -e "  ${CYAN}restore${RESET}                       Restore from latest backup"
   echo -e "  ${CYAN}deploy${RESET}                        Git commit and push changes"
+  echo -e "  ${CYAN}publish${RESET}                       Deploy live to Cloudflare Pages"
+  echo -e "  ${CYAN}ship${RESET}                          Deploy + publish in one step"
   echo ""
   echo -e "${DIM}Examples:${RESET}"
   echo "  ./site-manager.sh edit-name \"David A. Hauer\""
@@ -76,6 +78,8 @@ cmd_help() {
   echo "  ./site-manager.sh edit-metric 1 \"35%+\""
   echo "  ./site-manager.sh replace \"Stuart, FL 34997\" \"Palm City, FL 34990\""
   echo "  ./site-manager.sh deploy \"Updated hero section\""
+  echo "  ./site-manager.sh publish"
+  echo "  ./site-manager.sh ship \"Updated CTA and metrics\""
   echo ""
 }
 
@@ -393,6 +397,25 @@ cmd_deploy() {
   echo -e "${GREEN}Deployed to ${branch}.${RESET}"
 }
 
+cmd_publish() {
+  local project_dir
+  project_dir="$(dirname "$SITE_FILE")"
+  cd "$project_dir"
+  if ! command -v wrangler &>/dev/null; then
+    echo -e "${RED}wrangler not found. Install: npm install -g wrangler${RESET}"
+    exit 1
+  fi
+  echo -e "${GOLD}Publishing to Cloudflare Pages...${RESET}"
+  wrangler pages deploy . --project-name=coastalkey-pm
+  echo -e "${GREEN}Live on coastalkey-pm.pages.dev${RESET}"
+}
+
+cmd_ship() {
+  local msg="${*:-Update ceo.html via site-manager}"
+  cmd_deploy "$msg"
+  cmd_publish
+}
+
 # ── Router ───────────────────────────────────────────────────────────────────
 
 case "${1:-help}" in
@@ -416,5 +439,7 @@ case "${1:-help}" in
   diff)                 cmd_diff ;;
   restore)              cmd_restore ;;
   deploy)               shift; cmd_deploy "$@" ;;
+  publish)              cmd_publish ;;
+  ship)                 shift; cmd_ship "$@" ;;
   *)                    echo -e "${RED}Unknown command: $1${RESET}"; cmd_help ;;
 esac

@@ -1,0 +1,14 @@
+name = "image-ingestion-proxy"
+main = "src/index.js"
+compatibility_date = "2024-09-01"
+
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "coastal-key-assets"
+
+[vars]
+R2_PUBLIC_URL = "https://pub-coastalkey-pm.r2.dev"
+
+# Secrets (set via CLI, never committed):
+#   wrangler secret put API_KEY
+#   wrangler secret put API_TOKEN

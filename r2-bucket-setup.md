@@ -36,17 +36,17 @@
 
 | Endpoint            | URL                                                     |
 |---------------------|---------------------------------------------------------|
-| **Public Bucket**   | `https://pub-[yours].r2.dev`                            |
-| **Worker Proxy**    | `https://image-ingestion-proxy.[yours].workers.dev`     |
+| **Public Bucket**   | `https://pub-coastalkey-pm.r2.dev`                            |
+| **Worker Proxy**    | `https://image-ingestion-proxy.coastalkey-pm.workers.dev`     |
 | **S3 Endpoint**     | `https://<ACCOUNT_ID>.r2.cloudflarestorage.com`         |
 
 ### 5. Environment Variables
 
 ```env
-R2_PUBLIC_URL=https://pub-[yours].r2.dev
-WORKER_URL=https://image-ingestion-proxy.[yours].workers.dev
-API_KEY=[your-32-char-string]
-API_TOKEN=[your-api-token]
+R2_PUBLIC_URL=https://pub-coastalkey-pm.r2.dev
+WORKER_URL=https://image-ingestion-proxy.coastalkey-pm.workers.dev
+API_KEY=<set-via-wrangler-secret>
+API_TOKEN=<set-via-wrangler-secret>
 CLOUDFLARE_ACCOUNT_ID=<your-account-id>
 R2_ACCESS_KEY_ID=<your-access-key>
 R2_SECRET_ACCESS_KEY=<your-secret-key>
