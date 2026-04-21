@@ -218,13 +218,29 @@ Execute my next instruction.
 
 ---
 
+## SKILL LIBRARY (invokable via Skill tool)
+
+Beyond the four master prompts above, the Coastal Key prompt system includes three invokable skills registered under `.claude/skills/`:
+
+| Skill | Path | Full Spec | Commander | Purpose |
+|---|---|---|---|---|
+| `content-maxxing` | `.claude/skills/content-maxxing/SKILL.md` | `CK-CONTENT-MAXXING-SKILL.md` | MCCO-003, 005, 008 | Atomize a pillar asset into ~40 multi-platform atoms |
+| `claude-secrets` | `.claude/skills/claude-secrets/SKILL.md` | `CK-CLAUDE-SECRETS-SKILL.md` | TEC + MCCO-014 | Generate sovereign-grade Claude prompts |
+| `cloud-marketing-agency` | `.claude/skills/cloud-marketing-agency/SKILL.md` | `CK-CLOUD-MARKETING-AGENCY.md` | MCCO-008 Campaign Blitz | Run end-to-end campaign through the 92-unit fleet |
+
+**Composition:** Claude Secrets produces the prompt → Content Maxxing atomizes the pillar → Cloud Marketing Agency orchestrates the campaign.
+
+Invoke via the Skill tool by name (e.g., `Skill(skill="content-maxxing")`) when a task matches the description frontmatter.
+
+---
+
 ## DOCUMENT CONTROL
 
 | Field | Value |
 |-------|-------|
 | **Document** | Coastal Key Master Prompt System |
-| **Version** | 1.0.0 |
-| **Prompts** | 4 (Persistent Task, File Organization, Auto-Prompt, Enterprise Architect) |
+| **Version** | 1.1.0 |
+| **Prompts** | 4 master (Persistent, Organization, Auto-Prompt, Enterprise Architect) + 3 skills (Content Maxxing, Claude Secrets, Cloud Marketing Agency) |
 | **Tested** | 294/294 test suite pass |
 | **Branch** | main |
 | **Classification** | Sovereign Operating Prompts |
