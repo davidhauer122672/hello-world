@@ -57,10 +57,12 @@ import { handleCampaignCallLog, handleCampaignAgentPerformance, handleCampaignAn
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
 import { handleListOfficers, handleGetOfficer, handleOfficerScan, handleOfficerDashboard, handleFleetScan } from './routes/intelligence-officers.js';
 import { handleListEmailAgents, handleGetEmailAgent, handleEmailCompose, handleEmailClassify, handleEmailDashboard } from './routes/email-agents.js';
-import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
+import { jsonResponse, errorResponse, corsHeaders, setRequestContext } from './utils/response.js';
 
 export default {
   async fetch(request, env, ctx) {
+    setRequestContext(request);
+
     // CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders() });
@@ -85,7 +87,10 @@ export default {
         });
       }
 
-      // Deep health check — verify external dependencies
+      // Deep health check — requires auth to prevent infrastructure exposure
+      const authError = authenticate(request, env);
+      if (authError) return authError;
+
       const checks = {};
 
       // Airtable connectivity
