@@ -127,3 +127,53 @@ describe('Audit Writer', () => {
     assert.ok(keys.keys.length > 0);
   });
 });
+
+// ── Buffer Service ──
+import { resolveProfileId } from '../services/buffer.js';
+
+describe('Buffer Service', () => {
+  it('resolves profile ID from BUFFER_PROFILE_IDS env', () => {
+    const env = { BUFFER_PROFILE_IDS: '{"Instagram":"buf_ig_123","Facebook":"buf_fb_456"}' };
+    assert.equal(resolveProfileId(env, 'Instagram'), 'buf_ig_123');
+    assert.equal(resolveProfileId(env, 'Facebook'), 'buf_fb_456');
+  });
+
+  it('returns null for unmapped platforms', () => {
+    const env = { BUFFER_PROFILE_IDS: '{"Instagram":"buf_ig_123"}' };
+    assert.equal(resolveProfileId(env, 'TikTok'), null);
+  });
+
+  it('handles empty BUFFER_PROFILE_IDS gracefully', () => {
+    const env = { BUFFER_PROFILE_IDS: '{}' };
+    assert.equal(resolveProfileId(env, 'Instagram'), null);
+  });
+
+  it('handles missing BUFFER_PROFILE_IDS gracefully', () => {
+    const env = {};
+    assert.equal(resolveProfileId(env, 'Instagram'), null);
+  });
+
+  it('handles malformed BUFFER_PROFILE_IDS gracefully', () => {
+    const env = { BUFFER_PROFILE_IDS: 'not-json' };
+    assert.equal(resolveProfileId(env, 'Instagram'), null);
+  });
+});
+
+// ── Airtable Service — Table Constants ──
+import { TABLES } from '../services/airtable.js';
+
+describe('Airtable Table Constants', () => {
+  it('defines all core tables', () => {
+    assert.ok(TABLES.LEADS, 'LEADS table required');
+    assert.ok(TABLES.CONTENT_CALENDAR, 'CONTENT_CALENDAR table required');
+    assert.ok(TABLES.PODCAST_PRODUCTION, 'PODCAST_PRODUCTION table required');
+    assert.ok(TABLES.AI_LOG, 'AI_LOG table required');
+    assert.ok(TABLES.TASKS, 'TASKS table required');
+  });
+
+  it('table IDs follow Airtable format', () => {
+    for (const [name, id] of Object.entries(TABLES)) {
+      assert.ok(id.startsWith('tbl'), `${name} should start with "tbl", got "${id}"`);
+    }
+  });
+});

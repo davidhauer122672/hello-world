@@ -15,6 +15,9 @@ https://staging.coastalkey-pm.com/*   https://coastalkey-pm.com/:splat       301
 https://dev.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat       301
 https://beta.coastalkey-pm.com/*      https://coastalkey-pm.com/:splat       301
 
+# ── API proxy — routes /v1/* to the CK API Gateway worker ──
+/v1/*                                 https://ck-api-gateway.coastalkey-pm.workers.dev/v1/:splat 200
+
 # ── Legacy path redirects ──
 /dashboard                            /portal/dashboard                      301
 /command-center                       /portal/dashboard                      301

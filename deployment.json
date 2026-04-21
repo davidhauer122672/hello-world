@@ -2,21 +2,26 @@
   "project": "coastalkey-pm",
   "domain": "coastalkey-pm.com",
   "architecture": {
-    "website": "Cloudflare Pages (ck-website/)",
+    "website": "Cloudflare Pages (ck-website/) — project: coastalkey-pm",
     "api": "Cloudflare Workers (ck-api-gateway/)",
     "webhook": "Cloudflare Workers (sentinel-webhook/)",
-    "dashboard": "Integrated into website at /portal/*"
+    "dashboard_legacy": "Cloudflare Pages (ck-command-center/)",
+    "portal": "Integrated into website at /portal/*",
+    "podcast": "Public page at /podcast, RSS at /v1/podcast/feed.xml, management at /portal/podcast",
+    "api_proxy": "Website _redirects proxies /v1/* to ck-api-gateway worker"
   },
   "deployment": {
     "website": {
+      "project_name": "coastalkey-pm",
       "steps": [
-        { "step": 1, "action": "Deploy website to Cloudflare Pages", "command": "wrangler pages deploy ./ck-website --project-name=coastalkey-pm" },
+        { "step": 1, "action": "Deploy website to Cloudflare Pages", "command": "npx wrangler pages deploy ck-website --project-name=coastalkey-pm" },
         { "step": 2, "action": "Purge Cloudflare cache", "command": "curl -X POST 'https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache' -H 'Authorization: Bearer {token}' -d '{\"purge_everything\":true}'" }
       ]
     },
     "api_gateway": {
       "steps": [
-        { "step": 1, "action": "Deploy API gateway Worker", "command": "cd ck-api-gateway && wrangler deploy" }
+        { "step": 1, "action": "Deploy API gateway Worker", "command": "cd ck-api-gateway && wrangler deploy" },
+        { "step": 2, "action": "Set Buffer secret (if first deploy)", "command": "cd ck-api-gateway && wrangler secret put BUFFER_ACCESS_TOKEN" }
       ]
     },
     "sentinel_webhook": {
@@ -35,5 +40,18 @@
     "total": 290,
     "divisions": 9,
     "web_dev_agents": 40
+  },
+  "workflows": {
+    "scaa1": "Lead → AI battle plan → task → Slack",
+    "wf2": "Content approved → Slack → Buffer schedule → Airtable status",
+    "wf3": "Investor flag → AI presentation → escalation task → email",
+    "wf4": "No Answer → 90-day nurture → re-engagement task"
+  },
+  "integrations": {
+    "airtable_base": "appUSnNgpDkcEOzhN",
+    "airtable_tables": 38,
+    "buffer": "WF-2 content publishing (requires BUFFER_ACCESS_TOKEN + BUFFER_PROFILE_IDS)",
+    "retell": "40-agent Tracey Hunter outbound campaign",
+    "slack": "Real-time notifications across all workflows"
   }
 }
