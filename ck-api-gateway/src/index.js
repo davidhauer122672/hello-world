@@ -213,6 +213,20 @@ import { handleInspectionDashboard, handleInspectionTypes, handleCreateInspectio
 import { handleElizaDashboard, handleElizaVoiceConfig, handleElizaAvatarConfig, handleElizaRetellConfig, handleElizaAtlasConfig, handleElizaVideoBrief } from './routes/eliza-ai.js';
 import { getGoogleAdsDashboard } from './engines/google-ads-campaign.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
+import {
+  handleLearningDashboard, handleLearningPricing, handleLearningCourses,
+  handleLearningCourse, handleLearningEnroll, handleLearningStats,
+} from './routes/learning-platform.js';
+import {
+  handleRecruitmentDashboard, handleRecruitmentPositions, handleRecruitmentPosition,
+  handleRecruitmentApply, handleRecruitmentScreen, handleRecruitmentPipeline,
+  handleRecruitmentOnboarding,
+} from './routes/recruitment.js';
+import {
+  handleReferralDashboard, handleReferralSegments, handleReferralSegment,
+  handleReferralGenerate, handleReferralEnroll, handleReferralProgram,
+  handleReferralCampaigns,
+} from './routes/referral-outreach.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -1104,6 +1118,75 @@ export default {
       if (path === '/v1/manifest' && method === 'GET') {
         const summary = url.searchParams.get('summary') === 'true';
         return jsonResponse(summary ? getManifestSummary() : getFullManifest());
+      }
+
+      // ── Learning Platform (Coastal Key Academy) ──
+      if (path === '/v1/academy/dashboard' && method === 'GET') {
+        return handleLearningDashboard();
+      }
+      if (path === '/v1/academy/pricing' && method === 'GET') {
+        return handleLearningPricing();
+      }
+      if (path === '/v1/academy/courses' && method === 'GET') {
+        return handleLearningCourses(url);
+      }
+      if (path === '/v1/academy/enroll' && method === 'POST') {
+        return await handleLearningEnroll(request, env, ctx);
+      }
+      if (path === '/v1/academy/stats' && method === 'GET') {
+        return handleLearningStats();
+      }
+      if (path.match(/^\/v1\/academy\/courses\/[^/]+$/) && method === 'GET') {
+        const courseId = path.split('/v1/academy/courses/')[1];
+        return handleLearningCourse(courseId);
+      }
+
+      // ── AI Recruitment Engine ──
+      if (path === '/v1/recruitment/dashboard' && method === 'GET') {
+        return handleRecruitmentDashboard();
+      }
+      if (path === '/v1/recruitment/positions' && method === 'GET') {
+        return handleRecruitmentPositions(url);
+      }
+      if (path === '/v1/recruitment/apply' && method === 'POST') {
+        return await handleRecruitmentApply(request, env, ctx);
+      }
+      if (path === '/v1/recruitment/screen' && method === 'POST') {
+        return await handleRecruitmentScreen(request, env, ctx);
+      }
+      if (path === '/v1/recruitment/pipeline' && method === 'GET') {
+        return handleRecruitmentPipeline();
+      }
+      if (path === '/v1/recruitment/onboarding' && method === 'GET') {
+        return handleRecruitmentOnboarding();
+      }
+      if (path.match(/^\/v1\/recruitment\/positions\/FT-\d+$/) && method === 'GET') {
+        const positionId = path.split('/v1/recruitment/positions/')[1];
+        return handleRecruitmentPosition(positionId);
+      }
+
+      // ── Referral Outreach Engine ──
+      if (path === '/v1/referrals/dashboard' && method === 'GET') {
+        return handleReferralDashboard();
+      }
+      if (path === '/v1/referrals/segments' && method === 'GET') {
+        return handleReferralSegments(url);
+      }
+      if (path === '/v1/referrals/generate' && method === 'POST') {
+        return await handleReferralGenerate(request, env, ctx);
+      }
+      if (path === '/v1/referrals/enroll' && method === 'POST') {
+        return await handleReferralEnroll(request, env, ctx);
+      }
+      if (path === '/v1/referrals/program' && method === 'GET') {
+        return handleReferralProgram();
+      }
+      if (path === '/v1/referrals/campaigns' && method === 'GET') {
+        return handleReferralCampaigns();
+      }
+      if (path.match(/^\/v1\/referrals\/segments\/[^/]+$/) && method === 'GET') {
+        const segmentId = path.split('/v1/referrals/segments/')[1];
+        return handleReferralSegment(segmentId);
       }
 
       return errorResponse('Not found', 404);
