@@ -2,6 +2,10 @@
  * CK API Gateway — Coastal Key Central Inference Router
  *
  * Routes:
+ *   POST /v1/division/status    — File weekly Division Status record
+ *   POST /v1/division/queue     — Add a Division Queue item
+ *   GET  /v1/division/queue/:code — List queue for a division
+ *   GET  /v1/division/divisions — List the ten division codes
  *   POST /v1/inference          — Claude inference with KV caching + audit logging
  *   POST /v1/leads              — Create lead in Airtable Leads table
  *   POST /v1/leads/public       — Public website contact form → Lead (no auth)
@@ -198,6 +202,7 @@ import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSla
 import { handleMetaAdsStatus, handleMetaAdsBoost, handleMetaAdsCampaigns } from './routes/meta-ads.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
+import { handleDivisionStatus, handleDivisionQueueCreate, handleDivisionQueueList, handleDivisionList } from './routes/division-lead.js';
 import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { handleSpearTrigger, handleSpearReply, handleSpearStatus, handleSpearDashboard, handleSpearGenerate } from './routes/spear.js';
@@ -949,6 +954,23 @@ export default {
       }
       if (path === '/v1/ceo/dashboard' && method === 'GET') {
         return handleCeoDashboard();
+      }
+
+      // ── Division Lead Orchestrator v2.0 ──
+      if (path === '/v1/division/divisions' && method === 'GET') {
+        return handleDivisionList();
+      }
+      if (path === '/v1/division/status' && method === 'POST') {
+        return await handleDivisionStatus(request, env, ctx);
+      }
+      if (path === '/v1/division/queue' && method === 'POST') {
+        return await handleDivisionQueueCreate(request, env, ctx);
+      }
+      {
+        const m = path.match(/^\/v1\/division\/queue\/([A-Z]+)$/);
+        if (m && method === 'GET') {
+          return await handleDivisionQueueList(request, env, ctx, m[1]);
+        }
       }
 
       // ── Cooperations Committee ──

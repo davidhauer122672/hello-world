@@ -54,6 +54,9 @@ export const TABLES = {
   REGULATORY_DATA:      'tblyyEjxqQjEmO16T',
   // ── Slack Integration (wired 2026-04-05) ──
   SLACK_INTEGRATIONS:   'tbluSdmSXReoqcROr',
+  // ── Division Lead Orchestrator v2.0 (wired 2026-04-20) ──
+  DIVISION_STATUS:      'tblZGLkgQ2qsGXNyJ',
+  DIVISION_QUEUE:       'tblloR93chkzuBGON',
 };
 
 /**

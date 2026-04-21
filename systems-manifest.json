@@ -392,13 +392,36 @@
     "files": [
       "lib/avatar-spec.js",
       "avatar-studio/README.md",
+      "avatar-studio/DEPLOY.md",
       "avatar-studio/scripts/build-specs.js",
+      "avatar-studio/scripts/render-via-banana-pro.js",
+      "avatar-studio/scripts/render-via-vertex.js",
       "avatar-studio/specs/01-executive-communications-avatar.config.js",
       "avatar-studio/specs/02-executive-administrator-avatar.config.js",
       "avatar-studio/specs/03-treasure-coast-dawn-wallpaper.config.js",
       "avatar-studio/specs/04-ceo-avatar.config.js",
-      "tests/avatar-spec.test.js"
+      "tests/avatar-spec.test.js",
+      "tests/render-via-vertex.test.js"
     ],
+    "renderers": {
+      "banana_pro": {
+        "status": "scaffolded",
+        "script": "avatar-studio/scripts/render-via-banana-pro.js",
+        "base_url": "https://gateway.bananapro.site",
+        "generate_path": "/api/v1/videos/generate",
+        "auth_header": "Authorization: Bearer <BANANA_PRO_API_KEY>",
+        "notes": "Host and auth verified from published curl examples; video-specific path and response schema inferred from image endpoint pattern. Use --probe to validate."
+      },
+      "vertex_veo": {
+        "status": "scaffolded",
+        "script": "avatar-studio/scripts/render-via-vertex.js",
+        "endpoint_pattern": "https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT}/locations/{LOCATION}/publishers/google/models/{MODEL}:predictLongRunning",
+        "auth": "Google Cloud OAuth Bearer (GOOGLE_ACCESS_TOKEN)",
+        "default_model": "veo-3.0-generate-preview",
+        "output_format": "mp4 in GCS; transcode to mov for iOS Live Photo",
+        "required_env": ["GOOGLE_CLOUD_PROJECT", "VERTEX_STORAGE_URI", "GOOGLE_ACCESS_TOKEN"]
+      }
+    },
     "builds": [
       {
         "id": "ck-avatar-01-exec-comms",

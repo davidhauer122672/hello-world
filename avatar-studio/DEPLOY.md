@@ -53,6 +53,47 @@ Dry-run the payload before calling the API:
 node avatar-studio/scripts/render-via-banana-pro.js --dry-run --only ck-wallpaper-03-treasure-coast-dawn
 ```
 
+Probe the real endpoint with a minimal call and dump the raw response (use
+this before a full run to verify the URL, auth, and schema against your
+account):
+
+```bash
+export BANANA_PRO_API_KEY=sk_...
+node avatar-studio/scripts/render-via-banana-pro.js --probe
+```
+
+---
+
+## Path C — Scripted via Google Vertex AI Veo
+
+| # | Actor | Step |
+|---|-------|------|
+| 1 | operator | Enable Vertex AI API on GCP project `coastal-key-soe` (Console → APIs & Services → Library → "Vertex AI API" → Enable) |
+| 2 | operator | Create a GCS bucket for renders, e.g. `gs://ck-avatar-renders/` |
+| 3 | operator | Grant the signed-in account `roles/aiplatform.user` and `roles/storage.objectAdmin` on that bucket |
+| 4 | operator | `export GOOGLE_CLOUD_PROJECT=coastal-key-soe` |
+| 5 | operator | `export VERTEX_LOCATION=us-central1` (or another supported region) |
+| 6 | operator | `export VERTEX_MODEL=veo-3.0-generate-preview` |
+| 7 | operator | `export VERTEX_STORAGE_URI=gs://ck-avatar-renders/` |
+| 8 | operator | `export GOOGLE_ACCESS_TOKEN=$(gcloud auth print-access-token)` |
+| 9 | operator | Probe first: `node avatar-studio/scripts/render-via-vertex.js --probe` |
+| 10 | operator | Submit: `node avatar-studio/scripts/render-via-vertex.js` (polls to completion, writes manifest files under `avatar-studio/renders/<id>.vertex.json`) |
+| 11 | operator | Download the `.mp4` files: `gsutil -m cp -r gs://ck-avatar-renders/ ./avatar-studio/renders/` |
+| 12 | operator | Transcode to `.mov` for Live Photo: `ffmpeg -i input.mp4 -c:v hevc_videotoolbox -tag:v hvc1 output.mov` |
+| 13 | operator | Steps 7–11 from Path A (AirDrop → intoLive → Wallpaper) |
+
+Dry-run without calling the API:
+
+```bash
+GOOGLE_CLOUD_PROJECT=x VERTEX_STORAGE_URI=gs://x/ GOOGLE_ACCESS_TOKEN=x \
+  node avatar-studio/scripts/render-via-vertex.js --dry-run --only ck-wallpaper-03-treasure-coast-dawn
+```
+
+Note: Vertex Veo outputs H.264/H.265 `.mp4`, not `.mov` directly. The
+transcode step is required for iOS Live Photo compatibility. Vertex's
+access-token auth also expires roughly every hour; re-run step 8 if you
+get a 401 during a long session.
+
 ---
 
 ## Build IDs
