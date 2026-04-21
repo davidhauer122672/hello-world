@@ -1,6 +1,10 @@
 {
+  "schema": "ckpm-deploy-v1",
   "project": "coastalkey-pm",
+  "org": "Coastal Key Property Management",
   "domain": "coastalkey-pm.com",
+  "environment": "production",
+  "platform": "cloudflare-pages",
   "architecture": {
     "website": "Cloudflare Pages _worker.js reverse proxy → Manus origin (coastalkey-awfopuqz.manus.space)",
     "api": "Cloudflare Workers (ck-api-gateway/)",
@@ -31,6 +35,45 @@
       "/admin"
     ]
   },
+  "prerequisites": {
+    "runtime": "python3",
+    "cli": ["wrangler"],
+    "auth": "wrangler must be authenticated to the Coastal Key Cloudflare account",
+    "source": "~/Downloads/coastalkey-pm"
+  },
+  "pipeline": [
+    {
+      "phase": "prepare",
+      "step": 1,
+      "action": "Navigate to project directory",
+      "command": "cd ~/Downloads/coastalkey-pm",
+      "critical": true
+    },
+    {
+      "phase": "audit",
+      "step": 2,
+      "action": "Execute compliance and audit fix script",
+      "command": "python3 ck-audit-fix.py",
+      "critical": true,
+      "description": "Resolves security and compliance findings before deploy"
+    },
+    {
+      "phase": "deploy",
+      "step": 3,
+      "action": "Deploy to Cloudflare Pages",
+      "command": "wrangler pages deploy . --project-name=coastalkey-pm",
+      "critical": true,
+      "description": "Publishes current directory to Cloudflare Pages under coastalkey-pm"
+    },
+    {
+      "phase": "post-deploy",
+      "step": 4,
+      "action": "Purge Cloudflare cache",
+      "command": "curl -X POST 'https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache' -H 'Authorization: Bearer {token}' -H 'Content-Type: application/json' -d '{\"purge_everything\":true}'",
+      "critical": true,
+      "description": "Full cache purge ensures visitors receive the latest deployment"
+    }
+  ],
   "deployment": {
     "website": {
       "steps": [
@@ -72,5 +115,9 @@
     "intelligence_officers": 50,
     "email_agents": 20,
     "trader_agents": 1
+  },
+  "validation": {
+    "post_deploy_check": "Verify site loads at coastalkey-pm.com and audit fixes are reflected",
+    "rollback": "Re-deploy previous build directory via wrangler if issues are detected"
   }
 }
