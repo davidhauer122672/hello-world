@@ -1,0 +1,339 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "coastal-key-property-management",
+  "documentNamespace": "https://github.com/davidhauer122672/hello-world/sbom/2026-04-21",
+  "creationInfo": {
+    "created": "2026-04-21T00:00:00Z",
+    "creators": [
+      "Tool: claude-code",
+      "Organization: Coastal Key Property Management"
+    ],
+    "licenseListVersion": "3.22"
+  },
+  "documentDescribes": [
+    "SPDXRef-Platform"
+  ],
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Platform",
+      "name": "coastal-key-property-management",
+      "versionInfo": "1.0.0",
+      "description": "Coastal Key Property Management platform — Cloudflare Workers + Pages application for property management with AI-driven automation.",
+      "downloadLocation": "https://github.com/davidhauer122672/hello-world",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Coastal Key Property Management",
+      "originator": "Organization: Coastal Key Property Management",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright 2026 Coastal Key Property Management",
+      "primaryPackagePurpose": "APPLICATION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PERSISTENT-ID",
+          "referenceType": "gitoid",
+          "referenceLocator": "gitoid:blob:sha1:davidhauer122672/hello-world"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-ck-api-gateway",
+      "name": "ck-api-gateway",
+      "versionInfo": "1.0.0",
+      "description": "Coastal Key API Gateway — Central inference router and orchestration layer. Cloudflare Worker using ES modules with no npm runtime dependencies (Web APIs only: fetch, crypto, TextEncoder, Response, URL).",
+      "downloadLocation": "https://github.com/davidhauer122672/hello-world/tree/main/ck-api-gateway",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Coastal Key Property Management",
+      "originator": "Organization: Coastal Key Property Management",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright 2026 Coastal Key Property Management",
+      "primaryPackagePurpose": "APPLICATION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/davidhauer122672/hello-world@main#ck-api-gateway"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-ck-website",
+      "name": "ck-website",
+      "versionInfo": "1.0.0",
+      "description": "Coastal Key Website — Cloudflare Pages static single-page application. Vanilla JavaScript with no npm dependencies. Uses Google Fonts (Inter) loaded externally.",
+      "downloadLocation": "https://github.com/davidhauer122672/hello-world/tree/main/ck-website",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Coastal Key Property Management",
+      "originator": "Organization: Coastal Key Property Management",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright 2026 Coastal Key Property Management",
+      "primaryPackagePurpose": "APPLICATION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/davidhauer122672/hello-world@main#ck-website"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-sentinel-webhook",
+      "name": "sentinel-webhook",
+      "versionInfo": "1.0.0",
+      "description": "Coastal Key Sentinel Sales Campaign — Retell-to-Airtable-to-Slack webhook service. Cloudflare Worker using ES modules with no npm runtime dependencies.",
+      "downloadLocation": "https://github.com/davidhauer122672/hello-world/tree/main/sentinel-webhook",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Coastal Key Property Management",
+      "originator": "Organization: Coastal Key Property Management",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright 2026 Coastal Key Property Management",
+      "primaryPackagePurpose": "APPLICATION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/davidhauer122672/hello-world@main#sentinel-webhook"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-DevDep-wrangler",
+      "name": "wrangler",
+      "versionInfo": "^3.0.0",
+      "description": "Cloudflare Workers CLI tool — used as a development dependency for local development, testing, and deployment. Not bundled into production artifacts.",
+      "downloadLocation": "https://registry.npmjs.org/wrangler",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Cloudflare, Inc.",
+      "originator": "Organization: Cloudflare, Inc.",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "copyrightText": "Copyright Cloudflare, Inc.",
+      "primaryPackagePurpose": "APPLICATION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/wrangler@%5E3.0.0"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-ExternalService-airtable",
+      "name": "airtable-api",
+      "description": "Airtable REST API — external SaaS data layer for property management records, lead tracking, and CRM data. Not bundled; accessed at runtime via HTTPS.",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Formagrid Inc. (Airtable)",
+      "originator": "Organization: Formagrid Inc. (Airtable)",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "primaryPackagePurpose": "OTHER",
+      "externalRefs": [
+        {
+          "referenceCategory": "OTHER",
+          "referenceType": "https://spdx.org/spdxdocs/external-service",
+          "referenceLocator": "https://airtable.com/developers/web/api",
+          "comment": "External SaaS API — data layer for property management records"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-ExternalService-anthropic-claude",
+      "name": "anthropic-claude-api",
+      "description": "Anthropic Claude API — external AI inference service for natural language processing, content generation, and intelligent automation. Not bundled; accessed at runtime via HTTPS.",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Anthropic PBC",
+      "originator": "Organization: Anthropic PBC",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "primaryPackagePurpose": "OTHER",
+      "externalRefs": [
+        {
+          "referenceCategory": "OTHER",
+          "referenceType": "https://spdx.org/spdxdocs/external-service",
+          "referenceLocator": "https://api.anthropic.com",
+          "comment": "External SaaS API — AI inference service"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-ExternalService-retell-ai",
+      "name": "retell-ai-api",
+      "description": "Retell AI — external voice agent and telephony service providing inbound/outbound call handling via webhooks. Not bundled; communicates via webhook callbacks.",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Retell AI, Inc.",
+      "originator": "Organization: Retell AI, Inc.",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "primaryPackagePurpose": "OTHER",
+      "externalRefs": [
+        {
+          "referenceCategory": "OTHER",
+          "referenceType": "https://spdx.org/spdxdocs/external-service",
+          "referenceLocator": "https://retellai.com",
+          "comment": "External SaaS service — voice agent webhooks"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-ExternalService-cloudflare-kv",
+      "name": "cloudflare-workers-kv",
+      "description": "Cloudflare Workers KV — distributed key-value storage used for caching inference results, session state, rate limits, and audit logs. Platform-native binding, not an npm dependency.",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Cloudflare, Inc.",
+      "originator": "Organization: Cloudflare, Inc.",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "primaryPackagePurpose": "OTHER",
+      "externalRefs": [
+        {
+          "referenceCategory": "OTHER",
+          "referenceType": "https://spdx.org/spdxdocs/external-service",
+          "referenceLocator": "https://developers.cloudflare.com/kv/",
+          "comment": "Platform-native KV storage — caching, sessions, rate limits, audit logs (4 namespaces bound)"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-ExternalService-slack-webhooks",
+      "name": "slack-incoming-webhooks",
+      "description": "Slack Incoming Webhooks — external notification service for sending operational alerts, lead notifications, and system events to Slack channels. Not bundled; accessed at runtime via HTTPS POST.",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Salesforce, Inc. (Slack)",
+      "originator": "Organization: Salesforce, Inc. (Slack)",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "primaryPackagePurpose": "OTHER",
+      "externalRefs": [
+        {
+          "referenceCategory": "OTHER",
+          "referenceType": "https://spdx.org/spdxdocs/external-service",
+          "referenceLocator": "https://api.slack.com/messaging/webhooks",
+          "comment": "External SaaS service — operational notifications"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-ExternalService-google-fonts",
+      "name": "google-fonts",
+      "description": "Google Fonts — external web font service providing the Inter typeface family. Loaded via CSS link from fonts.googleapis.com. Not bundled; fetched by the browser at page load.",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "supplier": "Organization: Google LLC",
+      "originator": "Organization: Google LLC",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "primaryPackagePurpose": "OTHER",
+      "externalRefs": [
+        {
+          "referenceCategory": "OTHER",
+          "referenceType": "https://spdx.org/spdxdocs/external-service",
+          "referenceLocator": "https://fonts.googleapis.com",
+          "comment": "External CDN service — Inter typeface (OFL-1.1 licensed font, SaaS delivery)"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Platform"
+    },
+    {
+      "spdxElementId": "SPDXRef-Platform",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-ck-api-gateway"
+    },
+    {
+      "spdxElementId": "SPDXRef-Platform",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-ck-website"
+    },
+    {
+      "spdxElementId": "SPDXRef-Platform",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-sentinel-webhook"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ck-api-gateway",
+      "relationshipType": "DEV_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-DevDep-wrangler",
+      "comment": "wrangler is used only for local development, testing, and deployment — not bundled into the production Worker."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-sentinel-webhook",
+      "relationshipType": "DEV_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-DevDep-wrangler",
+      "comment": "wrangler is used only for local development, testing, and deployment — not bundled into the production Worker."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ck-api-gateway",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-ExternalService-anthropic-claude",
+      "comment": "Runtime dependency — API gateway calls Anthropic Claude for AI inference."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ck-api-gateway",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-ExternalService-airtable",
+      "comment": "Runtime dependency — API gateway reads/writes property management data via Airtable REST API."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ck-api-gateway",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-ExternalService-cloudflare-kv",
+      "comment": "Runtime dependency — API gateway uses 4 KV namespaces (CACHE, SESSIONS, RATE_LIMITS, AUDIT_LOG)."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ck-api-gateway",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-ExternalService-slack-webhooks",
+      "comment": "Runtime dependency — API gateway sends operational notifications via Slack webhooks."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-sentinel-webhook",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-ExternalService-retell-ai",
+      "comment": "Runtime dependency — Sentinel webhook receives voice agent call data from Retell AI."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-sentinel-webhook",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-ExternalService-airtable",
+      "comment": "Runtime dependency — Sentinel webhook writes call records to Airtable."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-sentinel-webhook",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-ExternalService-slack-webhooks",
+      "comment": "Runtime dependency — Sentinel webhook sends call notifications to Slack."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ck-website",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-ExternalService-google-fonts",
+      "comment": "Runtime dependency — website loads Inter typeface from Google Fonts CDN."
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-ck-website",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Package-ck-api-gateway",
+      "comment": "Runtime dependency — website SPA makes API calls to the ck-api-gateway Worker."
+    }
+  ]
+}

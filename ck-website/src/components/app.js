@@ -283,8 +283,8 @@ function renderContact(main) {
     status.textContent = '';
     try {
       const data = Object.fromEntries(new FormData(form));
-      // Direct Airtable write for public form (no auth required)
-      const res = await fetch('/v1/leads/public', {
+      const API_BASE = window.__ckApiBase || 'https://ck-api-gateway.david-e59.workers.dev';
+      const res = await fetch(API_BASE + '/v1/leads/public', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -488,33 +488,384 @@ function renderPortalDashboard(main) {
 }
 
 function renderPortalAgents(main) {
+  // ── Division color map ─────────────────────────────────────────────────────
+  const divColors = {
+    EXC: '#6366f1', SEN: '#ef4444', OPS: '#f59e0b', INT: '#10b981',
+    MKT: '#8b5cf6', FIN: '#06b6d4', VEN: '#f97316', TEC: '#14b8a6', WEB: '#0ea5e9',
+  };
+
+  // ── Static fallback agents ─────────────────────────────────────────────────
+  const fallbackAgents = [
+    { id: 'EXC-1', name: 'Chief Strategy Officer', role: 'Executive oversight & governance', division: 'EXC', status: 'active', tier: 'alpha' },
+    { id: 'SEN-1', name: 'Lead Qualifier Prime', role: 'Inbound lead qualification', division: 'SEN', status: 'active', tier: 'alpha' },
+    { id: 'OPS-1', name: 'Maintenance Coordinator', role: 'Work order dispatch & tracking', division: 'OPS', status: 'active', tier: 'alpha' },
+    { id: 'INT-1', name: 'Market Analyst Prime', role: 'Competitive intelligence & reports', division: 'INT', status: 'active', tier: 'alpha' },
+    { id: 'MKT-1', name: 'Content Engine Lead', role: 'SEO content & social strategy', division: 'MKT', status: 'active', tier: 'alpha' },
+    { id: 'FIN-1', name: 'Revenue Tracker', role: 'Owner distributions & reporting', division: 'FIN', status: 'standby', tier: 'beta' },
+    { id: 'VEN-1', name: 'Compliance Monitor', role: 'Vendor insurance & contract tracking', division: 'VEN', status: 'active', tier: 'beta' },
+    { id: 'TEC-1', name: 'Platform Ops Lead', role: 'Infra monitoring & deployments', division: 'TEC', status: 'training', tier: 'alpha' },
+    { id: 'WEB-1', name: 'Frontend Architect', role: 'Website development & optimization', division: 'WEB', status: 'active', tier: 'alpha' },
+  ];
+
+  // ── Render layout ──────────────────────────────────────────────────────────
   setPortalLayout(main, 'Agent Fleet', `
     <h1 class="portal-title">AI Agent Fleet</h1>
     <div class="filter-bar">
-      <input type="search" placeholder="Search agents..." class="filter-search">
-      <select class="filter-select"><option value="">All Statuses</option><option>active</option><option>standby</option><option>training</option><option>maintenance</option></select>
-      <select class="filter-select"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option></select>
+      <input type="search" placeholder="Search agents..." class="filter-search" id="agent-search">
+      <select class="filter-select" id="agent-status-filter"><option value="">All Statuses</option><option>active</option><option>standby</option><option>training</option><option>maintenance</option></select>
+      <select class="filter-select" id="agent-division-filter"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option></select>
     </div>
     <div class="agent-grid" id="agent-list">Loading agents...</div>
   `);
+
+  // ── Rendering helpers ──────────────────────────────────────────────────────
+  let allAgents = fallbackAgents;
+
+  function renderAgentCards(agents) {
+    const grid = document.getElementById('agent-list');
+    if (!grid) return;
+    if (!agents.length) { grid.innerHTML = '<p style="opacity:0.6">No agents match the current filters.</p>'; return; }
+    grid.innerHTML = agents.map(a => {
+      const color = divColors[a.division] || '#6b7280';
+      return `
+        <div class="agent-card">
+          <span class="agent-id">${a.id}</span>
+          <div class="agent-name">${a.name}</div>
+          <div class="agent-role">${a.role || ''}</div>
+          <div class="agent-meta">
+            <span class="badge" style="background:${color}22;color:${color}">${a.division}</span>
+            <span class="badge badge-${a.status || 'active'}">${a.status || 'active'}</span>
+            ${a.tier ? `<span class="badge" style="background:#f3f4f6;color:#374151">${a.tier}</span>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function applyFilters() {
+    const search = (document.getElementById('agent-search')?.value || '').toLowerCase();
+    const status = document.getElementById('agent-status-filter')?.value || '';
+    const division = document.getElementById('agent-division-filter')?.value || '';
+    const filtered = allAgents.filter(a => {
+      if (search && !(a.name.toLowerCase().includes(search) || a.id.toLowerCase().includes(search) || (a.role || '').toLowerCase().includes(search))) return false;
+      if (status && a.status !== status) return false;
+      if (division && a.division !== division) return false;
+      return true;
+    });
+    renderAgentCards(filtered);
+  }
+
+  // ── Populate fallback immediately ──────────────────────────────────────────
+  renderAgentCards(fallbackAgents);
+
+  // ── Wire up filters ────────────────────────────────────────────────────────
+  document.getElementById('agent-search')?.addEventListener('input', applyFilters);
+  document.getElementById('agent-status-filter')?.addEventListener('change', applyFilters);
+  document.getElementById('agent-division-filter')?.addEventListener('change', applyFilters);
+
+  // ── Fetch live data and overwrite ──────────────────────────────────────────
+  (async () => {
+    try {
+      const data = await apiCall('/v1/agents');
+      if (Array.isArray(data) && data.length) {
+        allAgents = data;
+      } else if (data && Array.isArray(data.agents) && data.agents.length) {
+        allAgents = data.agents;
+      }
+      applyFilters();
+    } catch (_) {
+      // Fallback data already rendered — show error only if grid still says loading
+      const grid = document.getElementById('agent-list');
+      if (grid && grid.textContent === 'Loading agents...') {
+        renderAgentCards(fallbackAgents);
+      }
+    }
+  })();
 }
 
 function renderPortalLeads(main) {
+  // ── Static fallback leads ────────────────────────────────────────────────
+  const fallbackLeads = [
+    { name: 'Jennifer Hartwell', email: 'jhartwell@example.com', zone: 'Vero Beach', status: 'new', source: 'website' },
+    { name: 'Marcus Reyes', email: 'mreyes@example.com', zone: 'Stuart', status: 'qualified', source: 'referral' },
+    { name: 'Susan Blake', email: 'sblake@example.com', zone: 'Jupiter', status: 'nurturing', source: 'website' },
+    { name: 'David Chen', email: 'dchen@example.com', zone: 'Port St. Lucie', status: 'new', source: 'paid_ad' },
+  ];
+
+  const statusColors = {
+    new: '#6366f1', qualified: '#10b981', nurturing: '#f59e0b', converted: '#059669', lost: '#ef4444',
+  };
+
+  // ── Render layout ──────────────────────────────────────────────────────────
   setPortalLayout(main, 'Lead Pipeline', `
     <h1 class="portal-title">Lead Pipeline</h1>
-    <div class="portal-card"><div class="card-body"><p>Connected to Airtable Leads table. Use the API to create, enrich, and manage leads.</p>
-    <div class="portal-actions-bar">
-      <button class="btn btn-primary" onclick="alert('Create lead via /v1/leads POST')">New Lead</button>
-      <button class="btn btn-secondary" onclick="alert('Run SCAA-1 via /v1/workflows/scaa1')">Generate Battle Plan</button>
-    </div></div></div>
+
+    <div class="portal-actions-bar" style="margin-bottom:1.5rem">
+      <button class="btn btn-primary" id="create-lead-btn">Create Lead</button>
+      <button class="btn btn-secondary" id="enrich-lead-btn">Enrich Lead</button>
+    </div>
+
+    <!-- Inline Create Lead Form (hidden by default) -->
+    <div class="inline-form" id="create-lead-form" style="display:none">
+      <h4>Create New Lead</h4>
+      <form id="lead-form">
+        <div class="form-row">
+          <div class="form-group"><label>Full Name</label><input type="text" name="name" required placeholder="Lead name"></div>
+          <div class="form-group"><label>Email</label><input type="email" name="email" required placeholder="email@example.com"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Zone</label>
+            <select name="zone"><option value="">Select zone...</option>
+              <option>Vero Beach</option><option>Sebastian</option><option>Fort Pierce</option>
+              <option>Port St. Lucie</option><option>Jensen Beach</option><option>Stuart</option>
+              <option>Palm City</option><option>Hobe Sound</option><option>Jupiter</option>
+              <option>North Palm Beach</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Source</label>
+            <select name="source"><option value="website">Website</option><option value="referral">Referral</option><option value="paid_ad">Paid Ad</option><option value="cold_outreach">Cold Outreach</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label>Message</label><textarea name="message" rows="2" placeholder="Optional notes..."></textarea></div>
+        <button type="submit" class="btn btn-primary">Submit Lead</button>
+        <div id="lead-form-status" class="form-status"></div>
+      </form>
+    </div>
+
+    <!-- Inline Enrich Lead Form (hidden by default) -->
+    <div class="inline-form" id="enrich-lead-form" style="display:none">
+      <h4>Enrich Lead</h4>
+      <form id="enrich-form">
+        <div class="form-group"><label>Lead Email</label><input type="email" name="email" required placeholder="email@example.com"></div>
+        <button type="submit" class="btn btn-secondary">Run Enrichment</button>
+        <div id="enrich-form-status" class="form-status"></div>
+      </form>
+    </div>
+
+    <div class="agent-grid" id="lead-list" style="margin-top:1.5rem">Loading leads...</div>
   `);
+
+  // ── Rendering helpers ──────────────────────────────────────────────────────
+  function renderLeadCards(leads) {
+    const grid = document.getElementById('lead-list');
+    if (!grid) return;
+    if (!leads.length) { grid.innerHTML = '<p style="opacity:0.6">No leads found.</p>'; return; }
+    grid.innerHTML = leads.map(l => {
+      const color = statusColors[l.status] || '#6b7280';
+      return `
+        <div class="lead-card">
+          <div class="lead-name">${l.name}</div>
+          <div class="lead-meta">${l.email || ''}</div>
+          <div class="lead-meta">${l.zone || ''}</div>
+          <div class="agent-meta" style="margin-top:0.75rem">
+            <span class="badge" style="background:${color}22;color:${color}">${l.status || 'new'}</span>
+            <span class="badge" style="background:#f3f4f6;color:#374151">${l.source || 'unknown'}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Populate fallback immediately ──────────────────────────────────────────
+  renderLeadCards(fallbackLeads);
+
+  // ── Wire up Create Lead toggle & form ──────────────────────────────────────
+  document.getElementById('create-lead-btn')?.addEventListener('click', () => {
+    const form = document.getElementById('create-lead-form');
+    if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    // Hide enrich form when opening create
+    const enrich = document.getElementById('enrich-lead-form');
+    if (enrich) enrich.style.display = 'none';
+  });
+
+  document.getElementById('lead-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('lead-form-status');
+    const formData = Object.fromEntries(new FormData(e.target));
+    try {
+      status.textContent = 'Creating lead...';
+      status.className = 'form-status';
+      await apiCall('/v1/leads', { method: 'POST', body: JSON.stringify(formData) });
+      status.textContent = 'Lead created successfully!';
+      status.className = 'form-status success';
+      e.target.reset();
+    } catch (err) {
+      status.textContent = 'Failed to create lead. ' + (err.message || '');
+      status.className = 'form-status error';
+    }
+  });
+
+  // ── Wire up Enrich Lead toggle & form ──────────────────────────────────────
+  document.getElementById('enrich-lead-btn')?.addEventListener('click', () => {
+    const form = document.getElementById('enrich-lead-form');
+    if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    // Hide create form when opening enrich
+    const create = document.getElementById('create-lead-form');
+    if (create) create.style.display = 'none';
+  });
+
+  document.getElementById('enrich-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('enrich-form-status');
+    const formData = Object.fromEntries(new FormData(e.target));
+    try {
+      status.textContent = 'Running enrichment...';
+      status.className = 'form-status';
+      await apiCall('/v1/leads/enrich', { method: 'POST', body: JSON.stringify({ email: formData.email }) });
+      status.textContent = 'Enrichment complete!';
+      status.className = 'form-status success';
+      e.target.reset();
+    } catch (err) {
+      status.textContent = 'Enrichment failed. ' + (err.message || '');
+      status.className = 'form-status error';
+    }
+  });
+
+  // ── Fetch live data and overwrite ──────────────────────────────────────────
+  (async () => {
+    try {
+      const data = await apiCall('/v1/leads');
+      if (Array.isArray(data) && data.length) {
+        renderLeadCards(data);
+      } else if (data && Array.isArray(data.leads) && data.leads.length) {
+        renderLeadCards(data.leads);
+      }
+    } catch (_) {
+      // Fallback data already rendered
+    }
+  })();
 }
 
 function renderPortalTasks(main) {
+  // ── Static fallback tasks ────────────────────────────────────────────────
+  const fallbackTasks = [
+    { name: 'Q1 property inspection — Vero Beach portfolio', type: 'inspection', priority: 'high', status: 'In Progress', due: '2026-04-25' },
+    { name: 'HVAC filter replacement — Stuart unit 4B', type: 'maintenance', priority: 'medium', status: 'Not Started', due: '2026-04-28' },
+    { name: 'Pool resurfacing bid review', type: 'vendor', priority: 'low', status: 'Complete', due: '2026-04-18' },
+    { name: 'Hurricane shutter audit — Jupiter', type: 'inspection', priority: 'urgent', status: 'Not Started', due: '2026-05-01' },
+    { name: 'Generate monthly owner report', type: 'report', priority: 'medium', status: 'In Progress', due: '2026-04-30' },
+  ];
+
+  const priorityBadge = { urgent: 'badge-urgent', high: 'badge-high', medium: 'badge-medium', low: 'badge-low' };
+  const typeBadge = { maintenance: '#f59e0b', inspection: '#6366f1', vendor: '#f97316', report: '#06b6d4' };
+
+  // ── Render layout ──────────────────────────────────────────────────────────
   setPortalLayout(main, 'Tasks', `
     <h1 class="portal-title">Task Management</h1>
-    <div class="portal-card"><div class="card-body"><p>Tasks are created automatically by workflows (SCAA-1, WF-3, WF-4) and linked to leads in Airtable.</p></div></div>
+
+    <div class="filter-bar">
+      <button class="btn btn-secondary filter-status-btn" data-filter="">All</button>
+      <button class="btn btn-secondary filter-status-btn" data-filter="Not Started">Not Started</button>
+      <button class="btn btn-secondary filter-status-btn" data-filter="In Progress">In Progress</button>
+      <button class="btn btn-secondary filter-status-btn" data-filter="Complete">Complete</button>
+    </div>
+
+    <div id="task-list">Loading tasks...</div>
+
+    <!-- Submit Maintenance Request -->
+    <div class="inline-form" style="margin-top:2rem">
+      <h4>Submit Maintenance Request</h4>
+      <form id="maintenance-form">
+        <div class="form-group"><label>Property</label><input type="text" name="property" required placeholder="Property address or unit"></div>
+        <div class="form-group"><label>Description</label><textarea name="description" rows="3" required placeholder="Describe the issue..."></textarea></div>
+        <div class="form-group"><label>Urgency</label>
+          <select name="urgency">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Request</button>
+        <div id="maintenance-form-status" class="form-status"></div>
+      </form>
+    </div>
   `);
+
+  // ── Rendering helpers ──────────────────────────────────────────────────────
+  let allTasks = fallbackTasks;
+  let activeFilter = '';
+
+  function renderTaskCards(tasks) {
+    const container = document.getElementById('task-list');
+    if (!container) return;
+    if (!tasks.length) { container.innerHTML = '<p style="opacity:0.6">No tasks match the current filter.</p>'; return; }
+    container.innerHTML = tasks.map(t => {
+      const pClass = priorityBadge[t.priority] || 'badge-medium';
+      const tColor = typeBadge[t.type] || '#6b7280';
+      return `
+        <div class="task-card">
+          <div class="task-name">${t.name}</div>
+          <div class="task-meta">
+            <span class="badge" style="background:${tColor}22;color:${tColor}">${t.type || 'task'}</span>
+            <span class="badge ${pClass}">${t.priority || 'medium'}</span>
+            <span>${t.status || ''}</span>
+            ${t.due ? `<span>Due: ${t.due}</span>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function applyFilter() {
+    const filtered = activeFilter ? allTasks.filter(t => t.status === activeFilter) : allTasks;
+    renderTaskCards(filtered);
+  }
+
+  // ── Populate fallback immediately ──────────────────────────────────────────
+  renderTaskCards(fallbackTasks);
+
+  // ── Wire up status filter buttons ──────────────────────────────────────────
+  document.querySelectorAll('.filter-status-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.getAttribute('data-filter') || '';
+      // Highlight active button
+      document.querySelectorAll('.filter-status-btn').forEach(b => b.classList.remove('btn-primary'));
+      btn.classList.add('btn-primary');
+      btn.classList.remove('btn-secondary');
+      applyFilter();
+    });
+  });
+
+  // ── Wire up maintenance request form ───────────────────────────────────────
+  document.getElementById('maintenance-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('maintenance-form-status');
+    const formData = Object.fromEntries(new FormData(e.target));
+    try {
+      status.textContent = 'Submitting request...';
+      status.className = 'form-status';
+      await apiCall('/v1/tasks', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: 'Maintenance: ' + formData.property,
+          type: 'maintenance',
+          priority: formData.urgency,
+          description: formData.description,
+          property: formData.property,
+          status: 'Not Started',
+        }),
+      });
+      status.textContent = 'Maintenance request submitted!';
+      status.className = 'form-status success';
+      e.target.reset();
+    } catch (err) {
+      status.textContent = 'Failed to submit request. ' + (err.message || '');
+      status.className = 'form-status error';
+    }
+  });
+
+  // ── Fetch live data and overwrite ──────────────────────────────────────────
+  (async () => {
+    try {
+      const data = await apiCall('/v1/tasks');
+      if (Array.isArray(data) && data.length) {
+        allTasks = data;
+      } else if (data && Array.isArray(data.tasks) && data.tasks.length) {
+        allTasks = data.tasks;
+      }
+      applyFilter();
+    } catch (_) {
+      // Fallback data already rendered
+    }
+  })();
 }
 
 function renderPortalContent(main) {

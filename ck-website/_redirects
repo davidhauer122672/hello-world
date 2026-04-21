@@ -8,7 +8,7 @@ https://www.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
 https://app.coastalkey-pm.com/*       https://coastalkey-pm.com/portal/:splat 301
 https://dashboard.coastalkey-pm.com/* https://coastalkey-pm.com/portal/dashboard 301
 https://agents.coastalkey-pm.com/*    https://coastalkey-pm.com/portal/agents 301
-https://api.coastalkey-pm.com/*       https://coastalkey-pm.com/portal/:splat 301
+https://api.coastalkey-pm.com/*       https://ck-api-gateway.david-e59.workers.dev/:splat 200
 https://admin.coastalkey-pm.com/*     https://coastalkey-pm.com/portal/:splat 301
 https://old.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat       301
 https://staging.coastalkey-pm.com/*   https://coastalkey-pm.com/:splat       301

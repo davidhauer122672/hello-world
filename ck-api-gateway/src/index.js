@@ -19,6 +19,14 @@
  *   POST /v1/workflows/wf4     — WF-4 Long-Tail Nurture
  *   POST /v1/pricing/recommend   — Dynamic pricing recommendation
  *   GET  /v1/pricing/zones      — Zone-level pricing benchmarks
+ *   POST /v1/retell/tune        — Retell prompt tuning pipeline
+ *   GET  /v1/retell/performance — Call performance metrics
+ *   GET  /v1/franchise/config   — Franchise white-label template
+ *   POST /v1/franchise/provision — Provision franchise territory
+ *   GET  /v1/franchise/territories — List franchise territories
+ *   GET  /v1/marketplace/catalog — API marketplace product catalog
+ *   POST /v1/marketplace/usage  — Record API usage event
+ *   GET  /v1/marketplace/usage/:key — Usage stats by API key
  *   GET  /v1/health             — Health check
  *   GET  /v1/audit              — Retrieve recent audit log entries
  *
@@ -35,6 +43,9 @@ import { handleAuditLog } from './routes/audit.js';
 import { handleListAgents, handleGetAgent, handleAgentAction, handleAgentMetrics, handleDashboard } from './routes/agents.js';
 import { handleScaa1BattlePlan, handleWf3InvestorEscalation, handleWf4LongTailNurture } from './routes/workflows.js';
 import { handlePricingRecommend, handlePricingZones } from './routes/pricing.js';
+import { handleRetellTune, handleRetellPerformance } from './routes/retell-tuning.js';
+import { handleFranchiseConfig, handleFranchiseProvision, handleFranchiseTerritories } from './routes/franchise.js';
+import { handleMarketplaceCatalog, handleMarketplaceUsage, handleMarketplaceUsageStats } from './routes/marketplace.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -56,9 +67,9 @@ export default {
         return jsonResponse({
           status: 'operational',
           service: 'ck-api-gateway',
-          version: '2.0.0',
-          agents: 250,
-          divisions: 8,
+          version: '3.0.0',
+          agents: 290,
+          divisions: 9,
           timestamp: new Date().toISOString(),
         });
       }
@@ -112,7 +123,7 @@ export default {
       return jsonResponse({
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
-        version: '2.0.0',
+        version: '3.0.0',
         agents: 290,
         divisions: 9,
         checks,
@@ -201,6 +212,42 @@ export default {
 
       if (path === '/v1/pricing/zones' && method === 'GET') {
         return handlePricingZones();
+      }
+
+      // ── Retell Tuning ──
+      if (path === '/v1/retell/tune' && method === 'POST') {
+        return await handleRetellTune(request, env, ctx);
+      }
+
+      if (path === '/v1/retell/performance' && method === 'GET') {
+        return await handleRetellPerformance(request, env, ctx);
+      }
+
+      // ── Franchise System ──
+      if (path === '/v1/franchise/config' && method === 'GET') {
+        return handleFranchiseConfig(request, env, ctx);
+      }
+
+      if (path === '/v1/franchise/provision' && method === 'POST') {
+        return await handleFranchiseProvision(request, env, ctx);
+      }
+
+      if (path === '/v1/franchise/territories' && method === 'GET') {
+        return handleFranchiseTerritories(request, env, ctx);
+      }
+
+      // ── API Marketplace ──
+      if (path === '/v1/marketplace/catalog' && method === 'GET') {
+        return handleMarketplaceCatalog(url, env, ctx);
+      }
+
+      if (path === '/v1/marketplace/usage' && method === 'POST') {
+        return await handleMarketplaceUsage(request, env, ctx);
+      }
+
+      if (path.startsWith('/v1/marketplace/usage/') && method === 'GET') {
+        const apiKey = path.split('/v1/marketplace/usage/')[1];
+        return await handleMarketplaceUsageStats(apiKey, env, ctx);
       }
 
       if (path === '/v1/audit' && method === 'GET') {
