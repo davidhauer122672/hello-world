@@ -94,37 +94,33 @@ NEVER: Give legal advice, make promises about specific outcomes, discuss competi
 ALWAYS: Be warm, professional, knowledgeable about Treasure Coast real estate, and focused on scheduling consultations.`,
 };
 
-// ── Atlas AI Campaign Configuration ────────────────────────────────────────
+// ── Retell Campaign Configuration ─────────────────────────────────────────
 
-export const ATLAS_CONFIG = {
-  provider: 'Atlas AI (youratlas.com)',
-  platform: 'https://youratlas.com',
+export const RETELL_CAMPAIGNS = {
+  provider: 'Retell AI',
+  platform: 'https://retellai.com',
   campaigns: {
     deadLeadRevival: {
       name: 'Dead Lead Revival',
       description: 'Re-engage leads with no activity for 30+ days',
-      sequence: '6-touch outbound: call → voicemail → SMS → email → call → final SMS',
-      cadence: 'Day 1, 3, 5, 7, 10, 14',
-      secretKey: 'ATLAS_REVIVAL_CAMPAIGN_ID',
+      sequence: 'Outbound call → voicemail if no answer → retry 3x/72h',
+      cadence: 'Day 1, 4, 7',
     },
     appointmentConfirmation: {
       name: 'Appointment Confirmation',
-      description: 'Confirm scheduled consultations 24h and 1h before',
-      sequence: '2-touch: call 24h before → SMS 1h before',
-      secretKey: 'ATLAS_CONFIRMATION_CAMPAIGN_ID',
+      description: 'Confirm scheduled consultations 24h before',
+      sequence: 'Outbound call → retry if no answer',
     },
-    newLeadOutreach: {
-      name: 'New Lead Immediate Outreach',
-      description: 'Contact new leads within 5 minutes of form submission',
-      sequence: '3-touch: immediate call → SMS if no answer → email with booking link',
-      cadence: '0 min, 5 min, 15 min',
-      secretKey: 'ATLAS_NEW_LEAD_CAMPAIGN_ID',
+    speedToLead: {
+      name: 'Speed-to-Lead',
+      description: 'Contact new leads within 60 seconds of opt-in',
+      sequence: 'Immediate outbound call → retry 3x/24h',
     },
   },
   integration: {
-    webhook: 'POST /v1/webhook/atlas — receives call outcomes',
-    leadSync: 'Airtable Leads table — bidirectional sync via campaign triggers',
-    slackNotify: '#sales-alerts — qualified lead notifications',
+    webhook: 'POST /v1/webhook/retell — receives call_analyzed events',
+    leadSync: 'Airtable Leads table — auto-create via sentinel-webhook',
+    slackNotify: '#sentinel-leads — qualified lead notifications',
   },
 };
 
@@ -154,10 +150,10 @@ export function getElizaDashboard() {
         nextStep: 'Create Retell agent with ElevenLabs voice, configure webhook',
       },
       campaigns: {
-        provider: ATLAS_CONFIG.provider,
+        provider: RETELL_CAMPAIGNS.provider,
         status: 'CAMPAIGNS_DEFINED',
-        campaignCount: Object.keys(ATLAS_CONFIG.campaigns).length,
-        nextStep: 'Activate campaigns in Atlas dashboard, store campaign IDs as secrets',
+        campaignCount: Object.keys(RETELL_CAMPAIGNS.campaigns).length,
+        nextStep: 'Configure outbound campaigns in Retell dashboard',
       },
     },
     deploymentSequence: [
@@ -167,7 +163,7 @@ export function getElizaDashboard() {
       '4. Store RETELL_AGENT_ID as Cloudflare Worker secret',
       '5. Create HeyGen avatar with Voice ID integration',
       '6. Store HEYGEN_AVATAR_ID as Cloudflare Worker secret',
-      '7. Activate Atlas campaigns and store campaign IDs',
+      '7. Configure Retell outbound campaigns (revival, speed-to-lead, confirmation)',
       '8. Test end-to-end: inbound call → qualification → lead record → Slack alert',
     ],
     secretsRequired: [
@@ -176,10 +172,7 @@ export function getElizaDashboard() {
       'RETELL_AGENT_ID',
       'HEYGEN_API_KEY',
       'HEYGEN_AVATAR_ID',
-      'ATLAS_API_KEY',
-      'ATLAS_REVIVAL_CAMPAIGN_ID',
-      'ATLAS_CONFIRMATION_CAMPAIGN_ID',
-      'ATLAS_NEW_LEAD_CAMPAIGN_ID',
+      'RETELL_API_KEY',
     ],
     timestamp: new Date().toISOString(),
   };

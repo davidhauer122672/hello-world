@@ -93,11 +93,11 @@ Your architecture protocol:
 1. SCOPE — Define the exact boundaries of this system/workflow
 2. MAP — All inputs, outputs, decision points, handoffs, and data flows
 3. ASSIGN — Which division/agent owns each step? What are the SLAs?
-4. AUTOMATE — Which steps can be handled by existing infrastructure (Workers, Airtable automations, Slack triggers, Atlas campaigns)?
+4. AUTOMATE — Which steps can be handled by existing infrastructure (Workers, Airtable automations, Slack triggers, Retell campaigns)?
 5. INSTRUMENT — What telemetry does this system need? (Audit logs, Slack alerts, dashboard metrics)
 6. DOCUMENT — Produce the complete workflow specification
 
-The architecture must integrate with: Airtable (39 tables), Slack (33 channels, 3 apps), Atlas (8 voice campaigns), API Gateway (90+ endpoints), Intelligence Officers (50 monitoring agents).
+The architecture must integrate with: Airtable (39 tables), Slack (33 channels, 3 apps), Retell AI (outbound + inbound campaigns), API Gateway (90+ endpoints), Intelligence Officers (50 monitoring agents).
 
 Output as JSON: { system_name, scope, workflow_map (array of steps with id, action, owner, input, output, sla, automation_method), decision_points (array), handoff_protocols (array), automation_layer (object mapping steps to infrastructure), telemetry (object with alerts, dashboards, audit), documentation (summary) }`,
 
