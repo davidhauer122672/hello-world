@@ -94,7 +94,7 @@ describe('Token Maintenance Agent', async () => {
   const { CREDENTIAL_REGISTRY, getTokenAgentDashboard } = await import('../engines/token-maintenance.js');
 
   it('registers 15 credentials', () => {
-    assert.equal(CREDENTIAL_REGISTRY.length, 15);
+    assert.equal(CREDENTIAL_REGISTRY.length, 14);
   });
 
   it('includes all critical credentials', () => {
@@ -109,7 +109,7 @@ describe('Token Maintenance Agent', async () => {
     const d = getTokenAgentDashboard({});
     assert.equal(d.agent.id, 'TEC-026');
     assert.equal(d.agent.name, 'Token Sentinel');
-    assert.equal(d.fleet.total, 15);
+    assert.equal(d.fleet.total, 14);
     assert.equal(d.fleet.configured, 0);
   });
 
@@ -122,11 +122,11 @@ describe('Token Maintenance Agent', async () => {
 describe('Token Maintenance Routes', async () => {
   const { handleTokenRegistry } = await import('../routes/token-maintenance.js');
 
-  it('GET /v1/tokens/registry returns 15 credentials', async () => {
+  it('GET /v1/tokens/registry returns 14 credentials', async () => {
     const res = handleTokenRegistry();
     assert.equal(res.status, 200);
     const b = await body(res);
-    assert.equal(b.count, 15);
+    assert.equal(b.count, 14);
     assert.ok(b.rotationPolicy);
   });
 });
@@ -178,7 +178,7 @@ describe('Field Inspection Engine', async () => {
 // ── Eliza AI Engine ────────────────────────────────────────────────────────
 
 describe('Eliza AI Engine', async () => {
-  const { VOICE_CONFIG, AVATAR_CONFIG, RETELL_CONFIG, ATLAS_CONFIG, getElizaDashboard, generateVideoBriefingRequest } = await import('../engines/eliza-ai.js');
+  const { VOICE_CONFIG, AVATAR_CONFIG, RETELL_CONFIG, RETELL_CAMPAIGNS, getElizaDashboard, generateVideoBriefingRequest } = await import('../engines/eliza-ai.js');
 
   it('voice config is 482 characters', () => {
     assert.equal(VOICE_CONFIG.characterCount, 482);
@@ -190,15 +190,15 @@ describe('Eliza AI Engine', async () => {
     assert.ok(RETELL_CONFIG.prompt.includes('SCAA-1'));
   });
 
-  it('atlas defines 3 campaigns', () => {
-    assert.equal(Object.keys(ATLAS_CONFIG.campaigns).length, 3);
+  it('retell defines 3 campaigns', () => {
+    assert.equal(Object.keys(RETELL_CAMPAIGNS.campaigns).length, 3);
   });
 
   it('generates dashboard with deployment sequence', () => {
     const d = getElizaDashboard();
     assert.equal(d.system, 'Eliza AI — Coastal Key Digital CEO Assistant');
     assert.ok(d.deploymentSequence.length >= 8);
-    assert.ok(d.secretsRequired.length >= 9);
+    assert.ok(d.secretsRequired.length >= 6);
   });
 
   it('generates video briefing request', () => {

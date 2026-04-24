@@ -60,20 +60,6 @@
  *   POST /v1/mcco/positioning    — Generate authority positioning strategy
  *   POST /v1/mcco/monetization   — Generate audience monetization plan
  *   POST /v1/mcco/post           — Generate high-engagement social media post
- *   GET  /v1/atlas/campaigns              — List Atlas AI campaigns (youratlas.com)
- *   GET  /v1/atlas/campaigns/:id          — Get single Atlas campaign
- *   PUT  /v1/atlas/campaigns/:id/status   — Set campaign status
- *   GET  /v1/atlas/statistics              — Overview stats across campaigns
- *   GET  /v1/atlas/campaigns/:id/stats    — Stats for specific campaign
- *   GET  /v1/atlas/campaigns/:id/calls    — Call records for campaign
- *   GET  /v1/atlas/campaigns/:id/calls/:callId — Single call record detail
- *   POST /v1/atlas/campaigns/:id/schedule — Schedule a new call
- *   GET  /v1/atlas/campaigns/:id/bookings — Bookings for campaign
- *   GET  /v1/atlas/kb/files               — List knowledge base files
- *   POST /v1/atlas/speed-to-lead          — Trigger speed-to-lead call
- *   POST /v1/atlas/campaigns              — Create a new Atlas campaign
- *   GET  /v1/atlas/audit                  — Audit required CKPM campaigns
- *   GET  /v1/atlas/health                 — Atlas AI connectivity check
  *   GET  /v1/frameworks                   — List all Peak Performance Frameworks
  *   GET  /v1/frameworks/category/:cat     — Get frameworks by category
  *   GET  /v1/frameworks/:id               — Get single framework
@@ -193,7 +179,6 @@ import {
   handleDealStages, handleScoreDeal, handleDealStrategy, handleComparables, handleClosingCosts, handleInvestorPackage, handlePortfolioEvaluation,
   handleCommandChain, handleFleetStatusEndpoint, handleChainOfCommand, handleDirectReports, handleDivisionHierarchyEndpoint,
 } from './routes/engines.js';
-import { handleAtlasCampaigns, handleAtlasCampaignById, handleAtlasCampaignStatus, handleAtlasOverviewStats, handleAtlasCampaignStatsById, handleAtlasCallRecords, handleAtlasCallRecordDetail, handleAtlasScheduleCall, handleAtlasCampaignBookings, handleAtlasKBFiles, handleAtlasSpeedToLead, handleAtlasCreateCampaign, handleAtlasSetupRevival, handleAtlasAudit, handleAtlasHealth } from './routes/atlas.js';
 import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSlackChannels, handleSlackApps, handleSlackAudit, handleSlackCreateChannel } from './routes/slack.js';
 import { handleMetaAdsStatus, handleMetaAdsBoost, handleMetaAdsCampaigns } from './routes/meta-ads.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
@@ -211,7 +196,7 @@ import {
   handleCFOInvestor, handleCFOProjection, handleCFOValuation, handleCFOChecklist,
 } from './routes/cfo-revenue.js';
 import { handleInspectionDashboard, handleInspectionTypes, handleCreateInspection, handleCompleteInspection, handleListInspectors } from './routes/field-inspection.js';
-import { handleElizaDashboard, handleElizaVoiceConfig, handleElizaAvatarConfig, handleElizaRetellConfig, handleElizaAtlasConfig, handleElizaVideoBrief } from './routes/eliza-ai.js';
+import { handleElizaDashboard, handleElizaVoiceConfig, handleElizaAvatarConfig, handleElizaRetellConfig, handleElizaCampaigns, handleElizaVideoBrief } from './routes/eliza-ai.js';
 import { getGoogleAdsDashboard } from './engines/google-ads-campaign.js';
 import { handleTokenDashboard, handleTokenScan, handleTokenRegistry } from './routes/token-maintenance.js';
 import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSalesChannels, handleSalesPlaybooks } from './routes/sales-acquisition.js';
@@ -282,20 +267,6 @@ export default {
         checks.anthropic = { status: anRes.ok ? 'ok' : 'error', code: anRes.status };
       } catch (err) {
         checks.anthropic = { status: 'error', message: err.message };
-      }
-
-      // Atlas AI (youratlas.com) connectivity
-      if (env.ATLAS_API_KEY) {
-        try {
-          const { listCampaigns } = await import('./services/atlas.js');
-          const campaigns = await listCampaigns(env);
-          const count = Array.isArray(campaigns) ? campaigns.length : (campaigns?.data?.length || 0);
-          checks.atlas = { status: 'ok', platform: 'youratlas.com', campaigns: count };
-        } catch (err) {
-          checks.atlas = { status: 'error', platform: 'youratlas.com', message: err.message };
-        }
-      } else {
-        checks.atlas = { status: 'not_configured', platform: 'youratlas.com' };
       }
 
       // Meta Ads
@@ -584,75 +555,6 @@ export default {
 
       if (path === '/v1/mcco/activation-status' && method === 'GET') {
         return handleActivationStatus();
-      }
-
-      // ── Atlas AI Campaign Platform (youratlas.com) ──
-      if (path === '/v1/atlas/health' && method === 'GET') {
-        return await handleAtlasHealth(env);
-      }
-
-      if (path === '/v1/atlas/campaigns' && method === 'GET') {
-        return await handleAtlasCampaigns(env);
-      }
-
-      if (path === '/v1/atlas/campaigns' && method === 'POST') {
-        return await handleAtlasCreateCampaign(request, env, ctx);
-      }
-
-      if (path === '/v1/atlas/audit' && method === 'GET') {
-        return await handleAtlasAudit(env);
-      }
-
-      if (path === '/v1/atlas/statistics' && method === 'GET') {
-        return await handleAtlasOverviewStats(env);
-      }
-
-      if (path === '/v1/atlas/speed-to-lead' && method === 'POST') {
-        return await handleAtlasSpeedToLead(request, env, ctx);
-      }
-
-      if (path === '/v1/atlas/kb/files' && method === 'GET') {
-        return await handleAtlasKBFiles(env);
-      }
-
-      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/status$/) && method === 'PUT') {
-        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/status', '');
-        return await handleAtlasCampaignStatus(request, campaignId, env, ctx);
-      }
-
-      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/setup-revival$/) && method === 'POST') {
-        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/setup-revival', '');
-        return await handleAtlasSetupRevival(campaignId, env, ctx);
-      }
-
-      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/stats$/) && method === 'GET') {
-        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/stats', '');
-        return await handleAtlasCampaignStatsById(campaignId, env);
-      }
-
-      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/calls\/[^/]+$/) && method === 'GET') {
-        const parts = path.match(/^\/v1\/atlas\/campaigns\/([^/]+)\/calls\/([^/]+)$/);
-        return await handleAtlasCallRecordDetail(parts[1], parts[2], env);
-      }
-
-      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/calls$/) && method === 'GET') {
-        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/calls', '');
-        return await handleAtlasCallRecords(campaignId, url, env);
-      }
-
-      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/schedule$/) && method === 'POST') {
-        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/schedule', '');
-        return await handleAtlasScheduleCall(request, campaignId, env, ctx);
-      }
-
-      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+\/bookings$/) && method === 'GET') {
-        const campaignId = path.split('/v1/atlas/campaigns/')[1].replace('/bookings', '');
-        return await handleAtlasCampaignBookings(campaignId, env);
-      }
-
-      if (path.match(/^\/v1\/atlas\/campaigns\/[^/]+$/) && method === 'GET') {
-        const campaignId = path.split('/v1/atlas/campaigns/')[1];
-        return await handleAtlasCampaignById(campaignId, env);
       }
 
       // ── Peak Performance Frameworks ──
@@ -1122,8 +1024,8 @@ export default {
       if (path === '/v1/eliza/retell-config' && method === 'GET') {
         return handleElizaRetellConfig();
       }
-      if (path === '/v1/eliza/atlas-config' && method === 'GET') {
-        return handleElizaAtlasConfig();
+      if (path === '/v1/eliza/campaigns' && method === 'GET') {
+        return handleElizaCampaigns();
       }
       if (path === '/v1/eliza/video-brief' && method === 'POST') {
         return await handleElizaVideoBrief(request, env, ctx);

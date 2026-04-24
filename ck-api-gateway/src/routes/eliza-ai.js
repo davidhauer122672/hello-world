@@ -6,14 +6,14 @@
  *   GET  /v1/eliza/voice-config  — ElevenLabs voice configuration
  *   GET  /v1/eliza/avatar-config — HeyGen avatar configuration
  *   GET  /v1/eliza/retell-config — Retell agent configuration
- *   GET  /v1/eliza/atlas-config  — Atlas AI campaign configuration
+ *   GET  /v1/eliza/campaigns     — Retell campaign configuration
  *   POST /v1/eliza/video-brief   — Generate video briefing request
  */
 
 import { jsonResponse, errorResponse } from '../utils/response.js';
 import { writeAudit } from '../utils/audit.js';
 import {
-  VOICE_CONFIG, AVATAR_CONFIG, RETELL_CONFIG, ATLAS_CONFIG,
+  VOICE_CONFIG, AVATAR_CONFIG, RETELL_CONFIG, RETELL_CAMPAIGNS,
   getElizaDashboard, generateVideoBriefingRequest,
 } from '../engines/eliza-ai.js';
 
@@ -42,10 +42,10 @@ export function handleElizaRetellConfig() {
   });
 }
 
-export function handleElizaAtlasConfig() {
+export function handleElizaCampaigns() {
   return jsonResponse({
-    atlas: ATLAS_CONFIG,
-    note: 'Three campaigns defined. Activate in Atlas dashboard and store campaign IDs as secrets.',
+    campaigns: RETELL_CAMPAIGNS,
+    note: 'Three campaigns defined. Configure in Retell dashboard for outbound dialing.',
   });
 }
 

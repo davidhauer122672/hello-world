@@ -10,7 +10,6 @@
  */
 
 import { createRecord, TABLES } from '../services/airtable.js';
-import { createScheduledCall } from '../services/atlas.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse } from '../utils/response.js';
 
@@ -151,23 +150,6 @@ export async function handleRetellWebhook(request, env, ctx) {
       }).catch(err => console.error('Failed to link records:', err))
     );
 
-    // Schedule Atlas dead-lead-revival follow-up for failed calls (fire-and-forget)
-    if (env.ATLAS_API_KEY && env.ATLAS_REVIVAL_CAMPAIGN_ID && phone) {
-      ctx.waitUntil(
-        createScheduledCall(env, env.ATLAS_REVIVAL_CAMPAIGN_ID, {
-          phone_number: phone,
-          contact_name: leadName,
-          metadata: {
-            original_call_id: call.call_id,
-            failure_reason: call.disconnection_reason,
-            service_zone: ZONE_MAP[zoneKey] || '',
-            segment: SEGMENT_MAP[segmentKey] || '',
-            airtable_lead_id: leadRecord.id,
-          },
-        }).catch(err => console.error('Atlas revival schedule failed:', err))
-      );
-    }
-
     // Slack alert for failed calls (different format)
     if (env.SLACK_WEBHOOK_URL) {
       ctx.waitUntil(sendSlackFailedAlert(env, call.call_id, phone, call.disconnection_reason, durationSec, transcript, failedRecord.id));
@@ -194,24 +176,6 @@ export async function handleRetellWebhook(request, env, ctx) {
 
   // ── Engaged call → Leads table (standard path) ──
   const record = await createRecord(env, TABLES.LEADS, fields);
-
-  // ── Sync qualified lead to Atlas for appointment confirmation (fire-and-forget) ──
-  if (env.ATLAS_API_KEY && env.ATLAS_CONFIRMATION_CAMPAIGN_ID && disposition === 'Booked' && phone) {
-    ctx.waitUntil(
-      createScheduledCall(env, env.ATLAS_CONFIRMATION_CAMPAIGN_ID, {
-        phone_number: phone,
-        contact_name: leadName,
-        metadata: {
-          original_call_id: call.call_id,
-          disposition: disposition,
-          service_zone: ZONE_MAP[zoneKey] || '',
-          segment: SEGMENT_MAP[segmentKey] || '',
-          property_address: dynVars.property_address || metadata.property_address || '',
-          airtable_lead_id: record.id,
-        },
-      }).catch(err => console.error('Atlas confirmation schedule failed:', err))
-    );
-  }
 
   // ── Slack notification (fire-and-forget) ──
   if (env.SLACK_WEBHOOK_URL) {

@@ -308,10 +308,6 @@ export const INTEGRATIONS = {
     retell: { agents: 40, campaign: 'TH Sentinel', dailyCalls: 2400 },
     nvidia: { model: 'nemotron', endpoint: 'ck-nemotron-worker' },
   },
-  atlas: {
-    platform: 'youratlas.com',
-    purpose: 'Speed-to-lead calls, dead-lead revival, appointment confirmations',
-  },
 };
 
 // ── API ENDPOINTS ───────────────────────────────────────────────────────────
@@ -328,7 +324,6 @@ export const API_ENDPOINTS = {
     intel: { count: 5, prefix: '/v1/intel/' },
     email: { count: 5, prefix: '/v1/email/' },
     mcco: { count: 10, prefix: '/v1/mcco/' },
-    atlas: { count: 14, prefix: '/v1/atlas/' },
     frameworks: { count: 7, prefix: '/v1/frameworks/' },
     financial: { count: 7, prefix: '/v1/financial/' },
     analysis: { count: 9, prefix: '/v1/analysis/' },

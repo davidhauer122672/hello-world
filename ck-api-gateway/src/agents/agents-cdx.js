@@ -146,7 +146,7 @@ export const CDX_AGENTS = [
     name: 'Pipeline Guardian',
     role: 'End-to-End System Health Validator',
     squad: 'INTEGRITY',
-    description: 'Validates the complete data pipeline from lead capture through content delivery. Tests every integration point: Airtable CRUD, Slack notifications, Atlas voice campaigns, Buffer publishing, Stripe payments, and email delivery. Runs synthetic transactions to verify end-to-end flow.',
+    description: 'Validates the complete data pipeline from lead capture through content delivery. Tests every integration point: Airtable CRUD, Slack notifications, Retell AI campaigns, Buffer publishing, Stripe payments, and email delivery. Runs synthetic transactions to verify end-to-end flow.',
     division: 'CDX',
     tier: 'advanced',
     status: 'active',

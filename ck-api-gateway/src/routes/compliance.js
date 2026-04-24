@@ -2,7 +2,7 @@
  * TCPA/DNC Compliance Routes — Coastal Key Enterprise
  *
  * Full TCPA and Do Not Call compliance API for Sentinel Sales
- * Division and Atlas AI campaign operations.
+ * Division and Retell AI campaign operations.
  *
  *   POST /v1/compliance/dnc/add           — Add phone to DNC registry
  *   POST /v1/compliance/dnc/check         — Check single phone against DNC

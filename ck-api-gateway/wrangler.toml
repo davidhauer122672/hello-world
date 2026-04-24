@@ -7,7 +7,7 @@ AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
 ENVIRONMENT = "production"
 RATE_LIMIT_RPM = "60"
 MAX_TRANSCRIPT_CHARS = "100000"
-ATLAS_PLATFORM = "youratlas.com"
+VOICE_PLATFORM = "retell"
 
 # ── KV Namespace Bindings ──
 # These cache inference results, session state, rate limits, and audit logs
@@ -31,13 +31,11 @@ id = "3d722426db4241209fd0444b42f84904"
 # ── Secrets (set via dashboard or `wrangler secret put`) ──
 # ANTHROPIC_API_KEY        — Anthropic console API key
 # AIRTABLE_API_KEY         — Airtable personal access token
-# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Atlas)
+# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell)
 # SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications (legacy fallback)
 # SLACK_BOT_TOKEN           — Slack Bot OAuth token (xoxb-...) for Coastal Key app (A0APSJ44NV6)
 # SLACK_SIGNING_SECRET      — Slack app signing secret for request signature verification
-# ATLAS_API_KEY              — Atlas AI (youratlas.com) API key
-# ATLAS_REVIVAL_CAMPAIGN_ID  — Atlas campaign ID for dead-lead-revival follow-ups
-# ATLAS_CONFIRMATION_CAMPAIGN_ID — Atlas campaign ID for appointment confirmation calls
+# RETELL_API_KEY              — Retell AI API key (outbound + inbound voice campaigns)
 # BUFFER_ACCESS_TOKEN          — Buffer API access token (enables /v1/content/publish)
 # BUFFER_PROFILE_INSTAGRAM     — Buffer profile ID for Instagram
 # BUFFER_PROFILE_FACEBOOK      — Buffer profile ID for Facebook
