@@ -203,6 +203,7 @@ import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSales
 import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramework } from './routes/market-strategy.js';
 import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
 import { handleCollectionsConfig, handleCollectionsGuardrails, handleCollectionsStatus, handleCollectionsEligibility, handleCollectionsSession } from './routes/collections.js';
+import { handleWorkgenCycle, handleWorkgenBuild, handleWorkgenDiagnose, handleWorkgenDashboard, handleWorkgenGoals, handleWorkgenFleet } from './routes/work-generator.js';
 import { handleDeliveryDashboard, handleDeliveryExecute, handleDeliveryTemplate, handleDeliveryGovernance } from './routes/delivery-protocol.js';
 import { handlePaymentDashboard, handlePublicPricing, handleCreatePaymentLink } from './routes/payments.js';
 import { handleAvatarDashboard, handleAvatarGenerate, handleAvatarStatus } from './routes/banana-avatar.js';
@@ -1143,6 +1144,26 @@ export default {
       }
       if (path.startsWith('/v1/avatar/status/') && method === 'GET') {
         return await handleAvatarStatus(request, env);
+      }
+
+      // ── Work Generator Orchestrator ──
+      if (path === '/v1/workgen/cycle' && method === 'POST') {
+        return await handleWorkgenCycle(request, env, ctx);
+      }
+      if (path === '/v1/workgen/build' && method === 'POST') {
+        return await handleWorkgenBuild(request, env, ctx);
+      }
+      if (path === '/v1/workgen/diagnose' && method === 'POST') {
+        return await handleWorkgenDiagnose(request, env, ctx);
+      }
+      if (path === '/v1/workgen/dashboard' && method === 'GET') {
+        return handleWorkgenDashboard();
+      }
+      if (path === '/v1/workgen/goals' && method === 'GET') {
+        return handleWorkgenGoals();
+      }
+      if (path === '/v1/workgen/fleet' && method === 'GET') {
+        return handleWorkgenFleet();
       }
 
       // ── Agent Manifest ──
