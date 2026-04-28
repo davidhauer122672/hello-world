@@ -204,6 +204,7 @@ import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramewor
 import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
 import { handleCollectionsConfig, handleCollectionsGuardrails, handleCollectionsStatus, handleCollectionsEligibility, handleCollectionsSession } from './routes/collections.js';
 import { handleWorkgenCycle, handleWorkgenBuild, handleWorkgenDiagnose, handleWorkgenDashboard, handleWorkgenGoals, handleWorkgenFleet } from './routes/work-generator.js';
+import { handleCKSODashboard, handleAppTemplates, handleGenerateApp, handleDataTables, handleGenerateSchema, handleWorkflowTriggers, handleWorkflowActions, handleGenerateWorkflow, handleAnalyticsMetrics, handleGenerateReport, handleAICommand, handleGovernanceStatus, handleGovernanceRoles } from './routes/ckso.js';
 import { handleDeliveryDashboard, handleDeliveryExecute, handleDeliveryTemplate, handleDeliveryGovernance } from './routes/delivery-protocol.js';
 import { handlePaymentDashboard, handlePublicPricing, handleCreatePaymentLink } from './routes/payments.js';
 import { handleAvatarDashboard, handleAvatarGenerate, handleAvatarStatus } from './routes/banana-avatar.js';
@@ -1165,6 +1166,21 @@ export default {
       if (path === '/v1/workgen/fleet' && method === 'GET') {
         return handleWorkgenFleet();
       }
+
+      // ── Coastal Key Sovereign OS (CKSO) ──
+      if (path === '/v1/ckso/dashboard' && method === 'GET') return handleCKSODashboard();
+      if (path === '/v1/ckso/app/templates' && method === 'GET') return handleAppTemplates();
+      if (path === '/v1/ckso/app/generate' && method === 'POST') return await handleGenerateApp(request, env, ctx);
+      if (path === '/v1/ckso/data/tables' && method === 'GET') return handleDataTables();
+      if (path === '/v1/ckso/data/schema' && method === 'POST') return await handleGenerateSchema(request, env, ctx);
+      if (path === '/v1/ckso/workflow/triggers' && method === 'GET') return handleWorkflowTriggers();
+      if (path === '/v1/ckso/workflow/actions' && method === 'GET') return handleWorkflowActions();
+      if (path === '/v1/ckso/workflow/generate' && method === 'POST') return await handleGenerateWorkflow(request, env, ctx);
+      if (path === '/v1/ckso/analytics/metrics' && method === 'GET') return handleAnalyticsMetrics();
+      if (path === '/v1/ckso/analytics/report' && method === 'POST') return await handleGenerateReport(request, env, ctx);
+      if (path === '/v1/ckso/ai/command' && method === 'POST') return await handleAICommand(request, env, ctx);
+      if (path === '/v1/ckso/governance/status' && method === 'GET') return handleGovernanceStatus();
+      if (path === '/v1/ckso/governance/roles' && method === 'GET') return handleGovernanceRoles();
 
       // ── Agent Manifest ──
       if (path === '/v1/manifest' && method === 'GET') {
