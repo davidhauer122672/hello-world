@@ -105,18 +105,18 @@ export async function handleBufferSync(env, ctx) {
     // Find matching Content Calendar record by content snippet
     const snippet = postText.slice(0, 50);
     const records = await listRecords(env, TABLES.CONTENT_CALENDAR, {
-      filterByFormula: `SEARCH("${snippet.replace(/"/g, '\\"')}", {Content Body})`,
+      filterByFormula: `SEARCH("${snippet.replace(/"/g, '\\"')}", {Caption})`,
       maxRecords: 1,
     });
 
     if (records.length > 0) {
       await updateRecord(env, TABLES.CONTENT_CALENDAR, records[0].id, {
-        'Buffer Post ID': analyticsData['Buffer Post ID'],
+        'Platform Post ID': analyticsData['Buffer Post ID'],
         'Published At': analyticsData['Published At'],
         'Impressions': analyticsData['Impressions'],
         'Engagements': analyticsData['Engagements'],
         'Engagement Rate': analyticsData['Engagement Rate'],
-        'Buffer Sync': analyticsData['Buffer Sync'],
+        'Analytics Sync': analyticsData['Buffer Sync'],
       });
     }
   };

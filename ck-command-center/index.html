@@ -175,6 +175,21 @@ a{color:var(--accent);text-decoration:none}
       </div>
     </div>
     <div class="sidebar-section">
+      <h3>Enterprise</h3>
+      <div class="nav-item" data-view="market-intel" onclick="switchView('market-intel')">
+        <span>Market Intel</span>
+      </div>
+      <div class="nav-item" data-view="diagnostics" onclick="switchView('diagnostics')">
+        <span>Diagnostics</span>
+      </div>
+      <div class="nav-item" data-view="content-pipeline" onclick="switchView('content-pipeline')">
+        <span>Content Pipeline</span>
+      </div>
+      <div class="nav-item" data-view="sops" onclick="switchView('sops')">
+        <span>Agent SOPs</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
       <h3>Divisions</h3>
       <div id="divisionNav"></div>
     </div>
@@ -306,6 +321,10 @@ function switchView(view) {
   if (view === 'dashboard') renderDashboard();
   else if (view === 'all-agents') renderAllAgents();
   else if (view === 'property-intel') renderPropertyIntel();
+  else if (view === 'market-intel') renderMarketIntel();
+  else if (view === 'diagnostics') renderDiagnostics();
+  else if (view === 'content-pipeline') renderContentPipeline();
+  else if (view === 'sops') renderSOPs();
   else if (view.startsWith('div-')) renderDivisionView(view.replace('div-', ''));
 }
 
@@ -657,6 +676,196 @@ function propertyCardHTML(p) {
       <span class="property-status-badge">${p.status || 'New'}</span>
     </div>
   </div>`;
+}
+
+// ── Market Intelligence View ──
+async function renderMarketIntel() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div> Loading market data...</div>';
+  try {
+    const [watchRes, indicatorsRes] = await Promise.all([
+      api('/v1/market/watchlist'),
+      api('/v1/market/indicators').catch(() => null),
+    ]);
+    const wl = watchRes || {};
+    const ind = indicatorsRes || {};
+    main.innerHTML = `
+      <h1 style="font-size:28px;font-weight:700;margin-bottom:20px;letter-spacing:-0.5px">Market Intelligence</h1>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Sectors Tracked</div><div class="stat-value blue">${wl.sectorCount || 5}</div></div>
+        <div class="stat-card"><div class="stat-label">Watchlist Symbols</div><div class="stat-value green">${wl.totalSymbols || 30}</div></div>
+        <div class="stat-card"><div class="stat-label">Economic Indicators</div><div class="stat-value yellow">${wl.indicatorCount || 6}</div></div>
+        <div class="stat-card"><div class="stat-label">Status</div><div class="stat-value green">LIVE</div></div>
+      </div>
+      <h2 style="font-size:18px;font-weight:600;margin:20px 0 14px">Watchlist Sectors</h2>
+      <div class="agent-grid">
+        ${Object.entries(wl.watchlist || {}).filter(([k]) => k !== 'ECONOMIC_INDICATORS').map(([sector, symbols]) => `
+          <div class="agent-card">
+            <div class="agent-name">${sector.replace(/_/g,' ')}</div>
+            <div class="agent-role" style="margin-top:8px">${(symbols || []).join(' &middot; ')}</div>
+          </div>
+        `).join('')}
+      </div>
+      ${ind.indicators ? `
+        <h2 style="font-size:18px;font-weight:600;margin:24px 0 14px">Economic Indicators</h2>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+          ${Object.entries(ind.indicators).map(([name, data]) => `
+            <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:14px">
+              <span style="font-weight:600">${name.replace(/_/g,' ')}</span>
+              <span style="color:var(--accent)">${data.observations?.[0]?.value ?? data.error ?? '—'}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+      <div style="margin-top:20px;display:flex;gap:10px">
+        <button onclick="runMarketScan()" style="background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">Run Full Scan</button>
+        <button onclick="generateMarketReport()" style="background:var(--accent2);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">Generate AI Report</button>
+      </div>
+    `;
+  } catch(e) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">&#128200;</div><p>Market Intelligence requires API connection. Configure gateway URL above.</p><p style="color:var(--text3);font-size:13px;margin-top:8px">${e.message}</p></div>`;
+  }
+}
+async function runMarketScan() { try { const r = await api('/v1/market/scan'); alert('Scan complete: ' + Object.keys(r.sectors || {}).length + ' sectors analyzed'); } catch(e) { alert('Scan failed: ' + e.message); } }
+async function generateMarketReport() { try { const r = await api('/v1/market/report'); alert('Report generated. Check Airtable Market Data table.'); } catch(e) { alert('Report failed: ' + e.message); } }
+
+// ── Diagnostics View ──
+async function renderDiagnostics() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div> Running enterprise diagnostics...</div>';
+  try {
+    const [scanRes, dataRes] = await Promise.all([
+      api('/v1/diagnostics/scan'),
+      api('/v1/diagnostics/data-health').catch(() => null),
+    ]);
+    const s = scanRes || {};
+    const d = dataRes || {};
+    const sum = s.summary || {};
+    const dSum = d.summary || {};
+    main.innerHTML = `
+      <h1 style="font-size:28px;font-weight:700;margin-bottom:20px;letter-spacing:-0.5px">Enterprise Diagnostics</h1>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Health Score</div><div class="stat-value ${sum.healthScore >= 80 ? 'green' : sum.healthScore >= 50 ? 'yellow' : 'red'}">${sum.healthScore || 0}%</div></div>
+        <div class="stat-card"><div class="stat-label">Systems Online</div><div class="stat-value green">${sum.operational || 0}</div></div>
+        <div class="stat-card"><div class="stat-label">Degraded</div><div class="stat-value yellow">${sum.degraded || 0}</div></div>
+        <div class="stat-card"><div class="stat-label">Offline</div><div class="stat-value red">${sum.offline || 0}</div></div>
+        <div class="stat-card"><div class="stat-label">Data Health</div><div class="stat-value ${(dSum.healthScore||0) >= 80 ? 'green' : 'yellow'}">${dSum.healthScore || 0}%</div></div>
+        <div class="stat-card"><div class="stat-label">Fleet Agents</div><div class="stat-value blue">${sum.fleetStatus?.totalAgents || 290}</div></div>
+      </div>
+      <h2 style="font-size:18px;font-weight:600;margin:20px 0 14px">Subsystems</h2>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+        ${(s.systems || []).map(sys => `
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:14px">
+            <div><span style="font-weight:600">${sys.name}</span> <span style="color:var(--text3);font-size:12px;margin-left:8px">${sys.type}</span></div>
+            <span class="status-badge ${sys.status === 'operational' ? 'active' : sys.status === 'degraded' ? 'training' : 'maintenance'}">${sys.status}</span>
+          </div>
+        `).join('')}
+      </div>
+      ${sum.critical_issues?.length ? `
+        <h2 style="font-size:18px;font-weight:600;margin:24px 0 14px;color:var(--red)">Critical Issues</h2>
+        <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:var(--radius);padding:16px">
+          ${sum.critical_issues.map(i => `<div style="padding:6px 0;font-size:14px"><strong>${i.system}:</strong> ${i.action}</div>`).join('')}
+        </div>
+      ` : ''}
+      <div style="margin-top:20px;display:flex;gap:10px">
+        <button onclick="activateSystems()" style="background:var(--green);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">Activate All Systems</button>
+        <button onclick="upgradeSystems()" style="background:var(--accent2);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">Run Upgrade Scan</button>
+      </div>
+    `;
+  } catch(e) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">&#9881;</div><p>Diagnostics requires API connection.</p><p style="color:var(--text3);font-size:13px;margin-top:8px">${e.message}</p></div>`;
+  }
+}
+async function activateSystems() { try { const r = await apiPost('/v1/diagnostics/activate', {}); alert('Activation: ' + r.summary?.activated + ' systems online, ' + r.summary?.needsConfiguration + ' need configuration'); } catch(e) { alert(e.message); } }
+async function upgradeSystems() { try { const r = await apiPost('/v1/diagnostics/upgrade', {}); alert('Upgrade scan: ' + r.summary?.total + ' recommendations (' + r.summary?.actionRequired + ' action required)'); } catch(e) { alert(e.message); } }
+
+// ── Content Pipeline View ──
+async function renderContentPipeline() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div> Loading content pipeline...</div>';
+  try {
+    const [bananaRes, bufferRes] = await Promise.all([
+      api('/v1/banana/health').catch(() => ({connectivity:'unknown'})),
+      api('/v1/buffer/health').catch(() => ({connectivity:'unknown'})),
+    ]);
+    main.innerHTML = `
+      <h1 style="font-size:28px;font-weight:700;margin-bottom:20px;letter-spacing:-0.5px">Content Pipeline</h1>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Banana Pro AI</div><div class="stat-value ${bananaRes.connectivity==='operational'?'green':'yellow'}">${bananaRes.connectivity==='operational'?'LIVE':bananaRes.connectivity==='not_configured'?'SETUP':'--'}</div></div>
+        <div class="stat-card"><div class="stat-label">Buffer Social</div><div class="stat-value ${bufferRes.connectivity==='operational'?'green':'yellow'}">${bufferRes.connectivity==='operational'?'LIVE':bufferRes.connectivity==='not_configured'?'SETUP':'--'}</div></div>
+        <div class="stat-card"><div class="stat-label">Buffer Channels</div><div class="stat-value blue">${bufferRes.profileCount || 0}</div></div>
+        <div class="stat-card"><div class="stat-label">WF-2 Pipeline</div><div class="stat-value green">ACTIVE</div></div>
+      </div>
+      <h2 style="font-size:18px;font-weight:600;margin:20px 0 14px">Integration Status</h2>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Banana Pro AI</strong><span style="color:var(--text3);font-size:12px;margin-left:8px">GPU Content Generation</span></div>
+          <span class="status-badge ${bananaRes.configured?'active':'maintenance'}">${bananaRes.configured?'Configured':'Needs API Key'}</span>
+        </div>
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Buffer</strong><span style="color:var(--text3);font-size:12px;margin-left:8px">Social Media Publishing</span></div>
+          <span class="status-badge ${bufferRes.configured?'active':'maintenance'}">${bufferRes.configured?'Connected':'Needs Token'}</span>
+        </div>
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Claude AI</strong><span style="color:var(--text3);font-size:12px;margin-left:8px">Content Intelligence</span></div>
+          <span class="status-badge active">Operational</span>
+        </div>
+        <div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Airtable Calendar</strong><span style="color:var(--text3);font-size:12px;margin-left:8px">Content Management</span></div>
+          <span class="status-badge active">Connected</span>
+        </div>
+      </div>
+      ${bufferRes.channels ? `
+        <h2 style="font-size:18px;font-weight:600;margin:24px 0 14px">Connected Channels</h2>
+        <div class="stats-grid">${bufferRes.channels.map(ch => `
+          <div class="stat-card"><div class="stat-label">${ch}</div><div class="stat-value green" style="font-size:16px">LIVE</div></div>
+        `).join('')}</div>
+      ` : ''}
+    `;
+  } catch(e) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">&#128196;</div><p>Content Pipeline requires API connection.</p></div>`;
+  }
+}
+
+// ── Agent SOPs View ──
+async function renderSOPs() {
+  const main = document.getElementById('mainContent');
+  try {
+    const res = await api('/v1/diagnostics/sops');
+    const divs = res.divisions || [];
+    const fleet = res.fleet || {};
+    main.innerHTML = `
+      <h1 style="font-size:28px;font-weight:700;margin-bottom:20px;letter-spacing:-0.5px">Agent SOPs &mdash; Standard Operating Procedures</h1>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Divisions</div><div class="stat-value blue">${fleet.divisions || 9}</div></div>
+        <div class="stat-card"><div class="stat-label">Total SOPs</div><div class="stat-value green">${fleet.totalSOPs || 0}</div></div>
+        <div class="stat-card"><div class="stat-label">Active KPIs</div><div class="stat-value yellow">${fleet.totalKPIs || 0}</div></div>
+        <div class="stat-card"><div class="stat-label">Uptime Target</div><div class="stat-value green">${fleet.standards?.uptime || '99.99%'}</div></div>
+      </div>
+      <div class="agent-grid" style="margin-top:20px">
+        ${divs.map(d => `
+          <div class="agent-card">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+              <div style="width:40px;height:40px;border-radius:10px;background:${DIV_COLORS[d.code]||'#666'};display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:16px">${d.code}</div>
+              <div>
+                <div style="font-weight:700;font-size:15px">${d.division}</div>
+                <div style="font-size:12px;color:var(--text2)">${d.sops.length} SOPs</div>
+              </div>
+            </div>
+            <div style="font-size:13px;color:var(--text2);margin-bottom:12px">${d.mandate}</div>
+            ${d.sops.map(s => `
+              <div style="background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+                <div style="font-weight:600;font-size:13px;margin-bottom:4px">${s.id}: ${s.title}</div>
+                <div style="font-size:11px;color:var(--text3)">${s.kpis.join(' &middot; ')}</div>
+              </div>
+            `).join('')}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } catch(e) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">&#128220;</div><p>SOPs require API connection.</p></div>`;
+  }
 }
 
 // ── Keyboard shortcuts ──

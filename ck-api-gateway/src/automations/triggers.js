@@ -152,20 +152,20 @@ export const WF2_CONTENT_ENGAGEMENT = {
       in: ['Draft', 'Planned'],
       field: 'Status',
     },
-    contentType: {
+    postType: {
       exists: true,
-      field: 'Content Type',
+      field: 'Post Type',
     },
   },
   action: {
     method: 'POST',
     endpoint: '/v1/workflows/wf2',
     payload: {
-      topic: '{{record.Content Title}}',
+      topic: '{{record.Post Title}}',
       platforms: '{{record.Platform}}',
-      contentType: '{{record.Content Type}}',
+      contentType: '{{record.Post Type}}',
       tone: '{{record.Tone}}',
-      scheduledAt: '{{record.Scheduled Date}}',
+      scheduledAt: '{{record.Post Date}}',
     },
   },
   integrations: ['claude-ai', 'banana-pro', 'buffer'],
@@ -241,7 +241,7 @@ export const BANANA_PRO_CONTENT = {
     method: 'POST',
     endpoint: '/v1/banana/generate',
     payload: {
-      topic: '{{record.Content Title}}',
+      topic: '{{record.Post Title}}',
       platform: '{{record.Platform}}',
       tone: '{{record.Tone}}',
     },
@@ -271,16 +271,16 @@ export const BUFFER_AUTO_SCHEDULE = {
     },
     bufferScheduled: {
       equals: false,
-      field: 'Buffer Scheduled',
+      field: 'CK-SPP Scheduled',
     },
   },
   action: {
     method: 'POST',
     endpoint: '/v1/buffer/cross-post',
     payload: {
-      text: '{{record.Content Body}}',
+      text: '{{record.Caption}}',
       platforms: '{{record.Platform}}',
-      scheduledAt: '{{record.Scheduled Date}}',
+      scheduledAt: '{{record.Post Date}}',
     },
   },
   integrations: ['buffer'],

@@ -118,18 +118,17 @@ Generate platform-optimized content for each platform. Include:
   let calendarRecord;
   try {
     calendarRecord = await createRecord(env, TABLES.CONTENT_CALENDAR, {
-      'Content Title': topic,
-      'Content Body': aiContent.slice(0, 10000),
-      'Content Type': { name: contentType || 'Social Post' },
+      'Post Title': topic,
+      'Caption': aiContent.slice(0, 10000),
+      'Post Type': { name: contentType || 'Social Post' },
       'Platform': platforms.map(p => ({ name: p.charAt(0).toUpperCase() + p.slice(1) })),
       'Status': { name: publishNow ? 'Published' : 'Scheduled' },
-      'Scheduled Date': scheduledAt || addDays(todayStr, 1),
+      'Post Date': scheduledAt || addDays(todayStr, 1),
       'AI Generated': true,
       'AI Model': 'Claude + Banana Pro',
       'Tone': { name: (tone || 'professional').charAt(0).toUpperCase() + (tone || 'professional').slice(1) },
-      'Campaign': campaignId ? [campaignId] : undefined,
       'Banana Pro Enhanced': !!bananaContent,
-      'Buffer Scheduled': false,
+      'CK-SPP Scheduled': false,
       'Created By': 'WF-2 Content Pipeline',
     });
   } catch (err) {
@@ -152,8 +151,8 @@ Generate platform-optimized content for each platform. Include:
       if (calendarRecord) {
         ctx.waitUntil(
           updateRecord(env, TABLES.CONTENT_CALENDAR, calendarRecord.id, {
-            'Buffer Scheduled': true,
-            'Buffer Post ID': bufferResult?.updates?.[0]?.id || 'pending',
+            'CK-SPP Scheduled': true,
+            'Platform Post ID': bufferResult?.updates?.[0]?.id || 'pending',
           }).catch(err => console.error('Calendar Buffer update failed:', err))
         );
       }
