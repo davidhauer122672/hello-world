@@ -1,12 +1,4 @@
-/**
- * CK Nemotron Worker — NVIDIA Nemotron Inference Endpoint
- *
- * Routes:
- *   POST /v1/inference  — Nemotron model inference
- *   GET  /v1/health     — Health check
- *
- * Auth: Bearer token via WORKER_AUTH_TOKEN secret
- */
+const DEFAULT_MODEL = 'claude-sonnet-4-20250514';
 
 function corsHeaders() {
   return {
@@ -40,52 +32,52 @@ async function handleInference(request, env) {
     return json({ error: 'Missing required field: prompt' }, 400);
   }
 
-  const messages = [];
-  if (system) {
-    messages.push({ role: 'system', content: system });
-  }
-  messages.push({ role: 'user', content: prompt });
-
+  const model = env.MODEL_ID || DEFAULT_MODEL;
   const payload = {
-    model: env.MODEL_ID || 'nvidia/nemotron-4-340b-instruct',
-    messages,
+    model,
     max_tokens,
     temperature,
+    messages: [{ role: 'user', content: prompt }],
   };
 
-  const apiKey = env.NVIDIA_API_KEY;
-  if (!apiKey) {
-    return json({ error: 'NVIDIA_API_KEY not configured' }, 503);
+  if (system) {
+    payload.system = system;
   }
 
-  const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+  const apiKey = env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return json({ error: 'ANTHROPIC_API_KEY not configured' }, 503);
+  }
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    return json({ error: 'Nemotron inference failed', detail: errorText }, response.status);
+    return json({ error: 'Claude inference failed', detail: errorText }, response.status);
   }
 
   const result = await response.json();
   return json({
-    model: payload.model,
-    content: result.choices?.[0]?.message?.content || '',
+    model: result.model,
+    content: result.content?.[0]?.text || '',
     usage: result.usage || {},
   });
 }
 
 function handleHealth(env) {
-  const apiKeyConfigured = !!env.NVIDIA_API_KEY;
+  const apiKeyConfigured = !!env.ANTHROPIC_API_KEY;
   return json({
     status: apiKeyConfigured ? 'operational' : 'degraded',
-    service: 'ck-nemotron-worker',
-    model: env.MODEL_ID || 'nvidia/nemotron-4-340b-instruct',
+    service: 'ck-inference-worker',
+    model: env.MODEL_ID || DEFAULT_MODEL,
     apiKeyConfigured,
     timestamp: new Date().toISOString(),
   });

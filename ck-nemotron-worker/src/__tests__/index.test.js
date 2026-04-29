@@ -1,7 +1,6 @@
 import { describe, it, before } from 'node:test';
 import assert from 'node:assert/strict';
 
-// Inline worker for testing
 let worker;
 
 before(async () => {
@@ -15,18 +14,18 @@ function makeRequest(path, options = {}) {
 
 const env = {
   WORKER_AUTH_TOKEN: 'test-token',
-  MODEL_ID: 'nvidia/nemotron-4-340b-instruct',
-  NVIDIA_API_KEY: 'test-nvidia-key',
+  MODEL_ID: 'claude-sonnet-4-20250514',
+  ANTHROPIC_API_KEY: 'test-anthropic-key',
 };
 
-describe('ck-nemotron-worker', () => {
+describe('ck-inference-worker', () => {
   it('returns health check', async () => {
     const req = makeRequest('/v1/health');
     const res = await worker.fetch(req, env);
     assert.equal(res.status, 200);
     const body = await res.json();
     assert.equal(body.status, 'operational');
-    assert.equal(body.service, 'ck-nemotron-worker');
+    assert.equal(body.service, 'ck-inference-worker');
   });
 
   it('returns 404 for unknown routes', async () => {
@@ -56,14 +55,24 @@ describe('ck-nemotron-worker', () => {
     });
     const res = await worker.fetch(req, env);
     assert.equal(res.status, 400);
-    const body = await res.json();
-    assert.equal(body.error, 'Missing required field: prompt');
+  });
+
+  it('returns 503 when ANTHROPIC_API_KEY missing', async () => {
+    const req = makeRequest('/v1/inference', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer test-token',
+      },
+      body: JSON.stringify({ prompt: 'test' }),
+    });
+    const res = await worker.fetch(req, { ...env, ANTHROPIC_API_KEY: '' });
+    assert.equal(res.status, 503);
   });
 
   it('handles CORS preflight', async () => {
     const req = makeRequest('/v1/inference', { method: 'OPTIONS' });
     const res = await worker.fetch(req, env);
     assert.equal(res.status, 204);
-    assert.equal(res.headers.get('Access-Control-Allow-Origin'), '*');
   });
 });

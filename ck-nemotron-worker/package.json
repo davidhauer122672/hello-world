@@ -1,7 +1,7 @@
 {
   "name": "ck-nemotron-worker",
   "version": "1.0.0",
-  "description": "Coastal Key Nemotron Worker — NVIDIA Nemotron inference endpoint",
+  "description": "Coastal Key Inference Worker - Claude AI inference endpoint",
   "private": true,
   "type": "module",
   "main": "src/index.js",
