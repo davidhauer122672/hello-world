@@ -48,7 +48,7 @@ const CK_OPERATING_STATE = {
     databases: { airtable: { base: 'appUSnNgpDkcEOzhN', tables: 39 } },
     voiceCampaigns: 8,
     slackChannels: 33,
-    apiEndpoints: 90,
+    apiEndpoints: 137,
     thinkingFrameworks: 7,
   },
   serviceZones: [
