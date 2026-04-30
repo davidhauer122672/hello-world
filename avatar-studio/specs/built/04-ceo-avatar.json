@@ -1,0 +1,149 @@
+{
+  "id": "ck-avatar-04-ceo-self",
+  "title": "Coastal Key CEO Avatar (Self-Likeness)",
+  "role": "Delivers CEO-voiced addresses, investor updates, and internal directives using the operator's authorized likeness and voice.",
+  "version": "1.0.0",
+  "generated": "2026-04-20",
+  "targetPlatforms": [
+    "iphone_16_pro_wallpaper",
+    "grok_companion",
+    "command_center_ceo_panel"
+  ],
+  "renderer": "banana_pro_ai",
+  "technicalStandards": {
+    "resolution": {
+      "width": 1179,
+      "height": 2556,
+      "label": "iPhone 16 Pro native portrait"
+    },
+    "frameRate": 60,
+    "loopDurationSeconds": {
+      "min": 3,
+      "max": 5
+    },
+    "container": "mov",
+    "codec": "H.265/HEVC",
+    "colorSpace": "Display P3",
+    "dynamicRange": "HDR10",
+    "pipeline": {
+      "skin": [
+        "multi-layer subsurface scattering (epidermis, dermis, subcutaneous)",
+        "pore-level albedo and normal maps",
+        "vellus hair / peach fuzz visible in rim lighting"
+      ],
+      "eyes": [
+        "corneal refraction with environment reflection",
+        "scleral vein network at natural density",
+        "iris caustics from key light",
+        "tear film moisture on lower lid"
+      ],
+      "hair": [
+        "strand-level simulation (>= 100,000 strands)",
+        "wind and gravity dynamics",
+        "specular highlights from key light"
+      ],
+      "motion": [
+        "natural breathing cycle (12-16 breaths/min)",
+        "micro-expressions (brow, lip corner, nostril)",
+        "blink cycle (15-20/min, varied timing)",
+        "subtle weight shift / idle sway"
+      ],
+      "lighting": [
+        "three-point cinematic (warm key, cool fill, soft rim)",
+        "global illumination for skin bounce"
+      ]
+    },
+    "referenceStandards": [
+      "Weta FX digital-human pipeline",
+      "ILM facial animation standards",
+      "DNEG photorealistic compositing",
+      "Digital Domain real-time digital humans"
+    ]
+  },
+  "subject": {
+    "name": "Coastal Key CEO",
+    "kind": "self",
+    "contentRating": "PG",
+    "description": [
+      "Photorealistic reconstruction driven entirely by authorized source files listed in selfInputs.",
+      "Renderer must derive facial geometry, skin albedo, and hair from source footage only.",
+      "Renderer must derive voice from source voice samples only.",
+      "No descriptive features are declared in this spec; the pipeline is identity-preserving."
+    ],
+    "selfInputs": {
+      "consentStatement": "Operator is the subject and authorizes use of their own likeness and voice for Coastal Key executive communications only.",
+      "sourceFiles": [
+        "manus-documents/ceo/bio.md",
+        "manus-documents/ceo/video-reference/*.mov",
+        "manus-documents/ceo/voice-samples/*.wav",
+        "notebooklm-exports/ceo-profile.md"
+      ],
+      "usageScope": [
+        "Coastal Key CEO Daily Standup briefings",
+        "Investor-facing video updates",
+        "Internal directives to the 383-agent fleet",
+        "Command Center CEO panel live overlay"
+      ],
+      "prohibitedUses": [
+        "Any non-Coastal-Key context",
+        "Any third-party platform without explicit additional authorization",
+        "Any content rated above PG-13",
+        "Any sexualized or objectifying framing"
+      ]
+    }
+  },
+  "wardrobe": [
+    "Derived from source footage; renderer must match operator's standard executive wardrobe",
+    "Default fallback if wardrobe is ambiguous: navy tailored blazer, white shirt, no tie"
+  ],
+  "environment": [
+    "Clean executive studio set, soft neutral backdrop (warm gray)",
+    "Daylight key from camera-left at 45 degrees",
+    "Shallow depth of field, backdrop reads as soft gradient"
+  ],
+  "camera": {
+    "framing": "medium close-up, collarbone to slightly above head",
+    "angle": "straight-on, eye-level",
+    "orientation": "portrait 1179 x 2556"
+  },
+  "animation": {
+    "loopSeconds": 5,
+    "idleBehaviors": [
+      "breathing cycle derived from source footage",
+      "blink rate derived from source footage (target 15-18/min)",
+      "micro-expressions derived from source footage",
+      "eyes track viewer with 2-degree range"
+    ]
+  },
+  "voice": {
+    "persona": "operator-self",
+    "tone": "derived from voice samples only",
+    "pace": "derived from voice samples only",
+    "accent": "derived from voice samples only",
+    "prohibited": [
+      "voice cloning of any third party",
+      "accent swap",
+      "age shift"
+    ],
+    "ttsProfileHint": "Voice must be cloned exclusively from sourceFiles/voice-samples; if samples are missing, abort."
+  },
+  "deliveryProfile": {
+    "tone": "strictly professional, CEO-level, data-driven",
+    "cadence": "measured, deliberate, pause before key metric",
+    "prohibited": [
+      "casual filler",
+      "slang",
+      "sexualized framing",
+      "content not authored or approved by the CEO"
+    ]
+  },
+  "qualityGates": [
+    "Skin: no waxy plastic appearance; visible pores; natural variation",
+    "Eyes: visible corneal reflection; tear film on lower lid",
+    "Hair: strand-level; no clumping artifacts",
+    "Loop: first and last frames match perfectly",
+    "Resolution: pixel-perfect 1179x2556; no upscaling artifacts",
+    "Frame rate: steady 60 fps; no judder",
+    "Content: no sexualized framing; PG-13 ceiling"
+  ]
+}

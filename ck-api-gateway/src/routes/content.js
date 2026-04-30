@@ -17,6 +17,7 @@ import { inference } from '../services/anthropic.js';
 import { createRecord, TABLES } from '../services/airtable.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
+import { YOUTUBE_PROMPTS } from '../prompts/youtube-prompts.js';
 
 const SYSTEM_PROMPTS = {
   social_post: `You are the Coastal Key Social Media AI. You create luxury property management content for the Treasure Coast market. Your tone is professional, warm, and authoritative. Every post should reinforce Coastal Key's position as the premium property management provider. Include a caption, 5-8 relevant hashtags, and a suggested call-to-action.`,
@@ -26,6 +27,9 @@ const SYSTEM_PROMPTS = {
   video_script: `You are the Coastal Key Video Production AI. You create scripts for property showcase videos, educational content, and brand storytelling. Scripts should be conversational, visually descriptive (include B-roll suggestions), and optimized for the target platform. Include intro hook, main content, and CTA.`,
 
   podcast_outline: `You are the Coastal Key Podcast Production AI. You create episode outlines for a property management thought leadership podcast targeting luxury homeowners and real estate investors on the Treasure Coast. Include talking points, guest questions if applicable, intro/outro scripts, and show notes.`,
+
+  // YouTube Marketing & Sales Agent prompts (MKT-041 through MKT-047)
+  ...YOUTUBE_PROMPTS,
 };
 
 export async function handleContentGenerate(request, env, ctx) {
@@ -37,19 +41,25 @@ export async function handleContentGenerate(request, env, ctx) {
 
   const systemPrompt = SYSTEM_PROMPTS[body.type];
   if (!systemPrompt) {
-    return errorResponse(`Unknown content type "${body.type}". Valid: social_post, email, video_script, podcast_outline`, 400);
+    const validTypes = Object.keys(SYSTEM_PROMPTS).join(', ');
+    return errorResponse(`Unknown content type "${body.type}". Valid: ${validTypes}`, 400);
   }
+
+  const isYouTubeType = body.type.startsWith('youtube_');
 
   const contextParts = [`Content Brief: ${body.brief}`];
   if (body.segment) contextParts.push(`Target Segment: ${body.segment}`);
   if (body.platform) contextParts.push(`Target Platform: ${body.platform}`);
   if (body.properties) contextParts.push(`Additional Context: ${JSON.stringify(body.properties)}`);
 
+  const tier = (body.type === 'video_script' || isYouTubeType) ? 'advanced' : 'standard';
+  const maxTokens = isYouTubeType ? 6000 : (body.type === 'podcast_outline' ? 4000 : 2500);
+
   const result = await inference(env, {
     system: systemPrompt,
     prompt: contextParts.join('\n'),
-    tier: body.type === 'video_script' ? 'advanced' : 'standard',
-    maxTokens: body.type === 'podcast_outline' ? 4000 : 2500,
+    tier,
+    maxTokens,
     cacheKey: `content:${body.type}:${simpleHash(body.brief)}`,
     cacheTtl: 1800,
   });
@@ -74,6 +84,16 @@ export async function handleContentGenerate(request, env, ctx) {
       'Script': result.content,
       'Status': { name: 'Draft' },
       'Content Type': { name: 'Short Form Video' },
+      ...(body.segment ? { 'Target Segment': { name: body.segment } } : {}),
+    }).catch(err => { console.error('Video Production write failed:', err); return null; });
+  }
+
+  if (isYouTubeType) {
+    airtableRecord = await createRecord(env, TABLES.VIDEO_PRODUCTION, {
+      'Episode / Video Title': `[YouTube] ${body.brief.slice(0, 90)}`,
+      'Script': result.content,
+      'Status': { name: 'Draft' },
+      'Content Type': { name: 'YouTube' },
       ...(body.segment ? { 'Target Segment': { name: body.segment } } : {}),
     }).catch(err => { console.error('Video Production write failed:', err); return null; });
   }

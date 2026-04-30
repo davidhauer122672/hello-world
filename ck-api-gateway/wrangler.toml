@@ -7,6 +7,7 @@ AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
 ENVIRONMENT = "production"
 RATE_LIMIT_RPM = "60"
 MAX_TRANSCRIPT_CHARS = "100000"
+VOICE_PLATFORM = "retell"
 
 # ── KV Namespace Bindings ──
 # These cache inference results, session state, rate limits, and audit logs
@@ -30,5 +31,21 @@ id = "3d722426db4241209fd0444b42f84904"
 # ── Secrets (set via dashboard or `wrangler secret put`) ──
 # ANTHROPIC_API_KEY        — Anthropic console API key
 # AIRTABLE_API_KEY         — Airtable personal access token
-# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell, Zapier)
-# SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications
+# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell)
+# SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications (legacy fallback)
+# SLACK_BOT_TOKEN           — Slack Bot OAuth token (xoxb-...) for Coastal Key app (A0APSJ44NV6)
+# SLACK_SIGNING_SECRET      — Slack app signing secret for request signature verification
+# RETELL_API_KEY              — Retell AI API key (outbound + inbound voice campaigns)
+# BUFFER_ACCESS_TOKEN          — Buffer API access token (enables /v1/content/publish)
+# BUFFER_PROFILE_INSTAGRAM     — Buffer profile ID for Instagram
+# BUFFER_PROFILE_FACEBOOK      — Buffer profile ID for Facebook
+# BUFFER_PROFILE_LINKEDIN      — Buffer profile ID for LinkedIn
+# BUFFER_PROFILE_X             — Buffer profile ID for X (Twitter)
+# BUFFER_PROFILE_ALIGNABLE     — Buffer profile ID for Alignable
+# GOOGLE_CLIENT_ID             — Google OAuth 2.0 client ID (Gmail API)
+# GOOGLE_CLIENT_SECRET         — Google OAuth 2.0 client secret
+# GMAIL_REFRESH_TOKEN          — Gmail long-lived refresh token (offline access)
+# GMAIL_FROM_ADDRESS           — Authorized Gmail sender address
+# META_PAGE_ACCESS_TOKEN        — Meta/Facebook Page access token for ad management
+# META_AD_ACCOUNT_ID            — Meta Ads account ID (act_XXXXXXXXX)
+# META_PAGE_ID                  — Facebook Page ID for post boosting

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key — Sovereign Governance Framework v1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0a1628; --gold: #c9a84c; --sand: #f5f0e8;
+    --slate: #2d3748; --white: #ffffff; --red: #c53030;
+  }
+  @media print {
+    body { font-size: 11pt; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    section { page-break-inside: avoid; }
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--slate); line-height: 1.7; }
+  .doc { max-width: 900px; margin: 0 auto; padding: 60px 40px; }
+  .doc-header { text-align: center; border-bottom: 3px solid var(--gold); padding-bottom: 40px; margin-bottom: 50px; }
+  .doc-header .classification { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--red); font-weight: 700; margin-bottom: 8px; }
+  .doc-header h1 { font-family: 'EB Garamond', serif; font-size: 36px; color: var(--navy); margin-bottom: 8px; }
+  .doc-header .subtitle { font-size: 14px; color: #718096; }
+  .doc-header .version { display: inline-block; background: var(--navy); color: var(--gold); padding: 4px 16px; border-radius: 3px; font-size: 12px; font-weight: 600; margin-top: 16px; }
+  h2 { font-family: 'EB Garamond', serif; font-size: 26px; color: var(--navy); margin: 40px 0 16px; border-left: 4px solid var(--gold); padding-left: 16px; }
+  h3 { font-size: 16px; color: var(--navy); margin: 24px 0 8px; font-weight: 600; }
+  p, li { font-size: 15px; margin-bottom: 12px; }
+  ul, ol { padding-left: 24px; }
+  .mission-box { background: var(--navy); color: var(--white); padding: 32px; border-radius: 8px; margin: 24px 0; text-align: center; }
+  .mission-box .label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+  .mission-box .statement { font-family: 'EB Garamond', serif; font-size: 24px; line-height: 1.5; font-weight: 500; }
+  .goal-card { background: #f7fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--gold); padding: 20px 24px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+  .goal-card .goal-num { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+  .goal-card .goal-title { font-size: 18px; font-weight: 700; color: var(--navy); margin: 4px 0 8px; }
+  .goal-card .metric { font-size: 13px; color: #4a5568; }
+  .goal-card .metric strong { color: var(--navy); }
+  .decision-matrix { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  .decision-matrix th { background: var(--navy); color: var(--gold); padding: 12px 16px; text-align: left; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+  .decision-matrix td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+  .decision-matrix tr:nth-child(even) { background: #f7fafc; }
+  .badge-pass { background: #c6f6d5; color: #22543d; padding: 2px 8px; border-radius: 3px; font-size: 12px; font-weight: 600; }
+  .badge-kill { background: #fed7d7; color: #9b2c2c; padding: 2px 8px; border-radius: 3px; font-size: 12px; font-weight: 600; }
+  .principles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .principle { background: var(--sand); padding: 20px; border-radius: 6px; }
+  .principle .num { font-size: 28px; font-weight: 700; color: var(--gold); }
+  .principle .name { font-weight: 700; color: var(--navy); margin: 4px 0; }
+  .principle .desc { font-size: 13px; color: #4a5568; }
+  .footer-stamp { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 2px solid var(--gold); }
+  .footer-stamp .sig { font-family: 'EB Garamond', serif; font-size: 20px; color: var(--navy); font-style: italic; }
+  .footer-stamp .date { font-size: 12px; color: #a0aec0; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="doc-header">
+    <div class="classification">Sovereign Governance Document</div>
+    <h1>Coastal Key Governance Framework</h1>
+    <div class="subtitle">The Operating System for Every Decision, Deliverable, and Deployment</div>
+    <div class="version">v1.0 — April 2026</div>
+  </div>
+
+  <!-- ═══ MISSION ═══ -->
+  <h2>I. Mission Statement</h2>
+  <div class="mission-box">
+    <div class="label">Coastal Key Mission</div>
+    <div class="statement">Deliver institutional-grade property oversight to the Treasure Coast with the discipline of a fiduciary, the precision of an operator, and the accountability of a public company — protecting every asset as if it were our own.</div>
+  </div>
+
+  <!-- ═══ CORE GOALS ═══ -->
+  <h2>II. Core Goals (Measurable, Time-Bound)</h2>
+
+  <div class="goal-card">
+    <div class="goal-num">Goal 1</div>
+    <div class="goal-title">Revenue Engine: $50K MRR by Q4 2026</div>
+    <div class="metric"><strong>Target:</strong> 170 active properties at $295 avg monthly revenue</div>
+    <div class="metric"><strong>Milestone Q2:</strong> 60 properties | <strong>Q3:</strong> 120 properties | <strong>Q4:</strong> 170 properties</div>
+    <div class="metric"><strong>Measure:</strong> Stripe MRR dashboard, Airtable PortfolioData record count</div>
+  </div>
+
+  <div class="goal-card">
+    <div class="goal-num">Goal 2</div>
+    <div class="goal-title">Lead Pipeline: 576 Qualified Leads/Month via Sentinel Fleet</div>
+    <div class="metric"><strong>Target:</strong> 40-agent Sentinel fleet producing 24 qualified leads/day</div>
+    <div class="metric"><strong>Conversion:</strong> 5% qualification rate from 2,400 daily calls</div>
+    <div class="metric"><strong>Measure:</strong> Airtable Lead Contacts table, Sentinel Campaign Analytics</div>
+  </div>
+
+  <div class="goal-card">
+    <div class="goal-num">Goal 3</div>
+    <div class="goal-title">Operational Excellence: 100% Inspection Compliance</div>
+    <div class="metric"><strong>Target:</strong> Zero missed inspections. Every visit documented with timestamped photography within 4 hours.</div>
+    <div class="metric"><strong>SLA:</strong> Emergency response within 2 hours. Standard issues escalated within 24 hours.</div>
+    <div class="metric"><strong>Measure:</strong> Airtable Inspections table, Operations dashboard</div>
+  </div>
+
+  <div class="goal-card">
+    <div class="goal-num">Goal 4</div>
+    <div class="goal-title">Franchise Readiness: Playbook Complete by Q1 2027</div>
+    <div class="metric"><strong>Target:</strong> Documented SOPs, technology stack, training protocol, and unit economics for market replication.</div>
+    <div class="metric"><strong>Deliverable:</strong> Franchise operations manual (200+ pages), certified training program</div>
+    <div class="metric"><strong>Measure:</strong> Playbook completion %, pilot franchise signed</div>
+  </div>
+
+  <div class="goal-card">
+    <div class="goal-num">Goal 5</div>
+    <div class="goal-title">Technology Moat: Full AI Operations Platform Deployed</div>
+    <div class="metric"><strong>Target:</strong> 382-agent AI fleet operational across 9 divisions. Zero manual data entry. Zero Zapier dependency.</div>
+    <div class="metric"><strong>Stack:</strong> Claude Code + Airtable + Cloudflare + Retell + Slack (5 platforms, zero bloat)</div>
+    <div class="metric"><strong>Measure:</strong> Fleet status dashboard, workflow success rate &gt; 95%</div>
+  </div>
+
+  <!-- ═══ OPERATING PRINCIPLES ═══ -->
+  <h2>III. Operating Principles</h2>
+  <div class="principles-grid">
+    <div class="principle">
+      <div class="num">01</div>
+      <div class="name">Ship, Then Iterate</div>
+      <div class="desc">V1 ships fast. V2 ships better. Perfection is the enemy of deployment. Every deliverable gets a version number.</div>
+    </div>
+    <div class="principle">
+      <div class="num">02</div>
+      <div class="name">Measure or Kill</div>
+      <div class="desc">If it can't be measured, it doesn't exist. Every initiative has a KPI. Miss the target 3 cycles in a row — it dies.</div>
+    </div>
+    <div class="principle">
+      <div class="num">03</div>
+      <div class="name">Zero Silos</div>
+      <div class="desc">Every system feeds every other system. Retail ops connect to the flowchart. The flowchart connects to staffing. Staffing connects to the financial model.</div>
+    </div>
+    <div class="principle">
+      <div class="num">04</div>
+      <div class="name">Stress Test Everything</div>
+      <div class="desc">If it hasn't broken, it hasn't been tested. Apply maximum pressure before deployment. Fragile systems fail in production.</div>
+    </div>
+    <div class="principle">
+      <div class="num">05</div>
+      <div class="name">Automate the Repeatable</div>
+      <div class="desc">If a human does it twice, an AI does it forever. Manual processes are bugs, not features.</div>
+    </div>
+    <div class="principle">
+      <div class="num">06</div>
+      <div class="name">Fiduciary Standard</div>
+      <div class="desc">Every property managed as if owned by the operator. Audit-ready records. Full chain of custody. No exceptions.</div>
+    </div>
+  </div>
+
+  <!-- ═══ DECISION ENGINE ═══ -->
+  <h2>IV. Decision Engine — The Alignment Test</h2>
+  <p>Every initiative, feature, deliverable, or expenditure must pass this filter. If it fails any row — it dies.</p>
+
+  <table class="decision-matrix">
+    <thead>
+      <tr>
+        <th>Filter</th>
+        <th>Question</th>
+        <th>Pass</th>
+        <th>Kill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Mission Alignment</strong></td>
+        <td>Does this protect property value or generate revenue?</td>
+        <td><span class="badge-pass">PROCEED</span></td>
+        <td><span class="badge-kill">KILL</span></td>
+      </tr>
+      <tr>
+        <td><strong>Goal Impact</strong></td>
+        <td>Does this move at least one of the 5 core goals forward?</td>
+        <td><span class="badge-pass">PROCEED</span></td>
+        <td><span class="badge-kill">KILL</span></td>
+      </tr>
+      <tr>
+        <td><strong>Measurability</strong></td>
+        <td>Can we track its performance with a specific KPI?</td>
+        <td><span class="badge-pass">PROCEED</span></td>
+        <td><span class="badge-kill">KILL</span></td>
+      </tr>
+      <tr>
+        <td><strong>Scalability</strong></td>
+        <td>Does this work at 10x the current volume?</td>
+        <td><span class="badge-pass">PROCEED</span></td>
+        <td><span class="badge-kill">KILL</span></td>
+      </tr>
+      <tr>
+        <td><strong>Automation Potential</strong></td>
+        <td>Can this eventually run without human intervention?</td>
+        <td><span class="badge-pass">PROCEED</span></td>
+        <td><span class="badge-kill">KILL</span></td>
+      </tr>
+      <tr>
+        <td><strong>Time to Value</strong></td>
+        <td>Does V1 ship within 7 days?</td>
+        <td><span class="badge-pass">PROCEED</span></td>
+        <td><span class="badge-kill">DESCOPE</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══ GOVERNANCE STRUCTURE ═══ -->
+  <h2>V. Sovereign Governance Structure</h2>
+  <h3>Chain of Command</h3>
+  <ol>
+    <li><strong>CEO (David Hauer)</strong> — Final authority on strategy, capital allocation, and brand direction</li>
+    <li><strong>AI CEO (Claude)</strong> — Autonomous execution authority: build, deploy, publish, operate. Reports to CEO.</li>
+    <li><strong>MCCO-000 Sovereign</strong> — Master Chief Commanding Officer. Commands marketing and sales divisions.</li>
+    <li><strong>Division Commanders (9)</strong> — EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB</li>
+    <li><strong>Intelligence Officers (50)</strong> — ALPHA, BRAVO, CHARLIE, DELTA, ECHO squads</li>
+    <li><strong>Operational Agents (297)</strong> — Execution layer across all divisions</li>
+  </ol>
+
+  <h3>Authority Boundaries</h3>
+  <ul>
+    <li><strong>AI CEO may:</strong> Deploy code, update data, create content, manage infrastructure, execute workflows, publish to production</li>
+    <li><strong>AI CEO must escalate:</strong> Capital expenditures &gt; $500, legal commitments, public statements on behalf of David Hauer, hiring decisions</li>
+    <li><strong>CEO retains:</strong> Veto authority, brand voice final approval, investor relations, franchise agreements</li>
+  </ul>
+
+  <!-- ═══ ITERATION PROTOCOL ═══ -->
+  <h2>VI. Iteration Protocol</h2>
+  <ol>
+    <li><strong>Build V1</strong> — Ship minimum viable deliverable within 24 hours</li>
+    <li><strong>Stress Test</strong> — Apply maximum pressure. Document every failure point.</li>
+    <li><strong>Identify Friction</strong> — What slowed down? What broke? What confused?</li>
+    <li><strong>Remove Friction</strong> — Cut, simplify, automate</li>
+    <li><strong>Ship V2</strong> — Faster, leaner, stronger</li>
+    <li><strong>Repeat</strong> — Until nothing unnecessary remains and everything performs under pressure</li>
+  </ol>
+
+  <!-- ═══ SIGNATURE ═══ -->
+  <div class="footer-stamp">
+    <div class="sig">Coastal Key Treasure Coast Asset Management</div>
+    <div class="date">Ratified: April 14, 2026 — Document ID: CK-GOV-001-v1</div>
+  </div>
+
+</div>
+</body>
+</html>

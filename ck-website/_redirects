@@ -1,25 +1,18 @@
 # ══════════════════════════════════════════════════════════════════════════
 # Coastal Key — Cloudflare Pages Redirects
-# Consolidates ALL subdomains and legacy paths to coastalkey-pm.com
+#
+# Subdomain consolidation to primary domain.
+# All site content served via _worker.js reverse proxy to Manus origin.
 # ══════════════════════════════════════════════════════════════════════════
 
-# ── Subdomain consolidation (all point to primary domain) ──
+# ── Subdomain consolidation ──
 https://www.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
-https://app.coastalkey-pm.com/*       https://coastalkey-pm.com/portal/:splat 301
-https://dashboard.coastalkey-pm.com/* https://coastalkey-pm.com/portal/dashboard 301
-https://agents.coastalkey-pm.com/*    https://coastalkey-pm.com/portal/agents 301
-https://api.coastalkey-pm.com/*       https://coastalkey-pm.com/portal/:splat 301
-https://admin.coastalkey-pm.com/*     https://coastalkey-pm.com/portal/:splat 301
-https://old.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat       301
-https://staging.coastalkey-pm.com/*   https://coastalkey-pm.com/:splat       301
-https://dev.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat       301
-https://beta.coastalkey-pm.com/*      https://coastalkey-pm.com/:splat       301
-
-# ── Legacy path redirects ──
-/dashboard                            /portal/dashboard                      301
-/command-center                       /portal/dashboard                      301
-/login                                /portal                                301
-/admin                                /portal                                301
-
-# ── SPA fallback — all unmatched routes serve index.html ──
-/*                                    /index.html                            200
+https://app.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
+https://dashboard.coastalkey-pm.com/* https://coastalkey-pm.com/:splat      301
+https://agents.coastalkey-pm.com/*    https://coastalkey-pm.com/:splat      301
+https://api.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
+https://admin.coastalkey-pm.com/*     https://coastalkey-pm.com/:splat      301
+https://old.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
+https://staging.coastalkey-pm.com/*   https://coastalkey-pm.com/:splat      301
+https://dev.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
+https://beta.coastalkey-pm.com/*      https://coastalkey-pm.com/:splat      301

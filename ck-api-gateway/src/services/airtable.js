@@ -52,6 +52,8 @@ export const TABLES = {
   MARKET_DATA:          'tblVjGvL1UYin5U2h',
   PORTFOLIO_DATA:       'tblaRlV25mTmeZdzQ',
   REGULATORY_DATA:      'tblyyEjxqQjEmO16T',
+  // ── Slack Integration (wired 2026-04-05) ──
+  SLACK_INTEGRATIONS:   'tbluSdmSXReoqcROr',
 };
 
 /**

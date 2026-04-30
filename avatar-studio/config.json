@@ -1,0 +1,12 @@
+{
+  "baseUrl": null,
+  "generatePath": null,
+  "statusPath": null,
+  "authHeader": null,
+  "fields": {
+    "promptField": "prompt",
+    "metadataField": "metadata",
+    "outputFormatField": "output_format"
+  },
+  "notes": "Populate baseUrl, generatePath, statusPath, authHeader, and field names once Banana Pro credentials are provisioned. Until then, use --dry-run."
+}

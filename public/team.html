@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coastal Key | Team Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy: #1B2A4A; --navy-deep: #0F1B32; --white: #FFFFFF;
+      --gold: #D4A843; --gold-dark: #8B6914; --gold-light: #F5E6A3;
+      --text-mid: #475569; --border: #e2e8f0; --bg: #F8F9FB;
+      --font-serif: 'EB Garamond', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, sans-serif;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--navy-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+    .login-card {
+      background: var(--white);
+      border-radius: 6px;
+      padding: 56px 48px 48px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .login-brand {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .login-subtitle {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 36px;
+    }
+    .login-label {
+      display: block;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+    }
+    .login-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+      transition: border-color 0.2s;
+      margin-bottom: 24px;
+    }
+    .login-input:focus {
+      outline: none;
+      border-color: var(--navy);
+    }
+    .login-input.error {
+      border-color: #dc2626;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .login-btn:hover { background: var(--navy-deep); }
+    .login-error {
+      color: #dc2626;
+      font-size: 0.8rem;
+      margin-top: 16px;
+      min-height: 20px;
+    }
+    .login-back {
+      display: inline-block;
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .login-back:hover { color: var(--navy); }
+
+    /* Authenticated state */
+    .portal-redirect {
+      display: none;
+      text-align: center;
+    }
+    .portal-redirect.visible { display: block; }
+    .portal-redirect p {
+      font-size: 0.9rem;
+      color: var(--text-mid);
+      margin-bottom: 24px;
+    }
+    .portal-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .portal-link {
+      display: block;
+      padding: 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-decoration: none;
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .portal-link:hover {
+      border-color: var(--gold);
+      background: var(--white);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .portal-link span {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <!-- Login Form -->
+    <div id="loginForm">
+      <div class="login-brand">Coastal Key</div>
+      <div class="login-subtitle">Team Portal</div>
+      <label class="login-label" for="pw">Access Code</label>
+      <input class="login-input" type="password" id="pw" placeholder="Enter team access code" autocomplete="off">
+      <button class="login-btn" id="loginBtn">Authenticate</button>
+      <div class="login-error" id="loginError"></div>
+      <a href="/" class="login-back">Back to coastalkey-pm.com</a>
+    </div>
+
+    <!-- Authenticated Portal -->
+    <div class="portal-redirect" id="portalView">
+      <div class="login-brand">Coastal Key</div>
+      <div class="login-subtitle">Team Portal</div>
+      <p>Select a system to access.</p>
+      <div class="portal-links">
+        <a href="/dashboard.html" class="portal-link">Operations Dashboard<span>Appointments, revenue, drip campaigns, social calendar</span></a>
+        <a href="/book.html" class="portal-link">Booking System<span>Schedule and manage property inspections</span></a>
+        <a href="/api/health" class="portal-link">System Health<span>API status, uptime, and data integrity checks</span></a>
+        <a href="/api/report/preview" class="portal-link">Daily Report Preview<span>Today's revenue and schedule summary</span></a>
+      </div>
+      <a href="/" class="login-back">Back to main site</a>
+    </div>
+  </div>
+
+  <script>
+    const pw = document.getElementById('pw');
+    const btn = document.getElementById('loginBtn');
+    const err = document.getElementById('loginError');
+    const form = document.getElementById('loginForm');
+    const portal = document.getElementById('portalView');
+
+    async function attempt() {
+      btn.disabled = true;
+      btn.textContent = 'Authenticating...';
+      err.textContent = '';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: pw.value }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          sessionStorage.setItem('ck_token', data.token);
+          form.style.display = 'none';
+          portal.classList.add('visible');
+        } else {
+          pw.classList.add('error');
+          err.textContent = 'Invalid access code. Contact your administrator.';
+          setTimeout(() => pw.classList.remove('error'), 400);
+        }
+      } catch (e) {
+        err.textContent = 'Connection error. Please try again.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Authenticate';
+      }
+    }
+
+    btn.addEventListener('click', attempt);
+    pw.addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
+
+    // Validate existing session on page load
+    (async function checkSession() {
+      const token = sessionStorage.getItem('ck_token');
+      if (!token) return;
+
+      try {
+        const res = await fetch('/api/auth/validate', {
+          headers: { 'Authorization': 'Bearer ' + token },
+        });
+        if (res.ok) {
+          form.style.display = 'none';
+          portal.classList.add('visible');
+        } else {
+          sessionStorage.removeItem('ck_token');
+        }
+      } catch (e) {
+        // Network error — keep login form visible
+      }
+    })();
+  </script>
+</body>
+</html>
