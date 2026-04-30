@@ -13,8 +13,6 @@ concurrency:
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  WRANGLER_VERSION: '3'
 
 jobs:
   test:
@@ -24,33 +22,35 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
-
+          node-version: "20"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
-
       - name: Initialize data files
         run: node scripts/init-data.js
-
+      - name: Install gateway dependencies
+        working-directory: ck-api-gateway
+        run: npm install
+      - name: Install sentinel dependencies
+        working-directory: sentinel-webhook
+        run: npm install
+      - name: Install nemotron dependencies
+        working-directory: ck-nemotron-worker
+        run: npm install
       - name: Test Express Server
         run: npm run test:server
-
       - name: Test API Gateway
-        run: npm run test:gateway
-
-      - name: Test Media Automation Pipeline
-        run: node --test ck-api-gateway/src/__tests__/media-automation.test.js
-        continue-on-error: false
-
+        working-directory: ck-api-gateway
+        run: npm test
       - name: Test Sentinel Webhook
-        run: npm run test:sentinel
-
+        working-directory: sentinel-webhook
+        run: npm test
       - name: Test Nemotron Worker
-        run: npm run test:nemotron
+        working-directory: ck-nemotron-worker
+        run: npm test
 
-  preflight:
-    name: Preflight Token Check
+  deploy-gateway:
+    name: Deploy API Gateway
     needs: test
     if: github.ref == "refs/heads/main" && github.event_name == "push"
     runs-on: ubuntu-latest
@@ -58,164 +58,65 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Validate Cloudflare token
-        run: |
-          echo "Runner IP: $(curl -s https://ifconfig.me || echo 'unknown')"
-          echo "Account ID configured: $([ -n "$CLOUDFLARE_ACCOUNT_ID" ] && echo 'yes' || echo 'NO — MISSING')"
-          echo "API Token configured: $([ -n "$CLOUDFLARE_API_TOKEN" ] && echo 'yes' || echo 'NO — MISSING')"
-
-          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::error::CLOUDFLARE_API_TOKEN secret is not set. Add it in GitHub repo Settings > Secrets."
-            exit 1
-          fi
-
-          for attempt in 1 2 3; do
-            if wrangler whoami 2>&1; then
-              echo "Cloudflare token validated successfully."
-              exit 0
-            fi
-            echo "Attempt $attempt failed. Retrying in $((attempt * 5))s..."
-            sleep $((attempt * 5))
-          done
-
-          echo ""
-          echo "::error::Cloudflare API token validation failed after 3 attempts."
-          echo "::error::Common causes:"
-          echo "::error::  1. Token has IP restrictions — remove them in Cloudflare Dashboard > My Profile > API Tokens"
-          echo "::error::  2. Token expired — generate a new one with Workers edit permissions"
-          echo "::error::  3. Token lacks required permissions — needs Account:Workers Scripts:Edit, Zone:Workers Routes:Edit"
-          exit 1
-
-  deploy-website:
-    name: Deploy Website
-    needs: preflight
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Create Pages project if needed
-        run: wrangler pages project create coastalkey-pm --production-branch=main 2>&1 || echo "Project may already exist — continuing"
-
-      - name: Deploy to Cloudflare Pages
-        run: |
-          for i in 1 2 3; do
-            wrangler pages deploy ck-website --project-name=coastalkey-pm --branch=main --commit-dirty=true && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
-
-  deploy-gateway:
-    name: Deploy API Gateway
-    needs: preflight
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Install dependencies
+          node-version: "20"
+      - name: Install root dependencies
+        run: npm install --ignore-scripts
+      - name: Install gateway dependencies
+        working-directory: ck-api-gateway
         run: npm install
-
       - name: Deploy to Cloudflare
         working-directory: ck-api-gateway
-        run: |
-          for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
+        run: npx wrangler deploy
 
   deploy-sentinel:
     name: Deploy Sentinel Webhook
-    needs: [preflight, deploy-gateway]
+    needs: test
+    if: github.ref == "refs/heads/main" && github.event_name == "push"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Install dependencies
+          node-version: "20"
+      - name: Install root dependencies
+        run: npm install --ignore-scripts
+      - name: Install sentinel dependencies
+        working-directory: sentinel-webhook
         run: npm install
-
       - name: Deploy to Cloudflare
         working-directory: sentinel-webhook
-        run: |
-          for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
+        run: npx wrangler deploy
 
   deploy-nemotron:
     name: Deploy Nemotron Worker
-    needs: [preflight, deploy-gateway]
+    needs: test
+    if: github.ref == "refs/heads/main" && github.event_name == "push"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Install dependencies
+          node-version: "20"
+      - name: Install root dependencies
+        run: npm install --ignore-scripts
+      - name: Install nemotron dependencies
+        working-directory: ck-nemotron-worker
         run: npm install
-
       - name: Deploy to Cloudflare
         working-directory: ck-nemotron-worker
-        run: |
-          for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
+        run: npx wrangler deploy
 
   deploy-command-center:
     name: Deploy Command Center
-    needs: preflight
+    needs: test
+    if: github.ref == "refs/heads/main" && github.event_name == "push"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Create Pages project if needed
-        run: wrangler pages project create ck-command-center --production-branch=main 2>&1 || echo "Project may already exist — continuing"
-
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install --ignore-scripts
       - name: Deploy to Cloudflare Pages
-        run: |
-          for i in 1 2 3; do
-            wrangler pages deploy ck-command-center --project-name=ck-command-center --branch=main --commit-dirty=true && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
+        run: npx wrangler pages deploy ck-command-center --project-name=ck-command-center
