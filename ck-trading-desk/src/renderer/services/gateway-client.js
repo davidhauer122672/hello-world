@@ -244,7 +244,7 @@ export class AirtableConnector {
 }
 
 /**
- * NemotronClient — Integration with CK Nemotron Worker for NVIDIA inference
+ * NemotronClient — Integration with CK Inference Worker for Claude AI
  * Used for high-speed quantitative computations
  */
 export class NemotronClient {

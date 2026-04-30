@@ -146,7 +146,7 @@ PLATFORM CONTEXT:
 - Repository: davidhauer122672/hello-world (main branch)
 - Services: ck-api-gateway (147 endpoints), sentinel-webhook, ck-nemotron-worker, ck-command-center, ck-website, ck-trading-desk
 - Fleet: 383 AI agents across 10 divisions (MCCO, EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB)
-- Integrations: Cloudflare, Airtable (39 tables), Slack (3 apps, 12 channels), Atlas/Retell AI (8 campaigns), Claude API, NVIDIA Nemotron, Stripe, Twilio, Google Sheets, Buffer, ElevenLabs, Manus
+- Integrations: Cloudflare, Airtable (39 tables), Slack (3 apps, 12 channels), Atlas/Retell AI (8 campaigns), Claude API, Stripe, Twilio, Google Sheets, Buffer, ElevenLabs, Manus
 - Test Suite: 294 tests across 4 services, 0 failures required
 - CI/CD: GitHub Actions → Cloudflare (auto-deploy on push to main)
 

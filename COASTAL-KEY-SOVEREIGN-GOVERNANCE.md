@@ -330,7 +330,7 @@ Coastal Key's Florida Homelessness Crisis Initiative is a strategic imperative, 
 |---|---|---|
 | CK API Gateway | ck-api-gateway.david-e59.workers.dev | 149 endpoints: inference, leads, agents, workflows, pricing, analysis, trading, MCCO, Atlas, Slack, Meta Ads |
 | Sentinel Webhook | sentinel-webhook.david-e59.workers.dev | Retell call_analyzed to Airtable + Slack pipeline |
-| Nemotron Worker | ck-nemotron-worker.david-e59.workers.dev | NVIDIA Nemotron inference |
+| Inference Worker | ck-nemotron-worker.david-e59.workers.dev | Claude AI inference |
 | Website | coastalkey-pm.com | Reverse proxy to Manus origin with edge caching |
 | Command Center | ck-command-center.pages.dev | Enterprise dashboard for 383-agent fleet |
 

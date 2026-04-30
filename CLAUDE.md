@@ -19,16 +19,16 @@ Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (133 endpoints)
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (142 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
-- **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
+- **Inference Worker**: https://ck-nemotron-worker.david-e59.workers.dev
 - **Website**: https://coastalkey-pm.com (reverse proxy → Manus origin)
 - **Command Center**: https://ck-command-center.pages.dev
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 133 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, frameworks (Cloudflare Worker)
-- **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 142 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, frameworks (Cloudflare Worker)
+- **ck-nemotron-worker**: Claude AI inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Dashboard UI for 383-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
@@ -116,7 +116,7 @@ POST /v1/mcco/post              — Generate high-engagement social post
 ## Secrets (all configured)
 - ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN
 - SLACK_WEBHOOK_URL, SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET
-- NVIDIA_API_KEY, ATLAS_API_KEY
+- ATLAS_API_KEY
 
 ## CI/CD
 GitHub Actions on push to main: test → preflight token check → deploy all services to Cloudflare.

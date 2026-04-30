@@ -122,7 +122,7 @@ hello-world/
 ├── package.json                 # Root workspace: ck-api-gateway, sentinel-webhook, ck-nemotron-worker
 ├── ck-api-gateway/              # Cloudflare Worker — 147 endpoints, 24 route modules
 ├── sentinel-webhook/            # Cloudflare Worker — Retell call pipeline
-├── ck-nemotron-worker/          # Cloudflare Worker — NVIDIA Nemotron 340B inference
+├── ck-nemotron-worker/          # Cloudflare Worker — Claude AI inference
 ├── ck-command-center/           # Cloudflare Pages — Enterprise dashboard + Gazette + Trader
 ├── ck-website/                  # Cloudflare Pages — Reverse proxy to Manus origin
 ├── ck-trading-desk/             # Electron + React — Desktop trading terminal
@@ -146,7 +146,7 @@ hello-world/
 | **ck-website** | Cloudflare Pages | `coastalkey-pm.com` | Proxy | Reverse proxy to Manus origin (`coastalkey-awfopuqz.manus.space`) with edge caching, SEO injection, URL rewriting |
 | **ck-command-center** | Cloudflare Pages | `ck-command-center.pages.dev` | Static | Enterprise dashboard, Gazette, Trading Desk UI, fleet monitoring |
 | **sentinel-webhook** | Cloudflare Worker | `sentinel-webhook.david-e59.workers.dev` | 2 | Retell `call_analyzed` → Airtable lead + Slack notification pipeline |
-| **ck-nemotron-worker** | Cloudflare Worker | `ck-nemotron-worker.david-e59.workers.dev` | 2 | NVIDIA Nemotron 340B inference endpoint |
+| **ck-nemotron-worker** | Cloudflare Worker | `ck-nemotron-worker.david-e59.workers.dev` | 2 | Claude AI inference endpoint |
 | **ck-trading-desk** | Electron 30 + React 18 | Desktop (Win/Mac/Linux) | IPC | Autonomous financial operations terminal with live market data |
 
 ### 2.3 Service Architecture Detail
@@ -188,7 +188,7 @@ hello-world/
 | **Edge Pages** | Cloudflare Pages | — |
 | **Edge KV** | Cloudflare KV | 4 namespaces |
 | **AI Inference** | Anthropic Claude | claude-sonnet-4-6 / claude-opus-4-6 |
-| **AI Inference** | NVIDIA Nemotron | 340B-instruct via NIM |
+| **AI Inference** | Anthropic Claude (Worker) | claude-sonnet-4 via Messages API |
 | **Database** | Airtable | 39 tables, base `appUSnNgpDkcEOzhN` |
 | **Voice AI** | Retell AI + Atlas AI | youratlas.com, 8 campaigns |
 | **Payments** | Stripe | 20.4.1 |
@@ -617,7 +617,7 @@ POST /v1/workflows/wf4                      — WF-4 Long-Tail Nurture
 |----------|------|---------|---------|
 | ck-api-gateway | Worker | `david-e59` subdomain | Central API — 147 endpoints |
 | sentinel-webhook | Worker | `david-e59` subdomain | Retell call pipeline |
-| ck-nemotron-worker | Worker | `david-e59` subdomain | NVIDIA inference proxy |
+| ck-nemotron-worker | Worker | `david-e59` subdomain | Claude AI inference |
 | coastalkey-pm | Pages | `coastalkey-pm.com` | Website reverse proxy |
 | ck-command-center | Pages | `ck-command-center.pages.dev` | Dashboard + Gazette |
 | CACHE | KV | `2a4a09a04ea146b29fa06ebb9af61609` | Inference result cache |
@@ -705,7 +705,7 @@ POST /v1/workflows/wf4                      — WF-4 Long-Tail Nurture
 
 **Integration Points:** `/v1/inference`, `/v1/content/generate`, `/v1/email/compose`, `/v1/email/classify`, `/v1/mcco/directive`, `/v1/frameworks/apply`, `/v1/thinking-coach/*`, `/v1/deals/strategy`, `/v1/analysis/*`
 
-### 5.6 NVIDIA Nemotron (Secondary Inference)
+### 5.6 Claude AI Inference Worker
 
 **Model:** `nvidia/nemotron-4-340b-instruct` | **API:** NVIDIA NIM (`integrate.api.nvidia.com`)
 **Endpoint:** `POST /v1/inference` on `ck-nemotron-worker`
@@ -1180,7 +1180,7 @@ ckos investor-package --property "456 Harbor Dr" --format pdf --send gmail
 | `SLACK_WEBHOOK_URL` | Gateway | Legacy fallback notifications |
 | `SLACK_BOT_TOKEN` | Gateway | Bot API operations (xoxb-...) |
 | `SLACK_SIGNING_SECRET` | Gateway | HMAC-SHA256 signature verification |
-| `NVIDIA_API_KEY` | Nemotron | Nemotron 340B inference |
+| `ANTHROPIC_API_KEY` | Nemotron Worker | Claude AI inference |
 | `ATLAS_API_KEY` | Gateway | youratlas.com campaign API |
 | `CLOUDFLARE_API_TOKEN` | CI/CD | Deployment authorization |
 | `CLOUDFLARE_ACCOUNT_ID` | CI/CD | Account targeting |
@@ -1283,7 +1283,7 @@ Verifies:
 | `coastalkey-pm.com` | CNAME | Cloudflare Pages | Primary website |
 | `ck-api-gateway.david-e59.workers.dev` | Workers subdomain | Cloudflare Worker | API gateway |
 | `sentinel-webhook.david-e59.workers.dev` | Workers subdomain | Cloudflare Worker | Retell pipeline |
-| `ck-nemotron-worker.david-e59.workers.dev` | Workers subdomain | Cloudflare Worker | NVIDIA inference |
+| `ck-nemotron-worker.david-e59.workers.dev` | Workers subdomain | Cloudflare Worker | Claude AI inference |
 | `ck-command-center.pages.dev` | Pages subdomain | Cloudflare Pages | Dashboard |
 
 **Subdomain Policy:** All subdomains redirect to `coastalkey-pm.com`. Eliminated: www, app, dashboard, agents, api, admin, old, staging, dev, beta.

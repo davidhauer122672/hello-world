@@ -173,7 +173,7 @@ Printable one-page card for the fleet:
 |---|---|---|
 | **Prompt Library** | `CK-MASTER-PROMPTS.md` + `CK-CONTENT-MAXXING-SKILL.md` + this file | Versioned prompt capital |
 | **ck-api-gateway** | `POST /v1/inference` | Claude execution endpoint |
-| **ck-nemotron-worker** | `POST /v1/inference` | NVIDIA inference alternative |
+| **ck-nemotron-worker** | `POST /v1/inference` | Claude AI inference (dedicated worker) |
 | **Airtable** | base `appUSnNgpDkcEOzhN` | Prompt versioning table |
 | **Slack** | `#tech-alerts` | Prompt release notifications |
 | **CLAUDE.md** | Repo root | Primary context doc for every Claude session |

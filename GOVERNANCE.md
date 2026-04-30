@@ -152,7 +152,7 @@ Retell AI ───── Voice campaigns via Atlas platform
 
 Claude API ──── Inference, content gen, thinking coach
 
-NVIDIA ───────── Nemotron 340B inference
+Anthropic ────── Claude AI inference (dedicated worker)
 
 Stripe ───────── Payment processing + webhooks
 

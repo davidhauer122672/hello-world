@@ -15,7 +15,7 @@ Enterprise AI operations platform for Coastal Key Property Management — Treasu
 | **ck-website** | Cloudflare Pages | Reverse proxy to Manus production site with edge caching, SEO injection |
 | **ck-command-center** | Cloudflare Pages | Enterprise dashboard, trading desk, fleet command, Gazette |
 | **sentinel-webhook** | Cloudflare Worker | Retell call_analyzed → Airtable + Slack pipeline |
-| **ck-nemotron-worker** | Cloudflare Worker | NVIDIA Nemotron inference endpoint |
+| **ck-nemotron-worker** | Cloudflare Worker | Claude AI inference endpoint |
 | **ck-trading-desk** | Electron + React | Desktop trading terminal with real-time market data |
 
 ## Quick Start
@@ -50,7 +50,7 @@ All routes prefixed `/v1/`. Auth via Bearer token or Slack HMAC-SHA256 signature
 **Slack** — 3 apps, 10 slash commands, 12 programmatic channels
 **Retell AI** — Voice agent campaigns via Atlas platform
 **Claude API** — Inference, content generation, thinking coach
-**NVIDIA** — Nemotron 340B inference
+**Anthropic** — Claude AI inference (dedicated worker)
 **Stripe** — Payment processing
 
 ## CI/CD

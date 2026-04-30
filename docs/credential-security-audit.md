@@ -24,7 +24,7 @@
 | CRED-012 | GMAIL_REFRESH_TOKEN | Google | Gmail send | Auto-renew | ACTIVE |
 | CRED-013 | META_PAGE_ACCESS_TOKEN | Meta | Ad management | 60 days | ACTIVE |
 | CRED-014 | META_AD_ACCOUNT_ID | Meta | Ad account | Static | ACTIVE |
-| CRED-015 | NVIDIA_API_KEY | NVIDIA | Nemotron inference | 90 days | ACTIVE |
+| CRED-015 | ANTHROPIC_API_KEY | Anthropic | Claude inference (worker) | No expiry | ACTIVE |
 
 ---
 

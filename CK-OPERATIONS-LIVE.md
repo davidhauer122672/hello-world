@@ -104,7 +104,7 @@
 | Slack | 3 apps → 12 channels | Bot OAuth + HMAC-SHA256 | Notifications, commands, events | WIRED |
 | Atlas AI / Retell | 8 campaigns → voice calls | Bearer token (`ATLAS_API_KEY`) | Inbound, outbound, speed-to-lead | WIRED |
 | Anthropic Claude | Inference + content + thinking | API key (`ANTHROPIC_API_KEY`) | AI operations across all modules | WIRED |
-| NVIDIA Nemotron | Nemotron Worker → NIM API | Bearer token (`NVIDIA_API_KEY`) | 340B inference fallback | WIRED |
+| Anthropic Claude (Worker) | Inference Worker → Messages API | API key (`ANTHROPIC_API_KEY`) | Dedicated Claude inference | WIRED |
 | Stripe | Express → checkout + webhooks | Secret key + webhook secret | Payment processing | WIRED |
 | Twilio | Express → SMS delivery | Account SID + auth token | CEO reports, escalation alerts | WIRED |
 | Google Sheets | Express → appointment sync | Service account JSON | Write-only data sync | WIRED |
