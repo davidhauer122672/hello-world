@@ -3,6 +3,9 @@
  * Revenue counter, lead heat index, AI suggestions, quick actions
  */
 
+import * as api from '../utils/api.js';
+import { getState } from '../utils/state.js';
+
 export function renderHome() {
   return `
     <!-- Mission Banner -->
@@ -17,9 +20,9 @@ export function renderHome() {
         <div>
           <div class="text-xs text-dim mb-sm" style="margin-bottom:4px">Monthly Revenue</div>
           <div class="metric-value gold" id="revenue-counter">$0</div>
-          <div class="metric-delta up mt-sm" style="margin-top:8px">+12.4% vs last month</div>
+          <div class="metric-delta up mt-sm" id="revenue-delta" style="margin-top:8px">+12.4% vs last month</div>
         </div>
-        <div class="gauge-ring" style="--gauge-value:78%">
+        <div class="gauge-ring" id="revenue-gauge" style="--gauge-value:78%">
           <span class="gauge-label">78%</span>
         </div>
       </div>
@@ -28,15 +31,15 @@ export function renderHome() {
     <!-- Live Metrics Row -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-sm);margin-bottom:var(--space-lg);" class="animate-slide-up" style="animation-delay:100ms">
       <div class="card" style="padding:var(--space-md);text-align:center;">
-        <div class="metric-value blue" style="font-size:1.5rem;">247</div>
+        <div class="metric-value blue" id="metric-leads" style="font-size:1.5rem;">247</div>
         <div class="metric-label">Active Leads</div>
       </div>
       <div class="card" style="padding:var(--space-md);text-align:center;">
-        <div class="metric-value green" style="font-size:1.5rem;">342</div>
+        <div class="metric-value green" id="metric-agents" style="font-size:1.5rem;">342</div>
         <div class="metric-label">Agents Online</div>
       </div>
       <div class="card" style="padding:var(--space-md);text-align:center;">
-        <div class="metric-value" style="font-size:1.5rem;color:var(--ck-cyan);">98.7%</div>
+        <div class="metric-value" id="metric-uptime" style="font-size:1.5rem;color:var(--ck-cyan);">98.7%</div>
         <div class="metric-label">Uptime</div>
       </div>
     </div>
@@ -119,10 +122,10 @@ export function renderHome() {
       <span class="section-title">Fleet Status</span>
       <button class="section-action" onclick="window.location.hash='systems'">Details</button>
     </div>
-    <div class="card">
+    <div class="card" id="fleet-status-card">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-md);text-align:center;">
         <div>
-          <div style="font-size:0.85rem;font-weight:700;color:var(--ck-green);">290</div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--ck-green);" id="fleet-agents">290</div>
           <div class="text-xs text-dim" style="margin-top:4px;">AI Agents</div>
           <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:6px;">
             <span class="status-dot active"></span>
@@ -130,7 +133,7 @@ export function renderHome() {
           </div>
         </div>
         <div>
-          <div style="font-size:0.85rem;font-weight:700;color:var(--ck-amber);">50</div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--ck-amber);" id="fleet-intel">50</div>
           <div class="text-xs text-dim" style="margin-top:4px;">Intel Officers</div>
           <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:6px;">
             <span class="status-dot active"></span>
@@ -138,7 +141,7 @@ export function renderHome() {
           </div>
         </div>
         <div>
-          <div style="font-size:0.85rem;font-weight:700;color:var(--ck-purple);">20</div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--ck-purple);" id="fleet-email">20</div>
           <div class="text-xs text-dim" style="margin-top:4px;">Email Agents</div>
           <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:6px;">
             <span class="status-dot active"></span>
@@ -156,6 +159,59 @@ export function renderHome() {
       </div>
     </div>
   `;
+}
+
+export function initHome() {
+  loadDashboardData();
+  loadSystemStatus();
+}
+
+async function loadDashboardData() {
+  try {
+    const data = await api.getDashboard();
+    if (data.revenue !== undefined) {
+      const el = document.getElementById('revenue-counter');
+      if (el) el.textContent = '$' + Number(data.revenue).toLocaleString();
+    }
+    if (data.revenueChange !== undefined) {
+      const el = document.getElementById('revenue-delta');
+      if (el) el.textContent = `${data.revenueChange > 0 ? '+' : ''}${data.revenueChange}% vs last month`;
+    }
+    if (data.activeLeads !== undefined) {
+      const el = document.getElementById('metric-leads');
+      if (el) el.textContent = data.activeLeads.toLocaleString();
+    }
+    if (data.agentsOnline !== undefined) {
+      const el = document.getElementById('metric-agents');
+      if (el) el.textContent = data.agentsOnline.toLocaleString();
+    }
+    if (data.uptime !== undefined) {
+      const el = document.getElementById('metric-uptime');
+      if (el) el.textContent = data.uptime + '%';
+    }
+  } catch (_) {
+    // Graceful degradation — sample data remains visible
+  }
+}
+
+async function loadSystemStatus() {
+  try {
+    const data = await api.getSystemStatus();
+    if (data.agents !== undefined) {
+      const el = document.getElementById('fleet-agents');
+      if (el) el.textContent = data.agents;
+    }
+    if (data.intelOfficers !== undefined) {
+      const el = document.getElementById('fleet-intel');
+      if (el) el.textContent = data.intelOfficers;
+    }
+    if (data.emailAgents !== undefined) {
+      const el = document.getElementById('fleet-email');
+      if (el) el.textContent = data.emailAgents;
+    }
+  } catch (_) {
+    // Graceful degradation
+  }
 }
 
 function generateHeatCells() {

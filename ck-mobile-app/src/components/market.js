@@ -3,6 +3,8 @@
  * Daily AI briefings, regional trend analysis, pricing recommendations
  */
 
+import * as api from '../utils/api.js';
+
 export function renderMarket() {
   return `
     <div class="flex justify-between items-center mb-lg" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-lg);">
@@ -10,14 +12,14 @@ export function renderMarket() {
         <h2 style="font-size:1.35rem;">Market Intelligence</h2>
         <p class="text-sm text-dim" style="margin-top:4px;">AI-powered market analysis</p>
       </div>
-      <span class="tag tag-gold">Live</span>
+      <span class="tag tag-gold" id="market-status">Live</span>
     </div>
 
     <!-- Daily AI Briefing -->
-    <div class="card-hero mb-lg" style="padding:var(--space-xl);">
-      <div class="text-xs" style="color:var(--ck-gold);margin-bottom:var(--space-sm);">Daily AI Briefing — April 3, 2026</div>
-      <h3 style="font-size:1.1rem;margin-bottom:var(--space-md);">Treasure Coast Market Overview</h3>
-      <div style="font-size:0.82rem;color:#d4d4d8;line-height:1.65;">
+    <div class="card-hero mb-lg" style="padding:var(--space-xl);" id="daily-briefing">
+      <div class="text-xs" style="color:var(--ck-gold);margin-bottom:var(--space-sm);" id="briefing-date">Daily AI Briefing</div>
+      <h3 style="font-size:1.1rem;margin-bottom:var(--space-md);" id="briefing-title">Treasure Coast Market Overview</h3>
+      <div style="font-size:0.82rem;color:#d4d4d8;line-height:1.65;" id="briefing-body">
         <p style="margin-bottom:8px;">The Treasure Coast luxury segment shows continued strength with median prices up <strong style="color:var(--ck-green);">8.2%</strong> year-over-year in Martin County. Stuart and Palm City lead growth with increased buyer activity from out-of-state investors.</p>
         <p>Key signal: Absentee owner listings in Hobe Sound have decreased <strong style="color:var(--ck-red);">12%</strong>, suggesting increased holding confidence. Recommend adjusting outreach strategy to emphasize property management services over transaction-based pitches.</p>
       </div>
@@ -33,7 +35,7 @@ export function renderMarket() {
       <button class="section-action">National View</button>
     </div>
 
-    <!-- Trend Cards by Zone -->
+    <div id="zone-trends">
     ${renderZoneTrend('Stuart', '+8.2%', 'up', '$685K', '24 days', '142')}
     ${renderZoneTrend('Jupiter', '+6.7%', 'up', '$1.2M', '31 days', '98')}
     ${renderZoneTrend('Hobe Sound', '+5.1%', 'up', '$945K', '28 days', '67')}
@@ -41,14 +43,16 @@ export function renderMarket() {
     ${renderZoneTrend('Jensen Beach', '+3.2%', 'up', '$475K', '35 days', '54')}
     ${renderZoneTrend('Port St. Lucie', '+2.1%', 'up', '$385K', '19 days', '234')}
     ${renderZoneTrend('Vero Beach', '+1.8%', 'up', '$560K', '42 days', '76')}
+    </div>
 
     <div class="divider"></div>
 
     <!-- Pricing Recommendations -->
     <div class="section-header">
       <span class="section-title">Pricing Recommendations</span>
-      <button class="section-action">Run Analysis</button>
+      <button class="section-action" id="btn-run-pricing">Run Analysis</button>
     </div>
+    <div id="pricing-recs">
     <div class="card mb-md" style="border-left:3px solid var(--ck-green);margin-bottom:var(--space-sm);">
       <div style="font-size:0.85rem;font-weight:600;color:#fff;">Luxury Segment (Stuart)</div>
       <div style="font-size:0.75rem;color:#71717a;margin-top:4px;">AI recommends <strong style="color:var(--ck-green);">3-5% increase</strong> in management fees for properties >$1M. Market supports premium positioning.</div>
@@ -60,6 +64,7 @@ export function renderMarket() {
     <div class="card" style="border-left:3px solid var(--ck-blue);">
       <div style="font-size:0.85rem;font-weight:600;color:#fff;">Investor Opportunity (Hobe Sound)</div>
       <div style="font-size:0.75rem;color:#71717a;margin-top:4px;">Decreased listings signal supply constraint. Alert investor pipeline — <strong style="color:var(--ck-blue);">acquisition window narrowing</strong>.</div>
+    </div>
     </div>
 
     <div class="divider"></div>
@@ -86,9 +91,54 @@ export function renderMarket() {
     <!-- Governance Footer -->
     <div class="divider"></div>
     <div style="text-align:center;padding:var(--space-sm) 0;">
-      <div style="font-size:0.6rem;color:var(--ck-gold-dim);letter-spacing:0.08em;">Intelligence Division &middot; 30 Agents Active &middot; Updated 15 min ago</div>
+      <div style="font-size:0.6rem;color:var(--ck-gold-dim);letter-spacing:0.08em;" id="market-footer">Intelligence Division &middot; 30 Agents Active &middot; Updated 15 min ago</div>
     </div>
   `;
+}
+
+export function initMarket() {
+  loadMarketBrief();
+  loadPricingZones();
+}
+
+async function loadMarketBrief() {
+  try {
+    const data = await api.getMarketBrief();
+    if (data.title) {
+      const el = document.getElementById('briefing-title');
+      if (el) el.textContent = data.title;
+    }
+    if (data.date) {
+      const el = document.getElementById('briefing-date');
+      if (el) el.textContent = `Daily AI Briefing — ${data.date}`;
+    }
+    if (data.body) {
+      const el = document.getElementById('briefing-body');
+      if (el) el.innerHTML = data.body;
+    }
+    if (data.zones && data.zones.length > 0) {
+      const container = document.getElementById('zone-trends');
+      if (container) {
+        container.innerHTML = data.zones.map((z) =>
+          renderZoneTrend(z.name, z.change, z.direction || 'up', z.median, z.dom, z.listings)
+        ).join('');
+      }
+    }
+  } catch (_) {
+    // Graceful degradation — sample data remains
+  }
+}
+
+async function loadPricingZones() {
+  try {
+    const data = await api.getPricingZones();
+    if (data.lastUpdated) {
+      const el = document.getElementById('market-footer');
+      if (el) el.textContent = `Intelligence Division · 30 Agents Active · Updated ${data.lastUpdated}`;
+    }
+  } catch (_) {
+    // Graceful degradation
+  }
 }
 
 function renderZoneTrend(zone, change, direction, median, dom, listings) {

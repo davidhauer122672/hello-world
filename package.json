@@ -18,9 +18,11 @@
     "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
     "deploy:mobile": "npx wrangler pages deploy ck-mobile-app --project-name=ck-mobile-app",
     "deploy:builder": "npx wrangler pages deploy ck-app-builder --project-name=ck-app-builder",
-    "test": "npm run test:gateway && npm run test:sentinel",
+    "test": "npm run test:gateway && npm run test:sentinel && npm run test:mobile && npm run test:builder",
     "test:gateway": "cd ck-api-gateway && npm test",
-    "test:sentinel": "cd sentinel-webhook && npm test"
+    "test:sentinel": "cd sentinel-webhook && npm test",
+    "test:mobile": "node --test ck-mobile-app/src/__tests__/*.test.js",
+    "test:builder": "node --test ck-app-builder/src/__tests__/*.test.js"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"

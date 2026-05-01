@@ -4,21 +4,21 @@
  */
 
 import { setState, getState, subscribe } from '../utils/state.js';
-import { renderHome } from './home.js';
-import { renderLeads } from './leads.js';
+import { renderHome, initHome } from './home.js';
+import { renderLeads, initLeads } from './leads.js';
 import { renderAISkills } from './ai-skills.js';
 import { renderContent } from './content.js';
-import { renderMarket } from './market.js';
-import { renderSystems } from './systems.js';
+import { renderMarket, initMarket } from './market.js';
+import { renderSystems, initSystems } from './systems.js';
 import { renderSettings } from './settings.js';
 
 const TABS = [
-  { id: 'home', label: 'Home', icon: '\u2302' },
-  { id: 'leads', label: 'Leads', icon: '\u2691' },
-  { id: 'skills', label: 'AI Skills', icon: '\u2699' },
-  { id: 'content', label: 'Content', icon: '\u270E' },
-  { id: 'market', label: 'Market', icon: '\u2197' },
-  { id: 'systems', label: 'Systems', icon: '\u2630' }
+  { id: 'home', label: 'Home', icon: '⌂' },
+  { id: 'leads', label: 'Leads', icon: '⚑' },
+  { id: 'skills', label: 'AI Skills', icon: '⚙' },
+  { id: 'content', label: 'Content', icon: '✎' },
+  { id: 'market', label: 'Market', icon: '↗' },
+  { id: 'systems', label: 'Systems', icon: '☰' }
 ];
 
 const SCREENS = {
@@ -29,6 +29,13 @@ const SCREENS = {
   market: renderMarket,
   systems: renderSystems,
   settings: renderSettings
+};
+
+const SCREEN_INIT = {
+  home: initHome,
+  leads: initLeads,
+  market: initMarket,
+  systems: initSystems
 };
 
 export function renderAppShell() {
@@ -94,8 +101,6 @@ function renderScreen(tab) {
   screen.innerHTML = renderer();
   container.appendChild(screen);
 
-  // Initialize screen-specific logic
-  if (typeof SCREENS[tab + 'Init'] === 'function') {
-    SCREENS[tab + 'Init'](screen);
-  }
+  const init = SCREEN_INIT[tab];
+  if (init) init();
 }
