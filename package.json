@@ -5,16 +5,22 @@
   "description": "Coastal Key Enterprise AI Operations Platform — Monorepo",
   "workspaces": [
     "ck-api-gateway",
-    "sentinel-webhook"
+    "sentinel-webhook",
+    "ck-nemotron-worker",
+    "ck-trading-desk"
   ],
   "scripts": {
     "dev:gateway": "cd ck-api-gateway && npm run dev",
     "dev:sentinel": "cd sentinel-webhook && npm run dev",
-    "deploy": "npm run deploy:website && npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc",
+    "dev:nemotron": "cd ck-nemotron-worker && npm run dev",
+    "dev:trading": "cd ck-trading-desk && npm run dev",
+    "build:trading": "cd ck-trading-desk && npm run build",
+    "deploy": "npm run deploy:website && npm run deploy:gateway && npm run deploy:sentinel && npm run deploy:cc && npm run deploy:nemotron",
     "deploy:website": "npx wrangler pages deploy ck-website --project-name=coastalkey-pm",
     "deploy:gateway": "cd ck-api-gateway && npm run deploy",
     "deploy:sentinel": "cd sentinel-webhook && npm run deploy",
     "deploy:cc": "npx wrangler pages deploy ck-command-center --project-name=ck-command-center",
+    "deploy:nemotron": "cd ck-nemotron-worker && npm run deploy",
     "test": "npm run test:gateway && npm run test:sentinel",
     "test:gateway": "cd ck-api-gateway && npm test",
     "test:sentinel": "cd sentinel-webhook && npm test"
