@@ -115,8 +115,25 @@
  *   GET  /v1/slack/channels    — Slack channel architecture
  *   GET  /v1/slack/apps        — Slack app registry
  *   GET  /v1/slack/audit       — Slack platform audit record
+ *   GET  /v1/thinking/frameworks       — List all 7 expert thinking frameworks
+ *   GET  /v1/thinking/frameworks/:id   — Get single thinking framework
+ *   POST /v1/thinking/session          — Run thinking session (single framework)
+ *   POST /v1/thinking/multi            — Multi-framework analysis with synthesis
+ *   POST /v1/thinking/learning-blueprint — 90-day neuro-optimized learning blueprint
+ *   POST /v1/thinking/daily-models     — CEO daily mental models briefing
+ *   POST /v1/thinking/pm-mastery       — Property management mastery training
+ *   POST /v1/thinking/cognitive-os     — Cognitive OS audit & rewrite
+ *   POST /v1/thinking/life-architecture — High-performance life architecture
+ *   POST /v1/thinking/time-leverage    — Time leverage strategy (1yr = 10yr)
+ *   POST /v1/thinking/reprogram        — Psychological identity reprogrammer
+ *   GET  /v1/thinking/dashboard        — Thinking Coach operational dashboard
+ *   POST /v1/ceo/directive             — Issue CEO directive (optimize/architect/execute/diagnose/integrate)
+ *   POST /v1/ceo/operations-review     — Full operations review (5 directives + synthesis)
+ *   GET  /v1/ceo/operating-state       — Enterprise operating state
+ *   GET  /v1/ceo/dashboard             — CEO sovereign command dashboard
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
+ * Total: 137 route handlers | 382 agents | 10 divisions | 7 thinking frameworks | 5 CEO directive types
  */
 
 import { authenticate } from './middleware/auth.js';
@@ -245,7 +262,7 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 312,
+        agents: 382,
         divisions: 10,
         checks,
         timestamp: new Date().toISOString(),
