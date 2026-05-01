@@ -189,13 +189,13 @@ function renderEdition(d){
   const prop=d.propertyStats||{};
   const intel=d.intel||{};
 
-  const totalAgents=m.totalAgents||290;
+  const totalAgents=m.totalAgents||330;
   const activeAgents=m.byStatus?.active||0;
   const standbyAgents=m.byStatus?.standby||0;
   const systemStatus=h.status||'operational';
 
   el.innerHTML=`
-    <div class="headline-banner">ENTERPRISE FLEET FULLY OPERATIONAL<br>AT ${totalAgents} AGENTS ACROSS ${m.byDivision?Object.keys(m.byDivision).length:9} DIVISIONS</div>
+    <div class="headline-banner">ENTERPRISE FLEET FULLY OPERATIONAL<br>AT ${totalAgents} AGENTS ACROSS ${m.byDivision?Object.keys(m.byDivision).length:11} DIVISIONS</div>
     <div class="sub-headline">System reports ${systemStatus} status — All divisions reporting for duty</div>
     <hr class="thick-rule">
 
@@ -205,7 +205,7 @@ function renderEdition(d){
       <div class="article">
         <h3>Command Center Reports Full Fleet Deployment</h3>
         <div class="byline">Office of the Chief Executive</div>
-        <p>Coastal Key Property Management's enterprise AI operations platform has achieved full operational deployment with ${totalAgents} autonomous agents stationed across ${m.byDivision?Object.keys(m.byDivision).length:9} specialized divisions. The fleet, which represents the most ambitious AI workforce deployment in Treasure Coast property management history, operates continuously without human intervention for standard operations.</p>
+        <p>Coastal Key Property Management's enterprise AI operations platform has achieved full operational deployment with ${totalAgents} autonomous agents stationed across ${m.byDivision?Object.keys(m.byDivision).length:11} specialized divisions. The fleet, which represents the most ambitious AI workforce deployment in Treasure Coast property management history, operates continuously without human intervention for standard operations.</p>
         <p>Chief Executive operations confirm ${activeAgents} agents currently active, with ${standbyAgents} on standby reserve. The system architecture, built on Cloudflare's global edge network, delivers sub-50ms response times across all 38 API endpoints.</p>
       </div>
       <div class="stats-box">
@@ -220,7 +220,7 @@ function renderEdition(d){
       </div>
       <div class="article">
         <h4>System Health: ${systemStatus.toUpperCase()}</h4>
-        <p>Gateway version ${h.version||'2.0.0'} reports all subsystems nominal. The platform serves ${h.agents||totalAgents} agents across ${h.divisions||9} divisions from Cloudflare's global edge network spanning 300+ cities worldwide.</p>
+        <p>Gateway version ${h.version||'2.0.0'} reports all subsystems nominal. The platform serves ${h.agents||totalAgents} agents across ${h.divisions||11} divisions from Cloudflare's global edge network spanning 300+ cities worldwide.</p>
       </div>
     </div>
 
