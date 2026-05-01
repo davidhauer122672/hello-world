@@ -48,7 +48,7 @@ const CK_OPERATING_STATE = {
     databases: { airtable: { base: 'appUSnNgpDkcEOzhN', tables: 39 } },
     voiceCampaigns: 8,
     slackChannels: 33,
-    apiEndpoints: 90,
+    apiEndpoints: 137,
     thinkingFrameworks: 7,
   },
   serviceZones: [
@@ -154,9 +154,6 @@ Output as JSON: { capability_name, business_value, touchpoints (array with syste
 
 // ── Public API ─────────────────────────────────────────────────────────────
 
-/**
- * Issue a CEO directive — analyze and produce actionable operational orders.
- */
 export async function issueCeoDirective(env, type, target, context = '') {
   const systemPrompt = DIRECTIVE_PROMPTS[type];
   if (!systemPrompt) throw new Error(`Unknown directive type: ${type}`);
@@ -199,9 +196,6 @@ Execute the full ${type} protocol. Every recommendation must reference specific 
   };
 }
 
-/**
- * Run a full CEO operations review — applies all 5 directive types to a target.
- */
 export async function fullOperationsReview(env, target) {
   const types = ['diagnose', 'optimize', 'architect', 'execute', 'integrate'];
 
@@ -209,7 +203,6 @@ export async function fullOperationsReview(env, target) {
     types.map(type => issueCeoDirective(env, type, target)),
   );
 
-  // Synthesize into unified action plan
   const summaries = results.map(r =>
     `${r.directive_type.toUpperCase()}: ${JSON.stringify(r.directive).slice(0, 600)}`,
   ).join('\n\n');
@@ -240,16 +233,10 @@ export async function fullOperationsReview(env, target) {
   };
 }
 
-/**
- * Get the current operating state of the Coastal Key enterprise.
- */
 export function getOperatingState() {
   return CK_OPERATING_STATE;
 }
 
-/**
- * Get available directive types.
- */
 export function getDirectiveTypes() {
   return [
     { type: 'optimize', description: 'Audit and perfect a business system', protocol: 'MEASURE → IDENTIFY → REDESIGN → IMPLEMENT → VERIFY' },
