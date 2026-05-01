@@ -21,6 +21,7 @@ const healthRouter = require('./routes/health');
 const dashboardRouter = require('./routes/dashboard');
 const workflowsRouter = require('./routes/workflows');
 const standupRouter = require('./routes/standup');
+const strategyRouter = require('./routes/strategy');
 
 // Services
 const { startDailyReport, buildReport } = require('./lib/daily-report');
@@ -82,6 +83,7 @@ app.use('/api/visuals', requireAdminToken, visualsRouter);
 app.use('/api/drip', requireAdminToken, dripRouter);
 app.use('/api/workflows', requireAdminToken, workflowsRouter);
 app.use('/api/standup', requireAdminToken, standupRouter);
+app.use('/api/strategy', requireAdminToken, strategyRouter);
 
 // Manual report trigger (protected)
 app.post('/api/report/send', requireAdminToken, asyncWrap(async (req, res) => {
