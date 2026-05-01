@@ -1,1 +1,1 @@
-This file is too large to push inline — using a targeted patch approach instead.
+This content is being generated from the local resolved file.
