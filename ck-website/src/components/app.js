@@ -134,16 +134,16 @@ function renderHome(main) {
       <div class="hero-content">
         <div class="hero-badge">AI-Powered Property Management</div>
         <h1>Your Property. <br>Our Obsession.</h1>
-        <p class="hero-sub">Coastal Key delivers white-glove property management across Florida's Treasure Coast. 290 AI agents working 24/7 so your investment never sleeps.</p>
+        <p class="hero-sub">Coastal Key delivers white-glove property management across Florida's Treasure Coast. 330 AI agents working 24/7 so your investment never sleeps.</p>
         <div class="hero-actions">
           <a href="/contact" class="btn btn-primary">Get a Proposal</a>
           <a href="/services" class="btn btn-secondary">Our Services</a>
         </div>
         <div class="hero-stats">
-          <div class="stat"><span class="stat-num">290</span><span class="stat-label">AI Agents Active</span></div>
+          <div class="stat"><span class="stat-num">330</span><span class="stat-label">AI Agents Active</span></div>
           <div class="stat"><span class="stat-num">10</span><span class="stat-label">Service Zones</span></div>
           <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Operations</span></div>
-          <div class="stat"><span class="stat-num">9</span><span class="stat-label">Divisions</span></div>
+          <div class="stat"><span class="stat-num">11</span><span class="stat-label">Divisions</span></div>
         </div>
       </div>
     </section>
@@ -229,7 +229,7 @@ function renderAbout(main) {
     <section class="about-content">
       <div class="about-text">
         <h2>Built for the Future of Property Management</h2>
-        <p>Coastal Key Property Management operates 250 AI agents across 8 specialized divisions — Executive, Sales, Operations, Intelligence, Marketing, Finance, Vendor Management, and Technology. Our AI fleet handles everything from inbound sales calls to hurricane preparation, from investor reporting to social media content creation.</p>
+        <p>Coastal Key Property Management operates 330 AI agents across 11 specialized divisions — Executive, Sales, Operations, Intelligence, Marketing, Finance, Vendor Management, Technology, Website Development, Business Forecast, and Social Campaign Marketing. Our AI fleet handles everything from inbound sales calls to hurricane preparation, from investor reporting to social media content creation.</p>
         <p>But technology is only as good as the human vision behind it. Coastal Key was founded on a simple principle: property owners on the Treasure Coast deserve enterprise-grade operations with boutique-level personal care. Our AI systems amplify human expertise — they don't replace it.</p>
         <h3>Our Divisions</h3>
         <ul class="division-list">
@@ -241,6 +241,9 @@ function renderAbout(main) {
           <li><strong>Finance (25 agents)</strong> — Revenue tracking, investor reporting, budgets</li>
           <li><strong>Vendor Management (25 agents)</strong> — Compliance, contracts, quality</li>
           <li><strong>Technology (25 agents)</strong> — Platform ops, integrations, security</li>
+          <li><strong>Website Development (40 agents)</strong> — Website architecture, frontend dev, deployment</li>
+          <li><strong>Business Forecast (20 agents)</strong> — Market forecasting, demand modeling, CEO briefings</li>
+          <li><strong>Social Campaign Marketing (20 agents)</strong> — Revenue-generating social media, content campaigns</li>
         </ul>
       </div>
     </section>
@@ -355,12 +358,14 @@ function renderPortalDashboard(main) {
     { code: 'VEN', name: 'Vendor Mgmt',      agents: 25, color: '#f97316' },
     { code: 'TEC', name: 'Technology',        agents: 25, color: '#14b8a6' },
     { code: 'WEB', name: 'Web Development',    agents: 40, color: '#0ea5e9' },
+    { code: 'BFR', name: 'Business Forecast',  agents: 20, color: '#dc2626' },
+    { code: 'SCM', name: 'Social Campaigns',   agents: 20, color: '#e11d48' },
   ];
 
   const fallbackStats = {
-    totalAgents: 290,
-    activeAgents: 273,
-    divisions: 9,
+    totalAgents: 330,
+    activeAgents: 312,
+    divisions: 11,
     uptime: '99.9%',
   };
 
@@ -378,9 +383,9 @@ function renderPortalDashboard(main) {
 
     <!-- Stat Cards -->
     <div class="portal-stats" id="dash-stats">
-      <div class="stat-card"><span class="stat-num" id="stat-total">290</span><span class="stat-label">Total Agents</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-total">330</span><span class="stat-label">Total Agents</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-active">--</span><span class="stat-label">Active</span></div>
-      <div class="stat-card"><span class="stat-num" id="stat-divisions">9</span><span class="stat-label">Divisions</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-divisions">11</span><span class="stat-label">Divisions</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-uptime">99.9%</span><span class="stat-label">Uptime</span></div>
     </div>
 
@@ -493,7 +498,7 @@ function renderPortalAgents(main) {
     <div class="filter-bar">
       <input type="search" placeholder="Search agents..." class="filter-search">
       <select class="filter-select"><option value="">All Statuses</option><option>active</option><option>standby</option><option>training</option><option>maintenance</option></select>
-      <select class="filter-select"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option></select>
+      <select class="filter-select"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option><option value="BFR">Business Forecast</option><option value="SCM">Social Campaigns</option></select>
     </div>
     <div class="agent-grid" id="agent-list">Loading agents...</div>
   `);
