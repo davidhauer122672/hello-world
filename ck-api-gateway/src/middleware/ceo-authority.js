@@ -15,7 +15,7 @@
  *
  * Authority Scope:
  *   - Build, create, publish, deploy, push all platform components
- *   - Manage 360-unit autonomous fleet across 9 divisions
+ *   - Manage 382-unit autonomous fleet across 10 divisions
  *   - Execute all workflow pipelines (SCAA-1, WF-3, WF-4)
  *   - Control Slack integration (3 apps, 10 commands, 33 channels)
  *   - Manage Airtable database (39 tables, appUSnNgpDkcEOzhN)
