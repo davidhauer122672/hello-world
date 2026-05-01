@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key Enterprise Valuator — Live 3D Financial Intelligence</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020208;--navy:#1B2A4A;--gold:#C9A84C;
+  --neon-blue:#00d4ff;--neon-red:#ff2244;--neon-green:#00ff66;--neon-rgb-b:#0066ff;
+  --text:#e0e8f0;--text2:#8090a8;--mono:'SF Mono','Fira Code',Consolas,monospace;
+  --font:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text)}
+canvas{display:block;position:fixed;top:0;left:0;z-index:0}
+
+/* ── HUD Overlay ── */
+#hud{position:fixed;top:0;left:0;right:0;bottom:0;z-index:10;pointer-events:none;font-family:var(--mono)}
+.hud-panel{background:rgba(2,2,8,0.7);border:1px solid rgba(0,212,255,0.15);backdrop-filter:blur(8px);border-radius:6px;padding:12px 16px}
+
+/* Top Bar */
+#hud-top{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.ent-title{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);text-shadow:0 0 12px rgba(201,168,76,0.5)}
+.ent-value{font-size:28px;font-weight:700;color:var(--neon-blue);text-shadow:0 0 20px rgba(0,212,255,0.6),0 0 40px rgba(0,212,255,0.3);letter-spacing:-1px}
+.ent-value .currency{font-size:16px;opacity:0.7;margin-right:2px}
+.ent-change{font-size:13px;padding:3px 10px;border-radius:4px;font-weight:600}
+.ent-change.up{color:var(--neon-green);background:rgba(0,255,102,0.1);text-shadow:0 0 8px rgba(0,255,102,0.4)}
+.ent-change.down{color:var(--neon-red);background:rgba(255,34,68,0.1)}
+
+/* Left Panel - Metrics */
+#hud-left{position:absolute;top:80px;left:12px;width:220px;display:flex;flex-direction:column;gap:8px}
+.metric{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(0,212,255,0.08)}
+.metric-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text2)}
+.metric-val{font-size:14px;font-weight:600}
+.metric-val.r{color:var(--neon-red);text-shadow:0 0 8px rgba(255,34,68,0.4)}
+.metric-val.g{color:var(--neon-green);text-shadow:0 0 8px rgba(0,255,102,0.4)}
+.metric-val.b{color:var(--neon-rgb-b);text-shadow:0 0 8px rgba(0,102,255,0.4)}
+
+/* Right Panel - Economic */
+#hud-right{position:absolute;top:80px;right:12px;width:220px;display:flex;flex-direction:column;gap:8px}
+.econ-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid rgba(0,212,255,0.06)}
+.econ-label{color:var(--text2)}
+.econ-val{font-weight:600;color:var(--neon-blue);text-shadow:0 0 6px rgba(0,212,255,0.3)}
+
+/* Bottom Ticker */
+#hud-bottom{position:absolute;bottom:12px;left:12px;right:12px;overflow:hidden;white-space:nowrap}
+.ticker{display:inline-block;animation:ticker 60s linear infinite;font-size:11px;letter-spacing:1px}
+.ticker span{margin-right:40px}
+.ticker .hot{color:var(--neon-red);text-shadow:0 0 6px rgba(255,34,68,0.5)}
+.ticker .bull{color:var(--neon-green);text-shadow:0 0 6px rgba(0,255,102,0.5)}
+.ticker .info{color:var(--neon-blue);text-shadow:0 0 6px rgba(0,212,255,0.5)}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* Phase Indicator */
+#hud-phase{position:absolute;bottom:50px;left:50%;transform:translateX(-50%);text-align:center}
+.phase-name{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);text-shadow:0 0 10px rgba(201,168,76,0.4)}
+.phase-bar{width:200px;height:2px;background:rgba(0,212,255,0.15);border-radius:1px;margin-top:6px;overflow:hidden}
+.phase-fill{height:100%;background:linear-gradient(90deg,var(--neon-red),var(--neon-green),var(--neon-rgb-b));border-radius:1px;transition:width 0.5s ease}
+
+/* 1% Impact */
+#hud-impact{position:absolute;top:50%;right:12px;transform:translateY(-50%);text-align:right;width:220px}
+.impact-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
+.impact-val{font-size:20px;font-weight:700;color:var(--neon-green);text-shadow:0 0 16px rgba(0,255,102,0.5)}
+.impact-note{font-size:10px;color:var(--text2);margin-top:4px}
+
+/* Loading */
+#loading{position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 1s}
+#loading.done{opacity:0;pointer-events:none}
+.load-text{font-family:var(--mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--neon-blue);text-shadow:0 0 20px rgba(0,212,255,0.6);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+</style>
+</head>
+<body>
+<div id="loading"><div class="load-text">Initializing Enterprise Valuator</div></div>
+
+<div id="hud">
+  <div id="hud-top" class="hud-panel" style="display:flex">
+    <div>
+      <div class="ent-title">Coastal Key Enterprise Valuation</div>
+      <div class="ent-value"><span class="currency">$</span><span id="val-total">0</span></div>
+    </div>
+    <div style="text-align:right">
+      <div class="ent-change up" id="val-change">+0.00%</div>
+      <div style="font-size:10px;color:var(--text2);margin-top:4px" id="val-date">April 8, 2026</div>
+    </div>
+  </div>
+
+  <div id="hud-left" class="hud-panel">
+    <div style="font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:4px">ENTERPRISE METRICS</div>
+    <div class="metric"><span class="metric-label">MRR</span><span class="metric-val g" id="m-mrr">$0</span></div>
+    <div class="metric"><span class="metric-label">ARR</span><span class="metric-val b" id="m-arr">$0</span></div>
+    <div class="metric"><span class="metric-label">Properties</span><span class="metric-val" id="m-props">0</span></div>
+    <div class="metric"><span class="metric-label">Avg Fee</span><span class="metric-val" id="m-fee">$0</span></div>
+    <div class="metric"><span class="metric-label">AI Fleet</span><span class="metric-val b" id="m-fleet">404</span></div>
+    <div class="metric"><span class="metric-label">Tech IP Value</span><span class="metric-val g" id="m-ip">$0</span></div>
+    <div class="metric"><span class="metric-label">SaaS Multiple</span><span class="metric-val r" id="m-mult">0x</span></div>
+    <div class="metric"><span class="metric-label">Growth Rate</span><span class="metric-val g" id="m-growth">0%</span></div>
+    <div class="metric"><span class="metric-label">ROI</span><span class="metric-val g" id="m-roi">0%</span></div>
+  </div>
+
+  <div id="hud-right" class="hud-panel">
+    <div style="font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:4px">WORLD ECONOMY</div>
+    <div class="econ-row"><span class="econ-label">Fed Rate</span><span class="econ-val" id="e-fed">4.25%</span></div>
+    <div class="econ-row"><span class="econ-label">CPI Inflation</span><span class="econ-val" id="e-cpi">2.4%</span></div>
+    <div class="econ-row"><span class="econ-label">GDP Growth</span><span class="econ-val" id="e-gdp">2.3%</span></div>
+    <div class="econ-row"><span class="econ-label">S&P 500</span><span class="econ-val" id="e-sp">6,218</span></div>
+    <div class="econ-row"><span class="econ-label">30Y Mortgage</span><span class="econ-val" id="e-mort">5.82%</span></div>
+    <div class="econ-row"><span class="econ-label">FL RE YoY</span><span class="econ-val" id="e-flre">+5.2%</span></div>
+    <div class="econ-row"><span class="econ-label">PropTech Mult</span><span class="econ-val" id="e-ptm">12.5x</span></div>
+    <div class="econ-row"><span class="econ-label">TC Pop Growth</span><span class="econ-val" id="e-pop">+3.1%</span></div>
+  </div>
+
+  <div id="hud-impact" class="hud-panel">
+    <div class="impact-label">1% Daily Improvement</div>
+    <div class="impact-val" id="impact-daily">+$0</div>
+    <div class="impact-note" id="impact-compound">365-day compound: 37.78x</div>
+    <div class="impact-val" style="font-size:14px;margin-top:8px;color:var(--neon-rgb-b)" id="impact-annual">$0</div>
+    <div class="impact-note">Projected annual from 1% daily</div>
+  </div>
+
+  <div id="hud-phase">
+    <div class="phase-name" id="phase-label">Daily</div>
+    <div class="phase-bar"><div class="phase-fill" id="phase-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="hud-bottom" class="hud-panel">
+    <div class="ticker" id="ticker">
+      <span class="hot">FED HOLDS AT 4.25% — MARKETS WATCH FOR Q3 CUT SIGNAL</span>
+      <span class="bull">FLORIDA LUXURY RE +5.2% YOY — TREASURE COAST OUTPERFORMS STATE AVG</span>
+      <span class="info">PROPTECH SECTOR M&A ACTIVITY UP 34% — MULTIPLES EXPANDING TO 12-15x</span>
+      <span class="hot">TARIFF POLICY SHIFTS IMPACT CONSTRUCTION COSTS +8.3%</span>
+      <span class="bull">AI-POWERED PROPERTY MGMT FIRMS SEE 2.4x FASTER CLIENT ACQUISITION</span>
+      <span class="info">COASTAL KEY 404-AGENT AI FLEET — SOVEREIGN OPERATIONS LIVE</span>
+      <span class="hot">FED HOLDS AT 4.25% — MARKETS WATCH FOR Q3 CUT SIGNAL</span>
+      <span class="bull">FLORIDA LUXURY RE +5.2% YOY — TREASURE COAST OUTPERFORMS STATE AVG</span>
+      <span class="info">PROPTECH SECTOR M&A ACTIVITY UP 34% — MULTIPLES EXPANDING TO 12-15x</span>
+      <span class="hot">TARIFF POLICY SHIFTS IMPACT CONSTRUCTION COSTS +8.3%</span>
+      <span class="bull">AI-POWERED PROPERTY MGMT FIRMS SEE 2.4x FASTER CLIENT ACQUISITION</span>
+      <span class="info">COASTAL KEY 404-AGENT AI FLEET — SOVEREIGN OPERATIONS LIVE</span>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.162.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.162.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+/* ══════════════════════════════════════════════════════════
+   ENTERPRISE VALUATION ENGINE
+   ══════════════════════════════════════════════════════════ */
+const ECON = {
+  fedRate:4.25, cpi:2.4, gdp:2.3, sp500:6218, mortgage30y:5.82,
+  flReYoY:5.2, propTechMult:12.5, tcPopGrowth:3.1,
+  constructionCostYoY:8.3, aiAdoptionRate:2.4
+};
+
+const CK = {
+  properties:47, avgFee:295, growthMoM:18,
+  aiFleet:404, techDevCost:850000, brandValue:120000,
+  saasMultiple:12.5, startDate:new Date('2024-06-01'),
+  tiers:{select:195,premier:295,platinum:395},
+  tierMix:{select:0.30,premier:0.45,platinum:0.25}
+};
+
+function calcMRR(){return CK.properties * CK.avgFee}
+function calcARR(){return calcMRR()*12}
+function calcTechIP(){return CK.techDevCost*(1+CK.aiFleet/100)}
+function calcEnterpriseValue(){
+  const arr=calcARR();
+  const techIP=calcTechIP();
+  const brandMkt=CK.brandValue*(1+ECON.tcPopGrowth/100);
+  return arr*CK.saasMultiple + techIP + brandMkt;
+}
+function calcOnePercent(){return calcEnterpriseValue()*0.01}
+function calcCompound365(val){return val*Math.pow(1.01,365)}
+
+function forecast(months){
+  const data=[];
+  let props=CK.properties, fee=CK.avgFee;
+  const econAdj=1+(ECON.flReYoY/100-ECON.fedRate/200+ECON.gdp/100)/12;
+  for(let m=0;m<months;m++){
+    props=Math.round(props*(1+CK.growthMoM/100)*econAdj);
+    fee=fee*(1+0.003);
+    const mrr=props*fee;
+    const arr=mrr*12;
+    const ev=arr*CK.saasMultiple+calcTechIP()*(1+m*0.01)+CK.brandValue*(1+m*0.005);
+    data.push({month:m+1,props,fee:Math.round(fee),mrr:Math.round(mrr),arr:Math.round(arr),ev:Math.round(ev)});
+  }
+  return data;
+}
+
+const PHASES=['DAILY','WEEKLY','MONTHLY','ANNUAL','5-YEAR','1% IMPACT'];
+const PHASE_DUR=30000;
+let currentPhase=0, phaseStart=0;
+
+/* ══════════════════════════════════════════════════════════
+   THREE.JS SCENE
+   ══════════════════════════════════════════════════════════ */
+const W=window.innerWidth, H=window.innerHeight;
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x020208,0.015);
+const camera=new THREE.PerspectiveCamera(50,W/H,0.1,200);
+camera.position.set(14,10,14);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
+document.body.appendChild(renderer.domElement);
+
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=0.05;
+controls.autoRotate=true;controls.autoRotateSpeed=0.4;
+controls.maxDistance=30;controls.minDistance=8;
+
+// Bloom
+const composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(W,H),1.5,0.4,0.85);
+bloom.threshold=0.2;bloom.strength=2.0;bloom.radius=0.8;
+composer.addPass(bloom);
+
+// Lighting
+scene.add(new THREE.AmbientLight(0x111122,0.3));
+const dirLight=new THREE.DirectionalLight(0x4488ff,0.4);
+dirLight.position.set(10,15,10);scene.add(dirLight);
+
+/* ── Glass Cube ── */
+const CUBE_SIZE=8;
+const cubeGeo=new THREE.BoxGeometry(CUBE_SIZE,CUBE_SIZE,CUBE_SIZE);
+const cubeMat=new THREE.MeshPhysicalMaterial({
+  color:0x0a1628,transparent:true,opacity:0.06,roughness:0.05,metalness:0.1,
+  transmission:0.92,thickness:0.5,ior:1.45,clearcoat:1,clearcoatRoughness:0.05,
+  envMapIntensity:0.5,side:THREE.DoubleSide
+});
+const cube=new THREE.Mesh(cubeGeo,cubeMat);
+scene.add(cube);
+
+/* ── Electrified Edges ── */
+const S=CUBE_SIZE/2;
+const edgeVertices=[
+  [[-S,-S,-S],[ S,-S,-S]],[[ S,-S,-S],[ S, S,-S]],[[ S, S,-S],[-S, S,-S]],[[-S, S,-S],[-S,-S,-S]],
+  [[-S,-S, S],[ S,-S, S]],[[ S,-S, S],[ S, S, S]],[[ S, S, S],[-S, S, S]],[[-S, S, S],[-S,-S, S]],
+  [[-S,-S,-S],[-S,-S, S]],[[ S,-S,-S],[ S,-S, S]],[[ S, S,-S],[ S, S, S]],[[-S, S,-S],[-S, S, S]]
+];
+const edgeGroup=new THREE.Group();
+const edgeMat=new THREE.MeshBasicMaterial({color:0x00d4ff,transparent:true,opacity:0.9});
+
+edgeVertices.forEach(([a,b])=>{
+  const dir=new THREE.Vector3(b[0]-a[0],b[1]-a[1],b[2]-a[2]);
+  const len=dir.length();dir.normalize();
+  const geo=new THREE.CylinderGeometry(0.03,0.03,len,6);
+  geo.rotateX(Math.PI/2);
+  const mesh=new THREE.Mesh(geo,edgeMat.clone());
+  const mid=new THREE.Vector3((a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2);
+  mesh.position.copy(mid);
+  mesh.lookAt(new THREE.Vector3(b[0],b[1],b[2]));
+  edgeGroup.add(mesh);
+});
+scene.add(edgeGroup);
+
+/* ── Ground Rods at 8 Corners ── */
+const corners=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+const rodGroup=new THREE.Group();
+corners.forEach(c=>{
+  const dir=new THREE.Vector3(c[0],c[1],c[2]).normalize();
+  const rodGeo=new THREE.CylinderGeometry(0.04,0.02,1.2,6);
+  const rodMat=new THREE.MeshBasicMaterial({color:0x00d4ff});
+  const rod=new THREE.Mesh(rodGeo,rodMat);
+  const pos=new THREE.Vector3(c[0]*S,c[1]*S,c[2]*S);
+  rod.position.copy(pos.clone().add(dir.clone().multiplyScalar(0.6)));
+  rod.lookAt(pos.clone().add(dir.clone().multiplyScalar(2)));
+  rod.rotateX(Math.PI/2);
+  rodGroup.add(rod);
+  // Spark orb at tip
+  const orbGeo=new THREE.SphereGeometry(0.08,8,8);
+  const orbMat=new THREE.MeshBasicMaterial({color:0x00d4ff});
+  const orb=new THREE.Mesh(orbGeo,orbMat);
+  orb.position.copy(pos.clone().add(dir.clone().multiplyScalar(1.2)));
+  orb.userData={basePos:orb.position.clone(),dir:dir.clone()};
+  rodGroup.add(orb);
+});
+scene.add(rodGroup);
+
+/* ── Bouncing Light Pulses Inside Cube ── */
+const pulses=[];
+const PULSE_COUNT=8;
+const pulseColors=[0xff2244,0x00ff66,0x0066ff,0xff2244,0x00ff66,0x0066ff,0xff2244,0x00ff66];
+for(let i=0;i<PULSE_COUNT;i++){
+  const geo=new THREE.SphereGeometry(0.12,8,8);
+  const mat=new THREE.MeshBasicMaterial({color:pulseColors[i],transparent:true,opacity:0.9});
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.position.set(
+    (Math.random()-0.5)*CUBE_SIZE*0.8,
+    (Math.random()-0.5)*CUBE_SIZE*0.8,
+    (Math.random()-0.5)*CUBE_SIZE*0.8
+  );
+  const speed=0.02+Math.random()*0.04;
+  const vel=new THREE.Vector3(
+    (Math.random()-0.5)*speed*2,
+    (Math.random()-0.5)*speed*2,
+    (Math.random()-0.5)*speed*2
+  ).normalize().multiplyScalar(speed);
+  mesh.userData={vel,trail:[]};
+  scene.add(mesh);
+  // Point light for glow
+  const pl=new THREE.PointLight(pulseColors[i],0.6,3);
+  mesh.add(pl);
+  pulses.push(mesh);
+}
+
+/* ── 3D Bar Charts (RGB) Inside Cube ── */
+const barGroup=new THREE.Group();
+const BAR_COLS=12, BAR_ROWS=3;
+const barColors=[0xff2244,0x00ff66,0x0066ff]; // R,G,B
+const barData=[];
+
+for(let row=0;row<BAR_ROWS;row++){
+  const rowBars=[];
+  for(let col=0;col<BAR_COLS;col++){
+    const h=0.5+Math.random()*3;
+    const geo=new THREE.BoxGeometry(0.3,h,0.3);
+    const mat=new THREE.MeshBasicMaterial({color:barColors[row],transparent:true,opacity:0.7});
+    const mesh=new THREE.Mesh(geo,mat);
+    const x=-3+col*0.55;
+    const z=-2+row*2;
+    mesh.position.set(x,-S+h/2+0.1,z);
+    mesh.userData={targetH:h,baseY:-S+0.1,row,col};
+    barGroup.add(mesh);
+    rowBars.push(mesh);
+  }
+  barData.push(rowBars);
+}
+scene.add(barGroup);
+
+/* ── 3D Line Charts (5D: x=time, y=value, z=depth, color=category, thickness=confidence) ── */
+const lineGroup=new THREE.Group();
+const lineColors=[0xff2244,0x00ff66,0x0066ff];
+const lineData=[];
+
+for(let l=0;l<3;l++){
+  const points=[];
+  const segs=24;
+  for(let i=0;i<segs;i++){
+    const x=-3.5+i*0.3;
+    const y=-1+Math.sin(i*0.4+l*2)*1.5+l*0.5+Math.random()*0.3;
+    const z=-1.5+l*1.5;
+    points.push(new THREE.Vector3(x,y,z));
+  }
+  const curve=new THREE.CatmullRomCurve3(points);
+  const tubeGeo=new THREE.TubeGeometry(curve,64,0.04+l*0.01,8,false);
+  const tubeMat=new THREE.MeshBasicMaterial({color:lineColors[l],transparent:true,opacity:0.8});
+  const tubeMesh=new THREE.Mesh(tubeGeo,tubeMat);
+  lineGroup.add(tubeMesh);
+  lineData.push({mesh:tubeMesh,points,color:lineColors[l]});
+}
+scene.add(lineGroup);
+
+/* ── Lightning Bolts ── */
+const lightningGroup=new THREE.Group();
+scene.add(lightningGroup);
+
+function createLightning(start,end,color=0x00d4ff){
+  const pts=[start.clone()];
+  const segments=8;
+  const dir=end.clone().sub(start);
+  for(let i=1;i<segments;i++){
+    const t=i/segments;
+    const p=start.clone().add(dir.clone().multiplyScalar(t));
+    p.x+=((Math.random()-0.5)*0.6);
+    p.y+=((Math.random()-0.5)*0.6);
+    p.z+=((Math.random()-0.5)*0.6);
+    pts.push(p);
+  }
+  pts.push(end.clone());
+  const geo=new THREE.BufferGeometry().setFromPoints(pts);
+  const mat=new THREE.LineBasicMaterial({color,transparent:true,opacity:0.9});
+  const line=new THREE.Line(geo,mat);
+  line.userData={life:0.5+Math.random()*0.3,age:0};
+  lightningGroup.add(line);
+  return line;
+}
+
+/* ── Starfield Background ── */
+const starGeo=new THREE.BufferGeometry();
+const starCount=2000;
+const starPos=new Float32Array(starCount*3);
+for(let i=0;i<starCount*3;i++)starPos[i]=(Math.random()-0.5)*100;
+starGeo.setAttribute('position',new THREE.BufferAttribute(starPos,3));
+const starMat=new THREE.PointsMaterial({color:0x334466,size:0.08,transparent:true,opacity:0.6});
+scene.add(new THREE.Points(starGeo,starMat));
+
+/* ══════════════════════════════════════════════════════════
+   ANIMATION + DATA CYCLE
+   ══════════════════════════════════════════════════════════ */
+const clock=new THREE.Clock();
+let lightningTimer=0;
+phaseStart=Date.now();
+
+function fmt$(n){
+  if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return'$'+(n/1e3).toFixed(1)+'K';
+  return'$'+Math.round(n);
+}
+function fmtN(n){return n.toLocaleString('en-US')}
+
+function updateHUD(){
+  const ev=calcEnterpriseValue();
+  const mrr=calcMRR();
+  const arr=calcARR();
+  const oneP=calcOnePercent();
+  document.getElementById('val-total').textContent=fmtN(Math.round(ev));
+  document.getElementById('val-change').textContent='+'+CK.growthMoM.toFixed(1)+'% MoM';
+  document.getElementById('m-mrr').textContent=fmt$(mrr);
+  document.getElementById('m-arr').textContent=fmt$(arr);
+  document.getElementById('m-props').textContent=CK.properties;
+  document.getElementById('m-fee').textContent='$'+CK.avgFee;
+  document.getElementById('m-fleet').textContent=CK.aiFleet;
+  document.getElementById('m-ip').textContent=fmt$(calcTechIP());
+  document.getElementById('m-mult').textContent=CK.saasMultiple+'x';
+  document.getElementById('m-growth').textContent=CK.growthMoM+'%';
+  document.getElementById('m-roi').textContent=Math.round(arr/CK.techDevCost*100)+'%';
+  document.getElementById('impact-daily').textContent='+'+fmt$(oneP);
+  document.getElementById('impact-annual').textContent=fmt$(calcCompound365(ev));
+}
+
+function updateBars(phase){
+  const fc=forecast(60);
+  barData.forEach((row,ri)=>{
+    row.forEach((bar,ci)=>{
+      let h;
+      if(phase<=1){h=0.3+Math.random()*2.5} // daily/weekly
+      else if(phase===2){h=fc[Math.min(ci,fc.length-1)]?.mrr/5000||1} // monthly
+      else if(phase===3){h=fc[Math.min(ci*5,fc.length-1)]?.ev/500000||1} // annual
+      else if(phase===4){h=fc[Math.min(ci*5,fc.length-1)]?.ev/300000||1} // 5-year
+      else{h=0.5+ci*0.25} // 1% compound
+      bar.userData.targetH=Math.max(0.2,Math.min(h,6));
+    });
+  });
+}
+
+function updateLines(phase){
+  lineData.forEach((ld,li)=>{
+    const segs=ld.points.length;
+    for(let i=0;i<segs;i++){
+      const baseY=-1+li*0.5;
+      const wave=Math.sin(Date.now()*0.001+i*0.3+li*1.5)*1.2;
+      const trend=phase>=3?i*0.12:i*0.05;
+      ld.points[i].y=baseY+wave+trend+Math.random()*0.05;
+    }
+    const curve=new THREE.CatmullRomCurve3(ld.points);
+    const newGeo=new THREE.TubeGeometry(curve,64,0.04+li*0.01,8,false);
+    ld.mesh.geometry.dispose();
+    ld.mesh.geometry=newGeo;
+  });
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  const t=clock.getElapsedTime();
+  const dt=clock.getDelta();
+  controls.update();
+
+  // Phase cycling (3 min = 180s, 6 phases of 30s)
+  const elapsed=Date.now()-phaseStart;
+  const phaseIdx=Math.floor((elapsed%(PHASE_DUR*6))/PHASE_DUR);
+  const phaseProgress=(elapsed%PHASE_DUR)/PHASE_DUR;
+  if(phaseIdx!==currentPhase){
+    currentPhase=phaseIdx;
+    updateBars(currentPhase);
+  }
+  document.getElementById('phase-label').textContent=PHASES[currentPhase];
+  document.getElementById('phase-fill').style.width=(phaseProgress*100)+'%';
+
+  // Animate edge glow
+  edgeGroup.children.forEach((edge,i)=>{
+    const pulse=0.5+0.5*Math.sin(t*3+i*0.5);
+    edge.material.opacity=0.4+pulse*0.6;
+    const hue=(t*20+i*30)%360;
+    if(hue<5||hue>355) edge.material.color.setHex(0x00d4ff);
+  });
+
+  // Animate ground rod sparks
+  rodGroup.children.forEach((child,i)=>{
+    if(child.userData.basePos){
+      const jitter=0.05*Math.sin(t*15+i*3);
+      child.position.copy(child.userData.basePos.clone().add(child.userData.dir.clone().multiplyScalar(jitter)));
+      child.material.opacity=0.5+0.5*Math.sin(t*10+i*2);
+    }
+  });
+
+  // Bouncing pulses
+  const bound=S*0.9;
+  pulses.forEach(p=>{
+    p.position.add(p.userData.vel);
+    ['x','y','z'].forEach(axis=>{
+      if(Math.abs(p.position[axis])>bound){
+        p.userData.vel[axis]*=-1;
+        p.position[axis]=Math.sign(p.position[axis])*bound;
+        // Flash on bounce
+        p.material.opacity=1;
+        // Spawn lightning from bounce point
+        if(Math.random()>0.5){
+          const bouncePos=p.position.clone();
+          const target=new THREE.Vector3((Math.random()-0.5)*CUBE_SIZE*0.6,(Math.random()-0.5)*CUBE_SIZE*0.6,(Math.random()-0.5)*CUBE_SIZE*0.6);
+          createLightning(bouncePos,target,p.material.color.getHex());
+        }
+      }
+    });
+    p.material.opacity=Math.max(0.4,p.material.opacity-0.01);
+    // Pulsate size
+    const sc=1+0.3*Math.sin(t*5+pulses.indexOf(p)*1.5);
+    p.scale.setScalar(sc);
+  });
+
+  // Animate bars toward targets
+  barData.forEach(row=>row.forEach(bar=>{
+    const curr=bar.geometry.parameters.height;
+    const target=bar.userData.targetH;
+    if(Math.abs(curr-target)>0.05){
+      const newH=curr+(target-curr)*0.03;
+      bar.geometry.dispose();
+      bar.geometry=new THREE.BoxGeometry(0.3,newH,0.3);
+      bar.position.y=bar.userData.baseY+newH/2;
+    }
+    // Pulsate opacity
+    bar.material.opacity=0.5+0.3*Math.sin(t*2+bar.userData.col*0.4+bar.userData.row*2);
+  }));
+
+  // Update lines
+  if(Math.floor(t*2)%2===0) updateLines(currentPhase);
+
+  // Lightning lifecycle
+  lightningTimer+=dt;
+  if(lightningTimer>0.15){
+    lightningTimer=0;
+    // Random lightning along edges
+    if(Math.random()>0.4){
+      const ei=Math.floor(Math.random()*edgeVertices.length);
+      const[a,b]=edgeVertices[ei];
+      const start=new THREE.Vector3(a[0],a[1],a[2]);
+      const end=new THREE.Vector3(b[0],b[1],b[2]);
+      const t1=Math.random(), t2=Math.min(t1+0.3+Math.random()*0.4,1);
+      const p1=start.clone().lerp(end,t1);
+      const p2=start.clone().lerp(end.clone(),t2);
+      const mid=p1.clone().lerp(p2,0.5);
+      mid.x+=(Math.random()-0.5)*0.8;mid.y+=(Math.random()-0.5)*0.8;mid.z+=(Math.random()-0.5)*0.8;
+      createLightning(p1,mid,0x00d4ff);
+    }
+  }
+  // Age lightning
+  const toRemove=[];
+  lightningGroup.children.forEach(l=>{
+    l.userData.age+=dt;
+    l.material.opacity=Math.max(0,1-l.userData.age/l.userData.life);
+    if(l.userData.age>l.userData.life)toRemove.push(l);
+  });
+  toRemove.forEach(l=>{lightningGroup.remove(l);l.geometry.dispose();l.material.dispose()});
+
+  // Slowly rotate cube tilt
+  cube.rotation.y=t*0.05;
+  cube.rotation.x=Math.sin(t*0.03)*0.05;
+  barGroup.rotation.y=t*0.05;
+  barGroup.rotation.x=Math.sin(t*0.03)*0.05;
+  lineGroup.rotation.y=t*0.05;
+  lineGroup.rotation.x=Math.sin(t*0.03)*0.05;
+  edgeGroup.rotation.y=t*0.05;
+  edgeGroup.rotation.x=Math.sin(t*0.03)*0.05;
+  rodGroup.rotation.y=t*0.05;
+  rodGroup.rotation.x=Math.sin(t*0.03)*0.05;
+  lightningGroup.rotation.y=t*0.05;
+  lightningGroup.rotation.x=Math.sin(t*0.03)*0.05;
+
+  composer.render();
+}
+
+/* ── Init ── */
+function init(){
+  updateHUD();
+  updateBars(0);
+  // Refresh HUD every 2s
+  setInterval(()=>{
+    // Simulate micro-growth for live feel
+    CK.properties+=Math.random()>0.95?1:0;
+    CK.avgFee+=(Math.random()-0.48)*0.1;
+    updateHUD();
+  },2000);
+
+  // Loading screen
+  setTimeout(()=>document.getElementById('loading').classList.add('done'),2000);
+  animate();
+}
+
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  composer.setSize(innerWidth,innerHeight);
+});
+
+init();
+</script>
+</body>
+</html>
