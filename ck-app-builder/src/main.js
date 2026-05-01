@@ -1,11 +1,12 @@
 /**
  * Coastal Key Mobile App Builder — Entry Point
- * Multi-step wizard: Occupation → Template → Modules → Brand → Agent Qty → Deploy
+ * Multi-step wizard + Admin Dashboard for deployed app management
  */
 
 import { INDUSTRY_TEMPLATES, getTemplate, getTemplateModules } from './utils/templates.js';
 
 const state = {
+  view: 'wizard',
   step: 1,
   occupation: null,
   modules: {},
@@ -22,6 +23,13 @@ const STEPS = [
   { num: 5, label: 'Deploy' }
 ];
 
+const DEPLOYED_APPS = [
+  { id: 'app-001', name: 'Coastal Key PM', industry: 'Property Management', agents: 200, tier: 'Enterprise', status: 'live', health: 99.2, deployed: '2026-04-03', mrr: 25000, color: '#c4a35a' },
+  { id: 'app-002', name: 'TC Legal AI', industry: 'Legal', agents: 50, tier: 'Pro', status: 'live', health: 97.8, deployed: '2026-04-12', mrr: 1500, color: '#4a9eff' },
+  { id: 'app-003', name: 'Marina Ops AI', industry: 'Hospitality', agents: 50, tier: 'Pro', status: 'live', health: 98.5, deployed: '2026-04-18', mrr: 1500, color: '#34d399' },
+  { id: 'app-004', name: 'Stuart Med Group', industry: 'Healthcare', agents: 10, tier: 'Starter', status: 'staging', health: 95.1, deployed: '2026-04-25', mrr: 299, color: '#a78bfa' }
+];
+
 document.addEventListener('DOMContentLoaded', () => render());
 
 function render() {
@@ -29,11 +37,14 @@ function render() {
   app.innerHTML = `
     <div class="builder-shell">
       ${renderHeader()}
-      ${renderStepProgress()}
-      <div id="step-content">${renderStep()}</div>
+      ${state.view === 'dashboard' ? renderDashboard() : renderWizardView()}
     </div>
   `;
   attachHandlers();
+}
+
+function renderWizardView() {
+  return `${renderStepProgress()}<div id="step-content">${renderStep()}</div>`;
 }
 
 function renderHeader() {
@@ -46,7 +57,13 @@ function renderHeader() {
           <div class="builder-logo-sub">Mobile App Builder</div>
         </div>
       </div>
-      <span class="tag tag-gold">Builder Mode</span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="view-toggle">
+          <button class="view-toggle-btn${state.view === 'wizard' ? ' active' : ''}" data-view="wizard">Builder</button>
+          <button class="view-toggle-btn${state.view === 'dashboard' ? ' active' : ''}" data-view="dashboard">Dashboard</button>
+        </div>
+        <span class="tag tag-gold">${state.view === 'dashboard' ? 'Admin' : 'Builder Mode'}</span>
+      </div>
     </header>
   `;
 }
@@ -55,7 +72,7 @@ function renderStepProgress() {
   return `
     <div class="step-progress">
       ${STEPS.map((s, i) => `
-        <div class="step-dot ${s.num < state.step ? 'completed' : s.num === state.step ? 'active' : 'pending'}">${s.num < state.step ? '\u2713' : s.num}</div>
+        <div class="step-dot ${s.num < state.step ? 'completed' : s.num === state.step ? 'active' : 'pending'}">${s.num < state.step ? '✓' : s.num}</div>
         ${i < STEPS.length - 1 ? `<div class="step-line ${s.num < state.step ? 'completed' : ''}"></div>` : ''}
       `).join('')}
     </div>
@@ -71,6 +88,161 @@ function renderStep() {
     case 5: return renderDeployPreview();
     default: return '';
   }
+}
+
+// ── Admin Dashboard ─────────────────────────────────────────────────────────
+
+function renderDashboard() {
+  const totalMRR = DEPLOYED_APPS.reduce((s, a) => s + a.mrr, 0);
+  const totalAgents = DEPLOYED_APPS.reduce((s, a) => s + a.agents, 0);
+  const liveApps = DEPLOYED_APPS.filter(a => a.status === 'live').length;
+  const avgHealth = (DEPLOYED_APPS.reduce((s, a) => s + a.health, 0) / DEPLOYED_APPS.length).toFixed(1);
+
+  return `
+    <div class="dash-metrics">
+      ${renderMetricCard('Deployed Apps', `${liveApps} Live`, `${DEPLOYED_APPS.length} total`, 'var(--ck-gold)')}
+      ${renderMetricCard('Total AI Agents', totalAgents.toLocaleString(), '9 divisions active', 'var(--ck-blue)')}
+      ${renderMetricCard('Monthly Revenue', '$' + totalMRR.toLocaleString(), 'across all deployments', 'var(--ck-green)')}
+      ${renderMetricCard('Fleet Health', avgHealth + '%', 'all systems nominal', parseFloat(avgHealth) > 97 ? 'var(--ck-green)' : 'var(--ck-amber)')}
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <span class="dash-panel-title">Deployed Applications</span>
+          <button class="btn btn-ghost" style="padding:8px 16px;font-size:0.78rem;" id="btn-new-app">+ New App</button>
+        </div>
+        <div class="dash-app-list">
+          ${DEPLOYED_APPS.map(renderAppRow).join('')}
+        </div>
+      </div>
+
+      <div class="dash-sidebar">
+        ${renderGovernancePanel()}
+        ${renderSubscriptionBreakdown()}
+        ${renderRecentActivity()}
+      </div>
+    </div>
+  `;
+}
+
+function renderMetricCard(label, value, sub, color) {
+  return `
+    <div class="dash-metric">
+      <div class="dash-metric-label">${label}</div>
+      <div class="dash-metric-value" style="color:${color};">${value}</div>
+      <div class="dash-metric-sub">${sub}</div>
+    </div>
+  `;
+}
+
+function renderAppRow(app) {
+  const statusColors = { live: 'var(--ck-green)', staging: 'var(--ck-amber)', offline: 'var(--ck-red)' };
+  return `
+    <div class="dash-app-row">
+      <div style="display:flex;align-items:center;gap:14px;flex:1;">
+        <div class="dash-app-icon" style="background:${app.color};">
+          ${app.name.split(' ').map(w => w[0]).slice(0, 2).join('')}
+        </div>
+        <div>
+          <div class="dash-app-name">${app.name}</div>
+          <div class="dash-app-meta">${app.industry} &middot; ${app.tier} &middot; ${app.agents} agents</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;">
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-mono);font-size:0.85rem;color:#fff;font-weight:600;">$${app.mrr.toLocaleString()}</div>
+          <div style="font-size:0.7rem;color:#71717a;">/month</div>
+        </div>
+        <div class="dash-health-bar">
+          <div class="dash-health-fill" style="width:${app.health}%;background:${app.health > 97 ? 'var(--ck-green)' : app.health > 90 ? 'var(--ck-amber)' : 'var(--ck-red)'};"></div>
+        </div>
+        <div class="dash-status" style="color:${statusColors[app.status]};">
+          <span class="dash-status-dot" style="background:${statusColors[app.status]};"></span>
+          ${app.status}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderGovernancePanel() {
+  return `
+    <div class="dash-card dash-governance">
+      <div class="dash-panel-title" style="margin-bottom:16px;">Governance Compliance</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div class="dash-compliance-ring">
+          <svg viewBox="0 0 36 36" width="56" height="56">
+            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--ck-green)" stroke-width="3" stroke-dasharray="100, 100" stroke-linecap="round"/>
+          </svg>
+          <span class="dash-compliance-pct">100%</span>
+        </div>
+        <div>
+          <div style="font-size:0.85rem;color:#fff;font-weight:600;">Fully Compliant</div>
+          <div style="font-size:0.72rem;color:#71717a;">Compendium v1.0</div>
+        </div>
+      </div>
+      <div class="dash-principles">
+        <div class="dash-principle"><span class="dash-principle-dot" style="background:var(--ck-gold);"></span>Service</div>
+        <div class="dash-principle"><span class="dash-principle-dot" style="background:var(--ck-blue);"></span>Stewardship</div>
+        <div class="dash-principle"><span class="dash-principle-dot" style="background:var(--ck-green);"></span>Security</div>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--ck-border);font-size:0.7rem;color:#52525b;font-style:italic;text-align:center;">
+        Founded on Truth, Liberty, and the Irrevocable Rights of Free Speech
+      </div>
+    </div>
+  `;
+}
+
+function renderSubscriptionBreakdown() {
+  const tiers = { Starter: 0, Pro: 0, Enterprise: 0 };
+  DEPLOYED_APPS.forEach(a => { tiers[a.tier]++; });
+  return `
+    <div class="dash-card">
+      <div class="dash-panel-title" style="margin-bottom:16px;">Subscription Tiers</div>
+      ${Object.entries(tiers).map(([name, count]) => {
+        const colors = { Starter: 'var(--ck-purple)', Pro: 'var(--ck-blue)', Enterprise: 'var(--ck-gold)' };
+        const prices = { Starter: '$299', Pro: '$1,500', Enterprise: '$5K-$25K' };
+        return `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;${name !== 'Enterprise' ? 'border-bottom:1px solid var(--ck-border);' : ''}">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="dash-status-dot" style="background:${colors[name]};"></span>
+              <span style="font-size:0.85rem;color:#d4d4d8;">${name}</span>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-family:var(--font-mono);font-size:0.8rem;color:#fff;font-weight:600;">${count}</span>
+              <span style="font-size:0.7rem;color:#71717a;margin-left:4px;">${prices[name]}/mo</span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderRecentActivity() {
+  const events = [
+    { time: '2 min ago', text: 'Fleet health scan completed', color: 'var(--ck-green)' },
+    { time: '18 min ago', text: 'TC Legal AI — 3 agents auto-repaired', color: 'var(--ck-amber)' },
+    { time: '1 hr ago', text: 'Marina Ops AI — module update deployed', color: 'var(--ck-blue)' },
+    { time: '3 hr ago', text: 'Stuart Med Group promoted to staging', color: 'var(--ck-purple)' },
+    { time: '6 hr ago', text: 'Coastal Key PM — governance audit passed', color: 'var(--ck-gold)' }
+  ];
+  return `
+    <div class="dash-card">
+      <div class="dash-panel-title" style="margin-bottom:16px;">Recent Activity</div>
+      ${events.map(e => `
+        <div style="display:flex;gap:10px;padding:6px 0;">
+          <span class="dash-status-dot" style="background:${e.color};margin-top:6px;"></span>
+          <div>
+            <div style="font-size:0.8rem;color:#d4d4d8;">${e.text}</div>
+            <div style="font-size:0.68rem;color:#52525b;">${e.time}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
 }
 
 // ── Step 1: Occupation Selection ─────────────────────────────────────────────
@@ -296,6 +468,18 @@ function renderDeployPreview() {
 // ── Event Handlers ───────────────────────────────────────────────────────────
 
 function attachHandlers() {
+  // View toggle
+  document.querySelectorAll('.view-toggle-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.view = btn.dataset.view;
+      render();
+    });
+  });
+
+  // New app button (dashboard)
+  const newAppBtn = document.getElementById('btn-new-app');
+  if (newAppBtn) newAppBtn.addEventListener('click', () => { state.view = 'wizard'; state.step = 1; render(); });
+
   // Occupation selection
   document.querySelectorAll('.occupation-card').forEach((card) => {
     card.addEventListener('click', () => {
@@ -336,6 +520,7 @@ function attachHandlers() {
   if (nextBtn) nextBtn.addEventListener('click', () => { state.step++; render(); });
   if (backBtn) backBtn.addEventListener('click', () => { state.step--; render(); });
   if (deployBtn) deployBtn.addEventListener('click', () => {
-    alert(`Deploying ${getTemplate(state.occupation).name} AI Mobile App with ${state.agentCount} agents on the ${state.agentTier} plan. Deployment target: Cloudflare Pages.`);
+    state.view = 'dashboard';
+    render();
   });
 }
