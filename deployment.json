@@ -1,16 +1,83 @@
 {
+  "schema": "ckpm-deploy-v1",
   "project": "coastalkey-pm",
+  "org": "Coastal Key Property Management",
   "domain": "coastalkey-pm.com",
+  "environment": "production",
+  "platform": "cloudflare-pages",
   "architecture": {
-    "website": "Cloudflare Pages (ck-website/)",
+    "website": "Cloudflare Pages _worker.js reverse proxy → Manus origin (coastalkey-awfopuqz.manus.space)",
     "api": "Cloudflare Workers (ck-api-gateway/)",
+    "nemotron": "Cloudflare Workers (ck-nemotron-worker/)",
     "webhook": "Cloudflare Workers (sentinel-webhook/)",
-    "dashboard": "Integrated into website at /portal/*"
+    "dashboard": "Cloudflare Pages (ck-command-center/)"
   },
+  "website_proxy": {
+    "origin": "https://coastalkey-awfopuqz.manus.space",
+    "domain": "coastalkey-pm.com",
+    "features": [
+      "URL rewriting (HTML, CSS, JS, JSON)",
+      "Edge caching (static 30d, fonts 1y, HTML 5m)",
+      "SEO canonical injection",
+      "Retry with backoff on upstream failures",
+      "Custom robots.txt for canonical domain",
+      "HSTS + security headers",
+      "Set-Cookie domain rewriting",
+      "Graceful 503 maintenance fallback"
+    ],
+    "pages": [
+      "/",
+      "/services",
+      "/agents",
+      "/dashboard",
+      "/eliza",
+      "/portal",
+      "/admin"
+    ]
+  },
+  "prerequisites": {
+    "runtime": "python3",
+    "cli": ["wrangler"],
+    "auth": "wrangler must be authenticated to the Coastal Key Cloudflare account",
+    "source": "~/Downloads/coastalkey-pm"
+  },
+  "pipeline": [
+    {
+      "phase": "prepare",
+      "step": 1,
+      "action": "Navigate to project directory",
+      "command": "cd ~/Downloads/coastalkey-pm",
+      "critical": true
+    },
+    {
+      "phase": "audit",
+      "step": 2,
+      "action": "Execute compliance and audit fix script",
+      "command": "python3 ck-audit-fix.py",
+      "critical": true,
+      "description": "Resolves security and compliance findings before deploy"
+    },
+    {
+      "phase": "deploy",
+      "step": 3,
+      "action": "Deploy to Cloudflare Pages",
+      "command": "wrangler pages deploy . --project-name=coastalkey-pm",
+      "critical": true,
+      "description": "Publishes current directory to Cloudflare Pages under coastalkey-pm"
+    },
+    {
+      "phase": "post-deploy",
+      "step": 4,
+      "action": "Purge Cloudflare cache",
+      "command": "curl -X POST 'https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache' -H 'Authorization: Bearer {token}' -H 'Content-Type: application/json' -d '{\"purge_everything\":true}'",
+      "critical": true,
+      "description": "Full cache purge ensures visitors receive the latest deployment"
+    }
+  ],
   "deployment": {
     "website": {
       "steps": [
-        { "step": 1, "action": "Deploy website to Cloudflare Pages", "command": "wrangler pages deploy ./ck-website --project-name=coastalkey-pm" },
+        { "step": 1, "action": "Deploy reverse proxy to Cloudflare Pages", "command": "wrangler pages deploy ./ck-website --project-name=coastalkey-pm" },
         { "step": 2, "action": "Purge Cloudflare cache", "command": "curl -X POST 'https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache' -H 'Authorization: Bearer {token}' -d '{\"purge_everything\":true}'" }
       ]
     },
@@ -23,17 +90,34 @@
       "steps": [
         { "step": 1, "action": "Deploy sentinel webhook Worker", "command": "cd sentinel-webhook && wrangler deploy" }
       ]
+    },
+    "nemotron_worker": {
+      "steps": [
+        { "step": 1, "action": "Deploy Nemotron inference Worker", "command": "cd ck-nemotron-worker && wrangler deploy" }
+      ]
+    },
+    "command_center": {
+      "steps": [
+        { "step": 1, "action": "Deploy Command Center to Cloudflare Pages", "command": "wrangler pages deploy ck-command-center --project-name=ck-command-center" }
+      ]
     }
   },
   "subdomain_consolidation": {
     "policy": "All subdomains redirect to coastalkey-pm.com via _redirects",
     "eliminated": ["www", "app", "dashboard", "agents", "api", "admin", "old", "staging", "dev", "beta"],
-    "active_domain": "coastalkey-pm.com",
-    "portal_path": "/portal"
+    "active_domain": "coastalkey-pm.com"
   },
   "agents": {
-    "total": 290,
-    "divisions": 9,
-    "web_dev_agents": 40
+    "total": 404,
+    "divisions": 12,
+    "web_dev_agents": 40,
+    "mcco_agents": 15,
+    "intelligence_officers": 50,
+    "email_agents": 20,
+    "trader_agents": 1
+  },
+  "validation": {
+    "post_deploy_check": "Verify site loads at coastalkey-pm.com and audit fixes are reflected",
+    "rollback": "Re-deploy previous build directory via wrangler if issues are detected"
   }
 }
