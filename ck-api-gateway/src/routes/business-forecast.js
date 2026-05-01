@@ -244,7 +244,7 @@ export function handleMarketPulse() {
       'Snowbird corridor migration accelerating — Treasure Coast absorption rate +16% YoY',
       'Concierge tier shows highest growth potential at 22.6% projected 18mo market increase',
       'Fragmented market (47+ operators, no dominant player) favors aggressive new entrant with technology moat',
-      'CKPM 310-agent AI fleet is an unmatched differentiator — zero competitors use AI operations',
+      'CKPM 330-agent AI fleet is an unmatched differentiator — zero competitors use AI operations',
       'First-mover window for AI-powered property management on Treasure Coast estimated at 12-18 months',
     ],
   });
@@ -437,7 +437,7 @@ COMPANY CONTEXT:
 - CURRENT REVENUE: $0/month — launch phase, week 1
 - Target portfolio at 18 months: 53 managed properties
 - Target revenue mix: Home Watch (35%), Full Management (30%), Concierge (20%), Seasonal (15%)
-- Competitive advantage: 310-agent AI fleet, NHWA accredited, zero competitors use AI
+- Competitive advantage: 330-agent AI fleet, NHWA accredited, zero competitors use AI
 
 Produce a structured stress-test analysis:
 1. SCENARIO DESCRIPTION — What exactly happens, over what timeline
