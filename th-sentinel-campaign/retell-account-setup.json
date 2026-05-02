@@ -1,0 +1,183 @@
+{
+  "retell_account": {
+    "organization": "Coastal Key Property Management",
+    "account_tier": "Enterprise",
+    "primary_contact": "Tracey Merritt Hunter",
+    "email": "tracey@traceyhuntergroup.com",
+    "billing_entity": "Tracey Hunter Group — RE/MAX of Stuart",
+    "region": "US East (Florida Treasure Coast)"
+  },
+  "api_configuration": {
+    "api_version": "v2",
+    "webhook_endpoints": [
+      {
+        "name": "Sentinel Webhook (Primary)",
+        "url": "https://sentinel-webhook.david-e59.workers.dev",
+        "events": ["call_analyzed"],
+        "secret_header": "X-Retell-Signature",
+        "retry_policy": { "max_retries": 3, "backoff": "exponential" }
+      },
+      {
+        "name": "API Gateway Webhook (Backup)",
+        "url": "https://ck-api-gateway.david-e59.workers.dev/v1/webhook/retell",
+        "events": ["call_analyzed"],
+        "retry_policy": { "max_retries": 3, "backoff": "exponential" }
+      }
+    ],
+    "authentication": {
+      "method": "api_key",
+      "secret_name": "RETELL_API_KEY",
+      "storage": "Cloudflare Worker Secrets"
+    }
+  },
+  "voice_agents": {
+    "fleet_size": 40,
+    "naming_convention": "TH-SENTINEL-{001-040}",
+    "shared_settings": {
+      "voice_profile": "professional_female_warm",
+      "language": "en-US",
+      "model": "claude-sonnet-4-6",
+      "response_speed": "balanced",
+      "interruption_sensitivity": "medium_high",
+      "end_call_after_silence_seconds": 8,
+      "max_call_duration_seconds": 180,
+      "voicemail_detection": true,
+      "voicemail_action": "leave_message",
+      "ambient_sound": "off",
+      "responsiveness": 1.0,
+      "enable_backchannel": true,
+      "backchannel_frequency": 0.8
+    },
+    "dynamic_variables": [
+      { "key": "agent_name", "description": "Agent persona name from roster" },
+      { "key": "customer_name", "description": "Contact name from campaign list" },
+      { "key": "property_address", "description": "Target property address" },
+      { "key": "service_zone", "description": "Geographic zone for routing" },
+      { "key": "segment", "description": "Lead segment (absentee, luxury, investor, seasonal, str)" },
+      { "key": "lead_source", "description": "Source of lead data" }
+    ],
+    "functions": [
+      {
+        "name": "transfer_call_to_tracey",
+        "description": "Transfer qualified lead to Tracey Hunter for live conversation",
+        "transfer_phone_number": "+17727638900",
+        "parameters": {
+          "reason": { "type": "string", "required": true }
+        }
+      },
+      {
+        "name": "end_call",
+        "description": "End call with disposition tracking",
+        "parameters": {
+          "disposition": {
+            "type": "string",
+            "enum": ["not_interested", "callback_scheduled", "dnc_request", "wrong_number", "voicemail_left", "no_answer", "conversation_complete"]
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    ]
+  },
+  "campaigns": [
+    {
+      "name": "Tracey Hunter Sentinel Sales — Spring/Summer 2026",
+      "status": "ACTIVE",
+      "start_date": "2026-03-28",
+      "end_date": "2026-09-28",
+      "schedule": {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "start_time": "10:00",
+        "end_time": "15:00",
+        "timezone": "America/New_York"
+      },
+      "dialing": {
+        "concurrent_agents": 40,
+        "calls_per_agent_per_hour": 12,
+        "max_retries_per_number": 3,
+        "retry_interval_hours": 48,
+        "caller_id": "772-763-8900"
+      },
+      "target_markets": {
+        "primary": ["Stuart", "Palm City", "Jensen Beach", "Hobe Sound", "Port St. Lucie", "Hutchinson Island"],
+        "secondary": ["Jupiter", "Tequesta", "Palm Beach Gardens", "Vero Beach", "Fort Pierce", "Sebastian"]
+      },
+      "lead_segments": [
+        { "key": "absentee_homeowner", "label": "Absentee Homeowner", "priority": 1 },
+        { "key": "luxury_property", "label": "Luxury Property $1M+", "priority": 2 },
+        { "key": "investor", "label": "Investor / Family Office", "priority": 3 },
+        { "key": "seasonal", "label": "Seasonal / Snowbird", "priority": 4 },
+        { "key": "str", "label": "STR / Vacation Rental", "priority": 5 }
+      ],
+      "kpi_targets": {
+        "daily_calls": 2400,
+        "daily_connections": 480,
+        "daily_qualified_leads": 24,
+        "daily_transfers": 8,
+        "daily_appointments": 4,
+        "connection_rate_target": 0.20,
+        "qualification_rate_target": 0.05,
+        "transfer_success_rate_target": 0.90
+      }
+    }
+  ],
+  "compliance": {
+    "tcpa": {
+      "enabled": true,
+      "ai_disclosure": "Agent identifies as AI assistant when directly asked",
+      "dnc_scrubbing": "National DNC Registry + Florida State DNC",
+      "calling_window": { "start": "10:00", "end": "15:00", "timezone": "America/New_York" },
+      "opt_out_mechanism": "Immediate removal on request",
+      "call_recording_disclosure": true,
+      "consent_documentation": "Airtable audit trail"
+    },
+    "dnc_workflow": {
+      "trigger": "disposition = dnc_request",
+      "actions": [
+        "Update Lead Status to 'Do Not Call' in Airtable",
+        "Add number to internal suppression list",
+        "Exclude from all future campaigns",
+        "Log to Audit Trail with timestamp"
+      ]
+    }
+  },
+  "monitoring": {
+    "slack_channels": {
+      "new_leads": "sentinel-leads",
+      "failed_calls": "sentinel-qa",
+      "daily_reports": "sentinel-analytics",
+      "compliance_alerts": "sentinel-compliance"
+    },
+    "alerts": [
+      { "condition": "connection_rate < 0.15", "severity": "warning", "action": "Slack alert to sentinel-qa" },
+      { "condition": "transfer_failure_rate > 0.20", "severity": "critical", "action": "Slack alert + pause campaign" },
+      { "condition": "dnc_complaint_received", "severity": "critical", "action": "Immediate review + compliance alert" },
+      { "condition": "agent_error_rate > 0.10", "severity": "warning", "action": "Auto-pause agent + QA review" }
+    ],
+    "dashboards": {
+      "command_center": "https://main.coastalkey-pm.pages.dev",
+      "airtable_campaign": "https://airtable.com/appUSnNgpDkcEOzhN",
+      "api_health": "https://ck-api-gateway.david-e59.workers.dev/v1/health?deep=true"
+    }
+  },
+  "data_pipeline": {
+    "retell_to_airtable": {
+      "webhook": "sentinel-webhook.david-e59.workers.dev",
+      "routing": {
+        "engaged_calls": { "table": "tblpNasm0AxreRqLW", "label": "Leads" },
+        "failed_calls": { "table": "tblWW25r6GmsQe3mQ", "label": "Missed/Failed Calls QA" },
+        "call_log": { "table": "tbl1a2YPUpZvnRKbi", "label": "TH Sentinel - Call Log" },
+        "lead_contacts": { "table": "tbl0XVTVz3qambhog", "label": "TH Sentinel - Lead Contacts" }
+      }
+    },
+    "retell_to_atlas": {
+      "platform": "Atlas AI (youratlas.com)",
+      "purpose": "Dead lead revival, appointment confirmation, and speed-to-lead via Atlas AI campaigns",
+      "sync_actions": [
+        "Failed/missed Retell calls → schedule Atlas dead-lead-revival follow-up",
+        "Booked dispositions → schedule Atlas appointment confirmation call",
+        "New inbound leads → trigger Atlas speed-to-lead (60-second contact)"
+      ],
+      "sync_frequency": "real-time via webhook (fire-and-forget)"
+    }
+  }
+}

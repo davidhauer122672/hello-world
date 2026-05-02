@@ -1,0 +1,273 @@
+/**
+ * Business Forecast Division (BFR) — 20 agents
+ *
+ * Ferrari-grade market intelligence and 18-month forecasting for home watch
+ * and property management services. Each agent is precision-engineered for
+ * a single link in the forecast chain: data ingestion → modeling → synthesis
+ * → CEO-ready deliverables.
+ *
+ * Tier distribution: 10 advanced, 10 standard
+ * All agents default to active status for immediate operational readiness.
+ */
+export const BFR_AGENTS = [
+  {
+    id: 'BFR-001',
+    name: 'Forecast Prime',
+    role: 'Business Forecast Division Director',
+    description:
+      'Orchestrates the full forecast pipeline end-to-end. Assigns workstreams to the 19-agent team, enforces quality gates, arbitrates conflicting projections, and signs off on the final 18-month forecast package before CEO delivery. Owns the division KPI dashboard and calibration cadence.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['forecast-cycle-start', 'ceo-forecast-request', 'quarterly-recalibration', 'emergency-reforecast'],
+    outputs: ['master-forecast-package', 'division-status-report', 'calibration-scorecard', 'pipeline-orchestration-plan'],
+    kpis: ['forecast-accuracy-mape', 'delivery-on-time-rate', 'quality-gate-pass-rate', 'team-utilization'],
+  },
+  {
+    id: 'BFR-002',
+    name: 'Market Pulse',
+    role: 'Home Watch & Property Management Market Analyst',
+    description:
+      'Ingests and normalizes real-time market data across the Treasure Coast home watch and property management verticals. Tracks move-in/move-out velocity, seasonal occupancy rates, new construction permits, HOA formation rates, and luxury home inventory. Publishes daily market pulse snapshots and weekly trend digests.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['daily-market-scan', 'data-feed-update', 'anomaly-detected', 'market-event'],
+    outputs: ['market-pulse-daily', 'trend-digest-weekly', 'anomaly-alert', 'raw-data-feed'],
+    kpis: ['data-freshness-hours', 'source-coverage-pct', 'anomaly-detection-accuracy', 'digest-read-rate'],
+  },
+  {
+    id: 'BFR-003',
+    name: 'Demand Architect',
+    role: 'Demand Curve & Growth Modeler',
+    description:
+      'Builds and maintains 18-month demand models for each service tier: home watch, full property management, concierge, and seasonal care. Factors in migration patterns (Northeast-to-Florida snowbird corridor), real estate transaction volume, and macro housing indicators. Outputs demand curves with confidence intervals and scenario bands.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['model-refresh-cycle', 'new-data-ingestion', 'scenario-request', 'demand-shift-detected'],
+    outputs: ['demand-model-18mo', 'scenario-bands', 'confidence-intervals', 'growth-trajectory-chart'],
+    kpis: ['model-mape', 'backtest-accuracy', 'scenario-coverage', 'refresh-cadence-days'],
+  },
+  {
+    id: 'BFR-004',
+    name: 'Competitive Radar',
+    role: 'Competitive Landscape Intelligence',
+    description:
+      'Maintains a living competitive dossier on every home watch and property management firm operating on the Treasure Coast and Southeast Florida. Tracks pricing moves, service launches, acquisition activity, marketing spend signals, and online reputation shifts. Feeds competitive positioning data into the pricing and expansion models.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['competitor-scan-cycle', 'competitor-event-detected', 'pricing-change-alert', 'acquisition-rumor'],
+    outputs: ['competitive-dossier', 'pricing-intelligence-brief', 'threat-assessment', 'market-share-estimate'],
+    kpis: ['competitor-coverage-pct', 'intelligence-freshness-days', 'pricing-alert-lead-time', 'dossier-accuracy'],
+  },
+  {
+    id: 'BFR-005',
+    name: 'Revenue Trajectory',
+    role: 'Revenue & Margin Forecast Architect',
+    description:
+      'Projects revenue, gross margin, and unit economics across all service lines for the next 18 months. Integrates demand models (BFR-003), pricing intelligence (BFR-004), and client retention curves (BFR-009) into unified P&L projections. Produces monthly, quarterly, and annual revenue waterfalls with variance decomposition.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['revenue-model-refresh', 'input-model-updated', 'pricing-change', 'client-churn-event'],
+    outputs: ['revenue-forecast-18mo', 'margin-waterfall', 'unit-economics-dashboard', 'variance-decomposition'],
+    kpis: ['revenue-forecast-accuracy', 'margin-prediction-error', 'waterfall-clarity-score', 'stakeholder-confidence'],
+  },
+  {
+    id: 'BFR-006',
+    name: 'Macro Sentinel',
+    role: 'Macroeconomic & Housing Market Monitor',
+    description:
+      'Tracks the macroeconomic indicators that directly impact property management demand: interest rates, housing starts, existing home sales, CPI, employment data, Florida GDP, insurance premiums, and hurricane season forecasts. Translates macro signals into impact assessments for the Coastal Key operating model.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['economic-data-release', 'fed-announcement', 'housing-report', 'insurance-rate-change'],
+    outputs: ['macro-impact-brief', 'interest-rate-scenario', 'housing-market-pulse', 'insurance-cost-projection'],
+    kpis: ['indicator-coverage', 'impact-assessment-speed', 'macro-call-accuracy', 'brief-actionability-score'],
+  },
+  {
+    id: 'BFR-007',
+    name: 'Demographics Engine',
+    role: 'Regional Demographics & Migration Analyst',
+    description:
+      'Models population and wealth migration patterns into the Treasure Coast. Tracks IRS migration data, Census estimates, luxury real estate absorption rates, and snowbird seasonal patterns for Vero Beach through Jupiter. Produces demographic heat maps and migration velocity scores by ZIP code.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['census-update', 'migration-data-release', 'quarterly-demographic-refresh', 'zip-code-analysis-request'],
+    outputs: ['demographic-heat-map', 'migration-velocity-report', 'zip-code-opportunity-score', 'seasonal-pattern-model'],
+    kpis: ['data-recency-weeks', 'zip-code-coverage', 'migration-prediction-accuracy', 'opportunity-conversion-rate'],
+  },
+  {
+    id: 'BFR-008',
+    name: 'Seasonal Cadence',
+    role: 'Seasonal Pattern & Cyclicality Engine',
+    description:
+      'Isolates and models seasonal patterns unique to Southeast Florida property management: snowbird arrival/departure curves, hurricane prep/recovery cycles, summer vacancy rates, holiday booking surges, and school calendar impacts. Outputs seasonality adjustment factors consumed by every other BFR model.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['season-transition', 'historical-pattern-analysis', 'weather-event', 'booking-surge-detected'],
+    outputs: ['seasonality-factors', 'occupancy-heatmap', 'hurricane-readiness-index', 'booking-surge-forecast'],
+    kpis: ['pattern-match-accuracy', 'factor-stability', 'lead-time-weeks', 'downstream-model-improvement'],
+  },
+  {
+    id: 'BFR-009',
+    name: 'Retention Oracle',
+    role: 'Client Retention & Attrition Forecaster',
+    description:
+      'Predicts client churn probability at the individual account level and in aggregate. Models retention drivers: service quality scores, communication frequency, price sensitivity, property sale likelihood, and competitive switching risk. Feeds retention curves into revenue projections and flags at-risk accounts for proactive intervention.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['churn-risk-scan', 'satisfaction-survey-complete', 'renewal-approaching', 'competitive-offer-detected'],
+    outputs: ['churn-risk-scorecard', 'retention-curve-18mo', 'at-risk-account-alerts', 'intervention-playbook'],
+    kpis: ['churn-prediction-auc', 'early-warning-lead-time', 'intervention-success-rate', 'net-retention-rate'],
+  },
+  {
+    id: 'BFR-010',
+    name: 'Expansion Cartographer',
+    role: 'Service Expansion & New Market Strategist',
+    description:
+      'Evaluates geographic and service-line expansion opportunities over the 18-month horizon. Scores new markets by demand density, competitive saturation, operational feasibility, and revenue potential. Produces go/no-go recommendations with investment requirements, timeline estimates, and break-even projections.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['expansion-evaluation-cycle', 'market-opportunity-flagged', 'competitor-exit', 'new-development-announced'],
+    outputs: ['market-opportunity-scorecard', 'go-nogo-recommendation', 'expansion-business-case', 'break-even-model'],
+    kpis: ['opportunity-pipeline-value', 'recommendation-adoption-rate', 'expansion-roi-accuracy', 'market-entry-speed'],
+  },
+  {
+    id: 'BFR-011',
+    name: 'Price Elasticity',
+    role: 'Pricing Elasticity & Optimization Modeler',
+    description:
+      'Models price sensitivity across client segments, service tiers, and geographic zones. Runs A/B price scenario simulations, estimates optimal price points, and projects the revenue impact of pricing changes. Works with Competitive Radar (BFR-004) to position pricing relative to market.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['pricing-review-cycle', 'competitor-price-change', 'margin-pressure-detected', 'new-service-launch'],
+    outputs: ['elasticity-curves', 'optimal-price-matrix', 'scenario-simulation-results', 'pricing-recommendation'],
+    kpis: ['elasticity-model-r-squared', 'price-optimization-lift', 'competitive-position-index', 'recommendation-adoption'],
+  },
+  {
+    id: 'BFR-012',
+    name: 'Regulatory Horizon',
+    role: 'Regulatory & Legislative Impact Forecaster',
+    description:
+      'Monitors Florida legislative sessions, HOA reform bills, insurance regulation changes, property tax adjustments, short-term rental ordinances, and environmental regulations that could impact the property management industry over 18 months. Quantifies regulatory impact on operating costs and demand.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['legislative-session-start', 'bill-introduced', 'regulation-finalized', 'tax-assessment-change'],
+    outputs: ['regulatory-impact-assessment', 'compliance-cost-projection', 'legislative-tracker', 'risk-brief'],
+    kpis: ['bill-tracking-coverage', 'impact-assessment-accuracy', 'early-warning-lead-days', 'compliance-readiness-score'],
+  },
+  {
+    id: 'BFR-013',
+    name: 'Disruption Scanner',
+    role: 'Technology & Business Model Disruption Analyst',
+    description:
+      'Scans for technology and business model disruptions that could reshape property management: smart home IoT platforms, AI-powered inspection tools, drone surveillance, remote monitoring services, platform aggregators, and new franchise models. Assesses threat level, adoption timeline, and strategic response options.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['tech-scan-cycle', 'startup-funding-alert', 'patent-filed', 'industry-conference-debrief'],
+    outputs: ['disruption-radar', 'technology-adoption-curve', 'threat-assessment', 'strategic-response-options'],
+    kpis: ['scan-coverage-breadth', 'disruption-prediction-accuracy', 'response-readiness-score', 'adoption-tracking-speed'],
+  },
+  {
+    id: 'BFR-014',
+    name: 'Workforce Planner',
+    role: 'Workforce Demand & Capacity Forecaster',
+    description:
+      'Projects the staffing and contractor requirements needed to serve forecasted demand over 18 months. Models hiring timelines, training ramp curves, seasonal staffing fluctuations, and labor cost inflation for the Treasure Coast market. Outputs headcount plans aligned with revenue projections.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['demand-model-updated', 'hiring-plan-request', 'attrition-spike', 'seasonal-ramp'],
+    outputs: ['headcount-plan-18mo', 'labor-cost-projection', 'training-pipeline', 'seasonal-staffing-calendar'],
+    kpis: ['forecast-vs-actual-headcount', 'labor-cost-accuracy', 'ramp-time-prediction', 'staffing-gap-days'],
+  },
+  {
+    id: 'BFR-015',
+    name: 'Pipeline Radar',
+    role: 'Property Pipeline & Inventory Forecaster',
+    description:
+      'Forecasts the volume and composition of properties entering the Coastal Key management pipeline over 18 months. Tracks new construction completions, resale listings, investment property acquisitions, and HOA community formations along the Treasure Coast. Maps pipeline to service tier demand.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['construction-permit-update', 'mls-data-refresh', 'hoa-formation-alert', 'investment-trend-shift'],
+    outputs: ['property-pipeline-forecast', 'inventory-composition-map', 'tier-demand-allocation', 'new-community-tracker'],
+    kpis: ['pipeline-forecast-accuracy', 'inventory-coverage-pct', 'lead-time-months', 'conversion-prediction-rate'],
+  },
+  {
+    id: 'BFR-016',
+    name: 'Scenario Architect',
+    role: 'Risk Scenario & Stress Test Designer',
+    description:
+      'Designs and executes multi-variable stress tests across the full forecast model. Scenarios include: Category 4+ hurricane impact, 200bp interest rate shock, major competitor entry, insurance market collapse, and economic recession. Produces resilience scores and contingency triggers for each scenario.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['scenario-request', 'risk-threshold-breached', 'black-swan-indicator', 'quarterly-stress-test'],
+    outputs: ['stress-test-results', 'resilience-scorecard', 'contingency-trigger-matrix', 'worst-case-playbook'],
+    kpis: ['scenario-coverage-count', 'model-stability-under-stress', 'contingency-activation-accuracy', 'recovery-projection-error'],
+  },
+  {
+    id: 'BFR-017',
+    name: 'CEO Synthesizer',
+    role: 'Executive Briefing & Insight Synthesizer',
+    description:
+      'Distills the combined output of all 19 BFR agents into laser-focused CEO briefings. Translates complex models into decisive action items, investment recommendations, and strategic imperatives. Produces the final executive forecast package: 1-page summary, 18-month roadmap, and board-ready appendix. Quality standard: Ferrari.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['forecast-synthesis-ready', 'ceo-briefing-scheduled', 'board-meeting-prep', 'urgent-insight'],
+    outputs: ['ceo-one-pager', '18mo-strategic-roadmap', 'board-appendix', 'action-item-matrix'],
+    kpis: ['ceo-satisfaction-score', 'action-item-execution-rate', 'insight-to-decision-speed', 'presentation-quality-score'],
+  },
+  {
+    id: 'BFR-018',
+    name: 'Calibration Engine',
+    role: 'Forecast Accuracy & Model Calibration Specialist',
+    description:
+      'Continuously backtests every BFR model against actuals. Measures MAPE, bias, and drift across all forecast dimensions. Identifies systematic errors, recommends recalibration adjustments, and maintains the division accuracy ledger. Ensures every output meets the division accuracy floor of ±5% MAPE.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['actuals-available', 'accuracy-threshold-breach', 'monthly-calibration', 'model-drift-detected'],
+    outputs: ['accuracy-ledger', 'calibration-adjustments', 'bias-report', 'model-health-dashboard'],
+    kpis: ['overall-mape', 'bias-magnitude', 'calibration-response-time', 'model-drift-detection-speed'],
+  },
+  {
+    id: 'BFR-019',
+    name: 'Quality Auditor',
+    role: 'Output Quality & Integrity Auditor',
+    description:
+      'Final quality gate before any BFR deliverable reaches the CEO or other divisions. Audits data lineage, validates assumptions, checks for internal consistency across models, verifies source citations, and stress-tests conclusions. Rejects deliverables that fail the Ferrari quality standard. Zero tolerance for unsubstantiated claims.',
+    division: 'BFR',
+    tier: 'standard',
+    status: 'active',
+    triggers: ['deliverable-submitted', 'quality-review-request', 'pre-publication-check', 'assumption-challenge'],
+    outputs: ['quality-audit-report', 'rejection-notice', 'assumption-validation', 'lineage-verification'],
+    kpis: ['defect-escape-rate', 'audit-turnaround-hours', 'rejection-rate', 'stakeholder-trust-score'],
+  },
+  {
+    id: 'BFR-020',
+    name: 'Delivery Commander',
+    role: 'Forecast Delivery & Operations Commander',
+    description:
+      'Manages the operational cadence of the BFR division: sprint scheduling, deliverable timelines, cross-division data requests, and stakeholder communication. Ensures the monthly forecast cycle completes on time, every time. Owns the division SLA: 18-month forecast refreshed monthly, CEO brief within 48 hours of cycle close.',
+    division: 'BFR',
+    tier: 'advanced',
+    status: 'active',
+    triggers: ['cycle-kickoff', 'milestone-due', 'dependency-blocked', 'sla-at-risk'],
+    outputs: ['delivery-schedule', 'sprint-tracker', 'dependency-map', 'sla-compliance-report'],
+    kpis: ['on-time-delivery-rate', 'cycle-time-days', 'dependency-resolution-hours', 'sla-compliance-pct'],
+  },
+];

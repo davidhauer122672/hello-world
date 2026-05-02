@@ -1,0 +1,52 @@
+name = "ck-api-gateway"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+
+[vars]
+AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
+ENVIRONMENT = "production"
+RATE_LIMIT_RPM = "60"
+MAX_TRANSCRIPT_CHARS = "100000"
+VOICE_PLATFORM = "retell"
+
+# ── KV Namespace Bindings ──
+# These cache inference results, session state, rate limits, and audit logs
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "2a4a09a04ea146b29fa06ebb9af61609"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "c88aa8d5534c4b0cb3f2722f97cceca6"
+
+[[kv_namespaces]]
+binding = "RATE_LIMITS"
+id = "0acfb96a7aaf49bb92055c143a882506"
+
+[[kv_namespaces]]
+binding = "AUDIT_LOG"
+id = "3d722426db4241209fd0444b42f84904"
+
+# ── Secrets (set via dashboard or `wrangler secret put`) ──
+# ANTHROPIC_API_KEY        — Anthropic console API key
+# AIRTABLE_API_KEY         — Airtable personal access token
+# WORKER_AUTH_TOKEN         — Auth token for external callers (Retell)
+# SLACK_WEBHOOK_URL         — Slack incoming webhook for notifications (legacy fallback)
+# SLACK_BOT_TOKEN           — Slack Bot OAuth token (xoxb-...) for Coastal Key app (A0APSJ44NV6)
+# SLACK_SIGNING_SECRET      — Slack app signing secret for request signature verification
+# RETELL_API_KEY              — Retell AI API key (outbound + inbound voice campaigns)
+# BANANA_PRO_API_KEY         — Banana Pro AI GPU inference key
+# ALPHA_VANTAGE_KEY          — Alpha Vantage financial data API key
+# FRED_API_KEY               — Federal Reserve Economic Data API key
+# ATLAS_API_KEY              — Atlas AI (youratlas.com) API key
+# ATLAS_REVIVAL_CAMPAIGN_ID  — Atlas campaign ID for dead-lead-revival follow-ups
+# ATLAS_CONFIRMATION_CAMPAIGN_ID — Atlas campaign ID for appointment confirmation calls
+# Content publishing powered by Claude AI platform (ANTHROPIC_API_KEY)
+# GOOGLE_CLIENT_ID             — Google OAuth 2.0 client ID (Gmail API)
+# GOOGLE_CLIENT_SECRET         — Google OAuth 2.0 client secret
+# GMAIL_REFRESH_TOKEN          — Gmail long-lived refresh token (offline access)
+# GMAIL_FROM_ADDRESS           — Authorized Gmail sender address
+# META_PAGE_ACCESS_TOKEN        — Meta/Facebook Page access token for ad management
+# META_AD_ACCOUNT_ID            — Meta Ads account ID (act_XXXXXXXXX)
+# META_PAGE_ID                  — Facebook Page ID for post boosting

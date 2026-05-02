@@ -1,0 +1,8 @@
+name = "ck-nemotron-worker"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+MODEL_ID = "claude-sonnet-4-20250514"

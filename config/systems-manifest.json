@@ -1,0 +1,19 @@
+{
+  "manifest": {
+    "version": "2.2.0",
+    "generated": "2026-04-14",
+    "organization": "Coastal Key Treasure Coast Asset Management",
+    "platform": "Unified Operations Platform",
+    "classification": "Estate Management Enterprise",
+    "mission": "Coastal Key delivers enterprise-grade AI systems that automate operational complexity for working owners—reclaiming their time while multiplying productivity across every business function.",
+    "governance": "docs/governance/GOVERNANCE.md",
+    "standards": ["ferrari_precision", "redbull_optimization", "spacex_engineering"]
+  },
+  "architecture": {
+    "runtime": "Node.js + Express 5",
+    "pattern": "Monolithic API with scheduled workers",
+    "persistence": "JSON flat-file with mutex locking",
+    "deployment": "Single-process with graceful shutdown",
+    "security_layers": ["rate_limiting", "security_headers", "cors", "input_size_limits", "centralized_error_handling"]
+  }
+}
