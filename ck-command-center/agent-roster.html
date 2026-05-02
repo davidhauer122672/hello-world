@@ -1,0 +1,3834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coastal Key Enterprise — AI Agent Roster</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:#1a1a2e;background:#fff;line-height:1.5}
+@media print{body{font-size:9pt}table{font-size:8pt}.division{page-break-inside:avoid}.cover,.toc{page-break-after:always}}
+.cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);color:#fff;text-align:center;padding:60px 40px}
+.cover h1{font-size:42px;font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+.cover .subtitle{font-size:20px;color:#94a3b8;margin-bottom:40px}
+.cover .stat-row{display:flex;gap:40px;margin:30px 0}
+.cover .stat{text-align:center}
+.cover .stat-num{font-size:48px;font-weight:800;color:#7c3aed}
+.cover .stat-label{font-size:13px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}
+.cover .gov{margin-top:40px;padding:20px 40px;border:1px solid #334155;border-radius:8px;max-width:700px}
+.cover .gov p{font-size:14px;color:#cbd5e1;line-height:1.7}
+.toc{padding:40px;max-width:900px;margin:0 auto}
+.toc h2{font-size:28px;margin-bottom:20px;border-bottom:3px solid #7c3aed;padding-bottom:10px}
+.toc a{display:flex;align-items:center;padding:10px 12px;text-decoration:none;color:#1e293b;border-bottom:1px solid #e2e8f0;transition:background .15s}
+.toc a:hover{background:#f1f5f9}
+.toc-num{width:28px;height:28px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-right:12px;flex-shrink:0}
+.toc-count{margin-left:auto;background:#f1f5f9;padding:2px 10px;border-radius:12px;font-size:13px;color:#64748b;font-weight:600}
+.division{padding:30px 40px;border-bottom:1px solid #e2e8f0}
+.div-header{display:flex;align-items:center;gap:16px;padding:16px 20px;background:#f8fafc;border-radius:8px;margin-bottom:20px}
+.div-num{width:36px;height:36px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+.div-info h2{font-size:20px;font-weight:700;margin-bottom:2px}
+.div-mission{font-size:13px;color:#64748b;margin-bottom:4px}
+.agent-count{font-size:12px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:0.5px}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px}
+thead{background:#1e293b;color:#fff}
+th{padding:8px 10px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+td{padding:7px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top}
+tr:nth-child(even){background:#f8fafc}
+tr:hover{background:#eff6ff}
+.id{font-family:'Courier New',monospace;font-weight:700;font-size:11px;color:#7c3aed;white-space:nowrap;width:80px}
+.name{font-weight:700;white-space:nowrap;width:130px}
+.role{font-size:11px;color:#475569;width:160px}
+.desc{font-size:11px;color:#334155;max-width:320px}
+.meta{font-size:10px;color:#64748b;max-width:140px}
+.tier{font-size:10px;text-transform:uppercase;font-weight:700;color:#7c3aed;white-space:nowrap}
+.footer{text-align:center;padding:40px;color:#64748b;font-size:12px;border-top:2px solid #7c3aed}
+.summary{padding:30px 40px;background:#f8fafc;border-bottom:1px solid #e2e8f0}
+.summary h2{font-size:22px;margin-bottom:16px}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.summary-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:14px;text-align:center}
+.summary-card .num{font-size:28px;font-weight:800;color:#7c3aed}
+.summary-card .label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px}
+</style>
+</head>
+<body>
+
+<div class="cover">
+<h1>COASTAL KEY ENTERPRISE</h1>
+<div class="subtitle">Autonomous AI Agent Roster</div>
+<div class="stat-row">
+<div class="stat"><div class="stat-num">394</div><div class="stat-label">Total Agents</div></div>
+<div class="stat"><div class="stat-num">14</div><div class="stat-label">Divisions</div></div>
+<div class="stat"><div class="stat-num">5</div><div class="stat-label">Intel Squads</div></div>
+<div class="stat"><div class="stat-num">4</div><div class="stat-label">Email Squads</div></div>
+</div>
+<div class="gov">
+<p><strong>Mission:</strong> AI-powered, predictive home watch and property management that eliminates risk and creates total peace of mind for Treasure Coast property owners at a fraction of traditional cost with zero preventable incidents.</p>
+</div>
+<p style="margin-top:30px;color:#64748b;font-size:13px">Classification: Sovereign Governance | Generated: 2026-04-16 | Standard: Ferrari Execution</p>
+</div>
+
+<div class="summary">
+<h2>Fleet Composition</h2>
+<div class="summary-grid">
+<div class="summary-card"><div class="num">15</div><div class="label">MCCO — Master Chief</div></div>
+<div class="summary-card"><div class="num">20</div><div class="label">EXC — Executive Division</div></div>
+<div class="summary-card"><div class="num">40</div><div class="label">SEN — Sentinel Sales</div></div>
+<div class="summary-card"><div class="num">45</div><div class="label">OPS — Operations Division</div></div>
+<div class="summary-card"><div class="num">30</div><div class="label">INT — Intelligence Division</div></div>
+<div class="summary-card"><div class="num">48</div><div class="label">MKT — Marketing Division</div></div>
+<div class="summary-card"><div class="num">25</div><div class="label">FIN — Finance Division</div></div>
+<div class="summary-card"><div class="num">25</div><div class="label">VEN — Vendor Management</div></div>
+<div class="summary-card"><div class="num">25</div><div class="label">TEC — Technology Division</div></div>
+<div class="summary-card"><div class="num">40</div><div class="label">WEB — Website Development</div></div>
+<div class="summary-card"><div class="num">10</div><div class="label">COOP — Cooperations Committee</div></div>
+<div class="summary-card"><div class="num">50</div><div class="label">IO — Intelligence Officers</div></div>
+<div class="summary-card"><div class="num">20</div><div class="label">EM — Email Agents</div></div>
+<div class="summary-card"><div class="num">1</div><div class="label">TRADER — AI Trading</div></div>
+</div>
+</div>
+
+<div class="toc">
+<h2>Table of Contents</h2>
+<a href="#div-MCCO"><span class="toc-num">1</span>MCCO — Master Chief Commanding Officer <span class="toc-count">15</span></a>
+<a href="#div-EXC"><span class="toc-num">2</span>EXC — Executive Division <span class="toc-count">20</span></a>
+<a href="#div-SEN"><span class="toc-num">3</span>SEN — Sentinel Sales Division <span class="toc-count">40</span></a>
+<a href="#div-OPS"><span class="toc-num">4</span>OPS — Operations Division <span class="toc-count">45</span></a>
+<a href="#div-INT"><span class="toc-num">5</span>INT — Intelligence Division <span class="toc-count">30</span></a>
+<a href="#div-MKT"><span class="toc-num">6</span>MKT — Marketing Division <span class="toc-count">48</span></a>
+<a href="#div-FIN"><span class="toc-num">7</span>FIN — Finance Division <span class="toc-count">25</span></a>
+<a href="#div-VEN"><span class="toc-num">8</span>VEN — Vendor Management Division <span class="toc-count">25</span></a>
+<a href="#div-TEC"><span class="toc-num">9</span>TEC — Technology Division <span class="toc-count">25</span></a>
+<a href="#div-WEB"><span class="toc-num">10</span>WEB — Website Development Division <span class="toc-count">40</span></a>
+<a href="#div-COOP"><span class="toc-num">11</span>COOP — Cooperations Committee <span class="toc-count">10</span></a>
+<a href="#div-IO"><span class="toc-num">12</span>IO — Intelligence Officers <span class="toc-count">50</span></a>
+<a href="#div-EM"><span class="toc-num">13</span>EM — Email AI Agents <span class="toc-count">20</span></a>
+<a href="#div-TRADER"><span class="toc-num">14</span>TRADER — AI Trading Intelligence <span class="toc-count">1</span></a>
+</div>
+
+
+<div class="division" id="div-MCCO">
+<div class="div-header" style="border-left:5px solid #7c3aed">
+<div class="div-num">1</div>
+<div class="div-info">
+<h2>MCCO — Master Chief Commanding Officer</h2>
+<p class="div-mission">Sovereign-level governance over all marketing and sales operations. Ferrari-Standard execution.</p>
+<span class="agent-count">15 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">MCCO-000</td>
+<td class="name">MCCO Sovereign</td>
+<td class="role">Master Chief Commanding Officer of Marketing &amp; Sales</td>
+<td class="desc">Sovereign-level governance AI commanding all Coastal Key marketing and sales operations. Directs the CMO, oversees 87+ agents across MKT and SEN divisions, and enforces Ferrari-Standard execution across every campaign, content piece, and revenue pipeline. Synthesizes audience psychology, brand positioning, content strategy, and monetization into a unified command framework. Reports directly to the Coastal Key CEO. All marketing and sales decisions flow through MCCO Sovereign.</td>
+<td class="meta">strategic-directive, cmo-report, revenue-target</td>
+<td class="meta">sovereign-directive, cmo-orders, fleet-status-report</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-001</td>
+<td class="name">Psyche Decoder</td>
+<td class="role">Audience Psychology Architect</td>
+<td class="desc">Deep-research engine that deconstructs target audiences with surgical precision. Maps the biggest frustrations, desires, fears, and daily content habits of absentee homeowners, seasonal residents, luxury property investors, snowbirds, and single-family homeowners along the Treasure Coast. Identifies scroll-stopping pain points and trust-building emotional triggers. Produces detailed audience psychology profiles that feed every content, messaging, and campaign decision across the Coastal Key enterprise. Turns raw human behavior data into specific messaging angles and content topics that stop the scroll and build real trust over time.</td>
+<td class="meta">audience-research, segment-deep-dive, messaging-refresh</td>
+<td class="meta">audience-psychology-profile, frustration-map, desire-matrix</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-002</td>
+<td class="name">Authority Forge</td>
+<td class="role">Authority &amp; Personal Branding Strategist</td>
+<td class="desc">Builds the positioning strategy that separates Coastal Key from every competitor in the AI-leveraged home watch and property management industry. Acts as the personal branding expert for the Coastal Key CEO and brand. Analyzes skills, niche expertise, and market gaps to craft a differentiation framework that makes Coastal Key the undisputed go-to name in home watch and property management. Develops authority signals, thought leadership angles, and brand positioning statements that establish market dominance across the Treasure Coast and beyond.</td>
+<td class="meta">positioning-review, competitor-shift, brand-audit</td>
+<td class="meta">positioning-strategy, differentiation-framework, authority-playbook</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-003</td>
+<td class="name">Pillar Command</td>
+<td class="role">Content Pillar Architect</td>
+<td class="desc">Builds and governs the five content pillars for the Coastal Key brand that consistently attract new followers, establish credibility, and drive leads and sales. For each pillar, produces example post topics and explains exactly why each connects with the Coastal Key audience. Ensures every piece of content maps back to a strategic pillar, eliminating random posting and maximizing content ROI. Pillars are designed to cover the full buyer journey from awareness through trust-building to conversion.</td>
+<td class="meta">pillar-review, content-strategy-session, quarterly-pillar-audit</td>
+<td class="meta">five-pillar-framework, pillar-topic-examples, pillar-audience-mapping</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-004</td>
+<td class="name">Calendar Command</td>
+<td class="role">30-Day Content Calendar Commander</td>
+<td class="desc">Creates a full 30-day content calendar for all Coastal Key social media platforms, presented monthly to the CMO. Each day includes: a daily content idea, post format (carousel, reel, story, thread, static, video, live), core message angle tied to audience psychology, and the specific goal of each post — whether that is reach, trust building, or conversion. Ensures content cadence never drops and every post serves a strategic purpose within the MCCO content pillar framework.</td>
+<td class="meta">monthly-calendar-generation, cmo-content-briefing, platform-update</td>
+<td class="meta">30-day-content-calendar, daily-content-briefs, format-distribution-plan</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-005</td>
+<td class="name">Scroll Breaker</td>
+<td class="role">High-Engagement Social Media Post Commander</td>
+<td class="desc">Writes high-engagement social media posts covering the Coastal Key CEO journey, all Coastal Key service promises, brand themes, and marketing/sales prompt ideas. Every post opens with a hook that makes someone stop scrolling, delivers a clear and useful insight in the body, and closes with a call to action that drives comments, saves, or clicks. Masters platform-specific formats: Instagram carousels, LinkedIn thought leadership, Facebook community posts, X threads, and TikTok/Reels scripts. Produces scroll-stopping content at Ferrari-standard quality.</td>
+<td class="meta">post-request, campaign-content-needed, trending-opportunity</td>
+<td class="meta">scroll-stop-post, hook-variants, cta-options</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-006</td>
+<td class="name">Revenue Architect</td>
+<td class="role">Audience Monetization Strategist</td>
+<td class="desc">Turns followers into paying customers. Reviews all Coastal Key current business models and builds a comprehensive monetization plan that includes offer ideas, pricing structure, and the content angles that naturally move people from follower to buyer. Maps the entire follower-to-customer journey with specific conversion triggers at each stage. Designs offer ladders, pricing tiers, and promotional sequences that align with audience psychology profiles. Ensures every content touchpoint has a monetization pathway.</td>
+<td class="meta">monetization-review, offer-creation, pricing-strategy</td>
+<td class="meta">monetization-plan, offer-ladder, pricing-structure</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-007</td>
+<td class="name">War Room Intel</td>
+<td class="role">Competitive Marketing Warfare Analyst</td>
+<td class="desc">Conducts deep competitive intelligence on every home watch and property management company in the Treasure Coast market. Analyzes competitor messaging, content strategy, social presence, pricing, service positioning, and customer sentiment. Identifies gaps, weaknesses, and opportunities that MCCO exploits to position Coastal Key as the dominant market leader. Delivers weekly competitive briefs and real-time alerts when competitors make strategic moves.</td>
+<td class="meta">competitive-scan, competitor-move-detected, market-share-review</td>
+<td class="meta">competitive-intelligence-brief, gap-analysis, counter-strategy</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-008</td>
+<td class="name">Campaign Blitz</td>
+<td class="role">Multi-Platform Campaign Commander</td>
+<td class="desc">Plans and executes synchronized marketing campaigns across all Coastal Key platforms: Instagram, Facebook, LinkedIn, X (Twitter), TikTok, YouTube, email, website, and direct mail. Ensures message consistency while optimizing for each platform unique algorithm and audience behavior. Coordinates campaign timelines, asset requirements, and performance tracking across the entire MKT division agent fleet.</td>
+<td class="meta">campaign-launch, multi-platform-coordination, seasonal-campaign</td>
+<td class="meta">campaign-master-plan, platform-execution-briefs, asset-requirement-matrix</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-009</td>
+<td class="name">Pipeline Fusion</td>
+<td class="role">Sales-Marketing Alignment Commander</td>
+<td class="desc">Ensures seamless alignment between the MKT division (47 agents) and SEN division (40 agents). Bridges the gap between marketing-generated content and sales conversion activities. Manages lead handoff protocols, ensures messaging consistency from first touch to closed deal, and optimizes the entire revenue pipeline from awareness through conversion. Reports pipeline health metrics directly to MCCO Sovereign.</td>
+<td class="meta">pipeline-review, lead-handoff-issue, conversion-dip</td>
+<td class="meta">alignment-scorecard, pipeline-health-report, handoff-protocol-update</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-010</td>
+<td class="name">Trust Engine</td>
+<td class="role">Trust &amp; Social Proof Commander</td>
+<td class="desc">Builds and amplifies trust signals across all Coastal Key touchpoints. Manages testimonial strategy, case study production, social proof deployment, and reputation building. Designs trust-building content sequences that move prospects from skepticism to confidence. Ensures every Coastal Key interaction reinforces credibility, expertise, and reliability in AI-leveraged property management.</td>
+<td class="meta">trust-campaign, testimonial-collected, reputation-alert</td>
+<td class="meta">trust-building-sequence, social-proof-deployment-plan, testimonial-strategy</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-011</td>
+<td class="name">Narrative Forge</td>
+<td class="role">CEO Story &amp; Brand Narrative Commander</td>
+<td class="desc">Crafts and manages the Coastal Key CEO personal brand narrative and the overarching Coastal Key brand story. Produces content that humanizes the brand through the CEO journey — the vision, the challenges, the wins, and the mission behind AI-powered property management. Creates narrative arcs that build emotional connection with the audience and position the CEO as an industry thought leader and innovator.</td>
+<td class="meta">ceo-story-request, brand-narrative-update, thought-leadership-campaign</td>
+<td class="meta">ceo-narrative-content, brand-story-arc, thought-leadership-pieces</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-012</td>
+<td class="name">Performance Command</td>
+<td class="role">Content Performance Intelligence Officer</td>
+<td class="desc">Ferrari-standard analytics engine that tracks, measures, and optimizes every piece of content across all platforms. Delivers real-time performance intelligence to MCCO Sovereign and the CMO. Identifies top-performing content patterns, underperforming assets, and optimization opportunities. Runs A/B test analysis and produces actionable intelligence that drives content strategy refinements.</td>
+<td class="meta">performance-review, content-underperforming, weekly-analytics</td>
+<td class="meta">performance-dashboard, content-optimization-brief, top-performer-analysis</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-013</td>
+<td class="name">Timing Strike</td>
+<td class="role">Seasonal &amp; Market Timing Commander</td>
+<td class="desc">Masters the timing dimension of Coastal Key marketing. Aligns all content and campaigns with Treasure Coast seasonal patterns: snowbird arrival (October-November), peak season (January-April), hurricane prep (June-November), summer rental surge, and off-season opportunity windows. Ensures Coastal Key messaging hits at exactly the right moment when target audiences are most receptive and making decisions about property management services.</td>
+<td class="meta">seasonal-planning, market-timing-opportunity, weather-event</td>
+<td class="meta">seasonal-campaign-calendar, timing-optimization-brief, seasonal-messaging-playbook</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MCCO-014</td>
+<td class="name">Quality Shield</td>
+<td class="role">Fleet Inspection &amp; Quality Assurance Commander</td>
+<td class="desc">Enforces Ferrari-Standard quality across all 87+ marketing and sales agents under MCCO governance. Conducts regular fleet inspections, audits agent outputs for quality and brand consistency, identifies underperforming agents, and recommends training or recalibration. Ensures every agent in the MKT and SEN divisions operates at peak performance and adheres to MCCO sovereign directives.</td>
+<td class="meta">fleet-inspection, quality-audit, agent-underperformance</td>
+<td class="meta">fleet-inspection-report, quality-scorecard, agent-performance-rankings</td>
+<td class="tier">advanced</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-EXC">
+<div class="div-header" style="border-left:5px solid #1e40af">
+<div class="div-num">2</div>
+<div class="div-info">
+<h2>EXC — Executive Division</h2>
+<p class="div-mission">C-suite strategy, board reporting, enterprise decision-making, governance.</p>
+<span class="agent-count">20 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">EXC-001</td>
+<td class="name">Strategos Prime</td>
+<td class="role">Chief Strategy Officer AI</td>
+<td class="desc">Synthesizes market data, financial projections, and operational metrics into 5-year strategic plans. Generates board-ready presentations.</td>
+<td class="meta">quarterly-review, board-prep, strategy-request</td>
+<td class="meta">strategic-plan, board-deck, okr-framework</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">EXC-002</td>
+<td class="name">Nexus Command</td>
+<td class="role">CEO Decision Support</td>
+<td class="desc">Real-time decision intelligence for the CEO. Aggregates cross-division data, flags anomalies, and recommends priority actions.</td>
+<td class="meta">ceo-briefing, anomaly-detected, priority-escalation</td>
+<td class="meta">executive-brief, action-recommendations, risk-assessment</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">EXC-003</td>
+<td class="name">Horizon Scanner</td>
+<td class="role">Trend &amp; Opportunity Analyst</td>
+<td class="desc">Scans market trends, regulatory changes, and competitive moves. Delivers early-warning intelligence reports.</td>
+<td class="meta">daily-scan, regulatory-alert, competitor-move</td>
+<td class="meta">trend-report, opportunity-brief, risk-alert</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">EXC-004</td>
+<td class="name">Capital Architect</td>
+<td class="role">Capital Allocation Strategist</td>
+<td class="desc">Optimizes capital deployment across divisions. Models ROI scenarios for expansion, acquisition, and technology investments.</td>
+<td class="meta">budget-cycle, investment-proposal, reallocation-request</td>
+<td class="meta">allocation-model, roi-projection, investment-memo</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">EXC-005</td>
+<td class="name">Governance Shield</td>
+<td class="role">Compliance &amp; Governance Monitor</td>
+<td class="desc">Ensures regulatory compliance across all operations. Monitors Florida RE statutes, HOA regulations, and corporate governance.</td>
+<td class="meta">compliance-check, regulation-change, audit-scheduled</td>
+<td class="meta">compliance-report, risk-matrix, audit-prep</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-006</td>
+<td class="name">Partnership Forge</td>
+<td class="role">Strategic Partnership Manager</td>
+<td class="desc">Identifies, evaluates, and manages strategic partnerships. Handles partner onboarding and relationship lifecycle.</td>
+<td class="meta">partner-inquiry, partnership-review, expansion-plan</td>
+<td class="meta">partner-scorecard, deal-memo, integration-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-007</td>
+<td class="name">Talent Compass</td>
+<td class="role">Workforce Strategy Planner</td>
+<td class="desc">Plans workforce needs, org structure optimization, and talent acquisition strategy aligned with growth targets.</td>
+<td class="meta">hiring-plan, org-restructure, skill-gap-analysis</td>
+<td class="meta">workforce-plan, org-chart-proposal, hiring-brief</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-008</td>
+<td class="name">Risk Sentinel</td>
+<td class="role">Enterprise Risk Manager</td>
+<td class="desc">Maintains enterprise risk register. Runs scenario analysis for hurricanes, market downturns, and operational disruptions.</td>
+<td class="meta">risk-assessment, incident-report, scenario-request</td>
+<td class="meta">risk-register, scenario-model, mitigation-plan</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">EXC-009</td>
+<td class="name">Stakeholder Pulse</td>
+<td class="role">Stakeholder Relations Manager</td>
+<td class="desc">Manages communications with investors, board members, and key stakeholders. Prepares quarterly updates and investor decks.</td>
+<td class="meta">investor-update, stakeholder-query, quarterly-report</td>
+<td class="meta">investor-deck, stakeholder-brief, q-and-a-prep</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-010</td>
+<td class="name">OKR Conductor</td>
+<td class="role">Objectives &amp; Key Results Tracker</td>
+<td class="desc">Tracks OKR progress across all divisions. Generates weekly scorecards and flags at-risk objectives.</td>
+<td class="meta">weekly-okr-check, objective-update, quarter-end</td>
+<td class="meta">okr-scorecard, progress-report, intervention-alert</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-011</td>
+<td class="name">Culture Weaver</td>
+<td class="role">Culture &amp; Values Champion</td>
+<td class="desc">Monitors organizational culture health. Designs programs to reinforce Coastal Key values and mission alignment.</td>
+<td class="meta">culture-survey, onboarding-event, values-refresh</td>
+<td class="meta">culture-report, program-design, engagement-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-012</td>
+<td class="name">Innovation Catalyst</td>
+<td class="role">R&amp;D Initiative Manager</td>
+<td class="desc">Manages the innovation pipeline. Evaluates new technology proposals and pilots for operational improvement.</td>
+<td class="meta">innovation-proposal, tech-evaluation, pilot-review</td>
+<td class="meta">feasibility-study, pilot-plan, impact-assessment</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">EXC-013</td>
+<td class="name">Expansion Pathfinder</td>
+<td class="role">Market Expansion Strategist</td>
+<td class="desc">Evaluates new geographic markets and service verticals for Coastal Key expansion along the Treasure Coast and beyond.</td>
+<td class="meta">market-evaluation, expansion-proposal, geographic-analysis</td>
+<td class="meta">market-assessment, entry-strategy, competitive-landscape</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">EXC-014</td>
+<td class="name">Legal Navigator</td>
+<td class="role">Legal Strategy Coordinator</td>
+<td class="desc">Coordinates with external legal counsel. Manages contract templates, legal risk assessment, and dispute resolution.</td>
+<td class="meta">contract-review, legal-question, dispute-filed</td>
+<td class="meta">legal-brief, contract-markup, resolution-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-015</td>
+<td class="name">Sustainability Steward</td>
+<td class="role">ESG &amp; Sustainability Officer</td>
+<td class="desc">Tracks environmental, social, and governance metrics. Develops sustainability initiatives for managed properties.</td>
+<td class="meta">esg-report, sustainability-audit, green-initiative</td>
+<td class="meta">esg-scorecard, sustainability-plan, impact-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-016</td>
+<td class="name">Crisis Commander</td>
+<td class="role">Crisis Management Lead</td>
+<td class="desc">Manages crisis response for hurricanes, PR incidents, and operational emergencies. Maintains runbooks and communication plans.</td>
+<td class="meta">crisis-declared, hurricane-warning, pr-incident</td>
+<td class="meta">crisis-plan, communication-brief, post-mortem</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">EXC-017</td>
+<td class="name">Brand Guardian</td>
+<td class="role">Brand Integrity Monitor</td>
+<td class="desc">Monitors brand perception, reviews all outgoing communications for brand consistency, and manages reputation.</td>
+<td class="meta">brand-review, reputation-alert, communication-approval</td>
+<td class="meta">brand-audit, style-guide-update, reputation-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-018</td>
+<td class="name">Data Sovereign</td>
+<td class="role">Data Governance Officer</td>
+<td class="desc">Ensures data quality, privacy compliance (CCPA/GDPR), and data strategy alignment across all systems.</td>
+<td class="meta">data-audit, privacy-request, data-quality-alert</td>
+<td class="meta">data-governance-report, privacy-assessment, data-dictionary</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-019</td>
+<td class="name">Meeting Architect</td>
+<td class="role">Executive Meeting Optimizer</td>
+<td class="desc">Prepares agendas, briefing docs, and action items for executive meetings. Follows up on commitments.</td>
+<td class="meta">meeting-scheduled, agenda-request, action-followup</td>
+<td class="meta">meeting-brief, agenda, action-tracker</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">EXC-020</td>
+<td class="name">Benchmark Oracle</td>
+<td class="role">Industry Benchmarking Analyst</td>
+<td class="desc">Benchmarks Coastal Key performance against industry standards and top competitors in luxury property management.</td>
+<td class="meta">benchmark-request, quarterly-comparison, competitor-report</td>
+<td class="meta">benchmark-report, gap-analysis, best-practices</td>
+<td class="tier">standard</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-SEN">
+<div class="div-header" style="border-left:5px solid #dc2626">
+<div class="div-num">3</div>
+<div class="div-info">
+<h2>SEN — Sentinel Sales Division</h2>
+<p class="div-mission">Inbound/outbound sales, lead qualification, territory coverage, revenue pipeline.</p>
+<span class="agent-count">40 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">SEN-001</td>
+<td class="name">Sentinel Alpha</td>
+<td class="role">Primary Inbound Call Agent</td>
+<td class="desc">Handles all inbound Retell calls. Qualifies leads using SCAA-1 framework, captures property details, and books appointments.</td>
+<td class="meta">inbound-call, retell-webhook</td>
+<td class="meta">lead-record, call-summary, appointment</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-002</td>
+<td class="name">Sentinel Bravo</td>
+<td class="role">Outbound Prospecting Agent</td>
+<td class="desc">Executes outbound call campaigns to absentee homeowners and investor leads. Uses battle plans for personalized outreach.</td>
+<td class="meta">campaign-trigger, lead-assigned, follow-up-due</td>
+<td class="meta">call-record, disposition-update, follow-up-task</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-003</td>
+<td class="name">Battle Planner</td>
+<td class="role">SCAA-1 Battle Plan Generator</td>
+<td class="desc">Creates personalized sales battle plans for each qualified lead. Generates opening hooks, value props, and objection handling.</td>
+<td class="meta">lead-qualified, battle-plan-request, wf-scaa1</td>
+<td class="meta">battle-plan, email-draft, talking-points</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-004</td>
+<td class="name">Lead Scorer</td>
+<td class="role">Lead Qualification &amp; Scoring</td>
+<td class="desc">Scores incoming leads based on property value, segment, engagement level, and conversion probability.</td>
+<td class="meta">new-lead, lead-update, scoring-request</td>
+<td class="meta">lead-score, segment-classification, priority-ranking</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-005</td>
+<td class="name">Objection Handler</td>
+<td class="role">Objection Response Specialist</td>
+<td class="desc">Provides real-time objection handling scripts for common resistance points in luxury property management sales.</td>
+<td class="meta">objection-detected, coaching-request, call-assist</td>
+<td class="meta">response-script, rebuttal-framework, success-story</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-006</td>
+<td class="name">Pipeline Guardian</td>
+<td class="role">Sales Pipeline Manager</td>
+<td class="desc">Monitors the entire sales pipeline. Flags stale deals, recommends next actions, and forecasts monthly closings.</td>
+<td class="meta">pipeline-review, deal-stale, forecast-request</td>
+<td class="meta">pipeline-report, forecast, action-recommendations</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-007</td>
+<td class="name">Call Analyst</td>
+<td class="role">Call Quality Analyzer</td>
+<td class="desc">Analyzes call transcripts for quality, compliance, and training opportunities. Scores agent performance.</td>
+<td class="meta">call-completed, qa-review, training-request</td>
+<td class="meta">qa-scorecard, coaching-notes, compliance-flag</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-008</td>
+<td class="name">Follow-Up Forge</td>
+<td class="role">Automated Follow-Up Sequencer</td>
+<td class="desc">Manages multi-touch follow-up sequences via email, SMS, and callback scheduling for all pipeline leads.</td>
+<td class="meta">follow-up-due, sequence-trigger, drip-campaign</td>
+<td class="meta">email-sequence, sms-message, callback-task</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-009</td>
+<td class="name">Investor Hawk</td>
+<td class="role">Investor Lead Specialist</td>
+<td class="desc">Specializes in high-value investor and family office leads. Triggers WF-3 escalation for qualified investors.</td>
+<td class="meta">investor-flag, high-value-lead, wf3-trigger</td>
+<td class="meta">investor-brief, escalation-record, presentation-draft</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-010</td>
+<td class="name">Seasonal Scout</td>
+<td class="role">Snowbird &amp; Seasonal Lead Agent</td>
+<td class="desc">Targets seasonal and snowbird property owners with timing-optimized outreach during migration seasons.</td>
+<td class="meta">seasonal-campaign, migration-window, seasonal-lead</td>
+<td class="meta">seasonal-pitch, timing-recommendation, property-assessment</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-011</td>
+<td class="name">Absentee Tracker</td>
+<td class="role">Absentee Homeowner Specialist</td>
+<td class="desc">Identifies and engages absentee property owners with targeted messaging about property oversight and management needs.</td>
+<td class="meta">absentee-list, property-alert, owner-research</td>
+<td class="meta">owner-profile, outreach-plan, property-needs-assessment</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-012</td>
+<td class="name">Luxury Liaison</td>
+<td class="role">Luxury Property Specialist</td>
+<td class="desc">Handles leads for properties valued $1M+. Tailored value propositions for ultra-luxury property management.</td>
+<td class="meta">luxury-lead, high-value-property, vip-request</td>
+<td class="meta">luxury-proposal, white-glove-plan, concierge-package</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-013</td>
+<td class="name">STR Specialist</td>
+<td class="role">Short-Term Rental Lead Agent</td>
+<td class="desc">Engages vacation rental and STR property owners. Expertise in revenue optimization and regulatory compliance.</td>
+<td class="meta">str-lead, rental-inquiry, revenue-question</td>
+<td class="meta">str-proposal, revenue-projection, compliance-guide</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-014</td>
+<td class="name">Referral Engine</td>
+<td class="role">Referral Program Manager</td>
+<td class="desc">Manages the client referral program. Tracks referral sources, sends thank-you communications, and nurtures referral partners.</td>
+<td class="meta">referral-received, partner-outreach, reward-due</td>
+<td class="meta">referral-tracking, partner-communication, reward-notification</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-015</td>
+<td class="name">Nurture Shepherd</td>
+<td class="role">Long-Tail Nurture Specialist</td>
+<td class="desc">Manages WF-4 long-tail nurture sequences for leads not yet ready to convert. 90-day re-engagement cycles.</td>
+<td class="meta">wf4-trigger, nurture-due, re-engagement-window</td>
+<td class="meta">nurture-email, content-recommendation, check-in-task</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-016</td>
+<td class="name">Zone Commander Vero</td>
+<td class="role">Vero Beach Territory Agent</td>
+<td class="desc">Territory specialist for Vero Beach properties. Deep knowledge of local HOAs, pricing, and competitive landscape.</td>
+<td class="meta">vero-beach-lead, zone-assignment</td>
+<td class="meta">zone-brief, local-comp-analysis, hoa-overview</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-017</td>
+<td class="name">Zone Commander Sebastian</td>
+<td class="role">Sebastian Territory Agent</td>
+<td class="desc">Territory specialist for Sebastian and Indian River County properties.</td>
+<td class="meta">sebastian-lead, zone-assignment</td>
+<td class="meta">zone-brief, local-comp-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-018</td>
+<td class="name">Zone Commander Stuart</td>
+<td class="role">Stuart/Martin County Territory Agent</td>
+<td class="desc">Territory specialist for Stuart, Palm City, Jensen Beach, and Hobe Sound properties in Martin County.</td>
+<td class="meta">stuart-lead, martin-county-lead, zone-assignment</td>
+<td class="meta">zone-brief, local-comp-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-019</td>
+<td class="name">Zone Commander PSL</td>
+<td class="role">Port St. Lucie Territory Agent</td>
+<td class="desc">Territory specialist for Port St. Lucie and St. Lucie County properties.</td>
+<td class="meta">psl-lead, st-lucie-lead, zone-assignment</td>
+<td class="meta">zone-brief, local-comp-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-020</td>
+<td class="name">Zone Commander Jupiter</td>
+<td class="role">Jupiter/North Palm Territory Agent</td>
+<td class="desc">Territory specialist for Jupiter and North Palm Beach properties at the southern boundary of the service area.</td>
+<td class="meta">jupiter-lead, north-palm-lead, zone-assignment</td>
+<td class="meta">zone-brief, local-comp-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-021</td>
+<td class="name">Contract Closer</td>
+<td class="role">Contract &amp; Proposal Generator</td>
+<td class="desc">Generates management contracts, pricing proposals, and service agreements from qualified lead data.</td>
+<td class="meta">proposal-request, deal-stage-closing, contract-needed</td>
+<td class="meta">proposal-doc, contract-draft, pricing-schedule</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-022</td>
+<td class="name">Win-Back Agent</td>
+<td class="role">Lost Deal Recovery Specialist</td>
+<td class="desc">Re-engages lost deals and churned clients with tailored recovery offers and updated value propositions.</td>
+<td class="meta">deal-lost, churn-detected, win-back-campaign</td>
+<td class="meta">recovery-offer, exit-interview, re-engagement-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-023</td>
+<td class="name">Demo Conductor</td>
+<td class="role">Property Tour &amp; Demo Coordinator</td>
+<td class="desc">Schedules and prepares property tours and service demonstrations for prospective clients.</td>
+<td class="meta">demo-request, tour-scheduled, showing-prep</td>
+<td class="meta">tour-itinerary, demo-script, property-brief</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-024</td>
+<td class="name">CRM Custodian</td>
+<td class="role">CRM Data Quality Manager</td>
+<td class="desc">Maintains lead data quality in Airtable. Deduplicates records, enriches missing fields, and validates contact info.</td>
+<td class="meta">data-quality-scan, duplicate-detected, enrichment-needed</td>
+<td class="meta">dedup-report, enrichment-update, data-quality-score</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-025</td>
+<td class="name">Pricing Strategist</td>
+<td class="role">Dynamic Pricing Optimizer</td>
+<td class="desc">Recommends management fee structures and pricing tiers based on property characteristics and market conditions.</td>
+<td class="meta">pricing-request, market-change, competitive-adjustment</td>
+<td class="meta">pricing-model, fee-recommendation, margin-analysis</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-026</td>
+<td class="name">Onboarding Pilot</td>
+<td class="role">New Client Onboarding Agent</td>
+<td class="desc">Manages the client onboarding process from signed contract through first 90 days of active management.</td>
+<td class="meta">contract-signed, onboarding-start, milestone-check</td>
+<td class="meta">onboarding-checklist, welcome-package, milestone-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-027</td>
+<td class="name">Competitive Intel</td>
+<td class="role">Sales Competitive Intelligence</td>
+<td class="desc">Gathers and analyzes competitor offerings, pricing, and positioning to arm sales conversations.</td>
+<td class="meta">competitor-mentioned, intel-request, market-update</td>
+<td class="meta">competitive-brief, battlecard, positioning-guide</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-028</td>
+<td class="name">Email Artisan</td>
+<td class="role">Sales Email Copywriter</td>
+<td class="desc">Crafts personalized sales emails for every stage of the pipeline. A/B tests subject lines and CTAs.</td>
+<td class="meta">email-needed, sequence-step, ab-test-request</td>
+<td class="meta">email-copy, subject-line-variants, ab-results</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-029</td>
+<td class="name">Testimonial Miner</td>
+<td class="role">Client Success Story Collector</td>
+<td class="desc">Identifies happy clients for testimonial collection. Drafts success stories and case studies for sales collateral.</td>
+<td class="meta">satisfaction-high, testimonial-request, case-study-needed</td>
+<td class="meta">testimonial-draft, case-study, video-script</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-030</td>
+<td class="name">Forecast Engine</td>
+<td class="role">Revenue Forecast Modeler</td>
+<td class="desc">Builds monthly and quarterly revenue forecasts based on pipeline data, conversion rates, and seasonal patterns.</td>
+<td class="meta">forecast-request, month-end, pipeline-update</td>
+<td class="meta">revenue-forecast, scenario-model, variance-analysis</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-031</td>
+<td class="name">Sentinel Charlie</td>
+<td class="role">Overflow Call Agent</td>
+<td class="desc">Handles overflow inbound calls during peak hours. Same capabilities as Alpha with reduced context window.</td>
+<td class="meta">overflow-call, peak-hours, alpha-busy</td>
+<td class="meta">lead-record, call-summary</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-032</td>
+<td class="name">Sentinel Delta</td>
+<td class="role">After-Hours Call Agent</td>
+<td class="desc">Handles after-hours inbound calls. Captures essential info and schedules next-day follow-ups.</td>
+<td class="meta">after-hours-call, weekend-call</td>
+<td class="meta">lead-record, follow-up-task, voicemail-summary</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-033</td>
+<td class="name">Script Optimizer</td>
+<td class="role">Call Script A/B Tester</td>
+<td class="desc">Tests and optimizes Retell call scripts. Analyzes conversion rates across script variants.</td>
+<td class="meta">script-test, performance-dip, new-script-deploy</td>
+<td class="meta">script-variant, performance-report, optimization-recommendation</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-034</td>
+<td class="name">Prompt Tuner</td>
+<td class="role">Retell Prompt Engineer</td>
+<td class="desc">Fine-tunes Retell AI prompts based on failed call analysis from the Missed/Failed Calls QA table.</td>
+<td class="meta">failed-call-batch, prompt-review, qa-flag</td>
+<td class="meta">prompt-update, tuning-report, test-results</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-035</td>
+<td class="name">Disposition Auditor</td>
+<td class="role">Call Disposition Validator</td>
+<td class="desc">Audits call dispositions for accuracy. Ensures leads are properly categorized and routed.</td>
+<td class="meta">disposition-review, misroute-detected, audit-schedule</td>
+<td class="meta">audit-report, correction-batch, routing-update</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-036</td>
+<td class="name">Campaign Launcher</td>
+<td class="role">Outbound Campaign Orchestrator</td>
+<td class="desc">Plans and launches outbound calling campaigns. Manages list segmentation, timing, and agent assignment.</td>
+<td class="meta">campaign-plan, list-ready, launch-approved</td>
+<td class="meta">campaign-plan, call-list, assignment-matrix</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-037</td>
+<td class="name">Voicemail Crafter</td>
+<td class="role">Voicemail Drop Specialist</td>
+<td class="desc">Creates compelling voicemail scripts for outbound campaigns with personalized property references.</td>
+<td class="meta">voicemail-needed, campaign-prep, script-request</td>
+<td class="meta">voicemail-script, drop-schedule, callback-tracking</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-038</td>
+<td class="name">Sales Coach</td>
+<td class="role">Agent Performance Coach</td>
+<td class="desc">Provides coaching insights for human sales agents based on call analytics, win/loss patterns, and skill gaps.</td>
+<td class="meta">coaching-session, performance-review, skill-gap-detected</td>
+<td class="meta">coaching-plan, skill-assessment, improvement-tracker</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">SEN-039</td>
+<td class="name">Handoff Coordinator</td>
+<td class="role">AI-to-Human Handoff Manager</td>
+<td class="desc">Manages seamless handoffs from AI calls to human agents for complex situations requiring personal touch.</td>
+<td class="meta">handoff-request, complexity-threshold, vip-detected</td>
+<td class="meta">handoff-brief, context-package, transition-script</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">SEN-040</td>
+<td class="name">Revenue Tracker</td>
+<td class="role">Sales Revenue Attribution</td>
+<td class="desc">Tracks revenue attribution across channels, campaigns, and agents. Calculates LTV and acquisition costs.</td>
+<td class="meta">deal-closed, revenue-report, attribution-request</td>
+<td class="meta">attribution-report, ltv-calculation, cac-analysis</td>
+<td class="tier">standard</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-OPS">
+<div class="div-header" style="border-left:5px solid #059669">
+<div class="div-num">4</div>
+<div class="div-info">
+<h2>OPS — Operations Division</h2>
+<p class="div-mission">Property management, maintenance, inspections, concierge, guest services.</p>
+<span class="agent-count">45 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">OPS-001</td>
+<td class="name">Property Pulse</td>
+<td class="role">Property Health Monitor</td>
+<td class="desc">Monitors property condition data from inspections, sensors, and maintenance logs. Flags properties needing attention.</td>
+<td class="meta">inspection-complete, sensor-alert, condition-change</td>
+<td class="meta">health-report, action-alert, priority-list</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-002</td>
+<td class="name">Maintenance Dispatcher</td>
+<td class="role">Work Order Routing Agent</td>
+<td class="desc">Routes maintenance requests to appropriate vendors based on skill, availability, proximity, and urgency.</td>
+<td class="meta">maintenance-request, emergency-ticket, scheduled-maintenance</td>
+<td class="meta">work-order, vendor-assignment, eta-estimate</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-003</td>
+<td class="name">Inspection Conductor</td>
+<td class="role">Property Inspection Manager</td>
+<td class="desc">Schedules, manages, and processes property inspections. Generates detailed inspection reports with photo documentation.</td>
+<td class="meta">inspection-due, move-in, move-out</td>
+<td class="meta">inspection-report, photo-log, deficiency-list</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-004</td>
+<td class="name">Concierge Prime</td>
+<td class="role">Guest Concierge Service Agent</td>
+<td class="desc">Handles guest concierge requests for luxury properties. Books services, arranges transportation, and manages special requests.</td>
+<td class="meta">concierge-request, guest-arrival, special-occasion</td>
+<td class="meta">service-booking, itinerary, welcome-package</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">OPS-005</td>
+<td class="name">Turnover Captain</td>
+<td class="role">Property Turnover Coordinator</td>
+<td class="desc">Manages property turnovers between guests/tenants. Coordinates cleaning, maintenance, and quality checks.</td>
+<td class="meta">checkout-scheduled, turnover-initiated, next-arrival-imminent</td>
+<td class="meta">turnover-checklist, vendor-schedule, quality-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-006</td>
+<td class="name">Emergency Response</td>
+<td class="role">Emergency Dispatch Agent</td>
+<td class="desc">Handles emergency property situations: water leaks, break-ins, fire alarms, AC failures. 24/7 response coordination.</td>
+<td class="meta">emergency-call, alarm-trigger, sensor-critical</td>
+<td class="meta">dispatch-order, owner-notification, incident-report</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">OPS-007</td>
+<td class="name">Booking Engine</td>
+<td class="role">Reservation Manager</td>
+<td class="desc">Manages property bookings, availability calendars, and rate optimization for STR properties.</td>
+<td class="meta">booking-request, availability-check, rate-adjustment</td>
+<td class="meta">booking-confirmation, calendar-update, rate-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-008</td>
+<td class="name">Guest Communicator</td>
+<td class="role">Guest Communications Manager</td>
+<td class="desc">Sends pre-arrival info, check-in instructions, mid-stay check-ins, and post-stay follow-ups.</td>
+<td class="meta">booking-confirmed, check-in-approaching, mid-stay</td>
+<td class="meta">welcome-email, instructions, survey-request</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-009</td>
+<td class="name">Feedback Analyst</td>
+<td class="role">Guest Review Analyzer</td>
+<td class="desc">Analyzes guest reviews and feedback. Identifies trends, generates response drafts, and recommends improvements.</td>
+<td class="meta">review-received, feedback-submitted, trend-analysis-due</td>
+<td class="meta">sentiment-report, response-draft, improvement-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-010</td>
+<td class="name">Landscape Overseer</td>
+<td class="role">Landscaping &amp; Grounds Manager</td>
+<td class="desc">Manages landscaping schedules, irrigation systems, and grounds maintenance for managed properties.</td>
+<td class="meta">landscape-schedule, weather-alert, complaint-received</td>
+<td class="meta">maintenance-schedule, vendor-order, quality-check</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-011</td>
+<td class="name">Pool Guardian</td>
+<td class="role">Pool &amp; Spa Maintenance Agent</td>
+<td class="desc">Manages pool and spa maintenance schedules, chemical balancing, and equipment inspections.</td>
+<td class="meta">pool-schedule, chemical-alert, equipment-issue</td>
+<td class="meta">service-order, chemical-report, equipment-assessment</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-012</td>
+<td class="name">HVAC Sentinel</td>
+<td class="role">HVAC System Monitor</td>
+<td class="desc">Monitors HVAC systems across properties. Schedules preventive maintenance and responds to failures.</td>
+<td class="meta">temp-anomaly, filter-change-due, system-failure</td>
+<td class="meta">service-request, preventive-schedule, efficiency-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-013</td>
+<td class="name">Hurricane Prep</td>
+<td class="role">Storm Preparation Coordinator</td>
+<td class="desc">Manages hurricane preparation and recovery for all properties. Coordinates shuttering, supply staging, and post-storm inspections.</td>
+<td class="meta">hurricane-watch, tropical-storm, post-storm-recovery</td>
+<td class="meta">prep-checklist, vendor-mobilization, damage-assessment</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">OPS-014</td>
+<td class="name">Key &amp; Access Manager</td>
+<td class="role">Property Access Control Agent</td>
+<td class="desc">Manages key distribution, smart lock codes, and property access permissions for guests, vendors, and staff.</td>
+<td class="meta">access-request, guest-arriving, vendor-scheduled</td>
+<td class="meta">access-code, key-assignment, access-log</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-015</td>
+<td class="name">Utility Watcher</td>
+<td class="role">Utility &amp; Cost Monitor</td>
+<td class="desc">Tracks utility consumption and costs across managed properties. Identifies anomalies and recommends efficiency measures.</td>
+<td class="meta">bill-received, consumption-spike, monthly-review</td>
+<td class="meta">utility-report, anomaly-alert, savings-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-016</td>
+<td class="name">Pest Control Agent</td>
+<td class="role">Pest Management Coordinator</td>
+<td class="desc">Schedules and manages pest control services. Tracks treatment history and responds to pest reports.</td>
+<td class="meta">pest-report, treatment-due, quarterly-schedule</td>
+<td class="meta">service-order, treatment-record, prevention-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-017</td>
+<td class="name">Safety Inspector</td>
+<td class="role">Safety &amp; Compliance Checker</td>
+<td class="desc">Ensures properties meet safety codes: smoke detectors, fire extinguishers, pool fencing, and emergency exits.</td>
+<td class="meta">safety-audit-due, code-change, incident-report</td>
+<td class="meta">safety-checklist, compliance-report, remediation-order</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-018</td>
+<td class="name">Furniture &amp; FF&amp;E</td>
+<td class="role">Furnishing &amp; Equipment Manager</td>
+<td class="desc">Manages furniture, fixtures, and equipment inventory. Coordinates replacements, repairs, and upgrades.</td>
+<td class="meta">damage-report, replacement-due, upgrade-request</td>
+<td class="meta">inventory-update, purchase-order, installation-schedule</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-019</td>
+<td class="name">Insurance Liaison</td>
+<td class="role">Insurance Claims Coordinator</td>
+<td class="desc">Manages property insurance claims. Documents damage, coordinates with adjusters, and tracks claim status.</td>
+<td class="meta">damage-event, claim-filed, adjuster-visit</td>
+<td class="meta">claim-documentation, status-update, settlement-tracking</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-020</td>
+<td class="name">Owner Communicator</td>
+<td class="role">Property Owner Update Agent</td>
+<td class="desc">Sends regular updates to property owners: financial statements, maintenance summaries, and market updates.</td>
+<td class="meta">monthly-report-due, major-event, owner-inquiry</td>
+<td class="meta">owner-report, financial-statement, property-update</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-021</td>
+<td class="name">Cleaning Coordinator</td>
+<td class="role">Housekeeping Operations Manager</td>
+<td class="desc">Manages cleaning teams and schedules for property turnovers, deep cleans, and regular maintenance cleaning.</td>
+<td class="meta">turnover-scheduled, deep-clean-due, quality-issue</td>
+<td class="meta">cleaning-schedule, team-assignment, quality-checklist</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-022</td>
+<td class="name">Appliance Monitor</td>
+<td class="role">Appliance Lifecycle Manager</td>
+<td class="desc">Tracks appliance age, warranty status, and maintenance history. Recommends replacements before failures.</td>
+<td class="meta">warranty-expiring, age-threshold, failure-report</td>
+<td class="meta">lifecycle-report, replacement-recommendation, warranty-claim</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-023</td>
+<td class="name">Plumbing Watch</td>
+<td class="role">Plumbing System Monitor</td>
+<td class="desc">Monitors plumbing systems and water usage. Detects leaks, manages water heater maintenance, and coordinates repairs.</td>
+<td class="meta">leak-detected, usage-anomaly, maintenance-due</td>
+<td class="meta">service-order, leak-report, prevention-schedule</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-024</td>
+<td class="name">Electrical Overseer</td>
+<td class="role">Electrical System Manager</td>
+<td class="desc">Manages electrical system maintenance, panel inspections, and coordinates with licensed electricians.</td>
+<td class="meta">electrical-issue, inspection-due, code-update</td>
+<td class="meta">service-order, inspection-report, upgrade-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-025</td>
+<td class="name">Roof &amp; Exterior</td>
+<td class="role">Roof &amp; Exterior Maintenance Agent</td>
+<td class="desc">Manages roof inspections, exterior painting, pressure washing, and structural maintenance.</td>
+<td class="meta">inspection-due, storm-damage, age-threshold</td>
+<td class="meta">inspection-report, maintenance-plan, vendor-quote</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-026</td>
+<td class="name">Parking &amp; Storage</td>
+<td class="role">Parking &amp; Storage Manager</td>
+<td class="desc">Manages parking assignments, garage access, and storage unit allocation for managed communities.</td>
+<td class="meta">assignment-request, violation-report, inventory-update</td>
+<td class="meta">assignment-record, violation-notice, availability-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-027</td>
+<td class="name">HOA Liaison</td>
+<td class="role">HOA Communication Coordinator</td>
+<td class="desc">Manages communications with HOAs on behalf of property owners. Handles compliance requests and meeting attendance.</td>
+<td class="meta">hoa-notice, compliance-issue, meeting-scheduled</td>
+<td class="meta">compliance-response, meeting-notes, violation-resolution</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-028</td>
+<td class="name">Move Coordinator</td>
+<td class="role">Move-In/Move-Out Manager</td>
+<td class="desc">Coordinates tenant and guest move-in/move-out processes including inspections, key exchange, and utility transfers.</td>
+<td class="meta">move-in-scheduled, move-out-scheduled, lease-ending</td>
+<td class="meta">move-checklist, inspection-schedule, deposit-assessment</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-029</td>
+<td class="name">Seasonal Prep</td>
+<td class="role">Seasonal Property Prep Agent</td>
+<td class="desc">Manages seasonal property preparation: winterization, de-winterization, hurricane season prep, and summer setup.</td>
+<td class="meta">season-change, owner-arrival, departure-scheduled</td>
+<td class="meta">prep-checklist, vendor-schedule, completion-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-030</td>
+<td class="name">Amenity Manager</td>
+<td class="role">Community Amenity Coordinator</td>
+<td class="desc">Manages shared amenities: clubhouses, fitness centers, tennis courts, and common areas.</td>
+<td class="meta">booking-request, maintenance-needed, event-scheduled</td>
+<td class="meta">booking-confirmation, maintenance-order, usage-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-031</td>
+<td class="name">Inventory Tracker</td>
+<td class="role">Property Inventory Agent</td>
+<td class="desc">Maintains detailed inventories of property contents: furnishings, linens, kitchen items, and supplies.</td>
+<td class="meta">inventory-due, checkout-report, damage-claim</td>
+<td class="meta">inventory-list, variance-report, replacement-order</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-032</td>
+<td class="name">Quality Assurance</td>
+<td class="role">Service Quality Auditor</td>
+<td class="desc">Conducts quality audits on all operational services: cleaning, maintenance, concierge, and vendor work.</td>
+<td class="meta">audit-schedule, complaint-received, vendor-review</td>
+<td class="meta">quality-report, corrective-action, vendor-scorecard</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-033</td>
+<td class="name">Lease Manager</td>
+<td class="role">Lease Administration Agent</td>
+<td class="desc">Manages lease agreements, renewals, rent collection tracking, and tenant communications.</td>
+<td class="meta">lease-expiring, rent-due, renewal-notice</td>
+<td class="meta">lease-renewal, payment-reminder, tenant-notice</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-034</td>
+<td class="name">Security Monitor</td>
+<td class="role">Property Security Coordinator</td>
+<td class="desc">Monitors security systems, camera feeds, and alarm systems across managed properties.</td>
+<td class="meta">alarm-trigger, motion-detected, access-anomaly</td>
+<td class="meta">alert-notification, incident-report, security-review</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-035</td>
+<td class="name">Renovation Planner</td>
+<td class="role">Property Improvement Advisor</td>
+<td class="desc">Plans and manages property renovations and upgrades to maximize value and rental income.</td>
+<td class="meta">renovation-request, value-assessment, market-opportunity</td>
+<td class="meta">renovation-plan, roi-projection, contractor-bids</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">OPS-036</td>
+<td class="name">Waste Management</td>
+<td class="role">Waste &amp; Recycling Coordinator</td>
+<td class="desc">Manages waste collection schedules, recycling programs, and bulk removal for managed properties.</td>
+<td class="meta">schedule-update, bulk-removal-needed, compliance-check</td>
+<td class="meta">service-schedule, removal-order, compliance-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-037</td>
+<td class="name">Smart Home Agent</td>
+<td class="role">Smart Home Device Manager</td>
+<td class="desc">Manages smart home devices: thermostats, locks, cameras, and lighting across connected properties.</td>
+<td class="meta">device-offline, firmware-update, setting-change</td>
+<td class="meta">device-status, update-report, troubleshooting-guide</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-038</td>
+<td class="name">Vendor Scheduler</td>
+<td class="role">Vendor Appointment Coordinator</td>
+<td class="desc">Schedules vendor visits, manages access coordination, and confirms service completion.</td>
+<td class="meta">service-needed, vendor-available, access-required</td>
+<td class="meta">appointment-confirmation, access-instructions, completion-verification</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-039</td>
+<td class="name">Compliance Tracker</td>
+<td class="role">Regulatory Compliance Monitor</td>
+<td class="desc">Tracks property compliance with local regulations: STR permits, business licenses, and tax registrations.</td>
+<td class="meta">permit-expiring, regulation-change, audit-notice</td>
+<td class="meta">compliance-status, renewal-reminder, regulation-brief</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-040</td>
+<td class="name">Photo Documentor</td>
+<td class="role">Property Photography Coordinator</td>
+<td class="desc">Coordinates professional photography for listings, inspections, and property marketing materials.</td>
+<td class="meta">photo-needed, listing-update, inspection-documentation</td>
+<td class="meta">photo-schedule, media-library-update, listing-assets</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-041</td>
+<td class="name">SLA Monitor</td>
+<td class="role">Service Level Agreement Tracker</td>
+<td class="desc">Monitors SLA compliance for all operational services. Flags breaches and generates performance reports.</td>
+<td class="meta">sla-check, breach-detected, performance-review</td>
+<td class="meta">sla-report, breach-notification, vendor-performance</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-042</td>
+<td class="name">Budget Controller</td>
+<td class="role">Property Budget Manager</td>
+<td class="desc">Manages per-property operational budgets. Tracks expenses, flags overruns, and recommends cost optimization.</td>
+<td class="meta">expense-submitted, budget-threshold, monthly-review</td>
+<td class="meta">budget-report, variance-alert, optimization-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-043</td>
+<td class="name">Warranty Tracker</td>
+<td class="role">Warranty Management Agent</td>
+<td class="desc">Tracks warranties for appliances, systems, and installations. Files claims before expiration.</td>
+<td class="meta">warranty-expiring, issue-reported, claim-filed</td>
+<td class="meta">warranty-status, claim-submission, expiration-alert</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-044</td>
+<td class="name">Dock &amp; Marine</td>
+<td class="role">Dock &amp; Marine Facility Manager</td>
+<td class="desc">Manages dock spaces, boat lifts, and marine facilities for waterfront properties.</td>
+<td class="meta">dock-request, marine-maintenance, storm-prep</td>
+<td class="meta">dock-assignment, maintenance-order, storm-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">OPS-045</td>
+<td class="name">Move-Ready Validator</td>
+<td class="role">Property Readiness Checker</td>
+<td class="desc">Final validation agent before guest/tenant arrival. Verifies cleaning, supplies, access, and condition.</td>
+<td class="meta">arrival-imminent, turnover-complete, final-check</td>
+<td class="meta">readiness-report, deficiency-alert, all-clear-notification</td>
+<td class="tier">standard</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-INT">
+<div class="div-header" style="border-left:5px solid #7c5cfc">
+<div class="div-num">5</div>
+<div class="div-info">
+<h2>INT — Intelligence Division</h2>
+<p class="div-mission">Market research, competitive intel, data analysis, predictive modeling.</p>
+<span class="agent-count">30 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">INT-001</td>
+<td class="name">Market Radar</td>
+<td class="role">Real-Time Market Monitor</td>
+<td class="desc">Tracks real-time property market data across the Treasure Coast. Monitors listings, sales, and pricing trends.</td>
+<td class="meta">daily-scan, market-shift, price-alert</td>
+<td class="meta">market-brief, price-trend-report, opportunity-alert</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-002</td>
+<td class="name">Competitor Watch</td>
+<td class="role">Competitive Intelligence Analyst</td>
+<td class="desc">Monitors competing property management companies. Tracks their pricing, services, marketing, and client wins.</td>
+<td class="meta">competitor-update, weekly-scan, intel-request</td>
+<td class="meta">competitive-brief, battlecard, threat-assessment</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-003</td>
+<td class="name">Predictive Modeler</td>
+<td class="role">Revenue Prediction Engine</td>
+<td class="desc">Builds predictive models for rental revenue, occupancy rates, and market valuations using historical data.</td>
+<td class="meta">model-refresh, forecast-request, data-update</td>
+<td class="meta">revenue-forecast, occupancy-model, valuation-estimate</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-004</td>
+<td class="name">Demographic Analyzer</td>
+<td class="role">Target Market Demographics</td>
+<td class="desc">Analyzes demographic data for service zones. Identifies ideal property owner profiles and investment patterns.</td>
+<td class="meta">zone-analysis, campaign-planning, demographic-shift</td>
+<td class="meta">demographic-profile, target-market-report, zone-assessment</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-005</td>
+<td class="name">Lead Source Analyst</td>
+<td class="role">Lead Channel Attribution</td>
+<td class="desc">Analyzes lead sources and marketing channels. Identifies highest-performing acquisition channels and ROI.</td>
+<td class="meta">monthly-analysis, channel-review, budget-planning</td>
+<td class="meta">channel-report, attribution-model, roi-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-006</td>
+<td class="name">Sentiment Scanner</td>
+<td class="role">Brand Sentiment Analyzer</td>
+<td class="desc">Scans social media, review sites, and forums for mentions of Coastal Key and competitors. Tracks sentiment.</td>
+<td class="meta">daily-scan, mention-detected, sentiment-shift</td>
+<td class="meta">sentiment-report, mention-digest, alert-notification</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-007</td>
+<td class="name">Property Valuator</td>
+<td class="role">Automated Property Valuation</td>
+<td class="desc">Generates comparative market analysis and property valuations using public records and market data.</td>
+<td class="meta">valuation-request, listing-detected, market-change</td>
+<td class="meta">cma-report, valuation-estimate, comp-analysis</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-008</td>
+<td class="name">Regulation Watcher</td>
+<td class="role">Regulatory Change Monitor</td>
+<td class="desc">Monitors Florida state and local regulatory changes affecting property management, STRs, and real estate.</td>
+<td class="meta">regulation-published, legislative-session, ordinance-change</td>
+<td class="meta">regulatory-brief, impact-assessment, compliance-update</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-009</td>
+<td class="name">Weather Strategist</td>
+<td class="role">Weather Impact Analyst</td>
+<td class="desc">Analyzes weather patterns and seasonal data for operational planning, hurricane prep, and seasonal marketing.</td>
+<td class="meta">weather-alert, season-change, storm-tracking</td>
+<td class="meta">weather-brief, impact-forecast, preparation-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-010</td>
+<td class="name">Economic Indicator</td>
+<td class="role">Economic Trend Analyzer</td>
+<td class="desc">Tracks macro and local economic indicators: interest rates, employment, tourism stats, and construction activity.</td>
+<td class="meta">data-release, monthly-review, trend-alert</td>
+<td class="meta">economic-brief, trend-report, impact-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-011</td>
+<td class="name">Investment Scanner</td>
+<td class="role">Investment Opportunity Finder</td>
+<td class="desc">Scans for property investment opportunities: undervalued assets, foreclosures, and off-market deals.</td>
+<td class="meta">opportunity-scan, listing-alert, investor-request</td>
+<td class="meta">opportunity-brief, deal-analysis, investment-scorecard</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-012</td>
+<td class="name">Churn Predictor</td>
+<td class="role">Client Retention Analyst</td>
+<td class="desc">Predicts client churn risk using engagement patterns, satisfaction scores, and service utilization data.</td>
+<td class="meta">risk-score-change, engagement-drop, monthly-analysis</td>
+<td class="meta">churn-risk-report, intervention-recommendation, retention-plan</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-013</td>
+<td class="name">Data Cleanser</td>
+<td class="role">Data Quality Engineer</td>
+<td class="desc">Maintains data quality across all Airtable tables. Identifies inconsistencies, duplicates, and missing data.</td>
+<td class="meta">quality-scan, import-complete, anomaly-detected</td>
+<td class="meta">quality-report, correction-batch, enrichment-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-014</td>
+<td class="name">A/B Scientist</td>
+<td class="role">Experimentation &amp; Testing Lead</td>
+<td class="desc">Designs and analyzes A/B tests for marketing campaigns, call scripts, and operational processes.</td>
+<td class="meta">test-request, test-complete, significance-reached</td>
+<td class="meta">test-design, analysis-report, recommendation</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-015</td>
+<td class="name">Tourism Tracker</td>
+<td class="role">Tourism &amp; Travel Trend Analyst</td>
+<td class="desc">Monitors tourism trends, travel patterns, and visitor statistics for the Treasure Coast region.</td>
+<td class="meta">tourism-data-release, season-change, event-scheduled</td>
+<td class="meta">tourism-brief, visitor-forecast, opportunity-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-016</td>
+<td class="name">HOA Intel</td>
+<td class="role">HOA Market Intelligence</td>
+<td class="desc">Maps and analyzes HOAs across service zones. Tracks fees, rules, and management company relationships.</td>
+<td class="meta">hoa-update, zone-research, new-community</td>
+<td class="meta">hoa-database, community-profile, rule-summary</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-017</td>
+<td class="name">Tax Analyst</td>
+<td class="role">Property Tax Intelligence</td>
+<td class="desc">Monitors property tax assessments and appeals opportunities. Tracks millage rates across service zones.</td>
+<td class="meta">assessment-notice, rate-change, appeal-deadline</td>
+<td class="meta">tax-analysis, appeal-recommendation, rate-comparison</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-018</td>
+<td class="name">Permit Tracker</td>
+<td class="role">Construction &amp; Permit Monitor</td>
+<td class="desc">Monitors building permits and construction activity in service zones for market trend analysis.</td>
+<td class="meta">permit-filed, construction-update, zone-scan</td>
+<td class="meta">permit-report, development-map, trend-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-019</td>
+<td class="name">Rental Rate Optimizer</td>
+<td class="role">Dynamic Rate Intelligence</td>
+<td class="desc">Analyzes rental rates across competitors and market conditions to optimize pricing for managed STR properties.</td>
+<td class="meta">rate-review, market-change, competitor-adjustment</td>
+<td class="meta">rate-recommendation, competitor-comparison, revenue-projection</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-020</td>
+<td class="name">Audience Profiler</td>
+<td class="role">Customer Persona Builder</td>
+<td class="desc">Builds and maintains detailed customer personas from CRM data, call transcripts, and behavioral patterns.</td>
+<td class="meta">data-refresh, persona-request, segment-update</td>
+<td class="meta">persona-profile, segment-report, behavioral-insights</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-021</td>
+<td class="name">Supply Demand</td>
+<td class="role">Supply &amp; Demand Modeler</td>
+<td class="desc">Models property management supply and demand dynamics across service zones.</td>
+<td class="meta">model-refresh, market-shift, quarterly-review</td>
+<td class="meta">supply-demand-model, gap-analysis, expansion-recommendation</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-022</td>
+<td class="name">Migration Analyst</td>
+<td class="role">Population Migration Tracker</td>
+<td class="desc">Tracks population migration patterns into Florida and the Treasure Coast. Identifies source markets.</td>
+<td class="meta">census-update, migration-data, quarterly-review</td>
+<td class="meta">migration-report, source-market-analysis, growth-forecast</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-023</td>
+<td class="name">Airbnb Monitor</td>
+<td class="role">STR Platform Intelligence</td>
+<td class="desc">Monitors Airbnb, VRBO, and Booking.com listings in service zones. Tracks pricing, availability, and reviews.</td>
+<td class="meta">daily-scan, listing-change, rate-alert</td>
+<td class="meta">platform-report, listing-digest, rate-comparison</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-024</td>
+<td class="name">Zillow Tracker</td>
+<td class="role">Zillow &amp; MLS Data Monitor</td>
+<td class="desc">Tracks Zillow estimates, MLS listings, and real estate transaction data for managed and target properties.</td>
+<td class="meta">listing-update, estimate-change, transaction-recorded</td>
+<td class="meta">property-data-update, market-movement, valuation-alert</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-025</td>
+<td class="name">Report Generator</td>
+<td class="role">Automated Report Builder</td>
+<td class="desc">Generates standardized reports from Airtable data: pipeline, operations, financial, and executive summaries.</td>
+<td class="meta">report-scheduled, report-request, data-milestone</td>
+<td class="meta">formatted-report, data-visualization, summary-brief</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-026</td>
+<td class="name">Correlation Engine</td>
+<td class="role">Cross-Dataset Correlation Finder</td>
+<td class="desc">Identifies correlations across datasets: weather impact on bookings, marketing spend vs leads, etc.</td>
+<td class="meta">analysis-request, data-update, pattern-detected</td>
+<td class="meta">correlation-report, insight-brief, hypothesis-list</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-027</td>
+<td class="name">Geo Analyzer</td>
+<td class="role">Geographic Data Specialist</td>
+<td class="desc">Analyzes geographic data for service zone optimization, route planning, and territory management.</td>
+<td class="meta">zone-review, territory-update, route-optimization</td>
+<td class="meta">zone-map, territory-analysis, route-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-028</td>
+<td class="name">NLP Processor</td>
+<td class="role">Natural Language Data Extractor</td>
+<td class="desc">Extracts structured data from unstructured text: call transcripts, emails, reviews, and social posts.</td>
+<td class="meta">text-ingested, extraction-request, batch-processing</td>
+<td class="meta">structured-data, entity-extraction, topic-classification</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">INT-029</td>
+<td class="name">KPI Dashboard</td>
+<td class="role">KPI Monitoring &amp; Alerting</td>
+<td class="desc">Monitors all business KPIs in real-time. Sends alerts when metrics deviate from targets or thresholds.</td>
+<td class="meta">kpi-threshold, daily-check, anomaly-detected</td>
+<td class="meta">kpi-alert, dashboard-update, trend-summary</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">INT-030</td>
+<td class="name">Data Historian</td>
+<td class="role">Historical Data Archivist</td>
+<td class="desc">Maintains historical data archives for trend analysis, compliance, and audit purposes.</td>
+<td class="meta">archive-schedule, retention-policy, audit-request</td>
+<td class="meta">archive-record, historical-report, audit-package</td>
+<td class="tier">standard</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-MKT">
+<div class="div-header" style="border-left:5px solid #ea580c">
+<div class="div-num">6</div>
+<div class="div-info">
+<h2>MKT — Marketing Division</h2>
+<p class="div-mission">Content creation, social media, email campaigns, brand management, YouTube.</p>
+<span class="agent-count">48 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">MKT-001</td>
+<td class="name">Content Architect</td>
+<td class="role">Content Strategy Lead</td>
+<td class="desc">Plans and manages the content calendar across all channels. Aligns content with sales goals and seasonal trends.</td>
+<td class="meta">calendar-planning, campaign-launch, content-gap</td>
+<td class="meta">content-calendar, campaign-brief, content-strategy</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-002</td>
+<td class="name">Social Scribe</td>
+<td class="role">Social Media Post Creator</td>
+<td class="desc">Creates social media posts for Instagram, Facebook, LinkedIn, and X. Optimizes for each platform.</td>
+<td class="meta">post-scheduled, content-request, trending-topic</td>
+<td class="meta">social-post, image-brief, hashtag-set</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-003</td>
+<td class="name">Email Craftsman</td>
+<td class="role">Email Campaign Designer</td>
+<td class="desc">Designs and writes email campaigns: newsletters, drip sequences, announcements, and promotional emails.</td>
+<td class="meta">email-scheduled, campaign-trigger, newsletter-due</td>
+<td class="meta">email-template, subject-lines, segmentation-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-004</td>
+<td class="name">SEO Optimizer</td>
+<td class="role">Search Engine Optimization Agent</td>
+<td class="desc">Optimizes website content, blog posts, and listings for search engines. Tracks rankings and recommends improvements.</td>
+<td class="meta">content-published, ranking-change, audit-scheduled</td>
+<td class="meta">seo-audit, keyword-recommendations, optimization-plan</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-005</td>
+<td class="name">Video Producer</td>
+<td class="role">Video Content Director</td>
+<td class="desc">Plans, scripts, and manages video content production: property tours, testimonials, and educational content.</td>
+<td class="meta">video-request, production-scheduled, content-calendar</td>
+<td class="meta">video-script, shot-list, production-brief</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-006</td>
+<td class="name">Podcast Engineer</td>
+<td class="role">Podcast Content Producer</td>
+<td class="desc">Manages podcast production: topic research, guest booking, script outlines, and episode planning.</td>
+<td class="meta">episode-scheduled, guest-confirmed, topic-research</td>
+<td class="meta">podcast-outline, guest-brief, show-notes</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-007</td>
+<td class="name">Blog Writer</td>
+<td class="role">Long-Form Content Creator</td>
+<td class="desc">Writes blog posts, articles, and guides about luxury property management, Treasure Coast living, and investment.</td>
+<td class="meta">blog-scheduled, topic-assigned, seo-opportunity</td>
+<td class="meta">blog-post, meta-description, internal-links</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-008</td>
+<td class="name">Ad Manager</td>
+<td class="role">Paid Advertising Optimizer</td>
+<td class="desc">Manages Google Ads, Facebook Ads, and Instagram Ads campaigns. Optimizes targeting, bidding, and creative.</td>
+<td class="meta">campaign-launch, budget-review, performance-alert</td>
+<td class="meta">ad-creative, audience-targeting, performance-report</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-009</td>
+<td class="name">Brand Voice</td>
+<td class="role">Brand Consistency Manager</td>
+<td class="desc">Ensures all content adheres to Coastal Key brand guidelines. Reviews copy, visuals, and messaging for consistency.</td>
+<td class="meta">content-review, brand-audit, new-asset-created</td>
+<td class="meta">brand-feedback, style-guide-update, approval-status</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-010</td>
+<td class="name">Landing Page Builder</td>
+<td class="role">Landing Page Creator</td>
+<td class="desc">Designs and optimizes landing pages for campaigns, lead capture, and property showcases.</td>
+<td class="meta">campaign-launch, page-request, conversion-optimization</td>
+<td class="meta">page-design, copy-draft, a-b-variant</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-011</td>
+<td class="name">PR Agent</td>
+<td class="role">Public Relations Manager</td>
+<td class="desc">Manages media relations, press releases, and earned media opportunities for Coastal Key.</td>
+<td class="meta">pr-opportunity, media-inquiry, press-release-due</td>
+<td class="meta">press-release, media-pitch, coverage-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-012</td>
+<td class="name">Event Planner</td>
+<td class="role">Marketing Event Coordinator</td>
+<td class="desc">Plans and manages marketing events: open houses, networking events, community sponsorships, and webinars.</td>
+<td class="meta">event-planned, sponsorship-opportunity, webinar-scheduled</td>
+<td class="meta">event-plan, promotion-strategy, post-event-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-013</td>
+<td class="name">Listing Optimizer</td>
+<td class="role">Property Listing Content Agent</td>
+<td class="desc">Creates compelling property listings for Airbnb, VRBO, Zillow, and the CK website.</td>
+<td class="meta">new-listing, listing-refresh, performance-dip</td>
+<td class="meta">listing-copy, photo-selection, amenity-highlights</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-014</td>
+<td class="name">Infographic Designer</td>
+<td class="role">Visual Content Creator</td>
+<td class="desc">Creates infographics, data visualizations, and visual assets for social media and presentations.</td>
+<td class="meta">visual-request, data-report-ready, social-campaign</td>
+<td class="meta">infographic-brief, data-visualization, social-graphic</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-015</td>
+<td class="name">Review Manager</td>
+<td class="role">Online Review Response Agent</td>
+<td class="desc">Monitors and responds to online reviews on Google, Yelp, Facebook, and Airbnb. Manages reputation.</td>
+<td class="meta">review-posted, negative-review, response-due</td>
+<td class="meta">review-response, sentiment-analysis, reputation-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-016</td>
+<td class="name">Newsletter Editor</td>
+<td class="role">Monthly Newsletter Manager</td>
+<td class="desc">Curates and produces the monthly Coastal Key newsletter for clients, prospects, and partners.</td>
+<td class="meta">newsletter-due, content-collected, distribution-scheduled</td>
+<td class="meta">newsletter-draft, distribution-list, performance-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-017</td>
+<td class="name">Hashtag Researcher</td>
+<td class="role">Social Media Hashtag Optimizer</td>
+<td class="desc">Researches and optimizes hashtag strategies for each social platform and content category.</td>
+<td class="meta">hashtag-review, campaign-planning, trend-detected</td>
+<td class="meta">hashtag-set, trend-report, performance-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-018</td>
+<td class="name">Community Manager</td>
+<td class="role">Social Community Engagement</td>
+<td class="desc">Engages with followers, responds to comments, and builds community across social media platforms.</td>
+<td class="meta">comment-received, dm-received, engagement-drop</td>
+<td class="meta">response, engagement-report, community-insights</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-019</td>
+<td class="name">Local SEO</td>
+<td class="role">Local Search Optimization Agent</td>
+<td class="desc">Manages Google Business Profile, local citations, and local SEO for each service zone.</td>
+<td class="meta">profile-update, citation-audit, ranking-change</td>
+<td class="meta">local-seo-audit, citation-update, profile-optimization</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-020</td>
+<td class="name">Constant Contact</td>
+<td class="role">Email Platform Manager</td>
+<td class="desc">Manages Constant Contact integration: list management, template design, and campaign execution.</td>
+<td class="meta">campaign-scheduled, list-update, template-needed</td>
+<td class="meta">campaign-setup, list-segment, template-design</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-021</td>
+<td class="name">Copywriter Pro</td>
+<td class="role">Premium Copy Specialist</td>
+<td class="desc">Writes high-quality copy for websites, brochures, proposals, and premium marketing materials.</td>
+<td class="meta">copy-request, website-update, material-needed</td>
+<td class="meta">polished-copy, headline-variants, cta-options</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-022</td>
+<td class="name">Analytics Interpreter</td>
+<td class="role">Marketing Analytics Translator</td>
+<td class="desc">Translates raw marketing analytics into actionable insights and plain-language executive summaries.</td>
+<td class="meta">report-generated, analytics-review, executive-briefing</td>
+<td class="meta">insight-report, executive-summary, action-items</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-023</td>
+<td class="name">Retargeting Agent</td>
+<td class="role">Ad Retargeting Specialist</td>
+<td class="desc">Manages retargeting campaigns for website visitors and lead-stage prospects across ad platforms.</td>
+<td class="meta">visitor-segment, lead-stage-change, campaign-optimization</td>
+<td class="meta">retargeting-audience, ad-creative, performance-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-024</td>
+<td class="name">Webinar Host</td>
+<td class="role">Virtual Event Producer</td>
+<td class="desc">Plans and produces webinars on property management, investment, and Treasure Coast market topics.</td>
+<td class="meta">webinar-scheduled, topic-selected, registration-open</td>
+<td class="meta">webinar-deck, promotion-plan, follow-up-sequence</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-025</td>
+<td class="name">Testimonial Publisher</td>
+<td class="role">Social Proof Content Manager</td>
+<td class="desc">Formats and publishes client testimonials, case studies, and success stories across channels.</td>
+<td class="meta">testimonial-approved, case-study-complete, social-proof-needed</td>
+<td class="meta">testimonial-post, case-study-page, review-widget</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-026</td>
+<td class="name">QR Code Creator</td>
+<td class="role">Physical-Digital Bridge Agent</td>
+<td class="desc">Creates QR codes and physical marketing materials that bridge offline touchpoints to digital experiences.</td>
+<td class="meta">material-request, event-prep, signage-needed</td>
+<td class="meta">qr-code, material-design, tracking-setup</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-027</td>
+<td class="name">Seasonal Campaign</td>
+<td class="role">Seasonal Marketing Planner</td>
+<td class="desc">Plans marketing campaigns around seasonal patterns: snowbird season, hurricane season, summer rentals.</td>
+<td class="meta">season-approaching, campaign-planning, annual-review</td>
+<td class="meta">seasonal-plan, campaign-calendar, budget-allocation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-028</td>
+<td class="name">Photography Director</td>
+<td class="role">Visual Asset Manager</td>
+<td class="desc">Manages photography and videography assets. Coordinates shoots, maintains media library, and ensures quality.</td>
+<td class="meta">shoot-scheduled, asset-needed, library-audit</td>
+<td class="meta">shoot-brief, media-library-update, asset-selection</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-029</td>
+<td class="name">Drip Campaign</td>
+<td class="role">Automated Drip Sequence Builder</td>
+<td class="desc">Builds and optimizes automated email drip campaigns for lead nurturing at every pipeline stage.</td>
+<td class="meta">sequence-build, performance-review, stage-mapping</td>
+<td class="meta">drip-sequence, trigger-logic, optimization-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-030</td>
+<td class="name">Referral Marketer</td>
+<td class="role">Referral Program Promoter</td>
+<td class="desc">Promotes the client referral program through email, social, and direct communications.</td>
+<td class="meta">program-launch, reminder-due, success-milestone</td>
+<td class="meta">promotion-campaign, referral-materials, success-story</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-031</td>
+<td class="name">Content Repurposer</td>
+<td class="role">Multi-Format Content Adapter</td>
+<td class="desc">Repurposes existing content across formats: blog to social, video to blog, podcast to newsletter.</td>
+<td class="meta">content-published, repurpose-request, channel-gap</td>
+<td class="meta">adapted-content, distribution-plan, cross-promotion</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-032</td>
+<td class="name">Competitor Ad Watch</td>
+<td class="role">Competitor Advertising Monitor</td>
+<td class="desc">Tracks competitor advertising: spend estimates, messaging, creative, and targeting strategies.</td>
+<td class="meta">weekly-scan, new-competitor-ad, budget-planning</td>
+<td class="meta">competitor-ad-report, creative-analysis, strategy-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-033</td>
+<td class="name">CTA Optimizer</td>
+<td class="role">Call-to-Action Specialist</td>
+<td class="desc">Tests and optimizes CTAs across website, emails, landing pages, and ads for maximum conversion.</td>
+<td class="meta">cta-test, conversion-dip, new-page-launch</td>
+<td class="meta">cta-variants, test-results, optimization-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-034</td>
+<td class="name">Market Report Publisher</td>
+<td class="role">Market Report Creator</td>
+<td class="desc">Creates quarterly Treasure Coast market reports used for lead generation and thought leadership.</td>
+<td class="meta">quarter-end, data-available, report-scheduled</td>
+<td class="meta">market-report, summary-graphic, distribution-plan</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-035</td>
+<td class="name">Chatbot Trainer</td>
+<td class="role">Website Chatbot Manager</td>
+<td class="desc">Manages and trains the website chatbot. Updates responses, analyzes conversations, and improves flows.</td>
+<td class="meta">conversation-review, flow-update, faq-change</td>
+<td class="meta">chatbot-script, flow-diagram, performance-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-036</td>
+<td class="name">Award Submitter</td>
+<td class="role">Industry Award Application Agent</td>
+<td class="desc">Identifies and submits applications for industry awards and recognition programs.</td>
+<td class="meta">deadline-approaching, achievement-notable, award-opportunity</td>
+<td class="meta">award-application, achievement-summary, submission-tracker</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-037</td>
+<td class="name">Partnership Content</td>
+<td class="role">Co-Marketing Content Producer</td>
+<td class="desc">Creates co-branded content with partners: local businesses, real estate agents, and service providers.</td>
+<td class="meta">partnership-active, co-marketing-planned, content-exchange</td>
+<td class="meta">co-branded-content, cross-promotion, partner-feature</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-038</td>
+<td class="name">Direct Mail Agent</td>
+<td class="role">Direct Mail Campaign Manager</td>
+<td class="desc">Plans and manages direct mail campaigns targeting absentee homeowners and high-value prospects.</td>
+<td class="meta">campaign-planned, list-ready, seasonal-window</td>
+<td class="meta">mailer-design, mailing-list, response-tracking</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-039</td>
+<td class="name">Brand Asset Manager</td>
+<td class="role">Digital Asset Library Curator</td>
+<td class="desc">Maintains the brand asset library: logos, templates, photography, icons, and brand guidelines.</td>
+<td class="meta">asset-request, library-audit, brand-refresh</td>
+<td class="meta">asset-delivery, library-update, usage-guidelines</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">MKT-040</td>
+<td class="name">Conversion Analyst</td>
+<td class="role">Marketing Funnel Optimizer</td>
+<td class="desc">Analyzes the full marketing funnel from impression to closed deal. Identifies drop-off points and optimization opportunities.</td>
+<td class="meta">funnel-review, conversion-dip, monthly-analysis</td>
+<td class="meta">funnel-report, drop-off-analysis, optimization-plan</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-041</td>
+<td class="name">YouTube Niche Strategist</td>
+<td class="role">YouTube Channel Strategist — AI Content Niches</td>
+<td class="desc">Identifies the three most profitable AI video niches for the home watch and property management audience with strong advertiser demand, growing search volume, and low enough competition for a new channel to break through in 90 days.</td>
+<td class="meta">youtube-niche-research, channel-launch, quarterly-niche-review</td>
+<td class="meta">niche-analysis, competition-report, advertiser-demand-brief</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-042</td>
+<td class="name">YouTube Channel Architect</td>
+<td class="role">YouTube Channel Identity Builder</td>
+<td class="desc">Builds the complete Coastal Key YouTube channel identity including channel name options, content positioning, visual style direction, channel description, and the one hook that makes someone subscribe after watching their very first video.</td>
+<td class="meta">channel-setup, brand-refresh, channel-identity-request</td>
+<td class="meta">channel-identity-kit, visual-style-guide, subscriber-hook-script</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-043</td>
+<td class="name">YouTube Idea Generator</td>
+<td class="role">YouTube 90-Day Content Planner</td>
+<td class="desc">Generates 30 high-retention YouTube video ideas targeting seasonal homeowners, absentee owners, seasonal residents, absentee investors, and single-family homeowners. Each idea includes a title hook angle, virality/ranking rationale, and monetization opportunity within the content.</td>
+<td class="meta">content-calendar-planning, monthly-idea-generation, video-pipeline-low</td>
+<td class="meta">video-idea-batch, title-hook-list, monetization-map</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-044</td>
+<td class="name">YouTube Scriptwriter</td>
+<td class="role">YouTube Video Script Producer</td>
+<td class="desc">Writes complete YouTube scripts for AI-powered home watch and property management content targeting homeowners and estate managers seeking automation. Includes curiosity hooks, structured sections with pattern interrupts every 60 seconds, and endings that drive subscribers and watch time simultaneously.</td>
+<td class="meta">script-request, video-production-scheduled, idea-approved</td>
+<td class="meta">full-video-script, hook-variants, pattern-interrupt-markers</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-045</td>
+<td class="name">YouTube Production Engineer</td>
+<td class="role">Faceless AI Video Production Workflow Designer</td>
+<td class="desc">Designs the complete faceless AI video production workflow for the Coastal Key YouTube channel. Specifies the best AI tools for scripting, voiceover, visuals, and editing, the exact production order, estimated time per video, and how to maintain quality at a consistent publishing schedule.</td>
+<td class="meta">production-workflow-setup, tool-stack-review, efficiency-audit</td>
+<td class="meta">production-workflow-doc, tool-stack-recommendation, schedule-template</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-046</td>
+<td class="name">YouTube SEO Optimizer</td>
+<td class="role">YouTube Video Revenue &amp; SEO Optimizer</td>
+<td class="desc">Optimizes every Coastal Key YouTube video for maximum revenue. Produces fully optimized titles, descriptions, tags, chapters, end screen CTAs with primary and secondary keywords, and thumbnail concepts designed to maximize click-through rate for the industrial-grade asset and property protection audience.</td>
+<td class="meta">video-ready-for-publish, seo-optimization-request, ctr-dip-detected</td>
+<td class="meta">optimized-metadata, thumbnail-concept, keyword-strategy</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-047</td>
+<td class="name">YouTube Monetization Planner</td>
+<td class="role">YouTube 90-Day Monetization Strategist</td>
+<td class="desc">Builds a focused 90-day monetization plan for the Coastal Key YouTube channel targeting absentee homeowners, local property owners, seasonal residents, and property managers ready to automate. Covers upload frequency, content types, community engagement tactics, and week-by-week priorities to hit 1,000 subscribers and 4,000 watch hours.</td>
+<td class="meta">monetization-planning, subscriber-milestone, watch-hour-review</td>
+<td class="meta">90-day-monetization-plan, weekly-priority-schedule, engagement-playbook</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">MKT-048</td>
+<td class="name">Coastal Key CMO</td>
+<td class="role">Chief Marketing Officer</td>
+<td class="desc">Chief Marketing Officer of the Coastal Key Enterprise. Reports directly to MCCO Sovereign (MCCO-000). Commands all 47 MKT division agents. Receives monthly 30-day content calendars from MCCO, translates sovereign-level strategy into tactical execution across all marketing channels. Owns content production, brand consistency, campaign execution, and marketing ROI. Ensures Ferrari-standard quality on every piece of content that represents the Coastal Key brand.</td>
+<td class="meta">mcco-directive-received, content-calendar-delivery, campaign-launch</td>
+<td class="meta">campaign-execution-plan, content-production-schedule, marketing-performance-report</td>
+<td class="tier">advanced</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-FIN">
+<div class="div-header" style="border-left:5px solid #ca8a04">
+<div class="div-num">7</div>
+<div class="div-info">
+<h2>FIN — Finance Division</h2>
+<p class="div-mission">Revenue tracking, investor relations, budgeting, forecasting, compliance.</p>
+<span class="agent-count">25 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">FIN-001</td>
+<td class="name">Revenue Ledger</td>
+<td class="role">Revenue Tracking Engine</td>
+<td class="desc">Tracks all revenue streams: management fees, booking commissions, maintenance markups, and concierge fees.</td>
+<td class="meta">revenue-event, daily-reconciliation, month-end</td>
+<td class="meta">revenue-report, reconciliation-log, variance-alert</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-002</td>
+<td class="name">Invoice Generator</td>
+<td class="role">Automated Invoice Creator</td>
+<td class="desc">Generates and sends invoices to property owners for management fees, maintenance charges, and ancillary services.</td>
+<td class="meta">billing-cycle, service-completed, manual-request</td>
+<td class="meta">invoice, payment-reminder, statement</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-003</td>
+<td class="name">Budget Architect</td>
+<td class="role">Annual Budget Planner</td>
+<td class="desc">Builds annual operating budgets by division, property, and service line. Tracks actuals vs plan.</td>
+<td class="meta">budget-cycle, reforecast-request, variance-threshold</td>
+<td class="meta">budget-model, variance-report, reforecast</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">FIN-004</td>
+<td class="name">Cash Flow Monitor</td>
+<td class="role">Cash Flow Forecaster</td>
+<td class="desc">Forecasts cash flow and manages working capital. Alerts on upcoming cash shortfalls or surpluses.</td>
+<td class="meta">daily-balance, forecast-update, payment-scheduled</td>
+<td class="meta">cash-forecast, flow-report, alert-notification</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">FIN-005</td>
+<td class="name">Investor Reporter</td>
+<td class="role">Investor Financial Reporting</td>
+<td class="desc">Prepares financial reports and returns analysis for property investors and family offices.</td>
+<td class="meta">reporting-period, investor-request, wf3-trigger</td>
+<td class="meta">investor-report, returns-analysis, portfolio-summary</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">FIN-006</td>
+<td class="name">Expense Auditor</td>
+<td class="role">Expense Verification Agent</td>
+<td class="desc">Audits operational expenses for accuracy, policy compliance, and vendor contract adherence.</td>
+<td class="meta">expense-submitted, threshold-exceeded, audit-schedule</td>
+<td class="meta">audit-report, approval-decision, policy-flag</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-007</td>
+<td class="name">Tax Preparer</td>
+<td class="role">Property Tax Preparation Agent</td>
+<td class="desc">Prepares property tax documents, tracks deadlines, and manages exemption filings for managed properties.</td>
+<td class="meta">tax-deadline, assessment-received, exemption-due</td>
+<td class="meta">tax-filing, deadline-reminder, exemption-application</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-008</td>
+<td class="name">Profitability Analyst</td>
+<td class="role">Per-Property P&amp;L Analyzer</td>
+<td class="desc">Calculates profitability per property, service line, and client. Identifies margin improvement opportunities.</td>
+<td class="meta">monthly-close, profitability-review, pricing-change</td>
+<td class="meta">p-and-l-report, margin-analysis, pricing-recommendation</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">FIN-009</td>
+<td class="name">Payment Processor</td>
+<td class="role">Payment Collection Agent</td>
+<td class="desc">Manages payment collection, tracks receivables, and sends reminders for overdue invoices.</td>
+<td class="meta">payment-due, overdue-detected, payment-received</td>
+<td class="meta">payment-reminder, collection-notice, receipt</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-010</td>
+<td class="name">Commission Calculator</td>
+<td class="role">Sales Commission Tracker</td>
+<td class="desc">Calculates and tracks sales commissions, referral bonuses, and performance incentives.</td>
+<td class="meta">deal-closed, commission-period, dispute-filed</td>
+<td class="meta">commission-statement, payout-schedule, dispute-resolution</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-011</td>
+<td class="name">Vendor Payment</td>
+<td class="role">Accounts Payable Manager</td>
+<td class="desc">Manages vendor payments, tracks outstanding payables, and ensures timely payment within terms.</td>
+<td class="meta">invoice-received, payment-due, approval-needed</td>
+<td class="meta">payment-batch, aging-report, approval-request</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-012</td>
+<td class="name">Financial Modeler</td>
+<td class="role">Scenario Planning Analyst</td>
+<td class="desc">Builds financial models for expansion, acquisition, and service launch scenarios.</td>
+<td class="meta">model-request, scenario-change, board-prep</td>
+<td class="meta">financial-model, scenario-comparison, sensitivity-analysis</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">FIN-013</td>
+<td class="name">Deposit Manager</td>
+<td class="role">Security Deposit Tracker</td>
+<td class="desc">Manages security deposits: collection, escrow tracking, deduction documentation, and return processing.</td>
+<td class="meta">deposit-collected, move-out, deduction-needed</td>
+<td class="meta">deposit-ledger, deduction-report, return-processing</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-014</td>
+<td class="name">Insurance Reviewer</td>
+<td class="role">Insurance Policy Analyst</td>
+<td class="desc">Reviews and tracks insurance policies for managed properties. Ensures adequate coverage and competitive rates.</td>
+<td class="meta">policy-renewal, coverage-review, claim-filed</td>
+<td class="meta">coverage-analysis, renewal-recommendation, rate-comparison</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-015</td>
+<td class="name">Revenue Optimizer</td>
+<td class="role">Revenue Enhancement Agent</td>
+<td class="desc">Identifies opportunities to increase revenue per property: new services, upsells, and pricing adjustments.</td>
+<td class="meta">revenue-review, service-gap, pricing-opportunity</td>
+<td class="meta">enhancement-plan, upsell-recommendation, revenue-projection</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">FIN-016</td>
+<td class="name">Cost Reducer</td>
+<td class="role">Cost Optimization Agent</td>
+<td class="desc">Analyzes operational costs and identifies reduction opportunities without sacrificing service quality.</td>
+<td class="meta">cost-review, budget-overrun, vendor-renewal</td>
+<td class="meta">cost-analysis, savings-plan, vendor-renegotiation-brief</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-017</td>
+<td class="name">Trust Account</td>
+<td class="role">Trust Account Manager</td>
+<td class="desc">Manages client trust accounts in compliance with Florida real estate regulations.</td>
+<td class="meta">deposit-received, disbursement-request, reconciliation-due</td>
+<td class="meta">trust-ledger, reconciliation-report, compliance-certification</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">FIN-018</td>
+<td class="name">Financial Dashboard</td>
+<td class="role">Real-Time Financial KPI Monitor</td>
+<td class="desc">Maintains real-time financial dashboards for revenue, expenses, margins, and cash position.</td>
+<td class="meta">data-update, threshold-alert, dashboard-request</td>
+<td class="meta">dashboard-update, kpi-alert, trend-summary</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-019</td>
+<td class="name">Audit Preparer</td>
+<td class="role">Financial Audit Support Agent</td>
+<td class="desc">Prepares documentation and reports for internal and external financial audits.</td>
+<td class="meta">audit-scheduled, documentation-request, pre-audit-review</td>
+<td class="meta">audit-package, documentation-set, finding-response</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-020</td>
+<td class="name">Grant Scanner</td>
+<td class="role">Grant &amp; Incentive Finder</td>
+<td class="desc">Identifies government grants, tax incentives, and programs available for property management operations.</td>
+<td class="meta">program-scan, incentive-announced, eligibility-check</td>
+<td class="meta">opportunity-brief, application-draft, compliance-requirements</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-021</td>
+<td class="name">Rental Revenue</td>
+<td class="role">STR Revenue Accountant</td>
+<td class="desc">Tracks rental revenue from STR properties across platforms. Reconciles OTA payments and owner disbursements.</td>
+<td class="meta">booking-payment, payout-received, reconciliation-due</td>
+<td class="meta">revenue-statement, payout-reconciliation, platform-comparison</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-022</td>
+<td class="name">Procurement Agent</td>
+<td class="role">Purchasing &amp; Procurement Manager</td>
+<td class="desc">Manages procurement of supplies, furnishings, and equipment. Negotiates volume discounts and tracks spending.</td>
+<td class="meta">purchase-request, inventory-low, contract-renewal</td>
+<td class="meta">purchase-order, vendor-quote-comparison, spending-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-023</td>
+<td class="name">Depreciation Tracker</td>
+<td class="role">Asset Depreciation Calculator</td>
+<td class="desc">Tracks asset depreciation schedules for property improvements, furnishings, and equipment.</td>
+<td class="meta">asset-acquired, year-end, disposal-event</td>
+<td class="meta">depreciation-schedule, tax-report, asset-register</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-024</td>
+<td class="name">ROI Calculator</td>
+<td class="role">Investment ROI Analyzer</td>
+<td class="desc">Calculates ROI for property improvements, marketing campaigns, technology investments, and new hires.</td>
+<td class="meta">roi-request, investment-proposal, post-project-review</td>
+<td class="meta">roi-analysis, payback-period, irr-calculation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">FIN-025</td>
+<td class="name">Month End Close</td>
+<td class="role">Month-End Close Coordinator</td>
+<td class="desc">Manages the monthly financial close process. Ensures all entries are posted, reconciled, and reported.</td>
+<td class="meta">month-end, close-checklist, deadline-approaching</td>
+<td class="meta">close-checklist, financial-statements, variance-explanation</td>
+<td class="tier">standard</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-VEN">
+<div class="div-header" style="border-left:5px solid #0891b2">
+<div class="div-num">8</div>
+<div class="div-info">
+<h2>VEN — Vendor Management Division</h2>
+<p class="div-mission">Vendor compliance, procurement, contract management, service quality.</p>
+<span class="agent-count">25 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">VEN-001</td>
+<td class="name">Vendor Registry</td>
+<td class="role">Vendor Database Manager</td>
+<td class="desc">Maintains the master vendor registry. Tracks certifications, insurance, licensing, and contact information.</td>
+<td class="meta">vendor-onboarded, info-update, registry-audit</td>
+<td class="meta">vendor-profile, registry-update, audit-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-002</td>
+<td class="name">Compliance Enforcer</td>
+<td class="role">Vendor Compliance Monitor</td>
+<td class="desc">Monitors vendor compliance: insurance expiration, license renewal, background checks, and safety certifications.</td>
+<td class="meta">expiration-approaching, compliance-check, violation-reported</td>
+<td class="meta">compliance-alert, vendor-scorecard, suspension-notice</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-003</td>
+<td class="name">Contract Manager</td>
+<td class="role">Vendor Contract Administrator</td>
+<td class="desc">Manages vendor contracts: negotiations, renewals, amendments, and terminations.</td>
+<td class="meta">contract-expiring, renewal-due, negotiation-request</td>
+<td class="meta">contract-draft, renewal-terms, amendment-record</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-004</td>
+<td class="name">Performance Scorer</td>
+<td class="role">Vendor Performance Evaluator</td>
+<td class="desc">Evaluates vendor performance based on quality, timeliness, pricing, and client feedback.</td>
+<td class="meta">service-completed, quarterly-review, complaint-received</td>
+<td class="meta">performance-scorecard, ranking-update, improvement-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-005</td>
+<td class="name">Bid Coordinator</td>
+<td class="role">Competitive Bidding Manager</td>
+<td class="desc">Manages competitive bidding processes for major services. Evaluates proposals and recommends selections.</td>
+<td class="meta">bid-request, rfp-issued, proposal-received</td>
+<td class="meta">rfp-document, bid-comparison, selection-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-006</td>
+<td class="name">Onboarding Agent</td>
+<td class="role">Vendor Onboarding Coordinator</td>
+<td class="desc">Manages the vendor onboarding process: documentation collection, background checks, and system setup.</td>
+<td class="meta">vendor-approved, onboarding-started, documentation-needed</td>
+<td class="meta">onboarding-checklist, welcome-package, system-access</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-007</td>
+<td class="name">Insurance Verifier</td>
+<td class="role">Vendor Insurance Tracker</td>
+<td class="desc">Verifies and tracks vendor insurance certificates. Ensures adequate coverage for all contracted services.</td>
+<td class="meta">insurance-expiring, new-vendor, coverage-review</td>
+<td class="meta">insurance-status, expiration-alert, coverage-verification</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-008</td>
+<td class="name">License Tracker</td>
+<td class="role">Professional License Monitor</td>
+<td class="desc">Tracks professional licenses for all vendors: contractor licenses, pest control, electrical, plumbing.</td>
+<td class="meta">license-expiring, license-check, new-requirement</td>
+<td class="meta">license-status, renewal-reminder, compliance-flag</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-009</td>
+<td class="name">Rate Negotiator</td>
+<td class="role">Vendor Rate Optimization</td>
+<td class="desc">Negotiates vendor rates and manages pricing agreements. Benchmarks rates against market standards.</td>
+<td class="meta">rate-review, contract-renewal, market-benchmark</td>
+<td class="meta">rate-comparison, negotiation-brief, savings-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-010</td>
+<td class="name">Quality Inspector</td>
+<td class="role">Vendor Work Quality Auditor</td>
+<td class="desc">Inspects and audits vendor work quality. Conducts spot checks on cleaning, maintenance, and landscaping.</td>
+<td class="meta">work-completed, spot-check-due, complaint-filed</td>
+<td class="meta">quality-report, deficiency-notice, corrective-action</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-011</td>
+<td class="name">Vendor Communicator</td>
+<td class="role">Vendor Communication Hub</td>
+<td class="desc">Manages all vendor communications: work orders, schedule changes, policy updates, and feedback.</td>
+<td class="meta">communication-needed, policy-change, mass-notification</td>
+<td class="meta">vendor-message, notification-blast, feedback-collection</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-012</td>
+<td class="name">Preferred Vendor</td>
+<td class="role">Preferred Vendor Program Manager</td>
+<td class="desc">Manages the preferred vendor program: tier assignments, benefits, and performance requirements.</td>
+<td class="meta">tier-review, vendor-application, benefit-distribution</td>
+<td class="meta">tier-assignment, program-update, benefit-package</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-013</td>
+<td class="name">Emergency Vendor</td>
+<td class="role">Emergency Vendor Coordinator</td>
+<td class="desc">Maintains emergency vendor lists for after-hours, hurricane, and critical situations. Ensures 24/7 availability.</td>
+<td class="meta">emergency-call, availability-check, roster-update</td>
+<td class="meta">emergency-dispatch, availability-confirmation, roster-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-014</td>
+<td class="name">Diversity Tracker</td>
+<td class="role">Vendor Diversity Manager</td>
+<td class="desc">Tracks vendor diversity metrics and promotes inclusion of minority, veteran, and women-owned businesses.</td>
+<td class="meta">diversity-report, vendor-search, annual-review</td>
+<td class="meta">diversity-report, vendor-recommendation, program-update</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-015</td>
+<td class="name">Training Coordinator</td>
+<td class="role">Vendor Training Manager</td>
+<td class="desc">Manages vendor training programs: property access procedures, quality standards, and safety protocols.</td>
+<td class="meta">training-due, new-vendor, protocol-change</td>
+<td class="meta">training-schedule, certification-record, completion-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-016</td>
+<td class="name">Warranty Liaison</td>
+<td class="role">Vendor Warranty Coordinator</td>
+<td class="desc">Manages warranties on vendor-installed equipment and work. Tracks warranty terms and files claims.</td>
+<td class="meta">warranty-issue, installation-complete, claim-needed</td>
+<td class="meta">warranty-record, claim-submission, tracking-update</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-017</td>
+<td class="name">Safety Monitor</td>
+<td class="role">Vendor Safety Compliance Agent</td>
+<td class="desc">Monitors vendor safety compliance: OSHA standards, jobsite safety, and incident reporting.</td>
+<td class="meta">safety-incident, audit-scheduled, violation-reported</td>
+<td class="meta">safety-report, incident-record, corrective-action</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-018</td>
+<td class="name">Subcontractor Watch</td>
+<td class="role">Subcontractor Compliance Monitor</td>
+<td class="desc">Monitors and verifies subcontractors used by primary vendors. Ensures they meet CK standards.</td>
+<td class="meta">subcontractor-detected, compliance-check, audit-trigger</td>
+<td class="meta">subcontractor-report, compliance-status, approval-decision</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-019</td>
+<td class="name">Seasonal Vendor</td>
+<td class="role">Seasonal Vendor Coordinator</td>
+<td class="desc">Manages seasonal vendor capacity: hurricane contractors, snowbird season cleaning crews, and holiday services.</td>
+<td class="meta">season-approaching, capacity-planning, vendor-availability</td>
+<td class="meta">capacity-plan, vendor-roster, availability-confirmation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-020</td>
+<td class="name">Vendor Analytics</td>
+<td class="role">Vendor Data Analyst</td>
+<td class="desc">Analyzes vendor data: spending patterns, performance trends, and cost-effectiveness across categories.</td>
+<td class="meta">analysis-request, quarterly-review, spending-alert</td>
+<td class="meta">analytics-report, trend-analysis, cost-breakdown</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-021</td>
+<td class="name">Dispute Resolver</td>
+<td class="role">Vendor Dispute Mediator</td>
+<td class="desc">Mediates disputes between property owners and vendors. Manages escalations and resolution processes.</td>
+<td class="meta">dispute-filed, escalation-received, resolution-needed</td>
+<td class="meta">dispute-record, mediation-plan, resolution-summary</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-022</td>
+<td class="name">Background Checker</td>
+<td class="role">Vendor Background Verification</td>
+<td class="desc">Conducts and tracks background checks for all vendors with property access.</td>
+<td class="meta">new-vendor, renewal-due, concern-raised</td>
+<td class="meta">background-report, clearance-status, flag-notification</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-023</td>
+<td class="name">Green Vendor</td>
+<td class="role">Eco-Friendly Vendor Promoter</td>
+<td class="desc">Identifies and promotes environmentally friendly vendors and sustainable service practices.</td>
+<td class="meta">vendor-search, sustainability-initiative, green-certification</td>
+<td class="meta">green-vendor-list, certification-verification, sustainability-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-024</td>
+<td class="name">Vendor Portal</td>
+<td class="role">Vendor Self-Service Portal Manager</td>
+<td class="desc">Manages the vendor self-service portal: work order access, payment status, and document uploads.</td>
+<td class="meta">portal-issue, feature-request, usage-review</td>
+<td class="meta">portal-update, usage-report, support-resolution</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">VEN-025</td>
+<td class="name">Vendor Finder</td>
+<td class="role">New Vendor Discovery Agent</td>
+<td class="desc">Discovers and evaluates new vendors for service gaps, quality improvements, or cost optimization.</td>
+<td class="meta">vendor-needed, service-gap, improvement-opportunity</td>
+<td class="meta">vendor-shortlist, evaluation-matrix, recommendation</td>
+<td class="tier">standard</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-TEC">
+<div class="div-header" style="border-left:5px solid #4f46e5">
+<div class="div-num">9</div>
+<div class="div-info">
+<h2>TEC — Technology Division</h2>
+<p class="div-mission">Platform ops, API integrations, monitoring, CI/CD, infrastructure.</p>
+<span class="agent-count">25 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">TEC-001</td>
+<td class="name">Platform Monitor</td>
+<td class="role">Infrastructure Health Monitor</td>
+<td class="desc">Monitors Cloudflare Workers, KV stores, and API endpoints for uptime, latency, and error rates.</td>
+<td class="meta">health-check, error-spike, latency-threshold</td>
+<td class="meta">health-report, incident-alert, performance-dashboard</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-002</td>
+<td class="name">API Gateway Guard</td>
+<td class="role">API Security &amp; Rate Limit Manager</td>
+<td class="desc">Manages API authentication, rate limiting, and security policies for the CK API Gateway.</td>
+<td class="meta">auth-failure, rate-limit-hit, security-scan</td>
+<td class="meta">security-report, policy-update, threat-alert</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-003</td>
+<td class="name">Airtable Sync</td>
+<td class="role">Airtable Integration Manager</td>
+<td class="desc">Manages Airtable API integration, monitors rate limits, handles sync failures, and optimizes queries.</td>
+<td class="meta">sync-failure, rate-limit-warning, schema-change</td>
+<td class="meta">sync-report, error-recovery, optimization-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-004</td>
+<td class="name">Retell Integrator</td>
+<td class="role">Retell AI Integration Manager</td>
+<td class="desc">Manages the Retell AI integration: webhook reliability, prompt deployment, and call quality monitoring.</td>
+<td class="meta">webhook-failure, prompt-deploy, quality-alert</td>
+<td class="meta">integration-report, prompt-version, quality-metrics</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-005</td>
+<td class="name">Deploy Manager</td>
+<td class="role">CI/CD Pipeline Manager</td>
+<td class="desc">Manages Wrangler deployments, version tracking, and rollback procedures for all Workers.</td>
+<td class="meta">deploy-triggered, test-results, rollback-needed</td>
+<td class="meta">deploy-report, version-log, rollback-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-006</td>
+<td class="name">KV Store Manager</td>
+<td class="role">Cloudflare KV Operations</td>
+<td class="desc">Manages KV store operations: cache invalidation, storage optimization, and data lifecycle policies.</td>
+<td class="meta">storage-threshold, cache-invalidation, ttl-review</td>
+<td class="meta">storage-report, optimization-plan, policy-update</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-007</td>
+<td class="name">Error Tracker</td>
+<td class="role">Error &amp; Exception Monitor</td>
+<td class="desc">Tracks and categorizes runtime errors across all Workers. Groups by type, frequency, and impact.</td>
+<td class="meta">error-logged, pattern-detected, severity-escalation</td>
+<td class="meta">error-report, pattern-analysis, fix-recommendation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-008</td>
+<td class="name">Slack Integrator</td>
+<td class="role">Slack Webhook Manager</td>
+<td class="desc">Manages Slack webhook integrations: message formatting, channel routing, and delivery reliability.</td>
+<td class="meta">delivery-failure, format-error, channel-update</td>
+<td class="meta">delivery-report, format-fix, channel-config</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-009</td>
+<td class="name">Claude Optimizer</td>
+<td class="role">Anthropic API Optimization Agent</td>
+<td class="desc">Optimizes Claude API usage: prompt engineering, token management, model selection, and cost tracking.</td>
+<td class="meta">cost-threshold, performance-review, model-update</td>
+<td class="meta">usage-report, optimization-plan, prompt-improvement</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-010</td>
+<td class="name">Test Runner</td>
+<td class="role">Automated Test Manager</td>
+<td class="desc">Manages and runs automated test suites for all Workers and integrations.</td>
+<td class="meta">pre-deploy, schedule, code-change</td>
+<td class="meta">test-results, coverage-report, regression-alert</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-011</td>
+<td class="name">Secret Rotator</td>
+<td class="role">Credential &amp; Secret Manager</td>
+<td class="desc">Manages API key rotation, secret lifecycle, and credential security across all services.</td>
+<td class="meta">rotation-due, breach-suspected, audit-request</td>
+<td class="meta">rotation-plan, secret-audit, compliance-report</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-012</td>
+<td class="name">Log Analyzer</td>
+<td class="role">Log Aggregation &amp; Analysis</td>
+<td class="desc">Aggregates and analyzes logs from all Workers. Identifies patterns, anomalies, and operational insights.</td>
+<td class="meta">log-ingestion, anomaly-detected, analysis-request</td>
+<td class="meta">log-summary, anomaly-report, insight-brief</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-013</td>
+<td class="name">CORS Manager</td>
+<td class="role">Cross-Origin Policy Manager</td>
+<td class="desc">Manages CORS policies and cross-origin configurations for API endpoints and web applications.</td>
+<td class="meta">cors-error, policy-review, new-origin</td>
+<td class="meta">policy-update, error-resolution, security-assessment</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-014</td>
+<td class="name">Webhook Validator</td>
+<td class="role">Webhook Security Verifier</td>
+<td class="desc">Validates incoming webhook signatures from Retell, Airtable, and other integrations to prevent spoofing.</td>
+<td class="meta">webhook-received, validation-failure, security-audit</td>
+<td class="meta">validation-result, security-alert, audit-log</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-015</td>
+<td class="name">Performance Profiler</td>
+<td class="role">Worker Performance Optimizer</td>
+<td class="desc">Profiles Worker execution time, CPU usage, and memory consumption. Recommends optimizations.</td>
+<td class="meta">performance-threshold, profiling-request, deploy-post</td>
+<td class="meta">profile-report, bottleneck-analysis, optimization-plan</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-016</td>
+<td class="name">DNS Manager</td>
+<td class="role">DNS &amp; Domain Configuration Agent</td>
+<td class="desc">Manages DNS records, domain configurations, and SSL certificates for all CK web properties.</td>
+<td class="meta">dns-change, cert-expiring, domain-request</td>
+<td class="meta">dns-update, cert-renewal, config-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-017</td>
+<td class="name">Migration Agent</td>
+<td class="role">Data Migration Specialist</td>
+<td class="desc">Plans and executes data migrations between systems, versions, and schemas.</td>
+<td class="meta">migration-planned, schema-change, system-upgrade</td>
+<td class="meta">migration-plan, validation-report, rollback-script</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-018</td>
+<td class="name">Documentation Bot</td>
+<td class="role">Technical Documentation Manager</td>
+<td class="desc">Maintains API documentation, system architecture docs, and runbooks for all technical components.</td>
+<td class="meta">code-change, doc-request, review-schedule</td>
+<td class="meta">api-docs, architecture-diagram, runbook-update</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-019</td>
+<td class="name">Backup Manager</td>
+<td class="role">Data Backup &amp; Recovery Agent</td>
+<td class="desc">Manages Airtable data backups, KV snapshots, and disaster recovery procedures.</td>
+<td class="meta">backup-schedule, recovery-test, data-loss-detected</td>
+<td class="meta">backup-confirmation, recovery-test-result, dr-plan</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-020</td>
+<td class="name">Integration Monitor</td>
+<td class="role">Third-Party Integration Health</td>
+<td class="desc">Monitors health and availability of all third-party integrations: Airtable, Anthropic, Retell, Slack, Constant Contact.</td>
+<td class="meta">integration-check, service-degraded, outage-detected</td>
+<td class="meta">status-dashboard, outage-alert, fallback-activation</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-021</td>
+<td class="name">Version Controller</td>
+<td class="role">Code Version &amp; Release Manager</td>
+<td class="desc">Manages code versioning, release tagging, and changelog generation for all components.</td>
+<td class="meta">release-planned, version-bump, changelog-due</td>
+<td class="meta">release-notes, version-tag, changelog-entry</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-022</td>
+<td class="name">Capacity Planner</td>
+<td class="role">Infrastructure Capacity Planner</td>
+<td class="desc">Forecasts infrastructure capacity needs based on growth projections and usage patterns.</td>
+<td class="meta">usage-trending, growth-forecast, capacity-threshold</td>
+<td class="meta">capacity-forecast, scaling-plan, cost-projection</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-023</td>
+<td class="name">Incident Commander</td>
+<td class="role">Technical Incident Manager</td>
+<td class="desc">Manages technical incidents: detection, escalation, communication, resolution, and post-mortem.</td>
+<td class="meta">incident-declared, severity-escalation, resolution-needed</td>
+<td class="meta">incident-report, status-update, post-mortem</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">TEC-024</td>
+<td class="name">Accessibility Agent</td>
+<td class="role">Web Accessibility Compliance</td>
+<td class="desc">Ensures web properties meet WCAG accessibility standards and ADA compliance requirements.</td>
+<td class="meta">accessibility-audit, complaint-received, new-page-published</td>
+<td class="meta">accessibility-report, remediation-plan, compliance-status</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">TEC-025</td>
+<td class="name">DevOps Automator</td>
+<td class="role">Automation &amp; Scripting Agent</td>
+<td class="desc">Creates and maintains automation scripts for repetitive operational tasks across all systems.</td>
+<td class="meta">automation-request, task-repeated, efficiency-review</td>
+<td class="meta">automation-script, workflow-config, time-savings-report</td>
+<td class="tier">advanced</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-WEB">
+<div class="div-header" style="border-left:5px solid #be185d">
+<div class="div-num">10</div>
+<div class="div-info">
+<h2>WEB — Website Development Division</h2>
+<p class="div-mission">Website architecture, deployment, performance, accessibility, security.</p>
+<span class="agent-count">40 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">WEB-001</td>
+<td class="name">Architect Prime</td>
+<td class="role">Website Architecture Lead</td>
+<td class="desc">Designs the overall website architecture: page hierarchy, routing structure, component tree, and data flow. Executes via terminal using Wrangler CLI and build tools.</td>
+<td class="meta">architecture-review, new-page-request, restructure-needed</td>
+<td class="meta">site-map, component-tree, routing-config</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-002</td>
+<td class="name">HTML Forge</td>
+<td class="role">Semantic HTML Builder</td>
+<td class="desc">Generates semantic, accessible HTML5 markup for all pages. Uses terminal to create and validate HTML files against W3C standards.</td>
+<td class="meta">page-build, content-update, accessibility-fix</td>
+<td class="meta">html-file, validation-report, semantic-audit</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-003</td>
+<td class="name">Style Engine</td>
+<td class="role">CSS Architecture &amp; Design System</td>
+<td class="desc">Builds and maintains the CSS design system: variables, components, layouts, and responsive breakpoints. Operates via terminal with CSS preprocessors.</td>
+<td class="meta">design-change, responsive-fix, style-refactor</td>
+<td class="meta">css-module, design-tokens, responsive-audit</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-004</td>
+<td class="name">JavaScript Core</td>
+<td class="role">Client-Side Logic Engineer</td>
+<td class="desc">Develops client-side JavaScript: SPA router, state management, API integration, and interactive components. All work via terminal with ES modules.</td>
+<td class="meta">feature-request, bug-fix, performance-optimization</td>
+<td class="meta">js-module, test-suite, bundle-analysis</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-005</td>
+<td class="name">Deploy Commander</td>
+<td class="role">Cloudflare Pages Deployment Lead</td>
+<td class="desc">Manages all deployments to Cloudflare Pages via Wrangler CLI. Handles cache purging, rollbacks, and environment configuration.</td>
+<td class="meta">deploy-triggered, rollback-needed, env-change</td>
+<td class="meta">deploy-log, cache-purge-confirmation, version-tag</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-006</td>
+<td class="name">Domain Consolidator</td>
+<td class="role">DNS &amp; Subdomain Manager</td>
+<td class="desc">Manages domain configuration, DNS records, and subdomain consolidation. Ensures all paths route to coastalkey-pm.com via terminal commands.</td>
+<td class="meta">subdomain-detected, dns-change, redirect-needed</td>
+<td class="meta">dns-config, redirect-rules, consolidation-report</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-007</td>
+<td class="name">SEO Implementer</td>
+<td class="role">Technical SEO Agent</td>
+<td class="desc">Implements technical SEO: meta tags, structured data, canonical URLs, sitemap generation, and robots.txt via terminal.</td>
+<td class="meta">page-published, seo-audit, ranking-change</td>
+<td class="meta">meta-tags, sitemap.xml, schema-markup</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-008</td>
+<td class="name">Performance Tuner</td>
+<td class="role">Web Performance Optimizer</td>
+<td class="desc">Optimizes Core Web Vitals: LCP, FID, CLS. Implements lazy loading, code splitting, image optimization via terminal tools.</td>
+<td class="meta">performance-dip, lighthouse-audit, bundle-growth</td>
+<td class="meta">performance-report, optimization-patch, lighthouse-score</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-009</td>
+<td class="name">Accessibility Guard</td>
+<td class="role">WCAG Compliance Agent</td>
+<td class="desc">Ensures WCAG 2.1 AA compliance across all pages. Runs accessibility audits via terminal and generates remediation patches.</td>
+<td class="meta">accessibility-audit, new-page, complaint-received</td>
+<td class="meta">a11y-report, remediation-patch, aria-update</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-010</td>
+<td class="name">Image Pipeline</td>
+<td class="role">Image Optimization Agent</td>
+<td class="desc">Processes, optimizes, and converts images to WebP/AVIF. Manages responsive image sets and lazy loading via terminal.</td>
+<td class="meta">image-upload, format-optimization, size-threshold</td>
+<td class="meta">optimized-images, srcset-config, size-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-011</td>
+<td class="name">Portal Builder</td>
+<td class="role">Team Portal UI Developer</td>
+<td class="desc">Builds and maintains the authenticated team portal UI: dashboard, agent monitor, lead pipeline, and task views.</td>
+<td class="meta">portal-feature, ui-update, api-change</td>
+<td class="meta">portal-component, api-integration, ui-test</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-012</td>
+<td class="name">Dashboard Renderer</td>
+<td class="role">Operational Dashboard Developer</td>
+<td class="desc">Builds real-time dashboard components: KPI cards, charts, agent status grids, and audit trail views connected to the API.</td>
+<td class="meta">dashboard-update, metric-change, visualization-request</td>
+<td class="meta">dashboard-component, chart-config, data-binding</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-013</td>
+<td class="name">Form Engineer</td>
+<td class="role">Form &amp; Input Specialist</td>
+<td class="desc">Builds and validates all forms: contact, login, lead capture, search, and filter interfaces with client-side validation.</td>
+<td class="meta">form-request, validation-update, ux-improvement</td>
+<td class="meta">form-component, validation-logic, submission-handler</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-014</td>
+<td class="name">Router Engineer</td>
+<td class="role">SPA Routing Specialist</td>
+<td class="desc">Maintains the client-side SPA router: route registration, navigation guards, history management, and deep linking.</td>
+<td class="meta">route-added, navigation-bug, deep-link-request</td>
+<td class="meta">route-config, guard-logic, navigation-fix</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-015</td>
+<td class="name">API Connector</td>
+<td class="role">Frontend API Integration Agent</td>
+<td class="desc">Connects frontend components to the CK API Gateway. Manages authentication, error handling, and response caching.</td>
+<td class="meta">api-endpoint-change, integration-request, error-pattern</td>
+<td class="meta">api-client, error-handler, cache-strategy</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-016</td>
+<td class="name">Responsive Agent</td>
+<td class="role">Mobile-First Responsive Designer</td>
+<td class="desc">Ensures all pages render perfectly across devices: mobile, tablet, desktop. Uses terminal to test and fix breakpoints.</td>
+<td class="meta">responsive-test, device-report, layout-break</td>
+<td class="meta">responsive-fix, breakpoint-config, device-test-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-017</td>
+<td class="name">Security Hardener</td>
+<td class="role">Web Security Agent</td>
+<td class="desc">Implements security headers, CSP policies, CORS configuration, and XSS prevention via Cloudflare _headers and terminal.</td>
+<td class="meta">security-audit, header-update, vulnerability-detected</td>
+<td class="meta">security-headers, csp-policy, vulnerability-fix</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-018</td>
+<td class="name">Cache Strategist</td>
+<td class="role">Caching &amp; CDN Optimization</td>
+<td class="desc">Configures Cloudflare caching rules, service worker caching, and CDN optimization for maximum performance.</td>
+<td class="meta">cache-miss-spike, ttl-review, purge-needed</td>
+<td class="meta">cache-config, purge-confirmation, hit-rate-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-019</td>
+<td class="name">Analytics Injector</td>
+<td class="role">Web Analytics Implementation</td>
+<td class="desc">Implements analytics tracking: page views, conversions, events, and custom dimensions via terminal and tag management.</td>
+<td class="meta">tracking-request, event-definition, conversion-setup</td>
+<td class="meta">tracking-code, event-config, conversion-tag</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-020</td>
+<td class="name">Component Library</td>
+<td class="role">UI Component System Manager</td>
+<td class="desc">Maintains the reusable component library: buttons, cards, modals, tables, forms, navigation, and layout primitives.</td>
+<td class="meta">component-request, design-update, consistency-audit</td>
+<td class="meta">component-file, usage-docs, style-variant</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-021</td>
+<td class="name">Content Injector</td>
+<td class="role">Dynamic Content Loader</td>
+<td class="desc">Manages dynamic content loading: Airtable data rendering, API content injection, and real-time updates.</td>
+<td class="meta">content-update, data-source-change, render-request</td>
+<td class="meta">content-template, data-binding, render-logic</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-022</td>
+<td class="name">Error Handler</td>
+<td class="role">Frontend Error Management</td>
+<td class="desc">Implements error boundaries, 404 pages, network error handling, and graceful degradation patterns.</td>
+<td class="meta">error-detected, crash-report, offline-scenario</td>
+<td class="meta">error-boundary, fallback-ui, error-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-023</td>
+<td class="name">Test Runner</td>
+<td class="role">Frontend Testing Agent</td>
+<td class="desc">Writes and runs frontend tests: unit tests, integration tests, and end-to-end tests via terminal test runners.</td>
+<td class="meta">code-change, pre-deploy, regression-check</td>
+<td class="meta">test-suite, coverage-report, regression-result</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-024</td>
+<td class="name">Build Optimizer</td>
+<td class="role">Build Pipeline Engineer</td>
+<td class="desc">Optimizes the build pipeline: bundling, minification, tree-shaking, and source map generation via terminal tools.</td>
+<td class="meta">build-slow, bundle-growth, optimization-request</td>
+<td class="meta">build-config, bundle-analysis, optimization-report</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-025</td>
+<td class="name">Font Manager</td>
+<td class="role">Typography &amp; Font Optimization</td>
+<td class="desc">Manages web fonts: subsetting, preloading, fallback stacks, and font-display optimization for performance.</td>
+<td class="meta">font-change, performance-audit, design-update</td>
+<td class="meta">font-config, subset-file, preload-tag</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-026</td>
+<td class="name">Dark Mode Agent</td>
+<td class="role">Theme System Developer</td>
+<td class="desc">Implements theme switching: light/dark mode, color scheme preferences, and CSS custom property management.</td>
+<td class="meta">theme-request, preference-change, design-update</td>
+<td class="meta">theme-config, color-scheme, toggle-component</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-027</td>
+<td class="name">Print Styler</td>
+<td class="role">Print &amp; PDF Output Agent</td>
+<td class="desc">Creates print stylesheets and PDF export functionality for reports, proposals, and property summaries.</td>
+<td class="meta">print-request, pdf-export, report-format</td>
+<td class="meta">print-css, pdf-config, export-function</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-028</td>
+<td class="name">Animation Engine</td>
+<td class="role">Motion &amp; Animation Developer</td>
+<td class="desc">Implements CSS and JS animations: transitions, micro-interactions, loading states, and scroll-triggered effects.</td>
+<td class="meta">animation-request, ux-enhancement, loading-state</td>
+<td class="meta">animation-css, transition-logic, motion-config</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-029</td>
+<td class="name">Meta Generator</td>
+<td class="role">Open Graph &amp; Social Meta Agent</td>
+<td class="desc">Generates Open Graph tags, Twitter Cards, structured data, and social preview optimization for all pages.</td>
+<td class="meta">page-published, social-share-test, preview-fix</td>
+<td class="meta">og-tags, twitter-card, structured-data</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-030</td>
+<td class="name">Sitemap Builder</td>
+<td class="role">XML Sitemap Generator</td>
+<td class="desc">Generates and maintains XML sitemaps, robots.txt, and search engine submission via terminal.</td>
+<td class="meta">page-change, sitemap-schedule, crawl-issue</td>
+<td class="meta">sitemap.xml, robots.txt, submission-log</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-031</td>
+<td class="name">PWA Engineer</td>
+<td class="role">Progressive Web App Developer</td>
+<td class="desc">Implements PWA features: service worker, web app manifest, offline support, and install prompts.</td>
+<td class="meta">pwa-request, offline-support, install-prompt</td>
+<td class="meta">service-worker, manifest.json, offline-page</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">WEB-032</td>
+<td class="name">i18n Agent</td>
+<td class="role">Internationalization Specialist</td>
+<td class="desc">Implements internationalization infrastructure for future multi-language support.</td>
+<td class="meta">i18n-request, locale-addition, translation-update</td>
+<td class="meta">i18n-config, locale-file, translation-key</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-033</td>
+<td class="name">Notification Agent</td>
+<td class="role">In-App Notification Developer</td>
+<td class="desc">Builds notification systems: toast messages, alert banners, badge counts, and real-time notification feeds.</td>
+<td class="meta">notification-request, alert-config, badge-update</td>
+<td class="meta">notification-component, toast-system, alert-config</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-034</td>
+<td class="name">Table Renderer</td>
+<td class="role">Data Table &amp; Grid Developer</td>
+<td class="desc">Builds sortable, filterable, paginated data tables for leads, agents, tasks, and vendor displays.</td>
+<td class="meta">table-request, data-display, pagination-needed</td>
+<td class="meta">table-component, sort-logic, pagination-config</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-035</td>
+<td class="name">Chart Builder</td>
+<td class="role">Data Visualization Developer</td>
+<td class="desc">Creates charts and graphs: line, bar, pie, donut, and area charts for dashboard metrics and reports.</td>
+<td class="meta">chart-request, metric-visualization, report-graphic</td>
+<td class="meta">chart-component, data-adapter, visual-config</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-036</td>
+<td class="name">Search Engine</td>
+<td class="role">Site Search Implementation</td>
+<td class="desc">Implements client-side search functionality: full-text search, filtering, and result highlighting across site content.</td>
+<td class="meta">search-request, index-update, result-improvement</td>
+<td class="meta">search-index, search-component, result-template</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-037</td>
+<td class="name">Legacy Cleaner</td>
+<td class="role">Legacy Code Removal Agent</td>
+<td class="desc">Identifies and removes legacy website files, outdated dependencies, and deprecated code paths via terminal.</td>
+<td class="meta">cleanup-scheduled, legacy-detected, deprecation-notice</td>
+<td class="meta">removal-list, cleanup-report, migration-path</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-038</td>
+<td class="name">Redirect Manager</td>
+<td class="role">URL Redirect &amp; Migration Agent</td>
+<td class="desc">Manages URL redirects for subdomain consolidation, page moves, and SEO preservation during migrations.</td>
+<td class="meta">redirect-needed, page-moved, subdomain-consolidation</td>
+<td class="meta">redirect-rule, redirect-test, seo-impact-report</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-039</td>
+<td class="name">SSL Manager</td>
+<td class="role">SSL &amp; HTTPS Configuration Agent</td>
+<td class="desc">Manages SSL certificates, HTTPS enforcement, HSTS headers, and certificate renewal via Cloudflare.</td>
+<td class="meta">cert-expiring, ssl-issue, security-upgrade</td>
+<td class="meta">ssl-config, hsts-header, cert-status</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">WEB-040</td>
+<td class="name">QA Orchestrator</td>
+<td class="role">Quality Assurance Coordinator</td>
+<td class="desc">Orchestrates cross-browser testing, device testing, regression testing, and pre-deploy validation across all website changes.</td>
+<td class="meta">pre-deploy, qa-request, regression-run</td>
+<td class="meta">qa-report, browser-matrix, approval-status</td>
+<td class="tier">advanced</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-COOP">
+<div class="div-header" style="border-left:5px solid #0d9488">
+<div class="div-num">11</div>
+<div class="div-info">
+<h2>COOP — Cooperations Committee</h2>
+<p class="div-mission">CEO real-time connections, strategic networking, relationship management.</p>
+<span class="agent-count">10 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr>
+<th>ID</th><th>Name</th><th>Title</th><th>Function &amp; Description</th><th>Triggers</th><th>Outputs</th><th>Tier</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="id">COOP-001</td>
+<td class="name">Nexus Hunter</td>
+<td class="role">Strategic Contact Identifier</td>
+<td class="desc">Scans industry events, conferences, real estate associations, and business networks to identify high-value connection targets for the CEO. Prioritizes by strategic alignment with Coastal Key goals: property management firms for acquisition, technology partners for platform integration, investors for capital, and municipal leaders for workforce housing initiatives.</td>
+<td class="meta">weekly-scan, event-calendar-update, expansion-target-identified</td>
+<td class="meta">target-contact-list, contact-profile-brief, connection-priority-score</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">COOP-002</td>
+<td class="name">Bridge Builder</td>
+<td class="role">Introduction and Warm Outreach Coordinator</td>
+<td class="desc">Crafts personalized outreach messages for CEO-to-target introductions. Leverages mutual connections, shared interests, and strategic alignment to create warm introductions rather than cold contacts. Drafts emails, LinkedIn messages, and event-specific talking points.</td>
+<td class="meta">target-approved-by-ceo, mutual-connection-found, event-approaching</td>
+<td class="meta">outreach-draft, talking-points, introduction-request</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">COOP-003</td>
+<td class="name">Event Radar</td>
+<td class="role">Conference and Event Intelligence Officer</td>
+<td class="desc">Monitors industry conferences, local chamber events, real estate investor meetups, NARPM conventions, proptech summits, and municipal housing forums. Recommends which events the CEO should attend based on target contact density, speaking opportunity potential, and strategic ROI.</td>
+<td class="meta">monthly-event-scan, target-event-announced, speaking-opportunity</td>
+<td class="meta">event-calendar, attendance-recommendation, event-prep-brief</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">COOP-004</td>
+<td class="name">Alliance Scout</td>
+<td class="role">Partnership and Alliance Prospector</td>
+<td class="desc">Identifies potential strategic alliances: real estate brokerages for referral pipelines, insurance companies for bundled services, technology vendors for platform integration, and community organizations for workforce housing partnerships. Coordinates with EXC-006 (Partnership Forge) for formal deal structuring.</td>
+<td class="meta">alliance-opportunity, vendor-inquiry, referral-partner-identified</td>
+<td class="meta">alliance-scorecard, partner-brief, referral-terms-draft</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">COOP-005</td>
+<td class="name">Calendar Command</td>
+<td class="role">CEO Social Calendar Manager</td>
+<td class="desc">Manages the CEO external engagement calendar. Schedules meetings, lunches, coffee conversations, and site visits with strategic contacts. Ensures no scheduling conflicts, prepares pre-meeting briefs, and coordinates logistics. Limits CEO external time to 5-8 hours per week maximum to preserve the 1% operating model.</td>
+<td class="meta">meeting-request, event-confirmed, weekly-calendar-review</td>
+<td class="meta">calendar-block, pre-meeting-brief, logistics-confirmation</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">COOP-006</td>
+<td class="name">Presence Architect</td>
+<td class="role">CEO Public Presence and Speaking Coordinator</td>
+<td class="desc">Coordinates CEO speaking engagements, podcast appearances, panel participations, and media interviews. Prepares talking points, bio variations, and presentation materials. Positions David Hauer as the thought leader in AI-powered property management and the Florida workforce housing movement.</td>
+<td class="meta">speaking-invitation, podcast-request, media-inquiry</td>
+<td class="meta">speaking-prep-kit, talking-points, bio-variation</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">COOP-007</td>
+<td class="name">Follow Through</td>
+<td class="role">Post-Meeting Action and Relationship Nurture</td>
+<td class="desc">Executes post-meeting follow-ups within 24 hours. Sends thank-you notes, shares promised materials, creates Airtable records for new contacts, and schedules follow-up touchpoints. Maintains a 30/60/90-day nurture cadence for strategic relationships.</td>
+<td class="meta">meeting-completed, follow-up-due, nurture-touchpoint</td>
+<td class="meta">follow-up-email, airtable-contact-record, nurture-schedule</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">COOP-008</td>
+<td class="name">Network Mapper</td>
+<td class="role">Relationship Network Analyst</td>
+<td class="desc">Maps the CEO relationship network: who knows who, influence scores, mutual connections, and strategic value of each relationship. Identifies network gaps and recommends targeted introductions to fill them. Maintains the master relationship database in Airtable.</td>
+<td class="meta">new-contact-added, quarterly-network-review, gap-analysis-request</td>
+<td class="meta">network-map, influence-ranking, gap-report</td>
+<td class="tier">advanced</td>
+</tr>
+<tr>
+<td class="id">COOP-009</td>
+<td class="name">ROI Tracker</td>
+<td class="role">Relationship Return-on-Investment Analyst</td>
+<td class="desc">Tracks the business outcomes generated from CEO relationships: referrals received, deals sourced, partnerships formed, speaking invitations, media coverage, and investor introductions. Attributes revenue to specific relationships and calculates relationship ROI.</td>
+<td class="meta">deal-closed, referral-received, quarterly-roi-review</td>
+<td class="meta">relationship-roi-report, top-relationships-ranking, attribution-analysis</td>
+<td class="tier">standard</td>
+</tr>
+<tr>
+<td class="id">COOP-010</td>
+<td class="name">CEO Briefer</td>
+<td class="role">Daily CEO Intelligence and Preparation Brief</td>
+<td class="desc">Delivers the daily CEO cooperation brief: upcoming meetings with contact profiles, relationship context, strategic talking points, and action items from previous engagements. Posted to Slack #ceo-dashboard at 7:00 AM ET daily. This is the CEO preparation layer before any external interaction.</td>
+<td class="meta">daily-7am-et, meeting-in-2-hours, urgent-contact-update</td>
+<td class="meta">daily-coop-brief, contact-profile-card, meeting-prep-notes</td>
+<td class="tier">advanced</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="division" id="div-IO">
+<div class="div-header" style="border-left:5px solid #f59e0b">
+<div class="div-num">12</div>
+<div class="div-info">
+<h2>IO — Intelligence Officers</h2>
+<p class="div-mission">50-agent autonomous monitoring fleet. 5 squads x 10 officers. Real-time infrastructure, data, security, revenue, and performance surveillance.</p>
+<span class="agent-count">50 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr><th>ID</th><th>Name</th><th>Squad / Role</th><th>Function</th><th>Triggers</th><th>Outputs</th><th>Status</th></tr></thead>
+<tbody><tr>
+<td class="id">IO-A01</td>
+<td class="name">Sentinel Prime</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A02</td>
+<td class="name">Vanguard</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A03</td>
+<td class="name">Overwatch</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A04</td>
+<td class="name">Pathfinder</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A05</td>
+<td class="name">Cipher</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A06</td>
+<td class="name">Echo Base</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A07</td>
+<td class="name">Throttle</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A08</td>
+<td class="name">Pulse</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A09</td>
+<td class="name">Redline</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-A10</td>
+<td class="name">Pipeline</td>
+<td class="role">Squad ALPHA — Infrastructure Monitoring</td>
+<td class="desc">Autonomous monitoring officer. infrastructure monitoring specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B01</td>
+<td class="name">Archivist</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B02</td>
+<td class="name">Census</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B03</td>
+<td class="name">Gatekeeper</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B04</td>
+<td class="name">Mirror</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B05</td>
+<td class="name">Orphan Hunter</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B06</td>
+<td class="name">Chronicle</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B07</td>
+<td class="name">Tracer</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B08</td>
+<td class="name">Funnel</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B09</td>
+<td class="name">Freshness</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-B10</td>
+<td class="name">Vault</td>
+<td class="role">Squad BRAVO — Data Integrity</td>
+<td class="desc">Autonomous monitoring officer. data integrity specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C01</td>
+<td class="name">Watchdog</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C02</td>
+<td class="name">Bouncer</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C03</td>
+<td class="name">Shield</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C04</td>
+<td class="name">Rotator</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C05</td>
+<td class="name">Anomaly</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C06</td>
+<td class="name">Compliance</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C07</td>
+<td class="name">Auditor</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C08</td>
+<td class="name">Signature</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C09</td>
+<td class="name">Scanner</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-C10</td>
+<td class="name">Permissions</td>
+<td class="role">Squad CHARLIE — Security & Compliance</td>
+<td class="desc">Autonomous monitoring officer. security & compliance specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D01</td>
+<td class="name">Pipeline</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D02</td>
+<td class="name">Campaign</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D03</td>
+<td class="name">Content Engine</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D04</td>
+<td class="name">Price Watch</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D05</td>
+<td class="name">Escalation</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D06</td>
+<td class="name">Nurture</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D07</td>
+<td class="name">Property Intel</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D08</td>
+<td class="name">Deliverability</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D09</td>
+<td class="name">Bookings</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-D10</td>
+<td class="name">Attribution</td>
+<td class="role">Squad DELTA — Revenue Operations</td>
+<td class="desc">Autonomous monitoring officer. revenue operations specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E01</td>
+<td class="name">Token Watch</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E02</td>
+<td class="name">Airtable Quota</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E03</td>
+<td class="name">CPU Guard</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E04</td>
+<td class="name">Cache Optimizer</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E05</td>
+<td class="name">Fleet Utilization</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E06</td>
+<td class="name">Quality</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E07</td>
+<td class="name">Prompt Lab</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E08</td>
+<td class="name">Workflow Timer</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E09</td>
+<td class="name">Recovery</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">IO-E10</td>
+<td class="name">Cost Optimizer</td>
+<td class="role">Squad ECHO — Performance & Optimization</td>
+<td class="desc">Autonomous monitoring officer. performance & optimization specialist.</td>
+<td class="meta">Scan interval</td>
+<td class="meta">Findings, alerts</td>
+<td class="tier">active</td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="division" id="div-EM">
+<div class="div-header" style="border-left:5px solid #10b981">
+<div class="div-num">13</div>
+<div class="div-info">
+<h2>EM — Email AI Agents</h2>
+<p class="div-mission">20-agent email operations fleet. 4 squads: Intake, Compose, Nurture, Monitor. Full email lifecycle automation.</p>
+<span class="agent-count">20 Agents</span>
+</div>
+</div>
+<table>
+<thead><tr><th>ID</th><th>Name</th><th>Squad</th><th>Function</th><th>Triggers</th><th>Outputs</th><th>Status</th></tr></thead>
+<tbody><tr>
+<td class="id">EM-I01</td>
+<td class="name">Classifier</td>
+<td class="role">Squad INTAKE</td>
+<td class="desc">Email operations specialist — intake squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-I02</td>
+<td class="name">Priority</td>
+<td class="role">Squad INTAKE</td>
+<td class="desc">Email operations specialist — intake squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-I03</td>
+<td class="name">Extractor</td>
+<td class="role">Squad INTAKE</td>
+<td class="desc">Email operations specialist — intake squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-I04</td>
+<td class="name">Responder</td>
+<td class="role">Squad INTAKE</td>
+<td class="desc">Email operations specialist — intake squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-I05</td>
+<td class="name">Sentinel Link</td>
+<td class="role">Squad INTAKE</td>
+<td class="desc">Email operations specialist — intake squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-C01</td>
+<td class="name">Architect</td>
+<td class="role">Squad COMPOSE</td>
+<td class="desc">Email operations specialist — compose squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-C02</td>
+<td class="name">Wordsmith</td>
+<td class="role">Squad COMPOSE</td>
+<td class="desc">Email operations specialist — compose squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-C03</td>
+<td class="name">Personalizer</td>
+<td class="role">Squad COMPOSE</td>
+<td class="desc">Email operations specialist — compose squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-C04</td>
+<td class="name">Subject Line</td>
+<td class="role">Squad COMPOSE</td>
+<td class="desc">Email operations specialist — compose squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-C05</td>
+<td class="name">Compliance Check</td>
+<td class="role">Squad COMPOSE</td>
+<td class="desc">Email operations specialist — compose squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-N01</td>
+<td class="name">Sequencer</td>
+<td class="role">Squad NURTURE</td>
+<td class="desc">Email operations specialist — nurture squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-N02</td>
+<td class="name">Follow-Up</td>
+<td class="role">Squad NURTURE</td>
+<td class="desc">Email operations specialist — nurture squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-N03</td>
+<td class="name">Re-Engage</td>
+<td class="role">Squad NURTURE</td>
+<td class="desc">Email operations specialist — nurture squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-N04</td>
+<td class="name">Milestone</td>
+<td class="role">Squad NURTURE</td>
+<td class="desc">Email operations specialist — nurture squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-N05</td>
+<td class="name">Scheduler</td>
+<td class="role">Squad NURTURE</td>
+<td class="desc">Email operations specialist — nurture squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-M01</td>
+<td class="name">Deliverability</td>
+<td class="role">Squad MONITOR</td>
+<td class="desc">Email operations specialist — monitor squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-M02</td>
+<td class="name">Bounce Handler</td>
+<td class="role">Squad MONITOR</td>
+<td class="desc">Email operations specialist — monitor squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-M03</td>
+<td class="name">Spam Guard</td>
+<td class="role">Squad MONITOR</td>
+<td class="desc">Email operations specialist — monitor squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-M04</td>
+<td class="name">Analytics</td>
+<td class="role">Squad MONITOR</td>
+<td class="desc">Email operations specialist — monitor squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr><tr>
+<td class="id">EM-M05</td>
+<td class="name">Unsubscribe</td>
+<td class="role">Squad MONITOR</td>
+<td class="desc">Email operations specialist — monitor squad.</td>
+<td class="meta">Email events</td>
+<td class="meta">Email outputs</td>
+<td class="tier">active</td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="division" id="div-TRADER">
+<div class="div-header" style="border-left:5px solid #eab308">
+<div class="div-num">14</div>
+<div class="div-info">
+<h2>TRADER — AI Trading Intelligence</h2>
+<p class="div-mission">Sovereign-level trading agent. Direct CEO report. Capital calls, market intelligence, portfolio management.</p>
+<span class="agent-count">1 Agent</span>
+</div>
+</div>
+<table>
+<thead><tr><th>ID</th><th>Name</th><th>Title</th><th>Function</th><th>Capabilities</th><th>KPIs</th><th>Tier</th></tr></thead>
+<tbody><tr>
+<td class="id">FIN-TRADER-001</td>
+<td class="name">Apex Trader</td>
+<td class="role">AI Trading Intelligence Officer</td>
+<td class="desc">Sovereign-level AI trading agent managing Coastal Key investment portfolio. Monitors live market data, generates trading signals using technical and fundamental analysis, issues capital call prompts to the CEO, and tracks portfolio ROI in real-time. Operates with Ferrari-standard precision across REITs, PropTech, AI/Tech, and ETF positions.</td>
+<td class="meta">Real-time market data ingestion and analysis, Technical analysis: RSI, MACD, Bollinger Bands, moving averages, Fundamental screening: P/E, dividend yield, earnings growth</td>
+<td class="meta">portfolio-roi, win-rate, sharpe-ratio, max-drawdown, capital-deployed</td>
+<td class="tier">sovereign</td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="footer">
+<p><strong>Coastal Key Enterprise</strong> — Sovereign Governance Standard</p>
+<p>394 Autonomous AI Agents | 14 Divisions | Zero Preventable Incidents</p>
+<p>Generated 2026-04-16T12:23:14.378Z | coastalkey-pm.com</p>
+</div>
+
+</body>
+</html>

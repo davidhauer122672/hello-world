@@ -1,0 +1,22 @@
+{
+  "generated": "2026-04-20T17:47:17.038Z",
+  "count": 4,
+  "specs": [
+    {
+      "id": "ck-avatar-01-exec-comms",
+      "json": "01-executive-communications-avatar.json"
+    },
+    {
+      "id": "ck-avatar-02-exec-admin",
+      "json": "02-executive-administrator-avatar.json"
+    },
+    {
+      "id": "ck-wallpaper-03-treasure-coast-dawn",
+      "json": "03-treasure-coast-dawn-wallpaper.json"
+    },
+    {
+      "id": "ck-avatar-04-ceo-self",
+      "json": "04-ceo-avatar.json"
+    }
+  ]
+}

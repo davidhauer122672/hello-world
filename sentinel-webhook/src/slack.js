@@ -1,6 +1,9 @@
 /**
  * Slack — Posts Sentinel notifications to the sales channel.
  * Two paths: engaged leads (green) and failed calls (red/QA review).
+ *
+ * Uses rich Block Kit formatting with intelligent channel routing.
+ * Supports both Bot Token API (preferred) and webhook (fallback).
  */
 
 const MISSED_CALLS_TABLE_ID = 'tblWW25r6GmsQe3mQ';

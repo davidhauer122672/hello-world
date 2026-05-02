@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inspection Confirmed | Coastal Key</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">Coastal Key</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="tel:+17722470982" style="font-weight:600">(772) 247-0982</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="success-page">
+    <div class="check-icon">&#10003;</div>
+    <h1>Inspection Confirmed</h1>
+    <p>Your payment was successful. A confirmation email with your inspection details has been sent.</p>
+
+    <div class="success-details" id="successDetails" style="display: none;">
+      <div class="detail-row">
+        <span class="detail-label">Service</span>
+        <span id="detailService">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Date</span>
+        <span id="detailDate">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Time</span>
+        <span id="detailTime">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Email</span>
+        <span id="detailEmail">-</span>
+      </div>
+    </div>
+
+    <a href="/" class="btn btn-primary">Back to Coastal Key</a>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Coastal Key Treasure Coast Asset Management. All rights reserved.</p>
+  </footer>
+
+  <script>
+    (async function () {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+      if (!sessionId) return;
+      try {
+        const res = await fetch(`/api/payments/session-status?session_id=${encodeURIComponent(sessionId)}`);
+        const data = await res.json();
+        if (data.appointment) {
+          const a = data.appointment;
+          const labels = {
+            consultation: 'Baseline Assessment',
+            followup: 'Follow-up Check',
+            premium: 'Premium Systems Audit',
+          };
+          document.getElementById('detailService').textContent = labels[a.service] || a.service;
+          document.getElementById('detailDate').textContent = a.date;
+          document.getElementById('detailTime').textContent = a.timeSlot;
+          document.getElementById('detailEmail').textContent = data.customerEmail || a.email;
+          document.getElementById('successDetails').style.display = 'block';
+        }
+      } catch (err) {
+        console.error('Failed to load session details:', err);
+      }
+    })();
+  </script>
+</body>
+</html>

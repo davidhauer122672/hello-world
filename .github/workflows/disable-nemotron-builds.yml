@@ -1,0 +1,45 @@
+name: Disable Nemotron Workers Builds
+
+# One-time workflow: triggers when this file is pushed to main
+# Disables the Cloudflare Workers Builds Git integration for ck-nemotron-worker
+# which causes false-negative 500 check runs on every commit.
+# GitHub Actions CI/CD (deploy.yml) is the authoritative deploy system.
+# Re-fire 2026-04-30 — retry programmatic disable in secrets-having env (Coastal Key AI CEO directive).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/disable-nemotron-builds.yml'
+  workflow_dispatch:
+
+jobs:
+  disable-builds:
+    name: Disable Workers Builds Integration
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install wrangler
+        run: npm install -g wrangler@3
+
+      - name: Disable Workers Builds via API
+        run: bash scripts/disable-nemotron-builds.sh
+
+      - name: Verify — list current check status
+        run: |
+          echo "Workers Builds disable attempted."
+          echo "If the Cloudflare API methods above returned 404, the Git integration"
+          echo "must be disabled manually in the Cloudflare dashboard:"
+          echo ""
+          echo "  Cloudflare Dashboard > Workers & Pages > ck-nemotron-worker > Settings > Builds > Disconnect"
+          echo ""
+          echo "The code-level fix (removing [build] from wrangler.toml) is already deployed."
+          echo "GitHub Actions CI/CD (deploy.yml) is the sole authoritative deploy system."

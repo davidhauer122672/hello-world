@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Inspection | Coastal Key</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">Coastal Key</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/consultation.html">Pricing</a></li>
+        <li><a href="tel:+17722470982" style="font-weight:600">(772) 247-0982</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="booking-page">
+    <div class="container">
+      <h1>Schedule Your Inspection</h1>
+      <div class="booking-layout">
+        <div class="calendar-wrapper">
+          <div class="calendar-header">
+            <button id="prevMonth">&larr;</button>
+            <h2 id="monthYear"></h2>
+            <button id="nextMonth">&rarr;</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+          <div class="time-slots" id="timeSlotsSection" style="display: none;">
+            <h3>Available Times for <span id="selectedDateLabel"></span></h3>
+            <div class="slots-grid" id="slotsGrid"></div>
+          </div>
+        </div>
+
+        <div class="booking-form-wrapper">
+          <h2>Property Details</h2>
+          <div id="formMessage" class="form-message" style="display: none;"></div>
+          <form id="bookingForm">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" required placeholder="David Hauer">
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+              <label for="service">Inspection Type</label>
+              <select id="service" name="service" required>
+                <option value="">Select inspection type</option>
+                <option value="consultation">Baseline Assessment — $50</option>
+                <option value="followup">Follow-up Check — $30</option>
+                <option value="premium">Premium Systems Audit — $100</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Selected Date</label>
+              <div id="selectedDateDisplay" class="selected-info">No date selected</div>
+            </div>
+            <div class="form-group">
+              <label>Selected Time</label>
+              <div id="selectedTimeDisplay" class="selected-info">No time selected</div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn" style="width:100%" disabled>
+              Schedule &amp; Pay
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Coastal Key Treasure Coast Asset Management. All rights reserved.</p>
+  </footer>
+
+  <script src="/js/calendar.js"></script>
+  <script src="/js/booking.js"></script>
+</body>
+</html>

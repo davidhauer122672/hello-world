@@ -1,15 +1,5 @@
-/**
- * Main Application Shell
- *
- * Renders the top-level layout and registers all routes.
- * Public pages get the marketing layout.
- * Portal pages get the dashboard layout with sidebar.
- */
-
 import { registerRoute, navigate } from '../utils/router.js';
 import { isAuthenticated, login, logout, apiCall } from '../utils/auth.js';
-
-// ── Route Registration ──────────────────────────────────────────────────────
 
 export function renderApp() {
   document.getElementById('app').innerHTML = `
@@ -34,8 +24,6 @@ export function renderApp() {
   registerRoute('/404', renderNotFound);
 }
 
-// ── Shared Header ───────────────────────────────────────────────────────────
-
 function setPublicLayout(main, title, content) {
   document.getElementById('site-header').innerHTML = `
     <nav class="public-nav">
@@ -44,11 +32,11 @@ function setPublicLayout(main, title, content) {
         <span class="logo-text">Coastal Key</span>
       </a>
       <div class="nav-links">
+        <a href="/about" data-nav="/about">Why Coastal Key</a>
         <a href="/services" data-nav="/services">Services</a>
-        <a href="/areas" data-nav="/areas">Areas</a>
-        <a href="/about" data-nav="/about">About</a>
-        <a href="/contact" data-nav="/contact">Contact</a>
-        <a href="/portal" class="nav-portal-btn">Team Portal</a>
+        <a href="/areas" data-nav="/areas">Markets</a>
+        <a href="/contact" data-nav="/contact">Investors</a>
+        <a href="/contact" class="nav-portal-btn">Request Assessment</a>
       </div>
       <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('open')">
         <span></span><span></span><span></span>
@@ -58,18 +46,18 @@ function setPublicLayout(main, title, content) {
   document.getElementById('site-footer').innerHTML = `
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="footer-logo"><span class="logo-mark">CK</span> Coastal Key Property Management</div>
-        <p>Luxury property management on Florida's Treasure Coast. AI-powered operations delivering white-glove service.</p>
+        <div class="footer-logo"><span class="logo-mark">CK</span> Coastal Key</div>
+        <p>Institutional-grade property management on Florida's Treasure Coast. Fiduciary discipline. Operational precision. Full accountability.</p>
       </div>
       <div class="footer-col">
         <h4>Services</h4>
-        <a href="/services">Property Management</a>
+        <a href="/services">Asset Management</a>
         <a href="/services">Concierge Services</a>
         <a href="/services">Investor Relations</a>
-        <a href="/services">STR Management</a>
+        <a href="/services">STR Optimization</a>
       </div>
       <div class="footer-col">
-        <h4>Service Areas</h4>
+        <h4>Markets</h4>
         <a href="/areas">Vero Beach</a>
         <a href="/areas">Stuart</a>
         <a href="/areas">Jupiter</a>
@@ -77,8 +65,8 @@ function setPublicLayout(main, title, content) {
       </div>
       <div class="footer-col">
         <h4>Company</h4>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact</a>
+        <a href="/about">Why Coastal Key</a>
+        <a href="/contact">Request Assessment</a>
         <a href="/portal">Team Portal</a>
       </div>
     </div>
@@ -126,57 +114,78 @@ function setPortalLayout(main, title, content) {
   });
 }
 
-// ── Public Pages ────────────────────────────────────────────────────────────
-
 function renderHome(main) {
-  setPublicLayout(main, 'Luxury Property Management', `
+  setPublicLayout(main, 'Institutional-Grade Asset Protection', `
     <section class="hero">
       <div class="hero-content">
-        <div class="hero-badge">AI-Powered Property Management</div>
-        <h1>Your Property. <br>Our Obsession.</h1>
-        <p class="hero-sub">Coastal Key delivers white-glove property management across Florida's Treasure Coast. 290 AI agents working 24/7 so your investment never sleeps.</p>
+        <div class="hero-badge">Premium Coastal Property Management</div>
+        <h1>Institutional-Grade<br>Asset Protection.</h1>
+        <p class="hero-sub">Coastal Key manages high-value residential properties with the discipline of a fiduciary, the precision of an operator, and the accountability of a public company.</p>
         <div class="hero-actions">
-          <a href="/contact" class="btn btn-primary">Get a Proposal</a>
-          <a href="/services" class="btn btn-secondary">Our Services</a>
+          <a href="/contact" class="btn btn-primary">Request a Portfolio Assessment</a>
+          <a href="/about" class="btn btn-secondary">Our Story</a>
         </div>
         <div class="hero-stats">
-          <div class="stat"><span class="stat-num">290</span><span class="stat-label">AI Agents Active</span></div>
-          <div class="stat"><span class="stat-num">10</span><span class="stat-label">Service Zones</span></div>
-          <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Operations</span></div>
+          <div class="stat"><span class="stat-num">290</span><span class="stat-label">AI Agents</span></div>
+          <div class="stat"><span class="stat-num">10</span><span class="stat-label">Markets</span></div>
+          <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Coverage</span></div>
           <div class="stat"><span class="stat-num">9</span><span class="stat-label">Divisions</span></div>
         </div>
       </div>
     </section>
 
     <section class="features">
-      <h2>Enterprise-Grade Operations. Boutique-Level Care.</h2>
+      <div class="section-label">Capabilities</div>
+      <h2 class="section-title">The Operating System Behind Your Investment</h2>
+      <p class="section-subtitle">Nine specialized divisions. 290 autonomous agents. One mandate: protect and grow your asset value.</p>
       <div class="feature-grid">
         <div class="feature-card">
-          <div class="feature-icon" style="background:#ef4444">S</div>
-          <h3>Sentinel AI Sales</h3>
-          <p>40 AI agents handle inbound calls, qualify leads, and generate personalized battle plans — converting prospects into clients around the clock.</p>
+          <div class="feature-icon" style="background:#0c2340">F</div>
+          <h3>Fiduciary Operations</h3>
+          <p>Maintenance, inspections, turnovers, and emergency response orchestrated by 45 operations agents with institutional-grade reporting.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon" style="background:#f59e0b">O</div>
-          <h3>Operations Fleet</h3>
-          <p>45 agents manage maintenance, inspections, turnovers, concierge, and emergency response for every managed property.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon" style="background:#10b981">I</div>
+          <div class="feature-icon" style="background:#153a5c">I</div>
           <h3>Market Intelligence</h3>
-          <p>30 agents scan market data, competitor moves, and economic indicators to keep your investment strategy ahead of the curve.</p>
+          <p>30 intelligence agents continuously scan market data, competitor positioning, and economic indicators across every Treasure Coast submarket.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon" style="background:#8b5cf6">M</div>
-          <h3>Marketing Engine</h3>
-          <p>40 agents create content, optimize SEO, manage social media, and run ad campaigns that keep your listings fully booked.</p>
+          <div class="feature-icon" style="background:#a8893d">R</div>
+          <h3>Revenue Optimization</h3>
+          <p>Dynamic pricing, occupancy management, and financial modeling calibrated by 25 finance agents to maximize risk-adjusted returns.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#c9a84c">V</div>
+          <h3>Vendor Governance</h3>
+          <p>25 agents enforce compliance, monitor contract performance, and manage vendor relationships with the rigor of institutional procurement.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="value-strip">
+      <div class="section-label" style="color:#c9a84c">The Coastal Key Difference</div>
+      <h2 class="section-title">Built for Owners Who Expect More</h2>
+      <p class="section-subtitle">Traditional property management was designed for a different era. We built the replacement.</p>
+      <div class="value-grid">
+        <div class="value-item">
+          <h4>Discipline of a Fiduciary</h4>
+          <p>Every decision measured against your long-term asset value. No shortcuts. No conflicts of interest. Full transparency.</p>
+        </div>
+        <div class="value-item">
+          <h4>Precision of an Operator</h4>
+          <p>AI-driven operations eliminate the gaps between inspection, action, and reporting that plague traditional managers.</p>
+        </div>
+        <div class="value-item">
+          <h4>Accountability of a Public Company</h4>
+          <p>Real-time dashboards, audit trails, and performance metrics. Your property managed with the governance standards of a public REIT.</p>
         </div>
       </div>
     </section>
 
     <section class="cta-section">
-      <h2>Ready to Experience the Difference?</h2>
-      <p>Join the property owners on the Treasure Coast who've upgraded to AI-powered management.</p>
+      <div class="section-label">Get Started</div>
+      <h2 class="section-title">Request a Portfolio Assessment</h2>
+      <p class="section-subtitle">Discover how institutional-grade management can transform your Treasure Coast property investment.</p>
       <a href="/contact" class="btn btn-primary btn-lg">Schedule a Consultation</a>
     </section>
   `);
@@ -184,14 +193,14 @@ function renderHome(main) {
 
 function renderServices(main) {
   setPublicLayout(main, 'Services', `
-    <section class="page-header"><h1>Our Services</h1><p>Comprehensive property management powered by AI precision and human care.</p></section>
+    <section class="page-header"><h1>Services</h1><p>Institutional-grade property management across every dimension of ownership.</p></section>
     <section class="services-grid">
-      <div class="service-card"><h3>Full-Service Property Management</h3><p>End-to-end management: tenant screening, maintenance coordination, financial reporting, and owner communications — all AI-optimized.</p></div>
-      <div class="service-card"><h3>Short-Term Rental Management</h3><p>Dynamic pricing, multi-platform listing optimization, guest communications, turnover coordination, and revenue maximization.</p></div>
-      <div class="service-card"><h3>Luxury Concierge Services</h3><p>White-glove concierge for high-end properties: personal shopping, travel arrangements, event planning, and guest experiences.</p></div>
-      <div class="service-card"><h3>Investor Relations</h3><p>Portfolio analysis, ROI reporting, market intelligence, and acquisition opportunity identification for serious investors.</p></div>
-      <div class="service-card"><h3>Maintenance & Inspections</h3><p>Preventive maintenance programs, quarterly inspections, vendor management, and emergency response coordination.</p></div>
-      <div class="service-card"><h3>Hurricane Preparedness</h3><p>Storm preparation, property securing, post-storm inspections, insurance claim support, and recovery coordination.</p></div>
+      <div class="service-card"><h3>Full-Service Asset Management</h3><p>End-to-end oversight of your property as a financial asset: tenant screening, maintenance orchestration, financial reporting, and owner communications — governed by fiduciary standards.</p></div>
+      <div class="service-card"><h3>Short-Term Rental Optimization</h3><p>Dynamic pricing algorithms, multi-platform distribution, guest experience management, and turnover coordination calibrated for maximum revenue per available night.</p></div>
+      <div class="service-card"><h3>Luxury Concierge Services</h3><p>White-glove concierge for high-value properties: personal arrangements, travel coordination, event planning, and bespoke guest experiences that protect your brand.</p></div>
+      <div class="service-card"><h3>Investor Relations & Reporting</h3><p>Portfolio analytics, risk-adjusted return modeling, market intelligence briefings, and acquisition opportunity identification for institutional and private investors.</p></div>
+      <div class="service-card"><h3>Preventive Maintenance Programs</h3><p>Systematic inspection protocols, predictive maintenance scheduling, vendor performance monitoring, and 24/7 emergency response coordination.</p></div>
+      <div class="service-card"><h3>Hurricane & Storm Preparedness</h3><p>Comprehensive storm protocols: property hardening, evacuation coordination, post-storm assessment, insurance claim management, and recovery oversight.</p></div>
     </section>
   `);
 }
@@ -209,8 +218,8 @@ function renderAreas(main) {
     { name: 'Jupiter', county: 'Palm Beach', desc: 'Celebrity haven with world-class golf, dining, and waterfront estates.' },
     { name: 'North Palm Beach', county: 'Palm Beach', desc: 'Southern gateway to the Treasure Coast with upscale communities.' },
   ];
-  setPublicLayout(main, 'Service Areas', `
-    <section class="page-header"><h1>Service Areas</h1><p>Serving Florida's Treasure Coast — from Vero Beach to Jupiter.</p></section>
+  setPublicLayout(main, 'Markets', `
+    <section class="page-header"><h1>Markets</h1><p>Serving Florida's Treasure Coast — from Vero Beach to Jupiter.</p></section>
     <section class="areas-grid">
       ${zones.map(z => `
         <div class="area-card">
@@ -224,23 +233,24 @@ function renderAreas(main) {
 }
 
 function renderAbout(main) {
-  setPublicLayout(main, 'About', `
-    <section class="page-header"><h1>About Coastal Key</h1><p>Technology meets hospitality on the Treasure Coast.</p></section>
+  setPublicLayout(main, 'Why Coastal Key', `
+    <section class="page-header"><h1>Why Coastal Key</h1><p>The discipline of a fiduciary. The precision of an operator. The accountability of a public company.</p></section>
     <section class="about-content">
       <div class="about-text">
-        <h2>Built for the Future of Property Management</h2>
-        <p>Coastal Key Property Management operates 250 AI agents across 8 specialized divisions — Executive, Sales, Operations, Intelligence, Marketing, Finance, Vendor Management, and Technology. Our AI fleet handles everything from inbound sales calls to hurricane preparation, from investor reporting to social media content creation.</p>
-        <p>But technology is only as good as the human vision behind it. Coastal Key was founded on a simple principle: property owners on the Treasure Coast deserve enterprise-grade operations with boutique-level personal care. Our AI systems amplify human expertise — they don't replace it.</p>
-        <h3>Our Divisions</h3>
+        <h2>Property Management, Rebuilt From First Principles</h2>
+        <p>Coastal Key Property Management deploys 290 autonomous AI agents across 9 specialized divisions — Executive, Sentinel Sales, Operations, Intelligence, Marketing, Finance, Vendor Management, Technology, and Web Development. Every property under our management benefits from institutional-grade oversight that was previously available only to large-scale REITs and fund managers.</p>
+        <p>We founded Coastal Key on a conviction: high-value property owners on the Treasure Coast deserve the same operational rigor, transparency, and accountability that institutional investors demand. Our AI systems don't replace human judgment — they eliminate the operational gaps where value is destroyed.</p>
+        <h3>Organizational Structure</h3>
         <ul class="division-list">
-          <li><strong>Executive (20 agents)</strong> — Strategy, governance, risk management</li>
-          <li><strong>Sentinel Sales (40 agents)</strong> — Lead generation, qualification, conversion</li>
-          <li><strong>Operations (45 agents)</strong> — Property management, maintenance, concierge</li>
-          <li><strong>Intelligence (30 agents)</strong> — Market research, predictive analytics</li>
-          <li><strong>Marketing (40 agents)</strong> — Content, SEO, advertising, social media</li>
-          <li><strong>Finance (25 agents)</strong> — Revenue tracking, investor reporting, budgets</li>
-          <li><strong>Vendor Management (25 agents)</strong> — Compliance, contracts, quality</li>
-          <li><strong>Technology (25 agents)</strong> — Platform ops, integrations, security</li>
+          <li><strong>Executive Division (20 agents)</strong> — Strategic governance, risk management, portfolio oversight</li>
+          <li><strong>Sentinel Sales Division (40 agents)</strong> — Lead origination, qualification, conversion pipeline</li>
+          <li><strong>Operations Division (45 agents)</strong> — Property operations, maintenance, concierge, emergency response</li>
+          <li><strong>Intelligence Division (30 agents)</strong> — Market research, predictive analytics, competitive intelligence</li>
+          <li><strong>Marketing Division (40 agents)</strong> — Brand, content, SEO, advertising, social media</li>
+          <li><strong>Finance Division (25 agents)</strong> — Revenue optimization, investor reporting, budget governance</li>
+          <li><strong>Vendor Management Division (25 agents)</strong> — Procurement, compliance, contract performance</li>
+          <li><strong>Technology Division (25 agents)</strong> — Platform operations, integrations, security</li>
+          <li><strong>Web Development Division (40 agents)</strong> — Digital presence, performance, user experience</li>
         </ul>
       </div>
     </section>
@@ -248,8 +258,8 @@ function renderAbout(main) {
 }
 
 function renderContact(main) {
-  setPublicLayout(main, 'Contact', `
-    <section class="page-header"><h1>Get in Touch</h1><p>Let's discuss how Coastal Key can manage your Treasure Coast property.</p></section>
+  setPublicLayout(main, 'Request Assessment', `
+    <section class="page-header"><h1>Request a Portfolio Assessment</h1><p>Discover institutional-grade management for your Treasure Coast investment.</p></section>
     <section class="contact-section">
       <form class="contact-form" id="contact-form">
         <div class="form-row">
@@ -283,7 +293,6 @@ function renderContact(main) {
     status.textContent = '';
     try {
       const data = Object.fromEntries(new FormData(form));
-      // Direct Airtable write for public form (no auth required)
       const res = await fetch('/v1/leads/public', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -311,8 +320,6 @@ function renderContact(main) {
     btn.textContent = 'Send Inquiry';
   });
 }
-
-// ── Portal Pages ────────────────────────────────────────────────────────────
 
 function renderPortalGate(main) {
   if (isAuthenticated()) {
@@ -344,17 +351,16 @@ function renderPortalGate(main) {
 }
 
 function renderPortalDashboard(main) {
-  // ── Static fallback data ──────────────────────────────────────────────────
   const fallbackDivisions = [
-    { code: 'EXC', name: 'Executive',       agents: 20, color: '#6366f1' },
-    { code: 'SEN', name: 'Sentinel Sales',  agents: 40, color: '#ef4444' },
-    { code: 'OPS', name: 'Operations',       agents: 45, color: '#f59e0b' },
-    { code: 'INT', name: 'Intelligence',     agents: 30, color: '#10b981' },
-    { code: 'MKT', name: 'Marketing',        agents: 40, color: '#8b5cf6' },
-    { code: 'FIN', name: 'Finance',          agents: 25, color: '#06b6d4' },
-    { code: 'VEN', name: 'Vendor Mgmt',      agents: 25, color: '#f97316' },
-    { code: 'TEC', name: 'Technology',        agents: 25, color: '#14b8a6' },
-    { code: 'WEB', name: 'Web Development',    agents: 40, color: '#0ea5e9' },
+    { code: 'EXC', name: 'Executive',       agents: 20, color: '#0c2340' },
+    { code: 'SEN', name: 'Sentinel Sales',  agents: 40, color: '#153a5c' },
+    { code: 'OPS', name: 'Operations',       agents: 45, color: '#a8893d' },
+    { code: 'INT', name: 'Intelligence',     agents: 30, color: '#c9a84c' },
+    { code: 'MKT', name: 'Marketing',        agents: 40, color: '#0c2340' },
+    { code: 'FIN', name: 'Finance',          agents: 25, color: '#153a5c' },
+    { code: 'VEN', name: 'Vendor Mgmt',      agents: 25, color: '#a8893d' },
+    { code: 'TEC', name: 'Technology',        agents: 25, color: '#c9a84c' },
+    { code: 'WEB', name: 'Web Development',  agents: 40, color: '#0c2340' },
   ];
 
   const fallbackStats = {
@@ -372,51 +378,37 @@ function renderPortalDashboard(main) {
     { ts: '22 min ago', text: 'FIN-9 processed owner distribution — Jupiter portfolio' },
   ];
 
-  // ── Build the layout ──────────────────────────────────────────────────────
   setPortalLayout(main, 'Dashboard', `
     <h1 class="portal-title">Operational Dashboard</h1>
-
-    <!-- Stat Cards -->
     <div class="portal-stats" id="dash-stats">
       <div class="stat-card"><span class="stat-num" id="stat-total">290</span><span class="stat-label">Total Agents</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-active">--</span><span class="stat-label">Active</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-divisions">9</span><span class="stat-label">Divisions</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-uptime">99.9%</span><span class="stat-label">Uptime</span></div>
     </div>
-
-    <!-- Division Breakdown -->
     <div class="portal-card" id="dash-divisions">
       <h3>Division Breakdown</h3>
-      <div class="card-body">
-        <div class="division-grid" id="division-grid"></div>
-      </div>
+      <div class="card-body"><div class="division-grid" id="division-grid"></div></div>
     </div>
-
     <div class="portal-grid">
-      <!-- Recent Activity -->
       <div class="portal-card" id="dash-audit">
         <h3>Recent Activity</h3>
-        <div class="card-body">
-          <ul class="activity-feed" id="activity-feed"></ul>
-        </div>
+        <div class="card-body"><ul class="activity-feed" id="activity-feed"></ul></div>
       </div>
-
-      <!-- Owner Quick Actions -->
       <div class="portal-card" id="dash-owner-actions">
         <h3>Owner Quick Actions</h3>
         <div class="card-body">
           <div class="owner-actions-grid">
             <button class="btn btn-primary owner-action-btn" data-action="properties">View Properties</button>
-            <button class="btn btn-secondary owner-action-btn" data-action="maintenance">Submit Maintenance Request</button>
-            <button class="btn btn-secondary owner-action-btn" data-action="financials">View Financials</button>
-            <button class="btn btn-secondary owner-action-btn" data-action="contact">Contact Team</button>
+            <button class="btn btn-secondary dark owner-action-btn" data-action="maintenance">Submit Maintenance Request</button>
+            <button class="btn btn-secondary dark owner-action-btn" data-action="financials">View Financials</button>
+            <button class="btn btn-secondary dark owner-action-btn" data-action="contact">Contact Team</button>
           </div>
         </div>
       </div>
     </div>
   `);
 
-  // ── Populate with fallback data immediately ───────────────────────────────
   function applyStats(stats) {
     const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
     el('stat-total', stats.totalAgents);
@@ -445,12 +437,10 @@ function renderPortalDashboard(main) {
     `).join('');
   }
 
-  // Render static fallback right away so the dashboard is never empty
   applyStats(fallbackStats);
   applyDivisions(fallbackDivisions);
   applyActivity(fallbackActivity);
 
-  // ── Wire up owner quick action buttons ────────────────────────────────────
   document.querySelectorAll('.owner-action-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.getAttribute('data-action');
@@ -461,7 +451,6 @@ function renderPortalDashboard(main) {
     });
   });
 
-  // ── Fetch live data from API and overwrite fallback when available ────────
   (async () => {
     try {
       const data = await apiCall('/v1/dashboard');
@@ -481,9 +470,7 @@ function renderPortalDashboard(main) {
           applyActivity(data.activity);
         }
       }
-    } catch (_) {
-      // Fallback data is already rendered — nothing to do
-    }
+    } catch (_) {}
   })();
 }
 
@@ -505,7 +492,7 @@ function renderPortalLeads(main) {
     <div class="portal-card"><div class="card-body"><p>Connected to Airtable Leads table. Use the API to create, enrich, and manage leads.</p>
     <div class="portal-actions-bar">
       <button class="btn btn-primary" onclick="alert('Create lead via /v1/leads POST')">New Lead</button>
-      <button class="btn btn-secondary" onclick="alert('Run SCAA-1 via /v1/workflows/scaa1')">Generate Battle Plan</button>
+      <button class="btn btn-secondary dark" onclick="alert('Run SCAA-1 via /v1/workflows/scaa1')">Generate Battle Plan</button>
     </div></div></div>
   `);
 }
