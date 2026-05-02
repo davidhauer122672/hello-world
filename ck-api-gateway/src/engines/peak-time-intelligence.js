@@ -326,6 +326,104 @@ export function getDivisionSchedule(divisionCode, options = {}) {
   });
 }
 
+// ── Contact Windows, Seasonal, and Blackout Data ─────────────────────────
+
+export const CONTACT_WINDOWS = {
+  voice: { days: [1, 2, 3, 4, 5], startHour: 9, endHour: 17, label: 'Mon-Fri 9AM-5PM ET' },
+  email: { days: [1, 2, 3, 4, 5], startHour: 7, endHour: 20, label: 'Mon-Fri 7AM-8PM ET' },
+  sms:   { days: [1, 2, 3, 4, 5], startHour: 9, endHour: 18, label: 'Mon-Fri 9AM-6PM ET' },
+  social: { days: [0, 1, 2, 3, 4, 5, 6], startHour: 8, endHour: 21, label: 'Daily 8AM-9PM ET' },
+};
+
+export const SEASONAL_ADJUSTMENTS = {
+  snowbird: { months: [11, 0, 1, 2, 3], multiplier: 1.4, label: 'Snowbird Season (Nov-Mar)' },
+  summer:   { months: [5, 6, 7], multiplier: 0.7, label: 'Summer Low (Jun-Aug)' },
+};
+
+export const BLACKOUT_DATES = [
+  { date: '01-01', name: "New Year's Day" },
+  { date: '01-20', name: 'Martin Luther King Jr. Day' },
+  { date: '02-17', name: "Presidents' Day" },
+  { date: '05-26', name: 'Memorial Day' },
+  { date: '07-04', name: 'Independence Day' },
+  { date: '09-01', name: 'Labor Day' },
+  { date: '10-13', name: 'Columbus Day' },
+  { date: '11-11', name: 'Veterans Day' },
+  { date: '11-27', name: 'Thanksgiving' },
+  { date: '12-25', name: 'Christmas Day' },
+  { date: '12-31', name: "New Year's Eve" },
+];
+
+export function getOptimalTime(channel, dateStr) {
+  const window = CONTACT_WINDOWS[channel];
+  if (!window) return { channel, available: false, reason: 'Unknown channel' };
+
+  const date = new Date(dateStr + 'T12:00:00Z');
+  const mmdd = dateStr.slice(5);
+  const blackout = BLACKOUT_DATES.find(b => b.date === mmdd);
+  if (blackout) {
+    return { channel, date: dateStr, blackout: true, holiday: blackout.name };
+  }
+
+  const dayOfWeek = date.getUTCDay();
+  if (!window.days.includes(dayOfWeek)) {
+    return { channel, date: dateStr, available: false, reason: `${channel} not available on ${DAY_NAMES[dayOfWeek]}` };
+  }
+
+  const month = date.getUTCMonth();
+  let seasonMultiplier = 1.0;
+  let currentSeason = 'standard';
+  if (SEASONAL_ADJUSTMENTS.snowbird.months.includes(month)) {
+    seasonMultiplier = SEASONAL_ADJUSTMENTS.snowbird.multiplier;
+    currentSeason = 'snowbird';
+  } else if (SEASONAL_ADJUSTMENTS.summer.months.includes(month)) {
+    seasonMultiplier = SEASONAL_ADJUSTMENTS.summer.multiplier;
+    currentSeason = 'summer';
+  }
+
+  const midHour = Math.floor((window.startHour + window.endHour) / 2);
+  const utcTime = easternToUTC(date, midHour);
+
+  return {
+    channel,
+    date: dateStr,
+    dayOfWeek: DAY_NAMES[dayOfWeek],
+    window: `${window.startHour}:00-${window.endHour}:00 ET`,
+    optimalHour: midHour,
+    utcTimestamp: utcTime.toISOString(),
+    timezone: getTimezoneLabel(date),
+    engagementScore: parseFloat((0.75 * seasonMultiplier).toFixed(2)),
+    season: currentSeason,
+    seasonMultiplier,
+    recommendation: `Best ${channel} window: ${midHour}:00 ET on ${DAY_NAMES[dayOfWeek]}`,
+  };
+}
+
+export function getPeakTimeDashboard() {
+  const now = new Date();
+  const month = now.getUTCMonth();
+  let currentSeason = 'standard';
+  if (SEASONAL_ADJUSTMENTS.snowbird.months.includes(month)) currentSeason = 'snowbird';
+  else if (SEASONAL_ADJUSTMENTS.summer.months.includes(month)) currentSeason = 'summer';
+
+  const channels = Object.entries(CONTACT_WINDOWS).map(([key, val]) => ({
+    channel: key,
+    ...val,
+    windowCount: val.days.length,
+  }));
+
+  return {
+    engine: 'Peak-Time Intelligence',
+    engineId: ENGINE_ID,
+    version: ENGINE_VERSION,
+    channels,
+    totalWindows: channels.reduce((sum, c) => sum + c.windowCount, 0),
+    currentSeason,
+    blackoutDatesCount: BLACKOUT_DATES.length,
+    timestamp: now.toISOString(),
+  };
+}
+
 // ── All Points Bulletin Generator ──────────────────────────────────────────
 
 /**
