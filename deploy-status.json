@@ -1,0 +1,8 @@
+{
+  "lastVerifiedAt": "pending-first-deploy",
+  "commit": "pending",
+  "note": "Auto-updated by the smoke-test job in .github/workflows/deploy.yml after each successful deploy to main. This is the live deploy-confirmation surface readable by AI agents and humans without requiring egress to *.workers.dev.",
+  "gateway": { "masterPromptStatus": "pending", "collectionsAgent": { "id": "pending", "status": "pending" } },
+  "nemotron": { "healthHttpStatus": "pending" },
+  "sentinel": { "healthHttpStatus": "pending" }
+}
