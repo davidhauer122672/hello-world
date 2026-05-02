@@ -28,7 +28,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 147 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, Master Orchestrator v2.2.0 (fleet/triggers/dispatch/hitl/public-status) (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 147 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Retell AI campaigns, frameworks, Master Orchestrator v2.2.0 (fleet/triggers/dispatch/hitl/public-status) (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
 - **ck-command-center**: Dashboard UI for 384-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
@@ -117,7 +117,7 @@ POST /v1/mcco/post              — Generate high-engagement social post
 ## Secrets (all configured)
 - ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN
 - SLACK_WEBHOOK_URL, SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET
-- ATLAS_API_KEY, RETELL_WEBHOOK_SECRET
+- RETELL_API_KEY, RETELL_WEBHOOK_SECRET
 
 ## Agent Fleet (330 agents across 11 divisions)
 | Division | ID  | Agents | Focus |
