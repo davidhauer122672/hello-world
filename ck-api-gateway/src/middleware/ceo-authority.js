@@ -41,7 +41,7 @@ export const CEO_AUTHORITY = {
 
   // Fleet under authority
   fleet: {
-    totalUnits: 382,
+    totalUnits: 383,
     divisionAgents: 297,
     mccoAgents: 15,
     intelligenceOfficers: 50,
@@ -60,16 +60,16 @@ export const CEO_AUTHORITY = {
 
   // Authorized operations
   authorizedOperations: [
-    'build',       // Compile and prepare deployments
-    'create',      // Create new resources (tables, channels, records, agents)
-    'publish',     // Publish content, distribute apps
-    'deploy',      // Deploy Workers, Pages, and configurations
-    'push',        // Push code to repositories
-    'operate',     // Run day-to-day platform operations
-    'monitor',     // Health checks, fleet scans, performance tracking
-    'notify',      // Send Slack notifications across all channels
-    'infer',       // Execute Claude API inference operations
-    'manage',      // Manage agents, workflows, and integrations
+    'build',
+    'create',
+    'publish',
+    'deploy',
+    'push',
+    'operate',
+    'monitor',
+    'notify',
+    'infer',
+    'manage',
   ],
 
   // Slack apps under authority
@@ -90,7 +90,6 @@ export const CEO_AUTHORITY = {
 // ── Security Policies ───────────────────────────────────────────────────────────
 
 export const SECURITY_POLICIES = {
-  // Authentication enforcement
   authentication: {
     apiGateway: 'Bearer token (WORKER_AUTH_TOKEN)',
     slackInbound: 'HMAC-SHA256 signature verification (SLACK_SIGNING_SECRET)',
@@ -98,7 +97,6 @@ export const SECURITY_POLICIES = {
     publicEndpoints: ['/v1/health', '/v1/leads/public', '/v1/slack/events'],
   },
 
-  // Rate limiting
   rateLimiting: {
     enabled: true,
     requestsPerMinute: 60,
@@ -106,7 +104,6 @@ export const SECURITY_POLICIES = {
     strategy: 'sliding-window',
   },
 
-  // Audit trail
   auditTrail: {
     enabled: true,
     kvNamespace: 'AUDIT_LOG',
@@ -118,14 +115,12 @@ export const SECURITY_POLICIES = {
     ],
   },
 
-  // CORS policy
   cors: {
     allowedOrigins: ['*'],
     allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   },
 
-  // Secret management
   secrets: {
     required: [
       'ANTHROPIC_API_KEY',
@@ -139,7 +134,6 @@ export const SECURITY_POLICIES = {
     storage: 'Cloudflare Worker Secrets (encrypted at rest)',
   },
 
-  // External interference prevention
   externalProtection: {
     webhookValidation: true,
     signatureVerification: true,
@@ -152,18 +146,7 @@ export const SECURITY_POLICIES = {
 
 // ── Validate CEO Authority on Request ───────────────────────────────────────────
 
-/**
- * Validate that a request is authorized under the AI CEO framework.
- * This wraps the existing auth middleware with additional context logging.
- *
- * @param {Request} request
- * @param {object} env
- * @param {object} ctx
- * @param {string} operation - The operation being performed
- * @returns {object|null} - Error response if unauthorized, null if authorized
- */
 export function validateCeoAuthority(request, env, ctx, operation) {
-  // All operations in the authorized list are permitted
   if (!CEO_AUTHORITY.authorizedOperations.includes(operation)) {
     return {
       authorized: false,
@@ -174,9 +157,6 @@ export function validateCeoAuthority(request, env, ctx, operation) {
   return { authorized: true, operation, authority: CEO_AUTHORITY.designation };
 }
 
-/**
- * Log an operation under CEO authority to the audit trail.
- */
 export function logCeoOperation(env, ctx, operation, details) {
   if (!env.AUDIT_LOG) return;
 
