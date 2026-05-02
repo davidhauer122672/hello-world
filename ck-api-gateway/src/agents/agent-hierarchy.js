@@ -1,7 +1,7 @@
 /**
  * Coastal Key Enterprise — Agent Hierarchy & Organizational Structure
  *
- * The backbone organizational intelligence for the 382-agent fleet managing
+ * The backbone organizational intelligence for the 383-agent fleet managing
  * property operations across the Treasure Coast of Florida.
  *
  * Hierarchy:
@@ -17,10 +17,11 @@
  *     -> TEC Division Head -> TEC agents
  *     -> WEB Division Head -> WEB agents
  *
- * Fleet composition (382 total):
+ * Fleet composition (383 total):
  *   312 AI Agents (across 10 divisions)
  *    50 Intelligence Officers (5 squads: ALPHA, BRAVO, CHARLIE, DELTA, ECHO)
  *    20 Email AI Agents (4 squads: INTAKE, COMPOSE, NURTURE, MONITOR)
+ *     1 Apex Trader (FIN-TRADER-001)
  */
 
 import { AGENTS, DIVISIONS, getAgentById, getAgentsByDivision } from './registry.js';
@@ -68,14 +69,14 @@ export const COMMAND_CHAIN = {
     type: 'human',
     description: 'Coastal Key Property Management founder and CEO. Ultimate decision authority.',
     directReports: [
-      'MCCO-000', // Sovereign — commands MKT + SEN
-      'EXC-001',  // Executive division head
-      'OPS-001',  // Operations division head
-      'INT-001',  // Intelligence division head
-      'FIN-001',  // Finance division head
-      'VEN-001',  // Vendor Management division head
-      'TEC-001',  // Technology division head
-      'WEB-001',  // Website Development division head
+      'MCCO-000',
+      'EXC-001',
+      'OPS-001',
+      'INT-001',
+      'FIN-001',
+      'VEN-001',
+      'TEC-001',
+      'WEB-001',
     ],
   },
 
@@ -313,28 +314,21 @@ export const ESCALATION_MATRIX = {
 
 // ── Helper: build reporting-to map from COMMAND_CHAIN ──────────────────────
 
-/**
- * Internal map: agentId -> who they report to (agentId or 'CEO').
- * Built lazily on first use.
- */
 let _reportsToMap = null;
 
 function buildReportsToMap() {
   if (_reportsToMap) return _reportsToMap;
   _reportsToMap = new Map();
 
-  // Division heads report per DIVISION_META
   for (const [divCode, meta] of Object.entries(DIVISION_META)) {
     _reportsToMap.set(meta.headAgentId, meta.reportsTo);
   }
 
-  // MCCO command units report to MCCO-000
   for (let i = 1; i <= 14; i++) {
     const id = `MCCO-${String(i).padStart(3, '0')}`;
     _reportsToMap.set(id, 'MCCO-000');
   }
 
-  // Non-head agents within each division report to the division head
   for (const agent of AGENTS) {
     if (!_reportsToMap.has(agent.id)) {
       const meta = DIVISION_META[agent.division];
@@ -347,10 +341,6 @@ function buildReportsToMap() {
   return _reportsToMap;
 }
 
-/**
- * Internal map: agentId -> array of agents that report to them.
- * Built lazily on first use.
- */
 let _directReportsMap = null;
 
 function buildDirectReportsMap() {
@@ -358,7 +348,6 @@ function buildDirectReportsMap() {
   const rMap = buildReportsToMap();
   _directReportsMap = new Map();
 
-  // CEO direct reports
   _directReportsMap.set('CEO', COMMAND_CHAIN.root.directReports.slice());
 
   for (const [agentId, reportsTo] of rMap) {
@@ -368,27 +357,17 @@ function buildDirectReportsMap() {
     _directReportsMap.get(reportsTo).push(agentId);
   }
 
-  // MCCO-000 also governs MKT-001 and SEN-001 (already in reportsTo map)
   return _directReportsMap;
 }
 
 // ── Exported functions ─────────────────────────────────────────────────────
 
-/**
- * getChainOfCommand(agentId)
- *
- * Returns the chain of command from a given agent up to CEO.
- * Each entry includes the agent's id, name, role, division, and who they report to.
- *
- * @param {string} agentId — e.g. 'MCCO-005', 'SEN-023', 'MKT-001'
- * @returns {Array<{id: string, name: string, role: string, division: string, reportsTo: string}>}
- */
 export function getChainOfCommand(agentId) {
   const rMap = buildReportsToMap();
   const chain = [];
   let currentId = agentId;
 
-  const MAX_DEPTH = 20; // safety guard
+  const MAX_DEPTH = 20;
   let depth = 0;
 
   while (currentId && currentId !== 'CEO' && depth < MAX_DEPTH) {
@@ -407,7 +386,6 @@ export function getChainOfCommand(agentId) {
     depth++;
   }
 
-  // Add CEO at the top
   chain.push({
     id: 'CEO',
     name: 'Chief Executive Officer',
@@ -419,14 +397,6 @@ export function getChainOfCommand(agentId) {
   return chain;
 }
 
-/**
- * getDirectReports(agentId)
- *
- * Returns all agents that report directly to the given agent.
- *
- * @param {string} agentId — e.g. 'CEO', 'MCCO-000', 'OPS-001'
- * @returns {Array<{id: string, name: string, role: string, division: string}>}
- */
 export function getDirectReports(agentId) {
   const drMap = buildDirectReportsMap();
   const reportIds = drMap.get(agentId) || [];
@@ -436,7 +406,6 @@ export function getDirectReports(agentId) {
     if (agent) {
       return { id: agent.id, name: agent.name, role: agent.role, division: agent.division };
     }
-    // Fallback for agents not yet in registry
     const meta = Object.values(DIVISION_META).find(m => m.headAgentId === id);
     return {
       id,
@@ -447,15 +416,6 @@ export function getDirectReports(agentId) {
   });
 }
 
-/**
- * getDivisionHierarchy(divisionCode)
- *
- * Returns the full hierarchy tree for a division including head, squads,
- * governed divisions (for MCCO), and agent counts.
- *
- * @param {string} divisionCode — e.g. 'MCCO', 'SEN', 'OPS'
- * @returns {object} Division hierarchy tree
- */
 export function getDivisionHierarchy(divisionCode) {
   const divisionDef = DIVISIONS.find(d => d.id === divisionCode);
   const chainDef = COMMAND_CHAIN.divisions[divisionCode];
@@ -494,7 +454,6 @@ export function getDivisionHierarchy(divisionCode) {
     })),
   };
 
-  // MCCO-specific: include governed divisions
   if (divisionCode === 'MCCO' && chainDef.governedDivisions) {
     hierarchy.governedDivisions = {};
     for (const [govCode, govDef] of Object.entries(chainDef.governedDivisions)) {
@@ -510,7 +469,7 @@ export function getDivisionHierarchy(divisionCode) {
     }
     hierarchy.governance = 'sovereign';
     hierarchy.executionStandard = 'ferrari';
-    hierarchy.totalGovernedAgents = 87; // MKT (47) + SEN (40)
+    hierarchy.totalGovernedAgents = 87;
   }
 
   return hierarchy;
@@ -519,8 +478,7 @@ export function getDivisionHierarchy(divisionCode) {
 /**
  * getFleetStatus()
  *
- * Returns a comprehensive summary of the entire 382-agent fleet:
- * total counts, per-division breakdown, status distribution, and special units.
+ * Returns a comprehensive summary of the entire 383-agent fleet.
  *
  * @returns {object} Fleet status summary
  */
@@ -544,16 +502,15 @@ export function getFleetStatus() {
   const totalRegistryStandby = registryAgents.filter(a => a.status === 'standby').length;
   const totalRegistryTraining = registryAgents.filter(a => a.status === 'training').length;
 
-  // Intelligence Officers (50) and Email Agents (20) are supplemental units
   const intelOfficerCount = Object.values(INTEL_OFFICER_SQUADS).reduce((s, sq) => s + sq.count, 0);
   const emailAgentCount = Object.values(EMAIL_AGENT_SQUADS).reduce((s, sq) => s + sq.count, 0);
 
   return {
     fleet: {
-      totalAgents: 382,
-      registryAgents: registryAgents.length,        // 312 across 10 divisions
-      intelligenceOfficers: intelOfficerCount,       // 50
-      emailAgents: emailAgentCount,                  // 20
+      totalAgents: 383,
+      registryAgents: registryAgents.length,
+      intelligenceOfficers: intelOfficerCount,
+      emailAgents: emailAgentCount,
     },
     status: {
       active: totalRegistryActive,
@@ -583,7 +540,5 @@ export function getFleetStatus() {
     timestamp: new Date().toISOString(),
   };
 }
-
-// ── Additional utility exports ─────────────────────────────────────────────
 
 export { DIVISION_META, INTEL_OFFICER_SQUADS, EMAIL_AGENT_SQUADS };
