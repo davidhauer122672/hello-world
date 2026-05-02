@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracey Hunter Group | Treasure Coast Real Estate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--teal:#A8DED3;--teal-dim:rgba(168,222,211,.12);--gold:#C9A84C;--gold-dim:rgba(201,168,76,.1);--gold-grad:linear-gradient(135deg,#D4B85A,#C9A84C 50%,#A8893D);--navy:#1B2A5B;--navy-deep:#141F45;--silver:#B0B7BF;--silver-dim:rgba(176,183,191,.2);--white:#fff;--off:#FAF9F7}
+html{scroll-behavior:smooth}
+body{font-family:'Lato',sans-serif;background:var(--off);color:var(--navy);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:600}
+a{color:var(--navy);text-decoration:none}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}.reveal.visible{opacity:1;transform:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:background .3s,box-shadow .3s}
+nav.scrolled{background:rgba(250,249,247,.95);backdrop-filter:blur(12px);box-shadow:0 2px 20px rgba(27,42,91,.06)}
+.nav-inner{display:flex;justify-content:space-between;align-items:center}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{width:40px;height:40px}
+.nav-logo svg{width:100%;height:100%}
+.nav-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{padding:10px 24px;background:var(--navy);color:var(--white)!important;border-radius:6px;font-size:12px!important;transition:background .2s!important}
+.nav-cta:hover{background:var(--gold)!important}
+.hero{min-height:100vh;display:flex;align-items:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(168,222,211,.1),transparent 70%);border-radius:50%}
+.hero-content{max-width:700px;margin:0 auto;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--silver-dim);border-radius:50px;padding:8px 20px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;animation:fadeUp .8s ease forwards}
+.hero-badge .dot{width:6px;height:6px;background:var(--teal);border-radius:50%}
+.hero h1{font-size:clamp(32px,6vw,56px);line-height:1.15;margin-bottom:20px;animation:fadeUp .8s .2s ease both}
+.hero h1 em{font-style:italic;background:var(--gold-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:17px;color:#5A6677;max-width:520px;margin:0 auto 36px;animation:fadeUp .8s .4s ease both}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .6s ease both}
+.btn{padding:14px 32px;border-radius:6px;font-size:13px;font-weight:700;letter-spacing:.5px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--navy);color:var(--white)}.btn-primary:hover{background:var(--gold)}
+.btn-outline{background:transparent;color:var(--navy);border:2px solid var(--navy)}.btn-outline:hover{background:var(--navy);color:var(--white)}
+.stats{padding:80px 0;background:var(--navy);color:var(--white);text-align:center}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:24px}
+.stat-item .stat-val{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;background:var(--gold-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-item .stat-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--silver);margin-top:6px}
+.about{padding:100px 0}
+.about-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:60px;align-items:center}
+.about-photo{width:100%;aspect-ratio:3/4;background:var(--teal-dim);border-radius:16px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.about-photo::before{content:'';position:absolute;inset:0;border:2px solid var(--gold);border-radius:16px;opacity:.3}
+.about-photo .initials{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:var(--navy);opacity:.15}
+.about-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.about h2{font-size:36px;margin-bottom:20px;line-height:1.2}
+.about p{color:#5A6677;margin-bottom:16px;font-size:15px}
+.about-sig{margin-top:24px;padding-top:24px;border-top:1px solid var(--silver-dim)}
+.about-sig .name{font-family:'Playfair Display',serif;font-size:18px;font-weight:600}
+.about-sig .title{font-size:13px;color:var(--silver)}
+.market{padding:100px 0;background:var(--white)}
+.section-head{text-align:center;margin-bottom:48px}
+.section-head .tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.section-head h2{font-size:36px;margin-bottom:14px}
+.section-head p{font-size:15px;color:#5A6677;max-width:500px;margin:0 auto}
+.market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.market-card{background:var(--off);border-radius:14px;padding:28px;border:1px solid transparent;transition:all .3s}
+.market-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 12px 32px rgba(27,42,91,.08)}
+.market-card .city{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;margin-bottom:16px}
+.market-card .metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.metric .metric-val{font-size:22px;font-weight:700;color:var(--navy)}
+.metric .metric-lbl{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--silver)}
+.metric .metric-change{font-size:11px;font-weight:700;color:var(--teal)}
+.diff{padding:100px 0}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.diff-card{padding:36px;border-radius:14px;background:var(--white);box-shadow:0 2px 16px rgba(27,42,91,.04);border-top:3px solid var(--gold);transition:transform .3s}
+.diff-card:hover{transform:translateY(-4px)}
+.diff-card h3{font-size:20px;margin-bottom:12px}
+.diff-card p{font-size:14px;color:#5A6677;line-height:1.7}
+.script{padding:100px 0;background:var(--navy);color:var(--white);text-align:center;overflow:hidden}
+.script .section-head .tag{color:var(--teal)}.script .section-head h2{color:var(--white)}.script .section-head p{color:var(--silver)}
+.script-display{max-width:700px;margin:0 auto;min-height:160px;display:flex;align-items:center;justify-content:center;padding:40px}
+.script-text{font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,28px);font-style:italic;line-height:1.5;opacity:0;transition:opacity .8s,transform .8s;transform:translateY(12px)}
+.script-text.active{opacity:1;transform:none}
+.script-controls{display:flex;justify-content:center;gap:12px;margin-top:32px;align-items:center}
+.script-btn{width:44px;height:44px;border-radius:50%;border:2px solid var(--silver);background:transparent;color:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.script-btn:hover{border-color:var(--gold);color:var(--gold)}
+.script-progress{width:200px;height:3px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.script-progress-fill{height:100%;background:var(--gold);transition:width .3s;border-radius:2px}
+.contact{padding:100px 0}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.contact h2{font-size:36px;margin-bottom:16px}
+.contact p{color:#5A6677;font-size:15px;margin-bottom:28px}
+.contact-info{display:flex;flex-direction:column;gap:16px}
+.contact-row{display:flex;align-items:center;gap:14px}
+.contact-row .icon{width:44px;height:44px;background:var(--teal-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.contact-row .icon svg{width:20px;height:20px;stroke:var(--navy);fill:none;stroke-width:2}
+.contact-row .info .label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--silver);font-weight:700}
+.contact-row .info .value{font-size:15px;font-weight:700}
+.contact-row .info .value a{color:var(--navy)}
+.contact-form{background:var(--white);border-radius:16px;padding:36px;box-shadow:0 4px 24px rgba(27,42,91,.06)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--silver);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;border:1px solid var(--silver-dim);border-radius:8px;font-family:'Lato',sans-serif;font-size:14px;color:var(--navy);background:var(--off);transition:border .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-submit{width:100%;padding:14px;background:var(--navy);color:var(--white);border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+.btn-submit:hover{background:var(--gold)}
+.form-note{text-align:center;margin-top:12px;font-size:11px;color:var(--silver)}
+footer{padding:40px 0;background:var(--navy);color:var(--silver);text-align:center;font-size:12px;letter-spacing:.5px}
+footer a{color:var(--gold)}
+@media(max-width:900px){.about-grid,.contact-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(3,1fr)}.market-grid,.diff-grid{grid-template-columns:1fr 1fr}.nav-links{display:none}}
+@media(max-width:600px){.stats-grid{grid-template-columns:repeat(2,1fr)}.market-grid,.diff-grid,.form-row{grid-template-columns:1fr}.hero-btns{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Tracey Hunter Group","description":"Platinum RE/MAX Associate and Top 100 RE/MAX Agent in Florida specializing in Treasure Coast and Palm Beach residential real estate.","url":"https://www.traceyhuntergroup.com","telephone":"+1-772-763-8900","email":"tracey@traceyhuntergroup.com","address":{"@type":"PostalAddress","streetAddress":"1407 SE Legacy Cove Circle","addressLocality":"Stuart","addressRegion":"FL","postalCode":"34997","addressCountry":"US"},"areaServed":["Stuart","Palm City","Jensen Beach","Hobe Sound","Port St. Lucie","Jupiter","Tequesta","Palm Beach Gardens"],"openingHours":"Mo-Sa 09:00-18:00","priceRange":"$200K - $5M+","parentOrganization":{"@type":"Organization","name":"RE/MAX of Stuart"},"award":["Platinum RE/MAX Associate 2025","Top 100 RE/MAX Agents in Florida 2025"]}
+</script>
+<nav id="nav"><div class="container nav-inner"><div class="nav-brand"><div class="nav-logo"><svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,36 2,36" stroke="#C9A84C" stroke-width="1.5" fill="none"/><text x="20" y="26" text-anchor="middle" fill="#1B2A5B" font-family="Playfair Display,serif" font-size="14" font-weight="700" font-style="italic">TH</text></svg></div><span class="nav-name">Tracey Hunter Group</span></div><div class="nav-links"><a href="#about">About</a><a href="#market">Market</a><a href="#contact">Contact</a><a href="tel:7727638900" class="nav-cta">Call 772-763-8900</a></div></div></nav>
+<section class="hero"><div class="hero-content"><div class="hero-badge"><span class="dot"></span> Platinum RE/MAX Associate</div><h1>Your Treasure Coast <em>Real Estate Expert</em></h1><p class="hero-sub">Top 100 RE/MAX Agent in Florida. $18 million in sales. 32 families served. Faith-driven service with relentless results.</p><div class="hero-btns"><a href="#contact" class="btn btn-primary">Get Your Free Home Value Report</a><a href="tel:7727638900" class="btn btn-outline">Call Tracey: 772-763-8900</a></div></div></section>
+<section class="stats"><div class="container"><div class="stats-grid"><div class="stat-item reveal"><div class="stat-val">$18M+</div><div class="stat-lbl">2025 Sales Volume</div></div><div class="stat-item reveal"><div class="stat-val">32</div><div class="stat-lbl">Families Served</div></div><div class="stat-item reveal"><div class="stat-val">$5M</div><div class="stat-lbl">Q1 2026 Production</div></div><div class="stat-item reveal"><div class="stat-val">10</div><div class="stat-lbl">Years of Excellence</div></div><div class="stat-item reveal"><div class="stat-val">Top 100</div><div class="stat-lbl">RE/MAX in Florida</div></div></div></div></section>
+<section class="about" id="about"><div class="container"><div class="about-grid"><div class="about-photo reveal"><span class="initials">TH</span></div><div class="reveal"><div class="about-tag">Meet Tracey</div><h2>Dedicated. Personable. Faith-Driven.</h2><p>With 10 years of consistent high-producing residential sales and 20 years of prior healthcare executive leadership as Director of Physician Services, Tracey brings precision, advocacy, and genuine care to every transaction.</p><p>She does not simply list properties on the MLS and wait. Tracey actively pursues qualified buyers through advanced marketing, AI-powered outreach, and relentless follow-through. When one of her waterfront listings was under contract at $1.8 million, she kept marketing — securing a backup offer $40,000 higher. When the first deal fell through, her client gained $40,000 instead of losing momentum.</p><p>A woman of deep faith, Tracey views real estate as a calling to serve with honesty, care, and purpose. She donates to the Children's Miracle Network on behalf of every client after closing.</p><div class="about-sig"><div class="name">Tracey Merritt Hunter</div><div class="title">Platinum RE/MAX Associate | RE/MAX of Stuart</div></div></div></div></div></section>
+<section class="market" id="market"><div class="container"><div class="section-head reveal"><div class="tag">Market Intelligence</div><h2>Treasure Coast Market Snapshot</h2><p>Real-time market data for the communities Tracey serves.</p></div><div class="market-grid" id="marketGrid"></div></div></section>
+<section class="diff"><div class="container"><div class="section-head reveal"><div class="tag">The Difference</div><h2>What Sets Tracey Apart</h2></div><div class="diff-grid"><div class="diff-card reveal"><h3>Proactive Buyer Acquisition</h3><p>She does not just list your home on the MLS and hope for the best. Tracey actively hunts for qualified buyers using targeted marketing, AI-powered outreach, and strategic open houses.</p></div><div class="diff-card reveal"><h3>Strategic Negotiation</h3><p>Every dollar matters. Tracey continues marketing your property even while under contract. Her signature $40K-above-asking waterfront deal proves the strategy works.</p></div><div class="diff-card reveal"><h3>Faith-Driven Service</h3><p>Honest, caring, purposeful. Tracey donates to the Children's Miracle Network after every closing because she believes real estate is a calling to serve.</p></div></div></div></section>
+<section class="script" id="story"><div class="container"><div class="section-head"><div class="tag">Tracey's Promise</div><h2>Why Families Trust Tracey</h2><p>A two-minute story of dedication, results, and heart.</p></div><div class="script-display"><p class="script-text" id="scriptText"></p></div><div class="script-controls"><button class="script-btn" id="scriptPrev"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><button class="script-btn" id="scriptPlay"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" id="playIcon"><polygon points="5,3 19,12 5,21"/></svg></button><button class="script-btn" id="scriptNext"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button><div class="script-progress"><div class="script-progress-fill" id="scriptBar"></div></div></div></div></section>
+<section class="contact" id="contact"><div class="container"><div class="contact-grid"><div class="reveal"><div class="about-tag">Get Started</div><h2>Ready to Make Your Move?</h2><p>Whether you are buying your dream home or selling for maximum value, Tracey Hunter is the partner you deserve.</p><div class="contact-info"><div class="contact-row"><div class="icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div><div class="info"><div class="label">Phone</div><div class="value"><a href="tel:7727638900">772-763-8900</a></div></div></div><div class="contact-row"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="info"><div class="label">Email</div><div class="value"><a href="mailto:tracey@traceyhuntergroup.com">tracey@traceyhuntergroup.com</a></div></div></div><div class="contact-row"><div class="icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="info"><div class="label">Office</div><div class="value">RE/MAX of Stuart, 1407 SE Legacy Cove Circle, Stuart, FL</div></div></div></div></div><form class="contact-form reveal" id="contactForm" onsubmit="return submitForm(event)"><div class="form-row"><div class="form-group"><label>First Name</label><input type="text" name="first_name" required></div><div class="form-group"><label>Last Name</label><input type="text" name="last_name" required></div></div><div class="form-row"><div class="form-group"><label>Phone</label><input type="tel" name="phone" required></div><div class="form-group"><label>Email</label><input type="email" name="email" required></div></div><div class="form-group"><label>I am interested in...</label><select name="interest" required><option value="">Select one</option><option>Buying a Home</option><option>Selling My Home</option><option>Both Buying and Selling</option><option>Free Home Value Report</option><option>Market Information</option></select></div><div class="form-group"><label>Message</label><textarea name="message" rows="3" placeholder="Tell Tracey about your goals..."></textarea></div><button type="submit" class="btn-submit">Send to Tracey</button><div class="form-note">Your information is secure and will only be shared with Tracey Hunter.</div></form></div></div></section>
+<footer><div class="container">&copy; 2026 Tracey Hunter Group | RE/MAX of Stuart | Dedicated. Personable. Faith-Driven.<br>Each Office Independently Owned and Operated | <a href="tel:7727638900">772-763-8900</a></div></footer>
+<script>
+const nav=document.getElementById('nav');window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>40)});
+const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.15});document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const markets=[{city:'Stuart',median:'$485K',dom:'42',yoy:'+4.2%',active:'312'},{city:'Palm City',median:'$520K',dom:'38',yoy:'+5.1%',active:'198'},{city:'Jensen Beach',median:'$410K',dom:'45',yoy:'+3.8%',active:'267'},{city:'Hobe Sound',median:'$455K',dom:'40',yoy:'+4.5%',active:'185'},{city:'Port St. Lucie',median:'$385K',dom:'48',yoy:'+6.2%',active:'524'},{city:'Jupiter',median:'$695K',dom:'35',yoy:'+3.1%',active:'289'}];
+const mg=document.getElementById('marketGrid');markets.forEach(m=>{mg.innerHTML+='<div class="market-card reveal"><div class="city">'+m.city+'</div><div class="metrics"><div class="metric"><div class="metric-val">'+m.median+'</div><div class="metric-lbl">Median Price</div></div><div class="metric"><div class="metric-val">'+m.dom+'</div><div class="metric-lbl">Days on Market</div></div><div class="metric"><div class="metric-change">'+m.yoy+'</div><div class="metric-lbl">Year over Year</div></div><div class="metric"><div class="metric-val">'+m.active+'</div><div class="metric-lbl">Active Listings</div></div></div></div>'});document.querySelectorAll('.market-card.reveal').forEach(el=>obs.observe(el));
+const lines=["In the Treasure Coast, your home is not just a property — it is your legacy.","Most agents list your home on the MLS and wait. That is not a strategy. That is a gamble.","Tracey Hunter does things differently. She actively pursues qualified buyers through targeted marketing, AI-powered outreach, and relentless follow-through.","In 2025 alone, Tracey helped 32 families navigate the market — producing over $18 million in sales.","When one of her waterfront listings was under contract at $1.8 million, most agents would have stopped marketing. Tracey did not. She secured a backup offer $40,000 higher.","Tracey brings 20 years of healthcare executive leadership to every transaction. She donates to the Children's Miracle Network after every closing.","Whether you are buying your dream home or selling for maximum value — Tracey Hunter is the partner you deserve.","Call Tracey today at 772-763-8900. Visit traceyhuntergroup.com. Your next chapter starts here."];
+let ci=0,playing=false,timer=null;const stEl=document.getElementById('scriptText'),bar=document.getElementById('scriptBar');
+function showLine(i){ci=i;stEl.classList.remove('active');setTimeout(()=>{stEl.textContent=lines[ci];stEl.classList.add('active');bar.style.width=((ci+1)/lines.length*100)+'%'},200)}
+function next(){showLine((ci+1)%lines.length)}function prev(){showLine((ci-1+lines.length)%lines.length)}
+function togglePlay(){playing=!playing;document.getElementById('playIcon').innerHTML=playing?'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>':'<polygon points="5,3 19,12 5,21"/>';if(playing){next();timer=setInterval(next,5000)}else{clearInterval(timer)}}
+document.getElementById('scriptPlay').onclick=togglePlay;document.getElementById('scriptNext').onclick=()=>{if(playing){clearInterval(timer);timer=setInterval(next,5000)}next()};document.getElementById('scriptPrev').onclick=()=>{if(playing){clearInterval(timer);timer=setInterval(next,5000)}prev()};showLine(0);
+function submitForm(e){e.preventDefault();const f=new FormData(e.target);const d=Object.fromEntries(f);fetch('/v1/leads/public',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(r=>{if(r.ok){e.target.innerHTML='<div style="text-align:center;padding:40px"><h3>Thank You!</h3><p style="color:var(--silver);margin-top:8px">Tracey will be in touch shortly.</p></div>'}else{alert('Please call Tracey directly at 772-763-8900.')}}).catch(()=>{alert('Please call Tracey directly at 772-763-8900.')});return false}
+</script>
+</body>
+</html>
