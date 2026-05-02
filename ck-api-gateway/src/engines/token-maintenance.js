@@ -51,12 +51,6 @@ export const CREDENTIAL_REGISTRY = [
     envKey: 'SLACK_SIGNING_SECRET',
   },
   {
-    id: 'CRED-009', name: 'BUFFER_ACCESS_TOKEN', provider: 'Buffer',
-    scope: 'Content publish to 5 profiles', rotationDays: 90, category: 'marketing',
-    healthCheck: { method: 'GET', url: 'https://api.bufferapp.com/1/user.json', headerKey: 'Authorization', headerPrefix: 'Bearer ' },
-    envKey: 'BUFFER_ACCESS_TOKEN',
-  },
-  {
     id: 'CRED-010', name: 'GOOGLE_CLIENT_ID', provider: 'Google',
     scope: 'Gmail OAuth client', rotationDays: 0, category: 'email',
     healthCheck: null,

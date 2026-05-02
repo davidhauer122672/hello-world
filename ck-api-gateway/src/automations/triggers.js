@@ -21,10 +21,10 @@
  */
 
 /**
- * WF2 - Content Calendar → Buffer Publish
+ * WF2 - Content Calendar → Claude AI Publish
  *
  * Triggers when a Content Calendar record's "Status" field changes to "Approved".
- * Pushes the post to Buffer via the /v1/content/publish endpoint for automated
+ * Publishes the post via Claude AI through the /v1/content/publish endpoint for automated
  * multi-platform scheduling (Instagram, Facebook, LinkedIn, X, Alignable).
  *
 
@@ -215,7 +215,7 @@ export const WF2_CONTENT_ENGAGEMENT = {
   trigger: { type: 'recordCreated', table: 'Content Calendar' },
   conditions: { status: { in: ['Draft', 'Planned'], field: 'Status' }, postType: { exists: true, field: 'Post Type' } },
   action: { method: 'POST', endpoint: '/v1/workflows/wf2', payload: { topic: '{{record.Post Title}}', platforms: '{{record.Platform}}', contentType: '{{record.Post Type}}', tone: '{{record.Tone}}', scheduledAt: '{{record.Post Date}}' } },
-  integrations: ['claude-ai', 'banana-pro', 'buffer'],
+  integrations: ['claude-ai', 'banana-pro', 'claude-ai-publisher'],
   slack_channel: '#content-alerts',
 };
 
@@ -238,13 +238,13 @@ export const BANANA_PRO_CONTENT = {
   integrations: ['banana-pro'],
 };
 
-export const BUFFER_AUTO_SCHEDULE = {
-  id: 'buffer-auto-schedule',
-  description: 'Auto-schedule ready content to Buffer for publishing',
+export const CLAUDE_AI_AUTO_PUBLISH = {
+  id: 'claude-ai-auto-publish',
+  description: 'Auto-publish ready content via Claude AI platform',
   trigger: { type: 'fieldChange', table: 'Content Calendar', field: 'Status' },
-  conditions: { status: { equals: 'Ready' }, bufferScheduled: { equals: false, field: 'CK-SPP Scheduled' } },
-  action: { method: 'POST', endpoint: '/v1/buffer/cross-post', payload: { text: '{{record.Caption}}', platforms: '{{record.Platform}}', scheduledAt: '{{record.Post Date}}' } },
-  integrations: ['buffer'],
+  conditions: { status: { equals: 'Ready' }, publishScheduled: { equals: false, field: 'CK-SPP Scheduled' } },
+  action: { method: 'POST', endpoint: '/v1/campaign/peak-time/schedule-post', payload: { text: '{{record.Caption}}', platforms: '{{record.Platform}}', scheduledAt: '{{record.Post Date}}' } },
+  integrations: ['claude-ai-publisher'],
 };
 
 export const MARKET_DAILY_SCAN = {
@@ -271,7 +271,7 @@ export const SLACK_CHANNELS = {
   },
   CONTENT_ALERTS: {
     name: '#content-alerts',
-    purpose: 'Content pipeline status, Buffer scheduling, engagement metrics',
+    purpose: 'Content pipeline status, Claude AI publishing, engagement metrics',
   },
   COMMUNITY_ALERTS: {
     name: '#community-alerts',
