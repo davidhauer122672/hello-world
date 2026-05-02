@@ -5,7 +5,7 @@
 Enterprise AI operations platform for Coastal Key Property Management — Treasure Coast asset oversight powered by a 383-unit autonomous agent fleet, sovereign MCCO governance, and Cloudflare edge infrastructure.
 
 **Standards**: Ferrari Precision | Red Bull Optimization | SpaceX Engineering
-**Governance**: [GOVERNANCE.md](GOVERNANCE.md) | **Mission**: [MISSION.md](MISSION.md)
+**Governance**: [GOVERNANCE.md](docs/governance/GOVERNANCE.md) | **Mission**: [MISSION.md](docs/governance/MISSION.md)
 
 ## Architecture
 
