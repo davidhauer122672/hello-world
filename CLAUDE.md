@@ -26,7 +26,7 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 ## Architecture
 - **ck-api-gateway**: Central API — 147 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
-- **ck-command-center**: Dashboard UI for 383-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
+- **ck-command-center**: Dashboard UI for 384-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
 - **th-sentinel-campaign**: Campaign config, Retell prompts, Airtable field reference
@@ -44,8 +44,8 @@ npm run test:nemotron   # Test Nemotron worker only
 npm run deploy          # Deploy all services (requires CLOUDFLARE_API_TOKEN)
 ```
 
-## Autonomous Fleet (383 units)
-- **15 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
+## Autonomous Fleet (384 units)
+- **16 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales + Sovereign Marketing Officer (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
 - **297 AI Agents** across 9 operational divisions: EXC (20), SEN (40), OPS (45), INT (30), MKT (47), FIN (25), VEN (25), TEC (25), WEB (40)
 - **50 Intelligence Officers** in 5 squads: ALPHA (Infrastructure), BRAVO (Data), CHARLIE (Security), DELTA (Revenue), ECHO (Performance)
 - **20 Email AI Agents** in 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
@@ -133,7 +133,7 @@ GET  /api/standup/history  — Previous standup entries (up to 90 days)
 ```
 
 ### Briefing Contents
-- Fleet status (383/383 active, operational readiness)
+- Fleet status (384/384 active, operational readiness)
 - Division-by-division 24h accomplishment summary (all 10 divisions + special units)
 - Agent health audit (data integrity, backup recency, service uptime)
 - Automatic triage with priority classification for inactive agents
