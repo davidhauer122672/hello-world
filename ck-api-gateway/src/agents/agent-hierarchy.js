@@ -1,7 +1,7 @@
 /**
  * Coastal Key Enterprise — Agent Hierarchy & Organizational Structure
  *
- * The backbone organizational intelligence for the 382-agent fleet managing
+ * The backbone organizational intelligence for the 384-agent fleet managing
  * property operations across the Treasure Coast of Florida.
  *
  * Hierarchy:
@@ -9,6 +9,7 @@
  *     -> MCCO-000 Sovereign (Master Chief Commanding Officer)
  *       -> CMO (EXC Division) -> MKT + SEN Divisions
  *       -> MCCO-001..MCCO-014 (Sovereign Command Units)
+ *       -> SMO-001 (Sovereign Marketing Officer)
  *     -> EXC Division Head -> EXC agents
  *     -> OPS Division Head -> OPS agents
  *     -> INT Division Head -> INT agents
@@ -17,8 +18,8 @@
  *     -> TEC Division Head -> TEC agents
  *     -> WEB Division Head -> WEB agents
  *
- * Fleet composition (382 total):
- *   312 AI Agents (across 10 divisions)
+ * Fleet composition (384 total):
+ *   313 AI Agents (across 10 divisions)
  *    50 Intelligence Officers (5 squads: ALPHA, BRAVO, CHARLIE, DELTA, ECHO)
  *    20 Email AI Agents (4 squads: INTAKE, COMPOSE, NURTURE, MONITOR)
  */
@@ -28,7 +29,7 @@ import { AGENTS, DIVISIONS, getAgentById, getAgentsByDivision } from './registry
 // ── Division metadata with agent counts and leadership ─────────────────────
 
 const DIVISION_META = {
-  MCCO: { agentCount: 15, headAgentId: 'MCCO-000', headTitle: 'MCCO Sovereign', reportsTo: 'CEO', governedDivisions: ['MKT', 'SEN'] },
+  MCCO: { agentCount: 16, headAgentId: 'MCCO-000', headTitle: 'MCCO Sovereign', reportsTo: 'CEO', governedDivisions: ['MKT', 'SEN'] },
   EXC:  { agentCount: 20, headAgentId: 'EXC-001',  headTitle: 'Chief Executive Officer AI', reportsTo: 'CEO' },
   SEN:  { agentCount: 40, headAgentId: 'SEN-001',  headTitle: 'Sentinel Sales Director', reportsTo: 'MCCO-000' },
   OPS:  { agentCount: 45, headAgentId: 'OPS-001',  headTitle: 'Operations Director', reportsTo: 'CEO' },
