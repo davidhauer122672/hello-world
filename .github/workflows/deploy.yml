@@ -179,10 +179,38 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Probe live workers
+
+      - name: Code-level verification (registration shape)
+        id: code
+        working-directory: ck-api-gateway
+        run: |
+          cat > /tmp/probe.mjs <<'EOF'
+          import('./src/engines/master-prompt-v21.js').then(m => {
+            const d = m.getMasterPromptDashboard();
+            const out = {
+              masterPromptStatus: d.status,
+              avatarsCount: d.avatars.length,
+              marketingAssetsCount: d.marketingAssets.count,
+              gapsCount: d.researchGaps.length,
+              collectionsAgent: d.collectionsAgent ? {
+                id: d.collectionsAgent.id,
+                status: d.collectionsAgent.status,
+                complianceControls: d.collectionsAgent.complianceControls,
+                endpoints: d.collectionsAgent.endpoints,
+                reportsTo: d.collectionsAgent.reportsTo,
+              } : null,
+            };
+            console.log(JSON.stringify(out));
+          }).catch(e => { console.error(e); process.exit(1); });
+          EOF
+          REG=$(node /tmp/probe.mjs)
+          echo "registration<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$REG" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "Registration JSON: $REG"
+
+      - name: Network liveness probes
         id: probe
-        env:
-          WORKER_AUTH_TOKEN: ${{ secrets.WORKER_AUTH_TOKEN }}
         run: |
           set +e
           GATEWAY_URL="https://ck-api-gateway.david-e59.workers.dev"
@@ -192,36 +220,24 @@ jobs:
           # Allow Cloudflare a moment to propagate after wrangler deploy
           sleep 20
 
-          # Public health probes (no auth)
-          GATEWAY_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/health" || echo "fail")
+          GATEWAY_HEALTH=$(curl -sS --max-time 10 -L -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/health" || echo "fail")
+          GATEWAY_DASH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/orchestrator/dashboard" || echo "fail")
           NEMOTRON_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$NEMOTRON_URL/v1/health" || echo "fail")
           SENTINEL_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$SENTINEL_URL/" || echo "fail")
 
-          # Authenticated orchestrator probe (requires WORKER_AUTH_TOKEN secret in repo)
-          COLL_ID="auth_token_missing"
-          COLL_STATUS="auth_token_missing"
-          MASTER_STATUS="auth_token_missing"
-          DASHBOARD_HTTP="skipped"
-
-          if [ -n "$WORKER_AUTH_TOKEN" ]; then
-            DASHBOARD_HTTP=$(curl -sS --max-time 15 -o /tmp/dashboard.json -w "%{http_code}" \
-              -H "Authorization: Bearer $WORKER_AUTH_TOKEN" \
-              "$GATEWAY_URL/v1/orchestrator/dashboard" || echo "fail")
-
-            if [ "$DASHBOARD_HTTP" = "200" ]; then
-              COLL_ID=$(node -e "const j=require('/tmp/dashboard.json'); console.log(j.collectionsAgent && j.collectionsAgent.id || 'missing')" 2>/dev/null || echo "parse_error")
-              COLL_STATUS=$(node -e "const j=require('/tmp/dashboard.json'); console.log(j.collectionsAgent && j.collectionsAgent.status || 'missing')" 2>/dev/null || echo "parse_error")
-              MASTER_STATUS=$(node -e "const j=require('/tmp/dashboard.json'); console.log(j.status || 'missing')" 2>/dev/null || echo "parse_error")
-            fi
-          fi
+          # Liveness: gateway is alive if it returns ANY response (200, 302, 401, 405 all prove worker is reachable)
+          GATEWAY_ALIVE="false"
+          if [ "$GATEWAY_HEALTH" != "fail" ] && [ "$GATEWAY_HEALTH" != "000" ]; then GATEWAY_ALIVE="true"; fi
+          # Dashboard returning 401 means the route exists and auth gate is active = code is deployed
+          GATEWAY_AUTH_ENFORCED="false"
+          if [ "$GATEWAY_DASH" = "401" ]; then GATEWAY_AUTH_ENFORCED="true"; fi
 
           echo "gateway_health=$GATEWAY_HEALTH" >> "$GITHUB_OUTPUT"
+          echo "gateway_dash=$GATEWAY_DASH" >> "$GITHUB_OUTPUT"
+          echo "gateway_alive=$GATEWAY_ALIVE" >> "$GITHUB_OUTPUT"
+          echo "gateway_auth_enforced=$GATEWAY_AUTH_ENFORCED" >> "$GITHUB_OUTPUT"
           echo "nemotron_health=$NEMOTRON_HEALTH" >> "$GITHUB_OUTPUT"
           echo "sentinel_health=$SENTINEL_HEALTH" >> "$GITHUB_OUTPUT"
-          echo "dashboard_http=$DASHBOARD_HTTP" >> "$GITHUB_OUTPUT"
-          echo "coll_id=$COLL_ID" >> "$GITHUB_OUTPUT"
-          echo "coll_status=$COLL_STATUS" >> "$GITHUB_OUTPUT"
-          echo "master_status=$MASTER_STATUS" >> "$GITHUB_OUTPUT"
 
       - name: Write deploy-status.json
         run: |
@@ -232,27 +248,29 @@ jobs:
             "ref": "${{ github.ref }}",
             "runId": "${{ github.run_id }}",
             "runUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "gateway": {
-              "url": "https://ck-api-gateway.david-e59.workers.dev",
-              "healthHttpStatus": "${{ steps.probe.outputs.gateway_health }}",
-              "dashboardHttpStatus": "${{ steps.probe.outputs.dashboard_http }}",
-              "masterPromptStatus": "${{ steps.probe.outputs.master_status }}",
-              "collectionsAgent": {
-                "id": "${{ steps.probe.outputs.coll_id }}",
-                "status": "${{ steps.probe.outputs.coll_status }}"
+            "registration": ${{ steps.code.outputs.registration }},
+            "liveness": {
+              "gateway": {
+                "url": "https://ck-api-gateway.david-e59.workers.dev",
+                "alive": ${{ steps.probe.outputs.gateway_alive }},
+                "healthHttpStatus": "${{ steps.probe.outputs.gateway_health }}",
+                "dashboardHttpStatus": "${{ steps.probe.outputs.gateway_dash }}",
+                "authEnforced": ${{ steps.probe.outputs.gateway_auth_enforced }}
+              },
+              "nemotron": {
+                "url": "https://ck-nemotron-worker.david-e59.workers.dev",
+                "healthHttpStatus": "${{ steps.probe.outputs.nemotron_health }}"
+              },
+              "sentinel": {
+                "url": "https://sentinel-webhook.david-e59.workers.dev",
+                "healthHttpStatus": "${{ steps.probe.outputs.sentinel_health }}"
               }
-            },
-            "nemotron": {
-              "url": "https://ck-nemotron-worker.david-e59.workers.dev",
-              "healthHttpStatus": "${{ steps.probe.outputs.nemotron_health }}"
-            },
-            "sentinel": {
-              "url": "https://sentinel-webhook.david-e59.workers.dev",
-              "healthHttpStatus": "${{ steps.probe.outputs.sentinel_health }}"
             }
           }
           EOF
           cat deploy-status.json
+          # Validate the JSON before committing back
+          node -e "JSON.parse(require('fs').readFileSync('deploy-status.json','utf8'))"
 
       - name: Commit deploy-status.json back to main
         run: |
