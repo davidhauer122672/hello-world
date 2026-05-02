@@ -218,6 +218,8 @@ jobs:
           GATEWAY_URL="https://ck-api-gateway.david-e59.workers.dev"
           NEMOTRON_URL="https://ck-nemotron-worker.david-e59.workers.dev"
           SENTINEL_URL="https://sentinel-webhook.david-e59.workers.dev"
+          WEBSITE_URL="https://coastalkey-pm.com"
+          CC_URL="https://ck-command-center.pages.dev"
 
           # Allow Cloudflare a moment to propagate after wrangler deploy
           sleep 20
@@ -226,6 +228,8 @@ jobs:
           GATEWAY_DASH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/orchestrator/dashboard" || echo "fail")
           NEMOTRON_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$NEMOTRON_URL/v1/health" || echo "fail")
           SENTINEL_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$SENTINEL_URL/" || echo "fail")
+          WEBSITE_HEALTH=$(curl -sS --max-time 15 -L -o /dev/null -w "%{http_code}" "$WEBSITE_URL/" || echo "fail")
+          CC_HEALTH=$(curl -sS --max-time 15 -L -o /dev/null -w "%{http_code}" "$CC_URL/" || echo "fail")
 
           # Liveness: any HTTP response (200, 302, 401, 405) proves worker is reachable
           GATEWAY_ALIVE="false"
@@ -233,6 +237,11 @@ jobs:
           # Dashboard returning 401 means route exists and auth gate works = code is deployed
           GATEWAY_AUTH_ENFORCED="false"
           if [ "$GATEWAY_DASH" = "401" ]; then GATEWAY_AUTH_ENFORCED="true"; fi
+          # Pages liveness: 200 (or any 2xx/3xx) means deployed and reachable
+          WEBSITE_ALIVE="false"
+          if [ "$WEBSITE_HEALTH" != "fail" ] && [ "$WEBSITE_HEALTH" != "000" ] && [ "${WEBSITE_HEALTH:0:1}" != "5" ]; then WEBSITE_ALIVE="true"; fi
+          CC_ALIVE="false"
+          if [ "$CC_HEALTH" != "fail" ] && [ "$CC_HEALTH" != "000" ] && [ "${CC_HEALTH:0:1}" != "5" ]; then CC_ALIVE="true"; fi
 
           echo "gateway_health=$GATEWAY_HEALTH" >> "$GITHUB_OUTPUT"
           echo "gateway_dash=$GATEWAY_DASH" >> "$GITHUB_OUTPUT"
@@ -240,6 +249,10 @@ jobs:
           echo "gateway_auth_enforced=$GATEWAY_AUTH_ENFORCED" >> "$GITHUB_OUTPUT"
           echo "nemotron_health=$NEMOTRON_HEALTH" >> "$GITHUB_OUTPUT"
           echo "sentinel_health=$SENTINEL_HEALTH" >> "$GITHUB_OUTPUT"
+          echo "website_health=$WEBSITE_HEALTH" >> "$GITHUB_OUTPUT"
+          echo "website_alive=$WEBSITE_ALIVE" >> "$GITHUB_OUTPUT"
+          echo "cc_health=$CC_HEALTH" >> "$GITHUB_OUTPUT"
+          echo "cc_alive=$CC_ALIVE" >> "$GITHUB_OUTPUT"
 
       - name: Write deploy-status.json
         run: |
@@ -266,6 +279,16 @@ jobs:
               "sentinel": {
                 "url": "https://sentinel-webhook.david-e59.workers.dev",
                 "healthHttpStatus": "${{ steps.probe.outputs.sentinel_health }}"
+              },
+              "website": {
+                "url": "https://coastalkey-pm.com",
+                "alive": ${{ steps.probe.outputs.website_alive }},
+                "httpStatus": "${{ steps.probe.outputs.website_health }}"
+              },
+              "commandCenter": {
+                "url": "https://ck-command-center.pages.dev",
+                "alive": ${{ steps.probe.outputs.cc_alive }},
+                "httpStatus": "${{ steps.probe.outputs.cc_health }}"
               }
             }
           }
