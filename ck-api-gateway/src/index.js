@@ -216,7 +216,7 @@ import { getGoogleAdsDashboard } from './engines/google-ads-campaign.js';
 import { handleTokenDashboard, handleTokenScan, handleTokenRegistry } from './routes/token-maintenance.js';
 import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSalesChannels, handleSalesPlaybooks } from './routes/sales-acquisition.js';
 import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramework } from './routes/market-strategy.js';
-import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
+import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate, handleOrchestratorFleet, handleOrchestratorTriggers, handleOrchestratorDispatch, handleOrchestratorHITL } from './routes/master-prompt.js';
 import { handleDeliveryDashboard, handleDeliveryExecute, handleDeliveryTemplate, handleDeliveryGovernance } from './routes/delivery-protocol.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
@@ -1185,6 +1185,18 @@ export default {
       }
       if (path === '/v1/orchestrator/noi-model' && method === 'POST') {
         return await handleOrchestratorNOICalculate(request, env, ctx);
+      }
+      if (path === '/v1/orchestrator/fleet' && method === 'GET') {
+        return handleOrchestratorFleet();
+      }
+      if (path === '/v1/orchestrator/triggers' && method === 'GET') {
+        return handleOrchestratorTriggers();
+      }
+      if (path === '/v1/orchestrator/dispatch' && method === 'POST') {
+        return await handleOrchestratorDispatch(request, env, ctx);
+      }
+      if (path === '/v1/orchestrator/hitl' && method === 'POST') {
+        return await handleOrchestratorHITL(request, env, ctx);
       }
 
       // ── Delivery Protocol (SGR-001) ──
