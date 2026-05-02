@@ -21,7 +21,7 @@ const healthRouter = require('./routes/health');
 const dashboardRouter = require('./routes/dashboard');
 const workflowsRouter = require('./routes/workflows');
 const standupRouter = require('./routes/standup');
-const strategyRouter = require('./routes/strategy');
+const orchestratorRouter = require('./routes/orchestrator');
 
 // Services
 const { startDailyReport, buildReport } = require('./lib/daily-report');
@@ -30,11 +30,12 @@ const { startDripScheduler } = require('./lib/drip-engine');
 const { startPublishTracker } = require('./lib/social-publisher');
 const { startBackupScheduler, runBackup } = require('./lib/backup');
 const { startCeoStandup } = require('./lib/ceo-standup');
+const { startMasterOrchestrator } = require('./lib/master-orchestrator');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ── Admin auth middleware ─────────────────────────────────────────────────
+// ── Admin auth middleware ─────────────────────────────────────────────────────
 function requireAdminToken(req, res, next) {
   const token = extractBearerToken(req);
   if (!token) {
@@ -50,7 +51,7 @@ function requireAdminToken(req, res, next) {
   return res.status(401).json({ error: 'Unauthorized — invalid or expired token' });
 }
 
-// ── Global security middleware ────────────────────────────────────────────
+// ── Global security middleware ────────────────────────────────────────────────
 app.use(securityHeaders());
 app.use(cors());
 app.use(rateLimiter(100));
@@ -75,7 +76,7 @@ app.use('/api/appointments', appointmentsRouter);
 app.use('/api/payments', paymentsRouter);
 app.use('/api/objections', objectionsRouter);
 
-// ── Protected routes (admin token required) ───────────────────────────────
+// ── Protected routes (admin token required) ─────────────────────────────────
 app.use('/api/dashboard', requireAdminToken, dashboardRouter);
 app.use('/api/email', requireAdminToken, emailRouter);
 app.use('/api/social', requireAdminToken, socialRouter);
@@ -83,7 +84,7 @@ app.use('/api/visuals', requireAdminToken, visualsRouter);
 app.use('/api/drip', requireAdminToken, dripRouter);
 app.use('/api/workflows', requireAdminToken, workflowsRouter);
 app.use('/api/standup', requireAdminToken, standupRouter);
-app.use('/api/strategy', requireAdminToken, strategyRouter);
+app.use('/api/orchestrator', requireAdminToken, orchestratorRouter);
 
 // Manual report trigger (protected)
 app.post('/api/report/send', requireAdminToken, asyncWrap(async (req, res) => {
@@ -136,4 +137,5 @@ server = app.listen(PORT, () => {
   startPublishTracker();
   startBackupScheduler();
   startCeoStandup();
+  startMasterOrchestrator();
 });
