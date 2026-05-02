@@ -21,81 +21,12 @@
  */
 
 /**
- * WF2 - Content Calendar → Direct Platform Publish
+ * WF2 - Content Calendar → Buffer Publish
  *
  * Triggers when a Content Calendar record's "Status" field changes to "Approved".
- * Prepares the post via the /v1/content/publish endpoint for direct
- * multi-platform posting (Instagram, Facebook, LinkedIn, X, Alignable).
+ * Pushes the post to Buffer via the /v1/content/publish endpoint for automated
+ * multi-platform scheduling (Instagram, Facebook, LinkedIn, X, Alignable).
  *
- * Airtable Automation Setup (11 steps):
- *   1. Open Airtable base → Content Calendar table
- *   2. Click Automations → Create Automation
- *   3. Trigger: "When a record matches conditions"
- *      - Table: Content Calendar
- *      - Condition: Status = "Approved"
- *   4. Action: "Send webhook"
- *      - Method: POST
- *      - URL: https://ck-api-gateway.david-e59.workers.dev/v1/content/publish
- *      - Headers: Authorization: Bearer {WORKER_AUTH_TOKEN}
- *      - Headers: Content-Type: application/json
- *   5. Body: {"recordId": "{{record.id}}"}
- *   6. Test the automation with a sample record
- *   7. Enable the automation
- *   8. Verify publish payload via GET /v1/health?deep=true
- *   9. Confirm Airtable record updates with publish notes
- *  10. Check audit log at GET /v1/audit for publish confirmation
- *  11. Monitor #marketing-ops Slack channel for publish notifications
- *
- * @type {TriggerConfig}
- */
-export const WF2_CONTENT_PUBLISH = {
-  id: 'wf2-content-publish',
-  description: 'Publish approved Content Calendar records for direct multi-platform posting',
-  trigger: {
-    type: 'fieldChange',
-    table: 'Content Calendar',
-    field: 'Status',
-  },
-  conditions: {
-    status: {
-      equals: 'Approved',
-      matchValues: ['Approved'],
-      field: 'Status',
-    },
-    requiredFields: ['Caption', 'Platform'],
-  },
-  action: {
-    method: 'POST',
-    endpoint: '/v1/content/publish',
-    payload: {
-      recordId: '{{record.id}}',
-    },
-    headers: {
-      'Authorization': 'Bearer {{WORKER_AUTH_TOKEN}}',
-      'Content-Type': 'application/json',
-    },
-  },
-  mode: {
-    type: 'direct',
-    description: 'Returns posting payload with copy-paste-ready content for each platform',
-  },
-  platforms: ['instagram', 'facebook', 'linkedin', 'x', 'alignable'],
-  slack_channel: '#marketing-ops',
-  airtable_table_id: 'tblEPr4f2lMz6ruxF',
-  airtable_setup_instructions: [
-    '1. Open Airtable → Content Calendar table (tblEPr4f2lMz6ruxF)',
-    '2. Go to Automations → Create new automation',
-    '3. Trigger: "When a record matches conditions"',
-    '4. Table: Content Calendar',
-    '5. Condition: Status = "Approved"',
-    '6. Action: "Run a script" or "Send webhook"',
-    '7. Webhook URL: https://ck-api-gateway.david-e59.workers.dev/v1/content/publish',
-    '8. Method: POST',
-    '9. Headers: Authorization: Bearer {WORKER_AUTH_TOKEN}',
-    '10. Body: { "recordId": "{Record ID}" }',
-    '11. Enable the automation',
-  ],
-};
 
 /**
  * WF3 - Investor Escalation Workflow
@@ -208,6 +139,64 @@ export const SCAA1_BATTLE_PLAN = {
  *
  * @type {Object.<string, {name: string, purpose: string}>}
  */
+/**
+ * WF2 - Content Publish Workflow (Media Automation Pipeline)
+ *
+ * Triggers when a Content Calendar record's "Status" field changes to "Approved".
+ * Generates platform-optimized content via Claude AI for multi-platform scheduling.
+ * Updates Airtable with publish status and writes to the AI Log for audit trail.
+ *
+ * This is the core trigger for the media automation engine.
+ *
+ * @type {TriggerConfig}
+ */
+export const WF2_CONTENT_PUBLISH = {
+  id: 'wf2-content-publish',
+  description: 'Publish approved content via Claude AI for multi-platform distribution',
+  trigger: {
+    type: 'fieldChange',
+    table: 'Content Calendar',
+    field: 'Status',
+  },
+  conditions: {
+    status: {
+      equals: 'Approved',
+      field: 'Status',
+    },
+    requiredFields: ['Caption', 'Platform'],
+  },
+  action: {
+    method: 'POST',
+    endpoint: '/v1/content/publish',
+    payload: {
+      recordId: '{{record.id}}',
+    },
+    headers: {
+      Authorization: 'Bearer {{WORKER_AUTH_TOKEN}}',
+      'Content-Type': 'application/json',
+    },
+  },
+  fallback: {
+    mode: 'manual',
+    description: 'Returns copy-paste payload for manual platform posting when needed',
+  },
+  platforms: ['instagram', 'facebook', 'linkedin', 'x'],
+  slack_channel: '#marketing-ops',
+  airtable_table_id: 'tblEPr4f2lMz6ruxF',
+  airtable_setup_instructions: [
+    '1. Open Airtable → Content Calendar table (tblEPr4f2lMz6ruxF)',
+    '2. Go to Automations → Create new automation',
+    '3. Trigger: "When a record matches conditions"',
+    '4. Table: Content Calendar',
+    '5. Condition: Status = "Approved"',
+    '6. Action: "Run a script" or "Send webhook"',
+    '7. Webhook URL: https://ck-api-gateway.david-e59.workers.dev/v1/content/publish',
+    '8. Method: POST',
+    '9. Headers: Authorization: Bearer {WORKER_AUTH_TOKEN}',
+    '10. Body: { "recordId": "{Record ID}" }',
+    '11. Enable the automation',
+  ],
+};
 
 export const META_ADS_BOOST = {
   id: 'meta-ads-boost',
