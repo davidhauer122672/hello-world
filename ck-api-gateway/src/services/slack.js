@@ -41,19 +41,22 @@ export const SLACK_APPS = {
 export const CHANNELS = {
   // ── Revenue & Sales ──
   SALES_ALERTS: {
-    id: '#sales-alerts',
+    id: 'C0AP1HRFTBL',
+    name: '#sales-alerts',
     purpose: 'New leads, conversions, battle plan completions',
     division: 'SEN',
     priority: 'high',
   },
   INVESTOR_ESCALATIONS: {
-    id: '#investor-escalations',
+    id: 'C0AQU5KPSK0',
+    name: '#investor-escalations',
     purpose: 'High-value investor lead escalations, WF-3 triggers',
     division: 'SEN',
     priority: 'critical',
   },
   PIPELINE_UPDATES: {
-    id: '#pipeline-updates',
+    id: 'C0AQPRJ3P5H',
+    name: '#pipeline-updates',
     purpose: 'Pipeline stage changes, deal progression, revenue forecasts',
     division: 'SEN',
     priority: 'medium',
@@ -61,13 +64,15 @@ export const CHANNELS = {
 
   // ── Operations ──
   OPS_ALERTS: {
-    id: '#ops-alerts',
+    id: 'C0B197HSG4S',
+    name: '#ops-alerts',
     purpose: 'Maintenance tickets, inspection reminders, guest issues',
     division: 'OPS',
     priority: 'high',
   },
   PROPERTY_OPS: {
-    id: '#property-ops',
+    id: 'C0AQU5LDKHC',
+    name: '#property-ops',
     purpose: 'Turnover schedules, cleaning coordination, vendor dispatch',
     division: 'OPS',
     priority: 'medium',
@@ -75,13 +80,15 @@ export const CHANNELS = {
 
   // ── Technology ──
   TECH_ALERTS: {
-    id: '#tech-alerts',
+    id: 'C0ARQFF6Y9W',
+    name: '#tech-alerts',
     purpose: 'System health, API errors, deployment status, uptime alerts',
     division: 'TEC',
     priority: 'critical',
   },
   DEPLOY_LOG: {
-    id: '#deploy-log',
+    id: 'C0AQEPK80GP',
+    name: '#deploy-log',
     purpose: 'CI/CD pipeline runs, deployment confirmations, rollbacks',
     division: 'TEC',
     priority: 'medium',
@@ -89,13 +96,15 @@ export const CHANNELS = {
 
   // ── Intelligence ──
   INTEL_BRIEFS: {
-    id: '#intel-briefs',
+    id: 'C0AR94FMV9P',
+    name: '#intel-briefs',
     purpose: 'Market intelligence, competitor alerts, data anomalies',
     division: 'INT',
     priority: 'medium',
   },
   SECURITY_ALERTS: {
-    id: '#security-alerts',
+    id: 'C0ARQFGA864',
+    name: '#security-alerts',
     purpose: 'Auth failures, rate limit breaches, threat detection',
     division: 'INT',
     priority: 'critical',
@@ -103,7 +112,8 @@ export const CHANNELS = {
 
   // ── Marketing ──
   MARKETING_OPS: {
-    id: '#marketing-ops',
+    id: 'C0B1N498HC1',
+    name: '#marketing-ops',
     purpose: 'Campaign launches, content approvals, social scheduling',
     division: 'MKT',
     priority: 'medium',
@@ -111,7 +121,8 @@ export const CHANNELS = {
 
   // ── Finance ──
   FINANCE_ALERTS: {
-    id: '#finance-alerts',
+    id: 'C0AQSQTKC9K',
+    name: '#finance-alerts',
     purpose: 'Revenue milestones, invoice alerts, budget thresholds',
     division: 'FIN',
     priority: 'high',
@@ -119,7 +130,8 @@ export const CHANNELS = {
 
   // ── Executive ──
   EXEC_BRIEFING: {
-    id: '#exec-briefing',
+    id: 'C0AQPRKBV6X',
+    name: '#exec-briefing',
     purpose: 'Daily summaries, KPI dashboards, strategic alerts',
     division: 'EXC',
     priority: 'high',
@@ -127,7 +139,8 @@ export const CHANNELS = {
 
   // ── General ──
   GENERAL: {
-    id: '#general',
+    id: 'C0AH6M0N2J0',
+    name: '#general',
     purpose: 'System-wide announcements and status updates',
     division: null,
     priority: 'low',
@@ -138,52 +151,52 @@ export const CHANNELS = {
 
 const EVENT_ROUTING = {
   // Lead lifecycle
-  'lead.created':           CHANNELS.SALES_ALERTS.id,
-  'lead.qualified':         CHANNELS.SALES_ALERTS.id,
-  'lead.converted':         CHANNELS.SALES_ALERTS.id,
-  'lead.investor_flagged':  CHANNELS.INVESTOR_ESCALATIONS.id,
-  'lead.nurture_enrolled':  CHANNELS.PIPELINE_UPDATES.id,
+  'lead.created':           'C0AP1HRFTBL',
+  'lead.qualified':         'C0AP1HRFTBL',
+  'lead.converted':         'C0AP1HRFTBL',
+  'lead.investor_flagged':  'C0AQU5KPSK0',
+  'lead.nurture_enrolled':  'C0AQPRJ3P5H',
 
   // Workflows
-  'workflow.scaa1':         CHANNELS.SALES_ALERTS.id,
-  'workflow.wf3':           CHANNELS.INVESTOR_ESCALATIONS.id,
-  'workflow.wf4':           CHANNELS.PIPELINE_UPDATES.id,
+  'workflow.scaa1':         'C0AP1HRFTBL',
+  'workflow.wf3':           'C0AQU5KPSK0',
+  'workflow.wf4':           'C0AQPRJ3P5H',
 
   // Call events
-  'call.completed':         CHANNELS.SALES_ALERTS.id,
-  'call.failed':            CHANNELS.OPS_ALERTS.id,
+  'call.completed':         'C0AP1HRFTBL',
+  'call.failed':            'C0B197HSG4S',
 
   // Operations
-  'maintenance.created':    CHANNELS.OPS_ALERTS.id,
-  'maintenance.urgent':     CHANNELS.OPS_ALERTS.id,
-  'inspection.due':         CHANNELS.PROPERTY_OPS.id,
-  'turnover.scheduled':     CHANNELS.PROPERTY_OPS.id,
-  'guest.issue':            CHANNELS.OPS_ALERTS.id,
+  'maintenance.created':    'C0B197HSG4S',
+  'maintenance.urgent':     'C0B197HSG4S',
+  'inspection.due':         'C0AQU5LDKHC',
+  'turnover.scheduled':     'C0AQU5LDKHC',
+  'guest.issue':            'C0B197HSG4S',
 
   // Technology
-  'system.health':          CHANNELS.TECH_ALERTS.id,
-  'system.error':           CHANNELS.TECH_ALERTS.id,
-  'deploy.success':         CHANNELS.DEPLOY_LOG.id,
-  'deploy.failure':         CHANNELS.TECH_ALERTS.id,
-  'api.rate_limit':         CHANNELS.SECURITY_ALERTS.id,
-  'api.auth_failure':       CHANNELS.SECURITY_ALERTS.id,
+  'system.health':          'C0ARQFF6Y9W',
+  'system.error':           'C0ARQFF6Y9W',
+  'deploy.success':         'C0AQEPK80GP',
+  'deploy.failure':         'C0ARQFF6Y9W',
+  'api.rate_limit':         'C0ARQFGA864',
+  'api.auth_failure':       'C0ARQFGA864',
 
   // Intelligence
-  'intel.scan_complete':    CHANNELS.INTEL_BRIEFS.id,
-  'intel.anomaly':          CHANNELS.INTEL_BRIEFS.id,
-  'intel.threat':           CHANNELS.SECURITY_ALERTS.id,
+  'intel.scan_complete':    'C0AR94FMV9P',
+  'intel.anomaly':          'C0AR94FMV9P',
+  'intel.threat':           'C0ARQFGA864',
 
   // Marketing
-  'campaign.launched':      CHANNELS.MARKETING_OPS.id,
-  'content.published':      CHANNELS.MARKETING_OPS.id,
+  'campaign.launched':      'C0B1N498HC1',
+  'content.published':      'C0B1N498HC1',
 
   // Finance
-  'revenue.milestone':      CHANNELS.FINANCE_ALERTS.id,
-  'invoice.overdue':        CHANNELS.FINANCE_ALERTS.id,
+  'revenue.milestone':      'C0AQSQTKC9K',
+  'invoice.overdue':        'C0AQSQTKC9K',
 
   // Executive
-  'exec.daily_brief':       CHANNELS.EXEC_BRIEFING.id,
-  'exec.kpi_alert':         CHANNELS.EXEC_BRIEFING.id,
+  'exec.daily_brief':       'C0AQPRKBV6X',
+  'exec.kpi_alert':         'C0AQPRKBV6X',
 };
 
 // ── Core Messaging ──────────────────────────────────────────────────────────────
