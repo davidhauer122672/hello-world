@@ -93,7 +93,7 @@ canvas{display:block;position:fixed;top:0;left:0;z-index:0}
     <div class="metric"><span class="metric-label">ARR</span><span class="metric-val b" id="m-arr">$0</span></div>
     <div class="metric"><span class="metric-label">Properties</span><span class="metric-val" id="m-props">0</span></div>
     <div class="metric"><span class="metric-label">Avg Fee</span><span class="metric-val" id="m-fee">$0</span></div>
-    <div class="metric"><span class="metric-label">AI Fleet</span><span class="metric-val b" id="m-fleet">383</span></div>
+    <div class="metric"><span class="metric-label">AI Fleet</span><span class="metric-val b" id="m-fleet">384</span></div>
     <div class="metric"><span class="metric-label">Tech IP Value</span><span class="metric-val g" id="m-ip">$0</span></div>
     <div class="metric"><span class="metric-label">SaaS Multiple</span><span class="metric-val r" id="m-mult">0x</span></div>
     <div class="metric"><span class="metric-label">Growth Rate</span><span class="metric-val g" id="m-growth">0%</span></div>
@@ -132,13 +132,13 @@ canvas{display:block;position:fixed;top:0;left:0;z-index:0}
       <span class="info">PROPTECH SECTOR M&A ACTIVITY UP 34% — MULTIPLES EXPANDING TO 12-15x</span>
       <span class="hot">TARIFF POLICY SHIFTS IMPACT CONSTRUCTION COSTS +8.3%</span>
       <span class="bull">AI-POWERED PROPERTY MGMT FIRMS SEE 2.4x FASTER CLIENT ACQUISITION</span>
-      <span class="info">COASTAL KEY 383-AGENT AI FLEET — SOVEREIGN OPERATIONS LIVE</span>
+      <span class="info">COASTAL KEY 384-AGENT AI FLEET — SOVEREIGN OPERATIONS LIVE</span>
       <span class="hot">FED HOLDS AT 4.25% — MARKETS WATCH FOR Q3 CUT SIGNAL</span>
       <span class="bull">FLORIDA LUXURY RE +5.2% YOY — TREASURE COAST OUTPERFORMS STATE AVG</span>
       <span class="info">PROPTECH SECTOR M&A ACTIVITY UP 34% — MULTIPLES EXPANDING TO 12-15x</span>
       <span class="hot">TARIFF POLICY SHIFTS IMPACT CONSTRUCTION COSTS +8.3%</span>
       <span class="bull">AI-POWERED PROPERTY MGMT FIRMS SEE 2.4x FASTER CLIENT ACQUISITION</span>
-      <span class="info">COASTAL KEY 383-AGENT AI FLEET — SOVEREIGN OPERATIONS LIVE</span>
+      <span class="info">COASTAL KEY 384-AGENT AI FLEET — SOVEREIGN OPERATIONS LIVE</span>
     </div>
   </div>
 </div>
@@ -153,9 +153,9 @@ import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-/* ══════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════
    ENTERPRISE VALUATION ENGINE
-   ══════════════════════════════════════════════════════════ */
+   ════════════════════════════════════════════════════════ */
 const ECON = {
   fedRate:4.25, cpi:2.4, gdp:2.3, sp500:6218, mortgage30y:5.82,
   flReYoY:5.2, propTechMult:12.5, tcPopGrowth:3.1,
@@ -164,7 +164,7 @@ const ECON = {
 
 const CK = {
   properties:47, avgFee:295, growthMoM:18,
-  aiFleet:383, techDevCost:850000, brandValue:120000,
+  aiFleet:384, techDevCost:850000, brandValue:120000,
   saasMultiple:12.5, startDate:new Date('2024-06-01'),
   tiers:{select:195,premier:295,platinum:395},
   tierMix:{select:0.30,premier:0.45,platinum:0.25}
@@ -201,9 +201,9 @@ const PHASES=['DAILY','WEEKLY','MONTHLY','ANNUAL','5-YEAR','1% IMPACT'];
 const PHASE_DUR=30000;
 let currentPhase=0, phaseStart=0;
 
-/* ══════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════
    THREE.JS SCENE
-   ══════════════════════════════════════════════════════════ */
+   ════════════════════════════════════════════════════════ */
 const W=window.innerWidth, H=window.innerHeight;
 const scene=new THREE.Scene();
 scene.fog=new THREE.FogExp2(0x020208,0.015);
@@ -396,9 +396,9 @@ starGeo.setAttribute('position',new THREE.BufferAttribute(starPos,3));
 const starMat=new THREE.PointsMaterial({color:0x334466,size:0.08,transparent:true,opacity:0.6});
 scene.add(new THREE.Points(starGeo,starMat));
 
-/* ══════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════
    ANIMATION + DATA CYCLE
-   ══════════════════════════════════════════════════════════ */
+   ════════════════════════════════════════════════════════ */
 const clock=new THREE.Clock();
 let lightningTimer=0;
 phaseStart=Date.now();
