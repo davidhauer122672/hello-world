@@ -166,3 +166,82 @@ jobs:
             npx wrangler deploy && break
             echo "Attempt $i failed, retrying in 15s..." && sleep 15
           done
+
+  smoke-test:
+    name: Live Smoke Test and Status Record
+    needs: [deploy-gateway, deploy-sentinel, deploy-nemotron, deploy-website, deploy-command-center]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe live workers
+        id: probe
+        run: |
+          set +e
+          GATEWAY_URL="https://ck-api-gateway.david-e59.workers.dev"
+          NEMOTRON_URL="https://ck-nemotron-worker.david-e59.workers.dev"
+          SENTINEL_URL="https://sentinel-webhook.david-e59.workers.dev"
+
+          # Allow Cloudflare a moment to propagate after wrangler deploy
+          sleep 20
+
+          DASHBOARD=$(curl -sS --max-time 15 "$GATEWAY_URL/v1/orchestrator/dashboard" || echo '{"error":"unreachable"}')
+
+          COLL_ID=$(echo "$DASHBOARD" | node -e "let s=''; process.stdin.on('data',d=>s+=d); process.stdin.on('end',()=>{ try{const j=JSON.parse(s);console.log(j.collectionsAgent && j.collectionsAgent.id || 'missing')}catch(e){console.log('parse_error')} })")
+          COLL_STATUS=$(echo "$DASHBOARD" | node -e "let s=''; process.stdin.on('data',d=>s+=d); process.stdin.on('end',()=>{ try{const j=JSON.parse(s);console.log(j.collectionsAgent && j.collectionsAgent.status || 'missing')}catch(e){console.log('parse_error')} })")
+          MASTER_STATUS=$(echo "$DASHBOARD" | node -e "let s=''; process.stdin.on('data',d=>s+=d); process.stdin.on('end',()=>{ try{const j=JSON.parse(s);console.log(j.status||'missing')}catch(e){console.log('parse_error')} })")
+
+          NEMOTRON_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$NEMOTRON_URL/v1/health" || echo "fail")
+          SENTINEL_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$SENTINEL_URL/" || echo "fail")
+
+          echo "coll_id=$COLL_ID" >> "$GITHUB_OUTPUT"
+          echo "coll_status=$COLL_STATUS" >> "$GITHUB_OUTPUT"
+          echo "master_status=$MASTER_STATUS" >> "$GITHUB_OUTPUT"
+          echo "nemotron_health=$NEMOTRON_HEALTH" >> "$GITHUB_OUTPUT"
+          echo "sentinel_health=$SENTINEL_HEALTH" >> "$GITHUB_OUTPUT"
+
+      - name: Write deploy-status.json
+        run: |
+          cat > deploy-status.json <<EOF
+          {
+            "lastVerifiedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "commit": "${{ github.sha }}",
+            "ref": "${{ github.ref }}",
+            "runId": "${{ github.run_id }}",
+            "runUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "gateway": {
+              "url": "https://ck-api-gateway.david-e59.workers.dev",
+              "masterPromptStatus": "${{ steps.probe.outputs.master_status }}",
+              "collectionsAgent": {
+                "id": "${{ steps.probe.outputs.coll_id }}",
+                "status": "${{ steps.probe.outputs.coll_status }}"
+              }
+            },
+            "nemotron": {
+              "url": "https://ck-nemotron-worker.david-e59.workers.dev",
+              "healthHttpStatus": "${{ steps.probe.outputs.nemotron_health }}"
+            },
+            "sentinel": {
+              "url": "https://sentinel-webhook.david-e59.workers.dev",
+              "healthHttpStatus": "${{ steps.probe.outputs.sentinel_health }}"
+            }
+          }
+          EOF
+          cat deploy-status.json
+
+      - name: Commit deploy-status.json back to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add deploy-status.json
+          if git diff --cached --quiet; then
+            echo "No status change."
+          else
+            git commit -m "Record live deploy verification for ${{ github.sha }} [skip ci]"
+            git push
+          fi
