@@ -1,15 +1,17 @@
 {
-  "lastVerifiedAt": "2026-05-02T13:18:21Z",
-  "commit": "761398332da487305fc6c9af90c423b1a6d25bb1",
+  "lastVerifiedAt": "2026-05-02T13:24:39Z",
+  "commit": "d02ecfc59648848e8693c7b7f6435af56cbc17b4",
   "ref": "refs/heads/main",
-  "runId": "25252721852",
-  "runUrl": "https://github.com/Coastal-Key/hello-world/actions/runs/25252721852",
+  "runId": "25252833860",
+  "runUrl": "https://github.com/Coastal-Key/hello-world/actions/runs/25252833860",
   "gateway": {
     "url": "https://ck-api-gateway.david-e59.workers.dev",
-    "masterPromptStatus": "parse_error",
+    "healthHttpStatus": "302",
+    "dashboardHttpStatus": "skipped",
+    "masterPromptStatus": "auth_token_missing",
     "collectionsAgent": {
-      "id": "parse_error",
-      "status": "parse_error"
+      "id": "auth_token_missing",
+      "status": "auth_token_missing"
     }
   },
   "nemotron": {
