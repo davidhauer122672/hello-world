@@ -1,0 +1,42 @@
+{
+  "project": "thg-app",
+  "pagesUrl": "thg-app.pages.dev",
+  "customDomains": [
+    {
+      "domain": "app.traceyhuntergroup.com",
+      "type": "CNAME",
+      "target": "thg-app.pages.dev",
+      "proxied": true,
+      "ssl": "full",
+      "status": "pending"
+    }
+  ],
+  "dnsRecords": [
+    {
+      "type": "CNAME",
+      "name": "app",
+      "content": "thg-app.pages.dev",
+      "proxied": true,
+      "comment": "THG App — Cloudflare Pages custom domain"
+    }
+  ],
+  "verification": {
+    "steps": [
+      "1. Go to dash.cloudflare.com > Pages > thg-app > Custom domains",
+      "2. Click 'Set up a custom domain'",
+      "3. Enter: app.traceyhuntergroup.com",
+      "4. Cloudflare auto-creates the CNAME if the zone is on Cloudflare",
+      "5. Wait for SSL certificate provisioning (usually < 5 minutes)",
+      "6. Run: npm run test:domain to verify everything works"
+    ]
+  },
+  "expectedHeaders": {
+    "x-frame-options": "DENY",
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "strict-origin-when-cross-origin"
+  },
+  "expectedRedirects": {
+    "https://www.traceyhuntergroup.com": "https://app.traceyhuntergroup.com",
+    "http://app.traceyhuntergroup.com": "https://app.traceyhuntergroup.com"
+  }
+}
