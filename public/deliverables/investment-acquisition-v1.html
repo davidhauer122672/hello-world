@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key — Investment Acquisition Due Diligence v1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0a1628;--gold:#c9a84c;--slate:#2d3748;--red:#c53030;--green:#276749}
+@media print{body{font-size:10pt}.no-print{display:none!important}section{page-break-inside:avoid}}
+body{font-family:'Inter',sans-serif;background:#fff;color:var(--slate);line-height:1.6}
+.doc{max-width:880px;margin:0 auto;padding:50px 36px}
+.hdr{text-align:center;border-bottom:3px solid var(--gold);padding-bottom:32px;margin-bottom:40px}
+.hdr .cls{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);font-weight:700}
+.hdr h1{font-family:'EB Garamond',serif;font-size:32px;color:var(--navy);margin:8px 0}
+.hdr .sub{font-size:13px;color:#718096}
+.hdr .ver{display:inline-block;background:var(--navy);color:var(--gold);padding:3px 14px;border-radius:3px;font-size:11px;font-weight:600;margin-top:12px}
+h2{font-family:'EB Garamond',serif;font-size:22px;color:var(--navy);margin:32px 0 12px;border-left:4px solid var(--gold);padding-left:14px}
+.note{background:#f7fafc;border:1px solid #e2e8f0;padding:14px 18px;border-radius:6px;font-size:13px;margin:16px 0;color:#4a5568}
+.q{background:#fff;border:1px solid #e2e8f0;border-left:4px solid var(--gold);padding:16px 20px;margin:12px 0;border-radius:0 6px 6px 0}
+.q .num{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.q .txt{font-size:14px;font-weight:600;color:var(--navy);margin:4px 0 10px}
+.flags{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.flag{font-size:12px;padding:6px 10px;border-radius:4px}
+.flag.red{background:#fff5f5;border:1px solid #feb2b2;color:var(--red)}
+.flag.grn{background:#f0fff4;border:1px solid #9ae6b4;color:var(--green)}
+.flag strong{font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.score{font-size:11px;color:#a0aec0;margin-top:6px;font-style:italic}
+.summary{background:var(--navy);color:#fff;padding:28px;border-radius:8px;margin:32px 0}
+.summary h3{font-family:'EB Garamond',serif;font-size:20px;color:var(--gold);margin-bottom:12px}
+.summary .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:13px}
+.summary .row:last-child{border:none}
+.summary .pts{color:var(--gold);font-weight:600}
+.ft{text-align:center;margin-top:50px;padding-top:24px;border-top:2px solid var(--gold);font-size:12px;color:#a0aec0}
+</style>
+</head>
+<body>
+<div class="doc">
+<div class="hdr">
+<div class="cls">Confidential — Investor Use Only</div>
+<h1>Investment Acquisition Due Diligence Framework</h1>
+<div class="sub">35 Elite Questions Across 5 Domains — Buy-Side & Sell-Side Positioning</div>
+<div class="ver">v1.0 — CK-INV-001</div>
+</div>
+
+<div class="note"><strong>Dual Positioning:</strong> Each question serves both the <strong>buy-side</strong> (acquirer evaluating a target) and the <strong>sell-side</strong> (owner preparing for exit). Buy-side: use red/green flags to score risk. Sell-side: ensure your answers land in the green before going to market.</div>
+
+<h2>Section 1: Financial Integrity</h2>
+
+<div class="q"><div class="num">FI-01</div><div class="txt">What percentage of revenue is recurring vs. one-time? Provide 24-month trend.</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> &lt;50% recurring; declining trend; heavy reliance on project-based income</div><div class="flag grn"><strong>Green Flag:</strong> &gt;75% recurring; growing MRR; predictable cash flow with low churn</div></div><div class="score">Score 1-5: 5 = 90%+ recurring with &lt;5% monthly churn</div></div>
+
+<div class="q"><div class="num">FI-02</div><div class="txt">Provide gross margin and EBITDA margin for each of the last 3 fiscal years.</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Declining margins; GM below 40%; EBITDA negative or erratic</div><div class="flag grn"><strong>Green Flag:</strong> GM &gt;60%; EBITDA &gt;20%; steady or improving trajectory</div></div><div class="score">Score 1-5: 5 = GM &gt;65% with EBITDA &gt;25% and upward trend</div></div>
+
+<div class="q"><div class="num">FI-03</div><div class="txt">Detail all capital expenditures over $5,000 in the last 24 months. What is the remaining useful life of each asset?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Deferred maintenance; aging equipment; no capex budget</div><div class="flag grn"><strong>Green Flag:</strong> Proactive replacement schedule; documented asset register; funded reserves</div></div><div class="score">Score 1-5: 5 = Full asset register with funded replacement schedule</div></div>
+
+<div class="q"><div class="num">FI-04</div><div class="txt">What is the average days sales outstanding (DSO) and what percentage of AR is over 90 days?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> DSO &gt;60 days; &gt;15% AR past 90 days; no collections process</div><div class="flag grn"><strong>Green Flag:</strong> DSO &lt;30 days; autopay enrollment &gt;80%; clean AR aging</div></div><div class="score">Score 1-5: 5 = DSO &lt;15 days with &gt;90% autopay</div></div>
+
+<div class="q"><div class="num">FI-05</div><div class="txt">Provide a 12-month cash flow forecast. What are the assumptions behind it?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No forecast exists; unrealistic growth assumptions; cash-negative months</div><div class="flag grn"><strong>Green Flag:</strong> Conservative model; stress-tested scenarios; 6+ months runway</div></div><div class="score">Score 1-5: 5 = Board-approved forecast with quarterly variance analysis</div></div>
+
+<div class="q"><div class="num">FI-06</div><div class="txt">What is the total debt structure? Include all notes, LOCs, equipment leases, and personal guarantees.</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Debt/EBITDA &gt;3x; personal guarantees; balloon payments due within 12 months</div><div class="flag grn"><strong>Green Flag:</strong> Debt-free or &lt;1x EBITDA; no personal guarantees; long-term fixed rates</div></div><div class="score">Score 1-5: 5 = Zero debt with fully funded operations</div></div>
+
+<div class="q"><div class="num">FI-07</div><div class="txt">What is the customer lifetime value (LTV) and customer acquisition cost (CAC)? What is the LTV:CAC ratio?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> LTV:CAC &lt;3:1; rising CAC; no tracking system</div><div class="flag grn"><strong>Green Flag:</strong> LTV:CAC &gt;5:1; declining CAC; segmented by channel</div></div><div class="score">Score 1-5: 5 = LTV:CAC &gt;7:1 with channel-level attribution</div></div>
+
+<h2>Section 2: Operational Risk</h2>
+
+<div class="q"><div class="num">OR-01</div><div class="txt">If the founder/CEO were removed tomorrow, how long before operations degrade? Who assumes command?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Single point of failure; no documented SOPs; tribal knowledge</div><div class="flag grn"><strong>Green Flag:</strong> Documented succession plan; ops manual &gt;200 pages; trained #2</div></div><div class="score">Score 1-5: 5 = Operations run 90+ days without founder intervention</div></div>
+
+<div class="q"><div class="num">OR-02</div><div class="txt">What percentage of revenue depends on the top 3 vendors? Are contracts transferable on acquisition?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> &gt;50% single-vendor; verbal agreements; non-transferable contracts</div><div class="flag grn"><strong>Green Flag:</strong> No vendor &gt;20%; written contracts; assignment clauses included</div></div><div class="score">Score 1-5: 5 = Fully diversified with transferable multi-year contracts</div></div>
+
+<div class="q"><div class="num">OR-03</div><div class="txt">Detail all insurance coverage: GL, E&O, workers comp, cyber, umbrella. When were policies last reviewed?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Gaps in coverage; no E&O; policies expired or under-limit</div><div class="flag grn"><strong>Green Flag:</strong> Comprehensive coverage; annual broker review; umbrella &gt;$2M</div></div><div class="score">Score 1-5: 5 = Full coverage suite reviewed within 90 days</div></div>
+
+<div class="q"><div class="num">OR-04</div><div class="txt">List all regulatory licenses, permits, and certifications. Which expire within 12 months?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Missing licenses; expired permits; no renewal calendar</div><div class="flag grn"><strong>Green Flag:</strong> All current; automated renewal alerts; compliance officer assigned</div></div><div class="score">Score 1-5: 5 = 100% current with 90-day advance renewal system</div></div>
+
+<div class="q"><div class="num">OR-05</div><div class="txt">What is the average employee tenure? What is annual turnover? What does onboarding cost per hire?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> &gt;40% annual turnover; avg tenure &lt;1 year; no training program</div><div class="flag grn"><strong>Green Flag:</strong> &lt;15% turnover; avg tenure &gt;3 years; documented onboarding</div></div><div class="score">Score 1-5: 5 = &lt;10% turnover with certified training pipeline</div></div>
+
+<div class="q"><div class="num">OR-06</div><div class="txt">What technology systems run the business? What is the estimated technical debt? When was the last security audit?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Spreadsheet-dependent; no backups; no security audit ever</div><div class="flag grn"><strong>Green Flag:</strong> Modern stack; automated backups; annual pen test; SOC 2 path</div></div><div class="score">Score 1-5: 5 = Cloud-native with automated CI/CD and annual security audit</div></div>
+
+<div class="q"><div class="num">OR-07</div><div class="txt">Are all operating procedures documented? Can a new hire execute core workflows from documentation alone?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No SOPs; processes live in people's heads; training is shadowing</div><div class="flag grn"><strong>Green Flag:</strong> Complete SOP library; video training; tested with new hires</div></div><div class="score">Score 1-5: 5 = ISO-grade documentation with quarterly review cycle</div></div>
+
+<h2>Section 3: Market Position</h2>
+
+<div class="q"><div class="num">MP-01</div><div class="txt">What is your defensible competitive moat? How long would it take a well-funded competitor to replicate it?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No moat; commodity service; easily replicated</div><div class="flag grn"><strong>Green Flag:</strong> Technology IP; exclusive contracts; brand equity; network effects</div></div><div class="score">Score 1-5: 5 = Multiple reinforcing moats with 3+ year replication barrier</div></div>
+
+<div class="q"><div class="num">MP-02</div><div class="txt">What is your market share in your primary service area? How is it measured?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Unknown market share; no competitive tracking; shrinking position</div><div class="flag grn"><strong>Green Flag:</strong> Quantified share with growth trajectory; competitive intelligence system</div></div><div class="score">Score 1-5: 5 = Dominant position (&gt;15%) with systematic tracking</div></div>
+
+<div class="q"><div class="num">MP-03</div><div class="txt">What percentage of revenue comes from your top 5 clients? What happens if you lose the largest?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Top client &gt;25% of revenue; no contracts; no replacement pipeline</div><div class="flag grn"><strong>Green Flag:</strong> No client &gt;5%; long-term agreements; diversified base</div></div><div class="score">Score 1-5: 5 = No client exceeds 3% of revenue</div></div>
+
+<div class="q"><div class="num">MP-04</div><div class="txt">When did you last raise prices? What was the client retention impact? What is your pricing power?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Haven't raised in 3+ years; lost clients on last increase; price-sensitive base</div><div class="flag grn"><strong>Green Flag:</strong> Annual increases accepted; &lt;2% churn on increases; premium positioning</div></div><div class="score">Score 1-5: 5 = Annual 5-8% increases with zero churn impact</div></div>
+
+<div class="q"><div class="num">MP-05</div><div class="txt">What is your Net Promoter Score? How do you measure and act on client satisfaction?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No NPS tracking; no feedback system; reactive to complaints</div><div class="flag grn"><strong>Green Flag:</strong> NPS &gt;50; systematic surveys; closed-loop feedback process</div></div><div class="score">Score 1-5: 5 = NPS &gt;70 with quarterly measurement and action plan</div></div>
+
+<div class="q"><div class="num">MP-06</div><div class="txt">What adjacent markets or geographies could you expand into? What would it cost?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No expansion plan; saturated market; regulatory barriers</div><div class="flag grn"><strong>Green Flag:</strong> Identified 3+ markets; proven expansion playbook; capital allocated</div></div><div class="score">Score 1-5: 5 = Proven expansion model with unit economics validated in 2+ markets</div></div>
+
+<div class="q"><div class="num">MP-07</div><div class="txt">What is the total addressable market (TAM) and serviceable addressable market (SAM) for your core offering?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> TAM undefined; shrinking market; no growth data</div><div class="flag grn"><strong>Green Flag:</strong> TAM &gt;$500M; growing 10%+ annually; SAM well-defined with penetration plan</div></div><div class="score">Score 1-5: 5 = TAM &gt;$1B with &lt;5% current penetration and clear path to 15%</div></div>
+
+<h2>Section 4: Scalability</h2>
+
+<div class="q"><div class="num">SC-01</div><div class="txt">What are the unit economics at current scale? Model them at 2x, 5x, and 10x. Where do they break?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Negative unit economics; margins compress at scale; no model exists</div><div class="flag grn"><strong>Green Flag:</strong> Positive at all scales; margins improve with volume; model stress-tested</div></div><div class="score">Score 1-5: 5 = Improving unit economics at every scale with validated model</div></div>
+
+<div class="q"><div class="num">SC-02</div><div class="txt">Can your technology infrastructure handle 10x current volume without re-architecture?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Single server; manual processes; no monitoring; will crash at 3x</div><div class="flag grn"><strong>Green Flag:</strong> Cloud-native; auto-scaling; load-tested; observability in place</div></div><div class="score">Score 1-5: 5 = Proven at 10x load with zero downtime during scale events</div></div>
+
+<div class="q"><div class="num">SC-03</div><div class="txt">Do you have management depth beyond the founder? Who runs operations when leadership is unavailable?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Founder does everything; no middle management; no delegation</div><div class="flag grn"><strong>Green Flag:</strong> Experienced ops manager; department leads; founder is strategic only</div></div><div class="score">Score 1-5: 5 = Full C-suite with proven track record independent of founder</div></div>
+
+<div class="q"><div class="num">SC-04</div><div class="txt">What capital is required to double the business? What is the expected payback period?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> &gt;$2M required; &gt;36 month payback; capital-intensive model</div><div class="flag grn"><strong>Green Flag:</strong> &lt;$500K; &lt;12 month payback; capital-light with operating leverage</div></div><div class="score">Score 1-5: 5 = Self-funded growth with &lt;6 month payback on expansion capital</div></div>
+
+<div class="q"><div class="num">SC-05</div><div class="txt">Is the business model franchise-replicable? What documentation and systems exist for replication?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Not replicable; depends on local relationships; no playbook</div><div class="flag grn"><strong>Green Flag:</strong> Complete franchise kit; technology platform; training certification program</div></div><div class="score">Score 1-5: 5 = FDD-ready with pilot franchise operational</div></div>
+
+<div class="q"><div class="num">SC-06</div><div class="txt">What is the operating leverage ratio? How does headcount scale relative to revenue?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Linear headcount:revenue; no automation; labor-intensive</div><div class="flag grn"><strong>Green Flag:</strong> Revenue grows 3x faster than headcount; AI/automation drives leverage</div></div><div class="score">Score 1-5: 5 = Revenue scales 5x+ relative to headcount growth</div></div>
+
+<div class="q"><div class="num">SC-07</div><div class="txt">What is your talent pipeline? How quickly can you hire and onboard to meet growth demands?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No pipeline; 60+ days to hire; no training program; key roles unfilled</div><div class="flag grn"><strong>Green Flag:</strong> Active pipeline; &lt;21 day hire; certified training; bench strength</div></div><div class="score">Score 1-5: 5 = Waiting list of candidates; 14-day onboard; zero critical vacancies</div></div>
+
+<h2>Section 5: Exit Strategy</h2>
+
+<div class="q"><div class="num">ES-01</div><div class="txt">Who are the likely buyers? Strategic acquirers, PE firms, family offices, or management buyout?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No identified buyers; niche too small; no broker engaged</div><div class="flag grn"><strong>Green Flag:</strong> 5+ identified strategic buyers; active PE interest; multiple exit paths</div></div><div class="score">Score 1-5: 5 = Active conversations with 3+ qualified buyers</div></div>
+
+<div class="q"><div class="num">ES-02</div><div class="txt">What valuation methodology applies? What are comparable transaction multiples in your sector?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No comps available; unrealistic expectations; no third-party valuation</div><div class="flag grn"><strong>Green Flag:</strong> 3+ recent comps; independent valuation; realistic multiple range</div></div><div class="score">Score 1-5: 5 = Recent QoE completed with validated 6-8x EBITDA multiple</div></div>
+
+<div class="q"><div class="num">ES-03</div><div class="txt">What is the transition risk? How dependent is the business on the current owner during handoff?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Business is the owner; client relationships personal; 12+ month transition</div><div class="flag grn"><strong>Green Flag:</strong> Institutional relationships; 90-day transition plan; team retains clients</div></div><div class="score">Score 1-5: 5 = Seamless 60-day transition with zero client attrition</div></div>
+
+<div class="q"><div class="num">ES-04</div><div class="txt">What earn-out structure would you accept? What metrics would you tie it to?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> &gt;50% earn-out; subjective metrics; no control post-close</div><div class="flag grn"><strong>Green Flag:</strong> &lt;20% earn-out; objective revenue/EBITDA targets; accelerators included</div></div><div class="score">Score 1-5: 5 = All-cash at close; no earn-out required</div></div>
+
+<div class="q"><div class="num">ES-05</div><div class="txt">What intellectual property exists? Is it protected? How does it transfer on sale?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> No IP protection; trade secrets undocumented; employee IP not assigned</div><div class="flag grn"><strong>Green Flag:</strong> Trademarks registered; software copyrighted; IP assignment agreements signed</div></div><div class="score">Score 1-5: 5 = Full IP portfolio with registered protections and clean chain of title</div></div>
+
+<div class="q"><div class="num">ES-06</div><div class="txt">Are there any pending or threatened legal claims, disputes, or regulatory actions?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Active litigation; regulatory investigation; unresolved disputes</div><div class="flag grn"><strong>Green Flag:</strong> Clean legal history; no pending claims; rep & warranty insurance available</div></div><div class="score">Score 1-5: 5 = Zero legal exposure with clean diligence report</div></div>
+
+<div class="q"><div class="num">ES-07</div><div class="txt">What is the tax structure? Are there any tax liabilities, carryforwards, or structural issues that affect sale?</div><div class="flags"><div class="flag red"><strong>Red Flag:</strong> Back taxes owed; complex entity structure; S-corp with built-in gains</div><div class="flag grn"><strong>Green Flag:</strong> Clean returns; simple structure; QSBS eligible; tax advisor engaged</div></div><div class="score">Score 1-5: 5 = Optimized structure with QSBS exclusion and clean 3-year returns</div></div>
+
+<div class="summary">
+<h3>Scoring Summary</h3>
+<div class="row"><span>Total Possible Points</span><span class="pts">175 (35 questions × 5 points)</span></div>
+<div class="row"><span>140-175: Strong Acquisition Candidate</span><span class="pts">Proceed to LOI</span></div>
+<div class="row"><span>105-139: Proceed with Conditions</span><span class="pts">Address gaps pre-close</span></div>
+<div class="row"><span>70-104: Significant Risk</span><span class="pts">Requires restructuring</span></div>
+<div class="row"><span>Below 70: Walk Away</span><span class="pts">Fundamental issues</span></div>
+</div>
+
+<div class="ft">Coastal Key Treasure Coast Asset Management — Document ID: CK-INV-001-v1</div>
+</div>
+</body>
+</html>
