@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center — Tracey Hunter AI Sentinel Campaign</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --navy:#0B1D3A; --navy-light:#132D5E; --navy-dark:#071428; --gold:#C9A84C; --gold-light:#E8D5A0; --white:#FFF; --off-white:#F8F7F4; --text:#2C3E50; --text-light:#7F8C8D; --green:#2ECC71; --red:#E74C3C; --yellow:#F1C40F; --blue:#3498DB; --border:#E8E8E8; }
+        body { font-family:'Inter',sans-serif; background:var(--navy-dark); color:#E0E0E0; min-height:100vh; }
+        .app { display:grid; grid-template-columns:240px 1fr; min-height:100vh; }
+        .sidebar { background:var(--navy); border-right:1px solid rgba(201,168,76,0.1); padding:24px 0; }
+        .sidebar-logo { display:flex; align-items:center; gap:12px; padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.06); margin-bottom:16px; }
+        .logo-circle { width:40px; height:40px; border:2px solid var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700; font-size:16px; color:var(--gold); }
+        .logo-info h3 { font-size:14px; font-weight:600; color:var(--white); }
+        .logo-info span { font-size:10px; color:var(--gold); letter-spacing:1px; text-transform:uppercase; }
+        .nav-item { display:flex; align-items:center; gap:10px; padding:10px 20px; color:var(--text-light); font-size:13px; cursor:pointer; border-left:3px solid transparent; transition:all .15s; }
+        .nav-item:hover, .nav-item.active { background:rgba(201,168,76,0.08); color:var(--white); border-left-color:var(--gold); }
+        .nav-item .badge { margin-left:auto; background:var(--gold); color:var(--navy); font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+        .main { padding:24px; overflow-y:auto; }
+        .main-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+        .main-header h1 { font-family:'Playfair Display',serif; font-size:24px; color:var(--white); }
+        .status-pill { display:flex; align-items:center; gap:6px; background:rgba(46,204,113,0.1); padding:6px 16px; border-radius:20px; font-size:12px; font-weight:600; color:var(--green); }
+        .status-pill .dot { width:8px; height:8px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(46,204,113,0.4)} 50%{opacity:.7;box-shadow:0 0 0 6px rgba(46,204,113,0)} }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:24px; }
+        .stat-card { background:var(--navy); border:1px solid rgba(201,168,76,0.1); border-radius:12px; padding:20px; }
+        .stat-card .label { font-size:11px; color:var(--text-light); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+        .stat-card .value { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:var(--gold); }
+        .stat-card .sub { font-size:11px; color:var(--text-light); margin-top:4px; }
+        .card { background:var(--navy); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:20px; margin-bottom:16px; }
+        .card h3 { font-size:15px; font-weight:600; color:var(--white); margin-bottom:16px; }
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        @media(max-width:900px) { .app { grid-template-columns:1fr; } .grid-2 { grid-template-columns:1fr; } }
+        .agent-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px; }
+        .agent-pill { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,0.04); border-radius:8px; padding:8px 12px; font-size:12px; }
+        .agent-dot { width:6px; height:6px; border-radius:50%; }
+        .agent-dot.active { background:var(--green); }
+        .agent-name { color:#ccc; }
+        .agent-id { color:var(--text-light); font-size:10px; font-family:monospace; }
+        table { width:100%; border-collapse:collapse; }
+        th { text-align:left; padding:10px 12px; font-size:10px; color:var(--text-light); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid rgba(255,255,255,0.06); }
+        td { padding:10px 12px; font-size:13px; border-bottom:1px solid rgba(255,255,255,0.03); }
+        .status-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:10px; font-size:11px; font-weight:600; }
+        .status-badge.green { background:rgba(46,204,113,0.1); color:var(--green); }
+        .status-badge.yellow { background:rgba(241,196,15,0.1); color:var(--yellow); }
+        .status-badge.red { background:rgba(231,76,60,0.1); color:var(--red); }
+        .back-link { display:inline-flex; align-items:center; gap:6px; color:var(--gold); text-decoration:none; font-size:13px; font-weight:500; margin-bottom:16px; }
+        .back-link:hover { text-decoration:underline; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="sidebar-logo"><div class="logo-circle">TH</div><div class="logo-info"><h3>Command Center</h3><span>Sentinel Campaign</span></div></div>
+            <div class="nav-item active">Dashboard</div>
+            <div class="nav-item">Agent Fleet <span class="badge">40</span></div>
+            <div class="nav-item">Lead Pipeline</div>
+            <div class="nav-item">Call Analytics</div>
+            <div class="nav-item">QA Review</div>
+            <div class="nav-item">Settings</div>
+        </aside>
+        <main class="main">
+            <a href="index.html" class="back-link">&larr; Back to Hub</a>
+            <div class="main-header"><h1>Campaign Command Center</h1><div class="status-pill"><span class="dot"></span> Campaign Active</div></div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="label">Daily Call Target</div><div class="value">2,400</div><div class="sub">60 calls/agent &times; 40 agents</div></div>
+                <div class="stat-card"><div class="label">Active Agents</div><div class="value">40/40</div><div class="sub">All agents operational</div></div>
+                <div class="stat-card"><div class="label">Connection Rate</div><div class="value">20%</div><div class="sub">Target: 480 connections/day</div></div>
+                <div class="stat-card"><div class="label">Qualified Today</div><div class="value">24</div><div class="sub">Target: 24 qualified/day</div></div>
+                <div class="stat-card"><div class="label">Transfers to Tracey</div><div class="value">8</div><div class="sub">Target: 8 live transfers/day</div></div>
+                <div class="stat-card"><div class="label">Appointments</div><div class="value">4</div><div class="sub">Target: 4 bookings/day</div></div>
+            </div>
+            <div class="grid-2">
+                <div class="card"><h3>Agent Fleet Status (40 AI Agents)</h3><div class="agent-grid" id="agent-fleet"></div></div>
+                <div class="card"><h3>Recent Lead Activity</h3>
+                    <table><tr><th>Lead</th><th>Zone</th><th>Status</th><th>Time</th></tr>
+                    <tr><td>Maria Thompson</td><td>Stuart</td><td><span class="status-badge green">Qualified</span></td><td>2 min ago</td></tr>
+                    <tr><td>James Wilson</td><td>Jupiter</td><td><span class="status-badge green">Transferred</span></td><td>8 min ago</td></tr>
+                    <tr><td>Susan Chen</td><td>PSL</td><td><span class="status-badge yellow">Callback</span></td><td>15 min ago</td></tr>
+                    <tr><td>Robert Davis</td><td>Palm City</td><td><span class="status-badge red">No Answer</span></td><td>22 min ago</td></tr>
+                    <tr><td>Linda Garcia</td><td>Jensen Beach</td><td><span class="status-badge green">Booked</span></td><td>31 min ago</td></tr></table>
+                </div>
+            </div>
+            <div class="card"><h3>6-Month Campaign Targets</h3>
+                <table><tr><th>Metric</th><th>Daily</th><th>Weekly</th><th>Monthly</th><th>6-Month Total</th></tr>
+                <tr><td>Total Calls</td><td>2,400</td><td>14,400</td><td>57,600</td><td>345,600</td></tr>
+                <tr><td>Connections</td><td>480</td><td>2,880</td><td>11,520</td><td>69,120</td></tr>
+                <tr><td>Qualified Leads</td><td>24</td><td>144</td><td>576</td><td>3,456</td></tr>
+                <tr><td>Transfers to Tracey</td><td>8</td><td>48</td><td>192</td><td>1,152</td></tr>
+                <tr><td>Appointments Set</td><td>4</td><td>24</td><td>96</td><td>576</td></tr></table>
+            </div>
+            <div class="card"><h3>Target Markets</h3>
+                <table><tr><th>Zone</th><th>Markets</th><th>Min Property Value</th><th>Status</th></tr>
+                <tr><td>Primary</td><td>Stuart, Palm City, Jensen Beach, Hobe Sound, PSL, Hutchinson Island</td><td>$200,000</td><td><span class="status-badge green">Active</span></td></tr>
+                <tr><td>Secondary</td><td>Jupiter, Tequesta, Palm Beach Gardens, Vero Beach, Fort Pierce</td><td>$200,000</td><td><span class="status-badge green">Active</span></td></tr></table>
+            </div>
+        </main>
+    </div>
+    <script>
+        const agents=['Sarah','Emily','Rachel','Jessica','Amanda','Lauren','Michelle','Nicole','Stephanie','Ashley','Megan','Christina','Samantha','Brittany','Jennifer','Katherine','Alexandra','Danielle','Vanessa','Heather','Courtney','Amber','Tiffany','Natalie','Lindsey','Allison','Maria','Diana','Victoria','Cassandra','Kelsey','Whitney','Chelsea','Brooke','Morgan','Taylor','Madison','Kayla','Olivia','Sophia'];
+        document.getElementById('agent-fleet').innerHTML=agents.map((n,i)=>`<div class="agent-pill"><span class="agent-dot active"></span><span class="agent-name">${n}</span><span class="agent-id">${String(i+1).padStart(3,'0')}</span></div>`).join('');
+    </script>
+</body>
+</html>
