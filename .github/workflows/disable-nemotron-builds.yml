@@ -4,6 +4,7 @@ name: Disable Nemotron Workers Builds
 # Disables the Cloudflare Workers Builds Git integration for ck-nemotron-worker
 # which causes false-negative 500 check runs on every commit.
 # GitHub Actions CI/CD (deploy.yml) is the authoritative deploy system.
+# Re-fire 2026-04-30 — retry programmatic disable in secrets-having env (Coastal Key AI CEO directive).
 
 on:
   push:

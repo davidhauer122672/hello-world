@@ -671,7 +671,7 @@ ${JSON.stringify(VPAS_SUCCESS_EQUATION.applicationToPropertyManagement, null, 2)
     "A_SCORE": <avg>,
     "S_SCORE": <computed>,
     "FERRARI_GRADE": "<grade>",
-    "totalAgents": 383,
+    "totalAgents": 384,
     "apbCompliant": <count>,
     "apbNonCompliant": <count>
   },

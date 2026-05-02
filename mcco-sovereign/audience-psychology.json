@@ -1,0 +1,158 @@
+{
+  "classification": "MCCO SOVEREIGN INTELLIGENCE",
+  "generatedBy": "MCCO-001 Psyche Decoder",
+  "governance": "sovereign",
+  "standard": "ferrari",
+  "generatedAt": "2026-04-21",
+  "market": "Treasure Coast, Florida",
+  "segments": {
+    "absentee_homeowner": {
+      "demographic": {
+        "age": "55-75",
+        "income": "$250K-$1.5M+",
+        "primaryResidence": "Northeast US, Midwest, Canada",
+        "propertyValue": "$500K-$5M",
+        "occupancy": "4-6 months vacant annually"
+      },
+      "frustrations": [
+        "Cannot verify property condition without physically being there",
+        "Previous property managers missed issues that became $10K+ repairs",
+        "Vendor coordination from 1,200 miles away is impossible",
+        "Insurance claims denied because damage wasn't documented promptly",
+        "HOA violations they didn't know about until fines accumulated"
+      ],
+      "desires": [
+        "Complete peace of mind — knowing their property is protected 24/7",
+        "One point of contact who handles everything without being asked",
+        "Proactive issue detection before small problems become catastrophic",
+        "Professional-grade documentation for insurance and legal protection",
+        "A service that treats their $1M+ property like it matters"
+      ],
+      "fears": [
+        "Catastrophic water damage discovered months after it started",
+        "Break-ins or squatters occupying the property while they're away",
+        "Mold growth from an undetected AC failure in Florida humidity",
+        "Hurricane damage with no one there to secure or assess the property",
+        "Losing their investment because no one was watching"
+      ],
+      "contentHabits": {
+        "platforms": ["Facebook (primary)", "LinkedIn", "Email newsletters"],
+        "consumptionTime": "7-9 AM, 7-10 PM",
+        "preferredFormats": ["Short-form educational posts", "Before/after photo evidence", "Checklist-style guides"],
+        "scrollStoppers": ["Dollar amounts saved", "Disaster-averted stories", "Technology demonstrations", "Local weather/storm updates tied to property"]
+      },
+      "trustTriggers": [
+        "Licensed, bonded, insured with proof",
+        "Real client testimonials with property photos",
+        "Transparent pricing — no hidden fees",
+        "Immediate responsiveness to urgent situations",
+        "Technology-forward (not clipboard-and-pencil inspections)"
+      ],
+      "messagingAngles": [
+        "Your property doesn't take a vacation when you do",
+        "We caught what your last property manager missed",
+        "360 AI agents protecting your investment while you sleep",
+        "The $47K leak we detected in 6 hours — not 6 months",
+        "Your eyes and ears on the Treasure Coast, 365 days a year"
+      ],
+      "scrollStopTopics": [
+        "What happens to an empty Florida home in 90 days without monitoring",
+        "The 3 most expensive property disasters we prevented this month",
+        "Why your property insurance claim got denied (and how to prevent it)",
+        "Inside a Coastal Key AI inspection: what 360 agents check that humans miss",
+        "The hidden cost of not having a home watch service",
+        "Hurricane season checklist: what your property manager should be doing NOW",
+        "We found mold in 72 hours. The homeowner had been gone for 4 months",
+        "How absentee owners in Stuart lost $200K last year to preventable damage",
+        "The difference between a $150/month home watch and a $45K repair bill",
+        "What we tell every new client on day one about protecting their property"
+      ]
+    },
+    "seasonal_resident": {
+      "demographic": {
+        "age": "60-80",
+        "income": "$200K-$800K",
+        "pattern": "October arrival, April departure (snowbird cycle)",
+        "propertyValue": "$400K-$2M",
+        "concern": "Property condition during 5-month absence"
+      },
+      "frustrations": [
+        "Arriving to a house that isn't move-in ready after months away",
+        "AC running full blast for 5 months with no one checking it",
+        "Landscaping overgrown, pool green, exterior neglected on arrival",
+        "No one coordinated pre-arrival prep — cleaning, AC tune, pest control",
+        "Paying for services year-round when they only need them seasonally"
+      ],
+      "desires": [
+        "Walk into a perfectly prepared home the day they arrive",
+        "Flexible seasonal service that scales with their presence",
+        "A trusted local partner who knows their property intimately",
+        "Concierge-level pre-arrival coordination without 15 phone calls",
+        "Community connection even when they're not physically present"
+      ],
+      "fears": [
+        "Coming back to a house with water damage or pest infestation",
+        "Being taken advantage of by vendors because they're 'not local'",
+        "Missing the window to prep for hurricane season",
+        "Their home deteriorating while they're up north",
+        "Feeling disconnected from their Treasure Coast life"
+      ],
+      "contentHabits": {
+        "platforms": ["Facebook (dominant)", "Email", "Local news sites"],
+        "consumptionTime": "Morning (8-10 AM), Evening (6-9 PM)",
+        "preferredFormats": ["Community-focused posts", "Seasonal guides", "Video property tours"],
+        "scrollStoppers": ["Seasonal timing alerts", "Before/after reveals", "Local event coverage", "Weather-to-property impact updates"]
+      },
+      "messagingAngles": [
+        "Your home is ready before you are",
+        "We live here year-round so your property never hibernates",
+        "Snowbird season starts with zero surprises",
+        "The concierge service that makes your Treasure Coast home feel like home",
+        "From closing the shutters to opening the champagne — we handle every transition"
+      ]
+    },
+    "luxury_investor": {
+      "demographic": {
+        "age": "45-65",
+        "income": "$500K-$5M+",
+        "portfolio": "Multiple properties, often 3-10 units",
+        "propertyValue": "$750K-$10M per asset",
+        "mindset": "ROI-driven, data-oriented, delegation-focused"
+      },
+      "frustrations": [
+        "Property managers who can't provide real-time asset performance data",
+        "Reactive maintenance that erodes ROI instead of proactive prevention",
+        "No visibility into vendor costs, markups, or service quality",
+        "Management companies that don't scale with portfolio growth",
+        "Manual reporting that's always 30 days behind reality"
+      ],
+      "desires": [
+        "Dashboard-level visibility across entire portfolio in real-time",
+        "AI-driven maintenance prediction that protects asset value",
+        "Institutional-grade reporting for tax, insurance, and investment analysis",
+        "A management partner that thinks like an asset manager, not a handyman",
+        "Scalable service that grows without adding complexity"
+      ],
+      "fears": [
+        "Hidden maintenance costs eating into returns undetected",
+        "A property manager who doesn't understand investment-grade standards",
+        "Being locked into a service that can't handle portfolio expansion",
+        "Data gaps that create liability exposure",
+        "Underperforming assets disguised by poor reporting"
+      ],
+      "contentHabits": {
+        "platforms": ["LinkedIn (primary)", "Email newsletters", "Industry publications"],
+        "consumptionTime": "6-8 AM (with coffee), 8-11 PM (review mode)",
+        "preferredFormats": ["Data-driven case studies", "ROI analyses", "Market reports", "Short LinkedIn posts with insights"],
+        "scrollStoppers": ["Revenue numbers", "Cost savings with proof", "Market data", "Technology differentiation"]
+      },
+      "messagingAngles": [
+        "Property management that thinks in cap rates, not just curb appeal",
+        "360 AI agents delivering institutional-grade asset protection",
+        "Your portfolio dashboard — every property, every metric, real-time",
+        "We turned a 4.2% cap rate property into 6.8% with operational efficiency",
+        "The management company that scales like your ambition does"
+      ]
+    }
+  }
+}

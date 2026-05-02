@@ -1,0 +1,85 @@
+{
+  "classification": "MCCO SOVEREIGN INTELLIGENCE",
+  "generatedBy": "MCCO-003 Pillar Command",
+  "governance": "sovereign",
+  "standard": "ferrari",
+  "generatedAt": "2026-04-21",
+
+  "pillars": [
+    {
+      "id": 1,
+      "name": "AI-Powered Protection",
+      "color": "#4f8fff",
+      "purpose": "Demonstrate technological superiority. Show — don't tell — what 383 AI agents do for property owners.",
+      "audienceConnection": "Directly addresses the #1 fear of every absentee homeowner: 'What is happening to my property right now?' Positions Coastal Key as the only company that can answer that question in real-time.",
+      "contentRatio": "25% of all posts",
+      "exampleTopics": [
+        {"topic": "Inside a Coastal Key AI inspection: 360 checkpoints in 47 minutes", "format": "carousel", "goal": "trust"},
+        {"topic": "We detected a slow leak at 2 AM. The homeowner was in Connecticut.", "format": "story/reel", "goal": "trust"},
+        {"topic": "What 383 AI agents actually do for your property (thread)", "format": "thread", "goal": "reach"},
+        {"topic": "Traditional home watch vs. AI-powered protection: side-by-side comparison", "format": "carousel", "goal": "convert"},
+        {"topic": "The technology stack protecting $50M+ in Treasure Coast real estate", "format": "video", "goal": "reach"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Treasure Coast Lifestyle",
+      "color": "#22c55e",
+      "purpose": "Build emotional connection. Make Coastal Key synonymous with the Treasure Coast itself.",
+      "audienceConnection": "Seasonal residents and snowbirds don't just own property here — they love this place. Content that celebrates the Treasure Coast creates an emotional bond that makes Coastal Key feel like a neighbor, not a vendor.",
+      "contentRatio": "20% of all posts",
+      "exampleTopics": [
+        {"topic": "Why Stuart is Florida's best-kept secret for property investors", "format": "carousel", "goal": "reach"},
+        {"topic": "Seasonal homeowner's guide: preparing your property for summer in 10 steps", "format": "carousel", "goal": "trust"},
+        {"topic": "Sunrise over the St. Lucie River — another day protecting paradise", "format": "photo/reel", "goal": "reach"},
+        {"topic": "5 things every snowbird should know before heading north this spring", "format": "carousel", "goal": "convert"},
+        {"topic": "The Treasure Coast real estate market: Q2 2026 numbers", "format": "report graphic", "goal": "trust"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "CEO Journey & Culture",
+      "color": "#7c5cfc",
+      "purpose": "Humanize the brand. Build trust through transparency, vision, and authenticity.",
+      "audienceConnection": "People hire people, not companies. The CEO's story — building a 383-agent AI fleet from scratch to protect properties — is inherently compelling. Every founder milestone, hard lesson, and behind-the-scenes moment builds the kind of trust that a logo never can.",
+      "contentRatio": "20% of all posts",
+      "exampleTopics": [
+        {"topic": "I built 383 AI agents because one property manager missed a $47K leak", "format": "long-form post", "goal": "trust"},
+        {"topic": "What nobody tells you about building an AI company in property management", "format": "thread", "goal": "reach"},
+        {"topic": "Monday morning at Coastal Key HQ: a day in the life of AI-powered operations", "format": "reel/video", "goal": "reach"},
+        {"topic": "The moment I knew AI would transform home watch forever", "format": "story post", "goal": "trust"},
+        {"topic": "3 mistakes I made in year one that made Coastal Key stronger", "format": "carousel", "goal": "trust"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Property Owner Education",
+      "color": "#eab308",
+      "purpose": "Establish expertise. Become the definitive resource for property protection knowledge.",
+      "audienceConnection": "Educated buyers convert faster and stay longer. When a property owner learns something valuable from Coastal Key, they associate CK with expertise. This pillar positions Coastal Key as the authority before any sales conversation happens.",
+      "contentRatio": "20% of all posts",
+      "exampleTopics": [
+        {"topic": "The 5 most expensive property mistakes absentee owners make", "format": "carousel", "goal": "convert"},
+        {"topic": "Hurricane season property prep: the complete 2026 checklist", "format": "carousel/guide", "goal": "trust"},
+        {"topic": "How to avoid getting overcharged by vendors when you're not local", "format": "thread", "goal": "trust"},
+        {"topic": "What your property insurance actually covers (and what it doesn't)", "format": "carousel", "goal": "reach"},
+        {"topic": "Monthly property maintenance timeline: what to check and when", "format": "infographic", "goal": "convert"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Results & Social Proof",
+      "color": "#ef4444",
+      "purpose": "Close the trust gap. Prove with evidence that Coastal Key delivers.",
+      "audienceConnection": "The final conversion trigger. When a prospect has seen the technology, felt the lifestyle connection, trusted the CEO, and learned from the education — real results from real clients eliminate the last barrier to buying.",
+      "contentRatio": "15% of all posts",
+      "exampleTopics": [
+        {"topic": "Client spotlight: 3 years, zero surprises, $0 in emergency repairs", "format": "video testimonial", "goal": "convert"},
+        {"topic": "How we saved a Jensen Beach homeowner $47K with one AI-detected leak", "format": "carousel", "goal": "convert"},
+        {"topic": "Before/after: what a vacant property looks like with and without Coastal Key", "format": "carousel", "goal": "convert"},
+        {"topic": "This month's numbers: 127 inspections, 14 issues caught, 0 disasters", "format": "stat graphic", "goal": "trust"},
+        {"topic": "What our clients say when we ask why they stay (real quotes)", "format": "carousel", "goal": "convert"}
+      ]
+    }
+  ]
+}

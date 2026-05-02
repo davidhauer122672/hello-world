@@ -3,16 +3,6 @@ main = "src/index.js"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ── Deployment ──
-# Deployed via GitHub Actions CI/CD (deploy.yml → deploy-nemotron job).
-# Cloudflare Workers Builds Git integration is NOT used — disable it in
-# Cloudflare Dashboard > Workers > ck-nemotron-worker > Settings > Builds
-# to eliminate the false-negative check run on GitHub PRs.
-
 [vars]
 ENVIRONMENT = "production"
-MODEL_ID = "nvidia/nemotron-4-340b-instruct"
-
-# ── Secrets (set via dashboard or `wrangler secret put`) ──
-# WORKER_AUTH_TOKEN  — Auth token for external callers
-# NVIDIA_API_KEY     — NVIDIA NIM API key for Nemotron inference
+MODEL_ID = "claude-sonnet-4-20250514"

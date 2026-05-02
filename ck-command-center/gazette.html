@@ -189,13 +189,13 @@ function renderEdition(d){
   const prop=d.propertyStats||{};
   const intel=d.intel||{};
 
-  const totalAgents=m.totalAgents||290;
+  const totalAgents=m.totalAgents||330;
   const activeAgents=m.byStatus?.active||0;
   const standbyAgents=m.byStatus?.standby||0;
   const systemStatus=h.status||'operational';
 
   el.innerHTML=`
-    <div class="headline-banner">ENTERPRISE FLEET FULLY OPERATIONAL<br>AT ${totalAgents} AGENTS ACROSS ${m.byDivision?Object.keys(m.byDivision).length:9} DIVISIONS</div>
+    <div class="headline-banner">ENTERPRISE FLEET FULLY OPERATIONAL<br>AT ${totalAgents} AGENTS ACROSS ${m.byDivision?Object.keys(m.byDivision).length:11} DIVISIONS</div>
     <div class="sub-headline">System reports ${systemStatus} status — All divisions reporting for duty</div>
     <hr class="thick-rule">
 
@@ -205,7 +205,7 @@ function renderEdition(d){
       <div class="article">
         <h3>Command Center Reports Full Fleet Deployment</h3>
         <div class="byline">Office of the Chief Executive</div>
-        <p>Coastal Key Property Management's enterprise AI operations platform has achieved full operational deployment with ${totalAgents} autonomous agents stationed across ${m.byDivision?Object.keys(m.byDivision).length:9} specialized divisions. The fleet, which represents the most ambitious AI workforce deployment in Treasure Coast property management history, operates continuously without human intervention for standard operations.</p>
+        <p>Coastal Key Property Management's enterprise AI operations platform has achieved full operational deployment with ${totalAgents} autonomous agents stationed across ${m.byDivision?Object.keys(m.byDivision).length:11} specialized divisions. The fleet, which represents the most ambitious AI workforce deployment in Treasure Coast property management history, operates continuously without human intervention for standard operations.</p>
         <p>Chief Executive operations confirm ${activeAgents} agents currently active, with ${standbyAgents} on standby reserve. The system architecture, built on Cloudflare's global edge network, delivers sub-50ms response times across all 38 API endpoints.</p>
       </div>
       <div class="stats-box">
@@ -220,7 +220,7 @@ function renderEdition(d){
       </div>
       <div class="article">
         <h4>System Health: ${systemStatus.toUpperCase()}</h4>
-        <p>Gateway version ${h.version||'2.0.0'} reports all subsystems nominal. The platform serves ${h.agents||totalAgents} agents across ${h.divisions||9} divisions from Cloudflare's global edge network spanning 300+ cities worldwide.</p>
+        <p>Gateway version ${h.version||'2.0.0'} reports all subsystems nominal. The platform serves ${h.agents||totalAgents} agents across ${h.divisions||11} divisions from Cloudflare's global edge network spanning 300+ cities worldwide.</p>
       </div>
     </div>
 
@@ -294,7 +294,7 @@ function renderEdition(d){
         <h3>Fifty Intelligence Officers Deploy for Continuous Monitoring</h3>
         <div class="byline">Intelligence Operations Command</div>
         <p>The newly commissioned Intelligence Officer fleet — comprising fifty autonomous monitoring agents organized into five specialized squads — has achieved initial operational capability. ${intel.fleetSize?`All ${intel.fleetSize} officers report active status, with ${intel.bySeverity?.critical||0} assigned to critical-severity monitoring posts.`:'Squad Alpha monitors infrastructure, Bravo guards data integrity, Charlie enforces security compliance, Delta tracks revenue operations, and Echo optimizes performance.'}</p>
-        <p>Operating under the enterprise mandate of "truth over convenience, transparency over opacity," the Intelligence Officers conduct continuous scans of all Coastal Key systems, employing automated repair mechanisms upon detection of any compromised subsystem.</p>
+        <p>Operating under the enterprise mandate of \"truth over convenience, transparency over opacity,\" the Intelligence Officers conduct continuous scans of all Coastal Key systems, employing automated repair mechanisms upon detection of any compromised subsystem.</p>
       </div>
       <div class="article">
         <div class="stats-box">
@@ -318,7 +318,7 @@ function renderEdition(d){
       <div class="article">
         <div class="section-header" style="margin-top:0"><h2>Marketing</h2></div>
         <h4>Content Engine Producing Across All Channels</h4>
-        <p>Module C Content Production operates at full capacity, generating social media posts, email campaigns, video scripts, and podcast outlines via Claude inference. All outputs route through the Content Calendar for CEO review before distribution via Buffer.</p>
+        <p>Module C Content Production operates at full capacity, generating social media posts, email campaigns, video scripts, and podcast outlines via Claude inference. All outputs route through the Content Calendar for CEO review before distribution via the Claude AI publishing platform.</p>
       </div>
       <div class="article">
         <div class="section-header" style="margin-top:0"><h2>Finance</h2></div>

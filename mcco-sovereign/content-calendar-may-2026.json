@@ -1,0 +1,52 @@
+{
+  "classification": "MCCO SOVEREIGN INTELLIGENCE",
+  "generatedBy": "MCCO-004 Calendar Command",
+  "governance": "sovereign",
+  "standard": "ferrari",
+  "generatedAt": "2026-04-21",
+  "presentedTo": "CMO via MCCO-000 Sovereign",
+  "month": "May",
+  "year": 2026,
+  "seasonalContext": "Post-snowbird departure. Absentee homeowners just left. Hurricane prep awareness begins. Summer rental demand rising. Key emotional window: owners leaving feel most anxious about their vacant property.",
+
+  "calendar": [
+    {"day": 1, "platform": "instagram", "format": "carousel", "pillar": "Education", "topic": "Your snowbird neighbors just left. Here's what happens to an empty Florida home in 30 days.", "angle": "Fear-to-solution: activate anxiety about vacant property, position CK as the answer", "goal": "convert"},
+    {"day": 2, "platform": "linkedin", "format": "long-form", "pillar": "CEO Journey", "topic": "May marks our busiest monitoring month. Here's why vacant home season is when AI matters most.", "angle": "Authority through operational transparency", "goal": "trust"},
+    {"day": 3, "platform": "facebook", "format": "photo", "pillar": "Lifestyle", "topic": "Saturday morning on the Indian River. Your property is in good hands — enjoy your weekend wherever you are.", "angle": "Emotional reassurance paired with Treasure Coast beauty", "goal": "reach"},
+    {"day": 4, "platform": "instagram", "format": "reel", "pillar": "AI Protection", "topic": "POV: Our AI detects a running toilet at 11 PM in a vacant home. Watch what happens next.", "angle": "Real-time drama — show the AI in action", "goal": "reach"},
+    {"day": 5, "platform": "x", "format": "thread", "pillar": "Education", "topic": "5 things that will go wrong in your vacant Florida home this summer (and how to prevent each one)", "angle": "Numbered list with actionable prevention tips", "goal": "trust"},
+    {"day": 6, "platform": "instagram", "format": "carousel", "pillar": "Results", "topic": "April recap: 143 inspections completed. 17 issues caught early. 0 disasters. Here are the numbers.", "angle": "Data-driven proof of value", "goal": "convert"},
+    {"day": 7, "platform": "facebook", "format": "video", "pillar": "CEO Journey", "topic": "I built 383 AI agents because one missed leak cost a homeowner $47,000. Here's that story.", "angle": "Origin story — emotional, specific, memorable", "goal": "trust"},
+    {"day": 8, "platform": "linkedin", "format": "post", "pillar": "AI Protection", "topic": "Traditional home watch: 15-minute walkthrough with a clipboard. Coastal Key: 360-point AI inspection with real-time alerts. The gap is no longer subtle.", "angle": "Direct competitive comparison without naming competitors", "goal": "convert"},
+    {"day": 9, "platform": "instagram", "format": "story-series", "pillar": "Lifestyle", "topic": "A day in the life: following our team through Jensen Beach, Palm City, and Stuart property rounds.", "angle": "Behind-the-scenes authenticity", "goal": "reach"},
+    {"day": 10, "platform": "facebook", "format": "carousel", "pillar": "Education", "topic": "Hurricane season starts June 1. Here's your 10-step property preparation checklist.", "angle": "Timely, actionable, save-worthy", "goal": "trust"},
+    {"day": 11, "platform": "instagram", "format": "reel", "pillar": "Results", "topic": "Before/after: This pool went from green to pristine in 48 hours. The owner was 1,200 miles away.", "angle": "Visual transformation — undeniable proof", "goal": "convert"},
+    {"day": 12, "platform": "x", "format": "post", "pillar": "AI Protection", "topic": "Our AI processed 2,847 data points across 89 properties last week. Your property manager checked a clipboard. Choose differently.", "angle": "Bold, data-backed competitive positioning", "goal": "reach"},
+    {"day": 13, "platform": "linkedin", "format": "article", "pillar": "Education", "topic": "The real cost of vacancy: what Florida property owners lose when no one is watching.", "angle": "Quantified cost analysis — appeals to investor mindset", "goal": "convert"},
+    {"day": 14, "platform": "instagram", "format": "carousel", "pillar": "CEO Journey", "topic": "3 decisions that changed Coastal Key forever. Number 2 almost bankrupted us.", "angle": "Vulnerability + resilience — builds deep trust", "goal": "trust"},
+    {"day": 15, "platform": "facebook", "format": "live", "pillar": "Education", "topic": "LIVE: Hurricane prep Q&A — ask us anything about protecting your Treasure Coast property this season.", "angle": "Interactive authority positioning", "goal": "trust"},
+    {"day": 16, "platform": "instagram", "format": "reel", "pillar": "Lifestyle", "topic": "Golden hour at Bathtub Reef Beach. This is what we protect. This is why we built the fleet.", "angle": "Emotional connection to place", "goal": "reach"},
+    {"day": 17, "platform": "linkedin", "format": "post", "pillar": "Results", "topic": "New client onboarded Monday. By Wednesday, we'd identified 3 maintenance issues their previous manager missed for 8 months.", "angle": "Speed-to-value proof", "goal": "convert"},
+    {"day": 18, "platform": "instagram", "format": "carousel", "pillar": "AI Protection", "topic": "What 383 AI agents actually do for your property: the complete breakdown.", "angle": "Demystify the fleet — make it tangible and impressive", "goal": "trust"},
+    {"day": 19, "platform": "facebook", "format": "photo", "pillar": "Lifestyle", "topic": "Stuart farmers market this morning. Your property is monitored. Go enjoy your Saturday.", "angle": "Lifestyle aspiration + reassurance", "goal": "reach"},
+    {"day": 20, "platform": "x", "format": "thread", "pillar": "CEO Journey", "topic": "I used to think property management was a simple business. Then I learned what 'simple' actually costs property owners. A thread.", "angle": "Industry critique from insider perspective", "goal": "reach"},
+    {"day": 21, "platform": "instagram", "format": "carousel", "pillar": "Education", "topic": "The 7 vendor red flags every absentee homeowner should know.", "angle": "Protective knowledge — positions CK as advocate", "goal": "trust"},
+    {"day": 22, "platform": "linkedin", "format": "post", "pillar": "AI Protection", "topic": "We run 50 Intelligence Officers monitoring our own systems 24/7. If we hold ourselves to this standard, imagine what we do for your property.", "angle": "Internal excellence as external proof", "goal": "trust"},
+    {"day": 23, "platform": "instagram", "format": "reel", "pillar": "Results", "topic": "Client called: 'I've never been this relaxed about my Florida home.' This is what winning looks like.", "angle": "Client voice — emotional testimonial", "goal": "convert"},
+    {"day": 24, "platform": "facebook", "format": "carousel", "pillar": "Education", "topic": "Summer in Florida: the 5 biggest threats to your vacant property (ranked by cost).", "angle": "Ranked list — urgency through specificity", "goal": "convert"},
+    {"day": 25, "platform": "instagram", "format": "story-series", "pillar": "CEO Journey", "topic": "Sunday reset: reviewing this week's fleet performance dashboard. Every number tells a story.", "angle": "Authentic leadership — shows the work behind the brand", "goal": "trust"},
+    {"day": 26, "platform": "linkedin", "format": "long-form", "pillar": "Results", "topic": "Quarterly impact report: How AI-powered property management saved our clients $312K in prevented damages this quarter.", "angle": "Aggregate proof at scale — investor-grade credibility", "goal": "convert"},
+    {"day": 27, "platform": "instagram", "format": "carousel", "pillar": "AI Protection", "topic": "Anatomy of an AI alert: from sensor trigger to owner notification in 6 minutes.", "angle": "Process transparency — show the speed", "goal": "trust"},
+    {"day": 28, "platform": "facebook", "format": "video", "pillar": "Lifestyle", "topic": "Memorial Day on the Treasure Coast: even on holidays, your property is protected. Here's proof.", "angle": "Holiday relevance + always-on messaging", "goal": "reach"},
+    {"day": 29, "platform": "x", "format": "post", "pillar": "Education", "topic": "Hurricane season starts in 48 hours. If your property manager hasn't contacted you with a prep plan, that's your answer.", "angle": "Urgency + competitive displacement", "goal": "convert"},
+    {"day": 30, "platform": "instagram", "format": "carousel", "pillar": "Results", "topic": "May in review: every property protected, every issue caught, every client informed. The numbers don't lie.", "angle": "Monthly proof of performance — accountability", "goal": "trust"},
+    {"day": 31, "platform": "linkedin", "format": "post", "pillar": "CEO Journey", "topic": "June 1 = hurricane season. We've been preparing since March. Here's what our fleet looks like when it matters most.", "angle": "Preparedness as leadership — forward-looking confidence", "goal": "trust"}
+  ],
+
+  "distributionSummary": {
+    "byPillar": {"AI Protection": 6, "Lifestyle": 5, "CEO Journey": 7, "Education": 7, "Results": 6},
+    "byPlatform": {"instagram": 14, "linkedin": 6, "facebook": 7, "x": 4},
+    "byGoal": {"reach": 8, "trust": 13, "convert": 10},
+    "byFormat": {"carousel": 11, "reel": 3, "long-form": 2, "post": 5, "video": 2, "thread": 2, "story-series": 2, "photo": 2, "live": 1, "article": 1}
+  }
+}

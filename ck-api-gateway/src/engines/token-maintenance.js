@@ -51,18 +51,6 @@ export const CREDENTIAL_REGISTRY = [
     envKey: 'SLACK_SIGNING_SECRET',
   },
   {
-    id: 'CRED-007', name: 'NVIDIA_API_KEY', provider: 'NVIDIA',
-    scope: 'Nemotron inference', rotationDays: 90, category: 'ai',
-    healthCheck: null,
-    envKey: 'NVIDIA_API_KEY',
-  },
-  {
-    id: 'CRED-008', name: 'ATLAS_API_KEY', provider: 'Atlas AI',
-    scope: 'Campaign operations', rotationDays: 90, category: 'sales',
-    healthCheck: null,
-    envKey: 'ATLAS_API_KEY',
-  },
-  {
     id: 'CRED-009', name: 'BUFFER_ACCESS_TOKEN', provider: 'Buffer',
     scope: 'Content publish to 5 profiles', rotationDays: 90, category: 'marketing',
     healthCheck: { method: 'GET', url: 'https://api.bufferapp.com/1/user.json', headerKey: 'Authorization', headerPrefix: 'Bearer ' },

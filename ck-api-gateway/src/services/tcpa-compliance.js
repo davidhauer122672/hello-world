@@ -3,7 +3,7 @@
  *
  * Provides automated TCPA (Telephone Consumer Protection Act) and
  * DNC (Do Not Call) compliance for the Sentinel Sales Division
- * and Atlas AI campaign operations.
+ * and Retell AI campaign operations.
  *
  * Capabilities:
  *   - DNC registry management (add, check, bulk check)

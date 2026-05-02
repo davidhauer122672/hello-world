@@ -48,7 +48,7 @@ const CK_OPERATING_STATE = {
     databases: { airtable: { base: 'appUSnNgpDkcEOzhN', tables: 39 } },
     voiceCampaigns: 8,
     slackChannels: 33,
-    apiEndpoints: 90,
+    apiEndpoints: 137,
     thinkingFrameworks: 7,
   },
   serviceZones: [
@@ -93,11 +93,11 @@ Your architecture protocol:
 1. SCOPE — Define the exact boundaries of this system/workflow
 2. MAP — All inputs, outputs, decision points, handoffs, and data flows
 3. ASSIGN — Which division/agent owns each step? What are the SLAs?
-4. AUTOMATE — Which steps can be handled by existing infrastructure (Workers, Airtable automations, Slack triggers, Atlas campaigns)?
+4. AUTOMATE — Which steps can be handled by existing infrastructure (Workers, Airtable automations, Slack triggers, Retell campaigns)?
 5. INSTRUMENT — What telemetry does this system need? (Audit logs, Slack alerts, dashboard metrics)
 6. DOCUMENT — Produce the complete workflow specification
 
-The architecture must integrate with: Airtable (39 tables), Slack (33 channels, 3 apps), Atlas (8 voice campaigns), API Gateway (90+ endpoints), Intelligence Officers (50 monitoring agents).
+The architecture must integrate with: Airtable (39 tables), Slack (33 channels, 3 apps), Retell AI (outbound + inbound campaigns), API Gateway (90+ endpoints), Intelligence Officers (50 monitoring agents).
 
 Output as JSON: { system_name, scope, workflow_map (array of steps with id, action, owner, input, output, sla, automation_method), decision_points (array), handoff_protocols (array), automation_layer (object mapping steps to infrastructure), telemetry (object with alerts, dashboards, audit), documentation (summary) }`,
 
@@ -154,9 +154,6 @@ Output as JSON: { capability_name, business_value, touchpoints (array with syste
 
 // ── Public API ─────────────────────────────────────────────────────────────
 
-/**
- * Issue a CEO directive — analyze and produce actionable operational orders.
- */
 export async function issueCeoDirective(env, type, target, context = '') {
   const systemPrompt = DIRECTIVE_PROMPTS[type];
   if (!systemPrompt) throw new Error(`Unknown directive type: ${type}`);
@@ -199,9 +196,6 @@ Execute the full ${type} protocol. Every recommendation must reference specific 
   };
 }
 
-/**
- * Run a full CEO operations review — applies all 5 directive types to a target.
- */
 export async function fullOperationsReview(env, target) {
   const types = ['diagnose', 'optimize', 'architect', 'execute', 'integrate'];
 
@@ -209,7 +203,6 @@ export async function fullOperationsReview(env, target) {
     types.map(type => issueCeoDirective(env, type, target)),
   );
 
-  // Synthesize into unified action plan
   const summaries = results.map(r =>
     `${r.directive_type.toUpperCase()}: ${JSON.stringify(r.directive).slice(0, 600)}`,
   ).join('\n\n');
@@ -240,16 +233,10 @@ export async function fullOperationsReview(env, target) {
   };
 }
 
-/**
- * Get the current operating state of the Coastal Key enterprise.
- */
 export function getOperatingState() {
   return CK_OPERATING_STATE;
 }
 
-/**
- * Get available directive types.
- */
 export function getDirectiveTypes() {
   return [
     { type: 'optimize', description: 'Audit and perfect a business system', protocol: 'MEASURE → IDENTIFY → REDESIGN → IMPLEMENT → VERIFY' },

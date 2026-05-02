@@ -27,75 +27,6 @@
  * Pushes the post to Buffer via the /v1/content/publish endpoint for automated
  * multi-platform scheduling (Instagram, Facebook, LinkedIn, X, Alignable).
  *
- * Airtable Automation Setup (11 steps):
- *   1. Open Airtable base → Content Calendar table
- *   2. Click Automations → Create Automation
- *   3. Trigger: "When a record matches conditions"
- *      - Table: Content Calendar
- *      - Condition: Status = "Approved"
- *   4. Action: "Send webhook"
- *      - Method: POST
- *      - URL: https://ck-api-gateway.david-e59.workers.dev/v1/content/publish
- *      - Headers: Authorization: Bearer {WORKER_AUTH_TOKEN}
- *      - Headers: Content-Type: application/json
- *   5. Body: {"recordId": "{{record.id}}"}
- *   6. Test the automation with a sample record
- *   7. Enable the automation
- *   8. Verify Buffer receives the post via GET /v1/health?deep=true
- *   9. Confirm Airtable record updates with Buffer Status field
- *  10. Check audit log at GET /v1/audit for publish confirmation
- *  11. Monitor #marketing-ops Slack channel for publish notifications
- *
- * @type {TriggerConfig}
- */
-export const WF2_CONTENT_PUBLISH = {
-  id: 'wf2-content-publish',
-  description: 'Publish approved Content Calendar records to Buffer for multi-platform scheduling',
-  trigger: {
-    type: 'fieldChange',
-    table: 'Content Calendar',
-    field: 'Status',
-  },
-  conditions: {
-    status: {
-      equals: 'Approved',
-      matchValues: ['Approved'],
-      field: 'Status',
-    },
-    requiredFields: ['Caption', 'Platform'],
-  },
-  action: {
-    method: 'POST',
-    endpoint: '/v1/content/publish',
-    payload: {
-      recordId: '{{record.id}}',
-    },
-    headers: {
-      'Authorization': 'Bearer {{WORKER_AUTH_TOKEN}}',
-      'Content-Type': 'application/json',
-    },
-  },
-  fallback: {
-    mode: 'manual',
-    description: 'If BUFFER_ACCESS_TOKEN is not set, returns manual posting payload with copy-paste instructions',
-  },
-  platforms: ['instagram', 'facebook', 'linkedin', 'x', 'alignable'],
-  slack_channel: '#marketing-ops',
-  airtable_table_id: 'tblEPr4f2lMz6ruxF',
-  airtable_setup_instructions: [
-    '1. Open Airtable → Content Calendar table (tblEPr4f2lMz6ruxF)',
-    '2. Go to Automations → Create new automation',
-    '3. Trigger: "When a record matches conditions"',
-    '4. Table: Content Calendar',
-    '5. Condition: Status = "Approved"',
-    '6. Action: "Run a script" or "Send webhook"',
-    '7. Webhook URL: https://ck-api-gateway.david-e59.workers.dev/v1/content/publish',
-    '8. Method: POST',
-    '9. Headers: Authorization: Bearer {WORKER_AUTH_TOKEN}',
-    '10. Body: { "recordId": "{Record ID}" }',
-    '11. Enable the automation',
-  ],
-};
 
 /**
  * WF3 - Investor Escalation Workflow
@@ -208,57 +139,121 @@ export const SCAA1_BATTLE_PLAN = {
  *
  * @type {Object.<string, {name: string, purpose: string}>}
  */
-
 /**
- * META_ADS_BOOST - Engagement-Based Boost Trigger
+ * WF2 - Content Publish Workflow (Media Automation Pipeline)
  *
- * Triggers when a published post's engagement exceeds 3x the rolling average.
- * Flags the post for paid amplification via Meta Ads Manager.
- * Requires active Meta Ads connector (OAuth authorization).
+ * Triggers when a Content Calendar record's "Status" field changes to "Approved".
+ * Generates platform-optimized content via Claude AI for multi-platform scheduling.
+ * Updates Airtable with publish status and writes to the AI Log for audit trail.
+ *
+ * This is the core trigger for the media automation engine.
  *
  * @type {TriggerConfig}
  */
-export const META_ADS_BOOST = {
-  id: 'meta-ads-boost',
-  description: 'Flag high-engagement posts for Meta Ads paid amplification',
+export const WF2_CONTENT_PUBLISH = {
+  id: 'wf2-content-publish',
+  description: 'Publish approved content via Claude AI for multi-platform distribution',
   trigger: {
     type: 'fieldChange',
     table: 'Content Calendar',
-    field: 'Engagement Rate',
+    field: 'Status',
   },
   conditions: {
     status: {
-      equals: 'Published',
+      equals: 'Approved',
       field: 'Status',
     },
-    engagementThreshold: {
-      multiplier: 3,
-      baseline: 'rolling_average_30d',
-      description: 'Engagement rate must exceed 3x the 30-day rolling average',
-    },
+    requiredFields: ['Caption', 'Platform'],
   },
   action: {
     method: 'POST',
-    endpoint: '/v1/meta-ads/boost',
+    endpoint: '/v1/content/publish',
     payload: {
       recordId: '{{record.id}}',
-      platform: '{{record.Platform}}',
-      engagementRate: '{{record.Engagement Rate}}',
-      postUrl: '{{record.Post URL}}',
+    },
+    headers: {
+      Authorization: 'Bearer {{WORKER_AUTH_TOKEN}}',
+      'Content-Type': 'application/json',
     },
   },
-  prerequisites: {
-    metaAdsConnector: 'Must be authorized via OAuth (see Directive 1)',
-    adAccountId: 'META_AD_ACCOUNT_ID must be set as Worker secret',
-    pageAccessToken: 'META_PAGE_ACCESS_TOKEN must be set as Worker secret',
+  fallback: {
+    mode: 'manual',
+    description: 'Returns copy-paste payload for manual platform posting when needed',
   },
+  platforms: ['instagram', 'facebook', 'linkedin', 'x'],
   slack_channel: '#marketing-ops',
-  budget: {
-    default_daily: 25,
-    max_daily: 100,
-    duration_days: 3,
-    currency: 'USD',
-  },
+  airtable_table_id: 'tblEPr4f2lMz6ruxF',
+  airtable_setup_instructions: [
+    '1. Open Airtable → Content Calendar table (tblEPr4f2lMz6ruxF)',
+    '2. Go to Automations → Create new automation',
+    '3. Trigger: "When a record matches conditions"',
+    '4. Table: Content Calendar',
+    '5. Condition: Status = "Approved"',
+    '6. Action: "Run a script" or "Send webhook"',
+    '7. Webhook URL: https://ck-api-gateway.david-e59.workers.dev/v1/content/publish',
+    '8. Method: POST',
+    '9. Headers: Authorization: Bearer {WORKER_AUTH_TOKEN}',
+    '10. Body: { "recordId": "{Record ID}" }',
+    '11. Enable the automation',
+  ],
+};
+
+export const META_ADS_BOOST = {
+  id: 'meta-ads-boost',
+  description: 'Flag high-engagement posts for Meta Ads paid amplification',
+  trigger: { type: 'fieldChange', table: 'Content Calendar', field: 'Engagement Rate' },
+  conditions: { status: { equals: 'Published', field: 'Status' }, engagementThreshold: { multiplier: 3, baseline: 'rolling_average_30d' } },
+  action: { method: 'POST', endpoint: '/v1/meta-ads/boost', payload: { recordId: '{{record.id}}', platform: '{{record.Platform}}', engagementRate: '{{record.Engagement Rate}}', postUrl: '{{record.Post URL}}' } },
+  prerequisites: { metaAdsConnector: 'Must be authorized via OAuth', adAccountId: 'META_AD_ACCOUNT_ID', pageAccessToken: 'META_PAGE_ACCESS_TOKEN' },
+  slack_channel: '#marketing-ops',
+  budget: { default_daily: 25, max_daily: 100, duration_days: 3, currency: 'USD' },
+};
+
+export const WF2_CONTENT_ENGAGEMENT = {
+  id: 'wf2-content-engagement',
+  description: 'Generate and schedule content for new Content Calendar entries',
+  trigger: { type: 'recordCreated', table: 'Content Calendar' },
+  conditions: { status: { in: ['Draft', 'Planned'], field: 'Status' }, postType: { exists: true, field: 'Post Type' } },
+  action: { method: 'POST', endpoint: '/v1/workflows/wf2', payload: { topic: '{{record.Post Title}}', platforms: '{{record.Platform}}', contentType: '{{record.Post Type}}', tone: '{{record.Tone}}', scheduledAt: '{{record.Post Date}}' } },
+  integrations: ['claude-ai', 'banana-pro', 'buffer'],
+  slack_channel: '#content-alerts',
+};
+
+export const WF4_ALIGNABLE_BRANCH = {
+  id: 'wf4-alignable-branch',
+  description: 'Activate Alignable community engagement for local business leads',
+  trigger: { type: 'fieldChange', table: 'Leads', field: 'Call Disposition' },
+  conditions: { disposition: { in: ['No Answer', 'Not Interested'] }, serviceZone: { includes: 'Treasure Coast', field: 'Service Zone' } },
+  action: { method: 'POST', endpoint: '/v1/workflows/wf4-alignable', payload: { recordId: '{{record.id}}', businessName: '{{record.Business Name}}', businessCategory: '{{record.Business Category}}', location: '{{record.Service Zone}}' } },
+  integrations: ['claude-ai', 'alignable'],
+  slack_channel: '#community-alerts',
+};
+
+export const BANANA_PRO_CONTENT = {
+  id: 'banana-pro-content',
+  description: 'Enhance content with Banana Pro AI when Banana Pro Enhanced is unchecked',
+  trigger: { type: 'fieldChange', table: 'Content Calendar', field: 'Status' },
+  conditions: { status: { in: ['Scheduled', 'Ready'] }, bananaEnhanced: { equals: false, field: 'Banana Pro Enhanced' } },
+  action: { method: 'POST', endpoint: '/v1/banana/generate', payload: { topic: '{{record.Post Title}}', platform: '{{record.Platform}}', tone: '{{record.Tone}}' } },
+  integrations: ['banana-pro'],
+};
+
+export const BUFFER_AUTO_SCHEDULE = {
+  id: 'buffer-auto-schedule',
+  description: 'Auto-schedule ready content to Buffer for publishing',
+  trigger: { type: 'fieldChange', table: 'Content Calendar', field: 'Status' },
+  conditions: { status: { equals: 'Ready' }, bufferScheduled: { equals: false, field: 'CK-SPP Scheduled' } },
+  action: { method: 'POST', endpoint: '/v1/buffer/cross-post', payload: { text: '{{record.Caption}}', platforms: '{{record.Platform}}', scheduledAt: '{{record.Post Date}}' } },
+  integrations: ['buffer'],
+};
+
+export const MARKET_DAILY_SCAN = {
+  id: 'market-daily-scan',
+  description: 'Daily market intelligence scan and report generation',
+  trigger: { type: 'scheduled', cron: '0 12 * * 1-5' },
+  action: { method: 'GET', endpoint: '/v1/market/report' },
+  integrations: ['alpha-vantage', 'claude-ai', 'airtable'],
+  slack_channel: '#market-intel',
 };
 
 export const SLACK_CHANNELS = {
@@ -273,6 +268,18 @@ export const SLACK_CHANNELS = {
   INVESTOR_ESCALATIONS: {
     name: '#investor-escalations',
     purpose: 'High-value investor lead escalations',
+  },
+  CONTENT_ALERTS: {
+    name: '#content-alerts',
+    purpose: 'Content pipeline status, Buffer scheduling, engagement metrics',
+  },
+  COMMUNITY_ALERTS: {
+    name: '#community-alerts',
+    purpose: 'Alignable engagement, local business networking',
+  },
+  MARKET_INTEL: {
+    name: '#market-intel',
+    purpose: 'Market intelligence reports, stock alerts, economic indicators',
   },
   GENERAL: {
     name: '#general',

@@ -5,7 +5,7 @@
 Enterprise AI operations platform for Coastal Key Property Management — Treasure Coast asset oversight powered by a 383-unit autonomous agent fleet, sovereign MCCO governance, and Cloudflare edge infrastructure.
 
 **Standards**: Ferrari Precision | Red Bull Optimization | SpaceX Engineering
-**Governance**: [GOVERNANCE.md](GOVERNANCE.md) | **Mission**: [MISSION.md](MISSION.md)
+**Governance**: [GOVERNANCE.md](docs/governance/GOVERNANCE.md) | **Mission**: [MISSION.md](docs/governance/MISSION.md)
 
 ## Architecture
 
@@ -15,7 +15,7 @@ Enterprise AI operations platform for Coastal Key Property Management — Treasu
 | **ck-website** | Cloudflare Pages | Reverse proxy to Manus production site with edge caching, SEO injection |
 | **ck-command-center** | Cloudflare Pages | Enterprise dashboard, trading desk, fleet command, Gazette |
 | **sentinel-webhook** | Cloudflare Worker | Retell call_analyzed → Airtable + Slack pipeline |
-| **ck-nemotron-worker** | Cloudflare Worker | NVIDIA Nemotron inference endpoint |
+| **ck-nemotron-worker** | Cloudflare Worker | Claude AI inference endpoint |
 | **ck-trading-desk** | Electron + React | Desktop trading terminal with real-time market data |
 
 ## Quick Start
@@ -39,7 +39,7 @@ npm run deploy             # Deploy all services to Cloudflare
 
 ## API Gateway Modules
 
-Inference, leads, agents, dashboards, workflows, pricing, property intelligence, campaigns, email agents, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, deals, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, agent manifest.
+Inference, leads, agents, dashboards, workflows, pricing, property intelligence, campaigns, email agents, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, deals, agent hierarchy, Slack integration, thinking coach, Retell AI campaigns, frameworks, agent manifest.
 
 All routes prefixed `/v1/`. Auth via Bearer token or Slack HMAC-SHA256 signature.
 
@@ -48,9 +48,9 @@ All routes prefixed `/v1/`. Auth via Bearer token or Slack HMAC-SHA256 signature
 **Cloudflare** — Workers, Pages, KV (cache, sessions, rate limits, audit log)
 **Airtable** — 39 tables, base `appUSnNgpDkcEOzhN`
 **Slack** — 3 apps, 10 slash commands, 12 programmatic channels
-**Retell AI** — Voice agent campaigns via Atlas platform
+**Retell AI** — Voice agent campaigns (ElevenLabs voice synthesis)
 **Claude API** — Inference, content generation, thinking coach
-**NVIDIA** — Nemotron 340B inference
+**Anthropic** — Claude AI inference (dedicated worker)
 **Stripe** — Payment processing
 
 ## CI/CD

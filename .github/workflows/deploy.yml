@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -14,7 +15,7 @@ env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  WRANGLER_VERSION: '3'
+  WRANGLER_VERSION: '4'
 
 jobs:
   test:
@@ -22,202 +23,265 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
-
       - name: Install dependencies
         run: npm install
-
       - name: Initialize data files
         run: node scripts/init-data.js
-
+      - name: Install gateway dependencies
+        working-directory: ck-api-gateway
+        run: npm install
+      - name: Install sentinel dependencies
+        working-directory: sentinel-webhook
+        run: npm install
+      - name: Install nemotron dependencies
+        working-directory: ck-nemotron-worker
+        run: npm install
       - name: Test Express Server
         run: npm run test:server
-
       - name: Test API Gateway
-        run: npm run test:gateway
-
-      - name: Test Media Automation Pipeline
-        run: node --test ck-api-gateway/src/__tests__/media-automation.test.js
-        continue-on-error: false
-
+        working-directory: ck-api-gateway
+        run: npm test
       - name: Test Sentinel Webhook
-        run: npm run test:sentinel
-
+        working-directory: sentinel-webhook
+        run: npm test
       - name: Test Nemotron Worker
-        run: npm run test:nemotron
-
-  preflight:
-    name: Preflight Token Check
-    needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Validate Cloudflare token
-        run: |
-          echo "Runner IP: $(curl -s https://ifconfig.me || echo 'unknown')"
-          echo "Account ID configured: $([ -n "$CLOUDFLARE_ACCOUNT_ID" ] && echo 'yes' || echo 'NO — MISSING')"
-          echo "API Token configured: $([ -n "$CLOUDFLARE_API_TOKEN" ] && echo 'yes' || echo 'NO — MISSING')"
-
-          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::error::CLOUDFLARE_API_TOKEN secret is not set. Add it in GitHub repo Settings > Secrets."
-            exit 1
-          fi
-
-          for attempt in 1 2 3; do
-            if wrangler whoami 2>&1; then
-              echo "Cloudflare token validated successfully."
-              exit 0
-            fi
-            echo "Attempt $attempt failed. Retrying in $((attempt * 5))s..."
-            sleep $((attempt * 5))
-          done
-
-          echo ""
-          echo "::error::Cloudflare API token validation failed after 3 attempts."
-          echo "::error::Common causes:"
-          echo "::error::  1. Token has IP restrictions — remove them in Cloudflare Dashboard > My Profile > API Tokens"
-          echo "::error::  2. Token expired — generate a new one with Workers edit permissions"
-          echo "::error::  3. Token lacks required permissions — needs Account:Workers Scripts:Edit, Zone:Workers Routes:Edit"
-          exit 1
+        working-directory: ck-nemotron-worker
+        run: npm test
 
   deploy-website:
     name: Deploy Website
-    needs: preflight
+    needs: test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
-
       - name: Install wrangler
         run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Create Pages project if needed
-        run: wrangler pages project create coastalkey-pm --production-branch=main 2>&1 || echo "Project may already exist — continuing"
-
       - name: Deploy to Cloudflare Pages
         run: |
+          wrangler pages project create coastalkey-pm --production-branch=main 2>&1 || true
           for i in 1 2 3; do
             wrangler pages deploy ck-website --project-name=coastalkey-pm --branch=main --commit-dirty=true && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
-
-  deploy-gateway:
-    name: Deploy API Gateway
-    needs: preflight
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy to Cloudflare
-        working-directory: ck-api-gateway
-        run: |
-          for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
-
-  deploy-sentinel:
-    name: Deploy Sentinel Webhook
-    needs: [preflight, deploy-gateway]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy to Cloudflare
-        working-directory: sentinel-webhook
-        run: |
-          for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
-
-  deploy-nemotron:
-    name: Deploy Nemotron Worker
-    needs: [preflight, deploy-gateway]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy to Cloudflare
-        working-directory: ck-nemotron-worker
-        run: |
-          for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
+            echo "Attempt $i failed, retrying in 15s..." && sleep 15
           done
 
   deploy-command-center:
     name: Deploy Command Center
-    needs: preflight
+    needs: test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install wrangler
+        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
+      - name: Deploy to Cloudflare Pages
+        run: |
+          wrangler pages project create ck-command-center --production-branch=main 2>&1 || true
+          for i in 1 2 3; do
+            wrangler pages deploy ck-command-center --project-name=ck-command-center --branch=main --commit-dirty=true && break
+            echo "Attempt $i failed, retrying in 15s..." && sleep 15
+          done
 
+  deploy-gateway:
+    name: Deploy API Gateway
+    needs: test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install wrangler
+        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
+      - name: Install dependencies
+        run: npm install
+      - name: Install gateway dependencies
+        working-directory: ck-api-gateway
+        run: npm install
+      - name: Deploy to Cloudflare
+        working-directory: ck-api-gateway
+        run: |
+          for i in 1 2 3; do
+            npx wrangler deploy && break
+            echo "Attempt $i failed, retrying in 15s..." && sleep 15
+          done
+
+  deploy-sentinel:
+    name: Deploy Sentinel Webhook
+    needs: [test, deploy-gateway]
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install wrangler
+        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
+      - name: Install dependencies
+        run: npm install
+      - name: Install sentinel dependencies
+        working-directory: sentinel-webhook
+        run: npm install
+      - name: Deploy to Cloudflare
+        working-directory: sentinel-webhook
+        run: |
+          for i in 1 2 3; do
+            npx wrangler deploy && break
+            echo "Attempt $i failed, retrying in 15s..." && sleep 15
+          done
+
+  deploy-nemotron:
+    name: Deploy Nemotron Worker
+    needs: [test, deploy-gateway]
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install wrangler
+        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
+      - name: Install dependencies
+        run: npm install
+      - name: Install nemotron dependencies
+        working-directory: ck-nemotron-worker
+        run: npm install
+      - name: Deploy to Cloudflare
+        working-directory: ck-nemotron-worker
+        run: |
+          for i in 1 2 3; do
+            npx wrangler deploy && break
+            echo "Attempt $i failed, retrying in 15s..." && sleep 15
+          done
+
+  smoke-test:
+    name: Live Smoke Test and Status Record
+    needs: [deploy-gateway, deploy-sentinel, deploy-nemotron, deploy-website, deploy-command-center]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Install wrangler
-        run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
-
-      - name: Create Pages project if needed
-        run: wrangler pages project create ck-command-center --production-branch=main 2>&1 || echo "Project may already exist — continuing"
-
-      - name: Deploy to Cloudflare Pages
+      - name: Code-level verification (registration shape)
+        id: code
+        working-directory: ck-api-gateway
         run: |
-          for i in 1 2 3; do
-            wrangler pages deploy ck-command-center --project-name=ck-command-center --branch=main --commit-dirty=true && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
-          done
+          # Place the probe script INSIDE ck-api-gateway so node ESM resolves './src/...' correctly
+          cat > probe.mjs <<'PROBE_EOF'
+          import('./src/engines/master-prompt-v21.js').then(m => {
+            const d = m.getMasterPromptDashboard();
+            const out = {
+              masterPromptStatus: d.status,
+              avatarsCount: d.avatars.length,
+              marketingAssetsCount: d.marketingAssets.count,
+              gapsCount: d.researchGaps.length,
+              collectionsAgent: d.collectionsAgent ? {
+                id: d.collectionsAgent.id,
+                status: d.collectionsAgent.status,
+                complianceControls: d.collectionsAgent.complianceControls,
+                endpoints: d.collectionsAgent.endpoints,
+                reportsTo: d.collectionsAgent.reportsTo,
+              } : null,
+            };
+            console.log(JSON.stringify(out));
+          }).catch(e => { console.error(e); process.exit(1); });
+          PROBE_EOF
+          REG=$(node probe.mjs)
+          rm -f probe.mjs
+          echo "$REG"
+          # Single-line for $GITHUB_OUTPUT
+          REG_ONELINE=$(echo "$REG" | tr -d '\n')
+          echo "registration=$REG_ONELINE" >> "$GITHUB_OUTPUT"
+
+      - name: Network liveness probes
+        id: probe
+        run: |
+          set +e
+          GATEWAY_URL="https://ck-api-gateway.david-e59.workers.dev"
+          NEMOTRON_URL="https://ck-nemotron-worker.david-e59.workers.dev"
+          SENTINEL_URL="https://sentinel-webhook.david-e59.workers.dev"
+
+          # Allow Cloudflare a moment to propagate after wrangler deploy
+          sleep 20
+
+          GATEWAY_HEALTH=$(curl -sS --max-time 10 -L -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/health" || echo "fail")
+          GATEWAY_DASH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/orchestrator/dashboard" || echo "fail")
+          NEMOTRON_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$NEMOTRON_URL/v1/health" || echo "fail")
+          SENTINEL_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$SENTINEL_URL/" || echo "fail")
+
+          # Liveness: any HTTP response (200, 302, 401, 405) proves worker is reachable
+          GATEWAY_ALIVE="false"
+          if [ "$GATEWAY_HEALTH" != "fail" ] && [ "$GATEWAY_HEALTH" != "000" ]; then GATEWAY_ALIVE="true"; fi
+          # Dashboard returning 401 means route exists and auth gate works = code is deployed
+          GATEWAY_AUTH_ENFORCED="false"
+          if [ "$GATEWAY_DASH" = "401" ]; then GATEWAY_AUTH_ENFORCED="true"; fi
+
+          echo "gateway_health=$GATEWAY_HEALTH" >> "$GITHUB_OUTPUT"
+          echo "gateway_dash=$GATEWAY_DASH" >> "$GITHUB_OUTPUT"
+          echo "gateway_alive=$GATEWAY_ALIVE" >> "$GITHUB_OUTPUT"
+          echo "gateway_auth_enforced=$GATEWAY_AUTH_ENFORCED" >> "$GITHUB_OUTPUT"
+          echo "nemotron_health=$NEMOTRON_HEALTH" >> "$GITHUB_OUTPUT"
+          echo "sentinel_health=$SENTINEL_HEALTH" >> "$GITHUB_OUTPUT"
+
+      - name: Write deploy-status.json
+        run: |
+          cat > deploy-status.json <<EOF
+          {
+            "lastVerifiedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "commit": "${{ github.sha }}",
+            "ref": "${{ github.ref }}",
+            "runId": "${{ github.run_id }}",
+            "runUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "registration": ${{ steps.code.outputs.registration }},
+            "liveness": {
+              "gateway": {
+                "url": "https://ck-api-gateway.david-e59.workers.dev",
+                "alive": ${{ steps.probe.outputs.gateway_alive }},
+                "healthHttpStatus": "${{ steps.probe.outputs.gateway_health }}",
+                "dashboardHttpStatus": "${{ steps.probe.outputs.gateway_dash }}",
+                "authEnforced": ${{ steps.probe.outputs.gateway_auth_enforced }}
+              },
+              "nemotron": {
+                "url": "https://ck-nemotron-worker.david-e59.workers.dev",
+                "healthHttpStatus": "${{ steps.probe.outputs.nemotron_health }}"
+              },
+              "sentinel": {
+                "url": "https://sentinel-webhook.david-e59.workers.dev",
+                "healthHttpStatus": "${{ steps.probe.outputs.sentinel_health }}"
+              }
+            }
+          }
+          EOF
+          cat deploy-status.json
+          # Validate JSON before committing back
+          node -e "JSON.parse(require('fs').readFileSync('deploy-status.json','utf8'))"
+
+      - name: Commit deploy-status.json back to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add deploy-status.json
+          if git diff --cached --quiet; then
+            echo "No status change."
+          else
+            git commit -m "Record live deploy verification for ${{ github.sha }} [skip ci]"
+            git push
+          fi

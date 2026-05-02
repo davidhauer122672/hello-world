@@ -559,7 +559,7 @@ TIER 3 — DELEGATION: What to hire for, what to contract, what to offshore. Dec
 TIER 4 — ELIMINATION: 80% of activities produce 20% of results. Identify and kill low-leverage work ruthlessly.
 TIER 5 — COMPRESSION: Batch processing, time blocking, decision pre-commitment, template systems, SOPs.
 
-The CEO has: 382 AI agents, 8 Atlas voice campaigns, Cloudflare Workers, Airtable (39 tables), Slack automation, Claude API, NVIDIA Nemotron. The tech stack is already powerful — the blueprint should maximize it.
+The CEO has: 383 AI agents, Retell voice campaigns, Cloudflare Workers, Airtable (39 tables), Slack automation, Claude API. The tech stack is already powerful — the blueprint should maximize it.
 
 Output as JSON with keys: current_leverage_audit (object scoring each tier 1-10), one_year_targets (array of 10 specific outcomes that normally take 10 years), leverage_blueprint (object with quarterly milestones Q1-Q4), ai_delegation_map (array of {task, current_owner, new_owner, tool, time_saved_weekly}), automation_opportunities (array with impact and implementation_hours), elimination_list (array of activities to stop immediately), weekly_schedule (optimized 5-day schedule showing leverage allocation), force_multipliers (array of highest-ROI investments of time/money).`;
 

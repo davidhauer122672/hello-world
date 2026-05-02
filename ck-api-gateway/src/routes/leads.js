@@ -16,16 +16,26 @@ import { jsonResponse, errorResponse } from '../utils/response.js';
  * No auth required. Rate-limited by IP. Accepts simple JSON body.
  */
 export async function handlePublicLead(request, env, ctx) {
-  const body = await request.json();
+  let body;
+  try { body = await request.json(); }
+  catch { return errorResponse('Request body must be valid JSON.', 400); }
 
-  const name = String(body.name || '').trim().slice(0, 200);
-  const email = String(body.email || '').trim().slice(0, 200);
-  const phone = String(body.phone || '').trim().slice(0, 30);
-  const zone = String(body.zone || '').trim().slice(0, 100);
-  const message = String(body.message || '').trim().slice(0, 5000);
+  const name = sanitize(body.name, 200);
+  const email = sanitize(body.email, 200);
+  const phone = sanitize(body.phone, 30);
+  const zone = sanitize(body.zone, 100);
+  const message = sanitize(body.message, 5000);
 
   if (!name && !email && !phone) {
     return errorResponse('At least one of name, email, or phone is required.', 400);
+  }
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return errorResponse('Invalid email format.', 400);
+  }
+
+  if (phone && phone.replace(/\D/g, '').length < 10) {
+    return errorResponse('Phone number must have at least 10 digits.', 400);
   }
 
   const fields = {
@@ -155,7 +165,6 @@ export async function handleEnrichLead(request, env, ctx) {
   // Write enrichment back to the lead record
   const updateFields = {};
   if (enrichType === 'battle_plan') {
-    // SCAA-1 Battle Plan Output is an AI field — we append to Audit Trail instead
     const auditAppend = `\n[${new Date().toISOString()}] SCAA-1 Battle Plan generated via ck-api-gateway. Model: ${result.model}. Cached: ${result.cached}.`;
     updateFields['Audit Trail/Activity Log'] = (fields['Audit Trail/Activity Log'] || '') + auditAppend;
   } else if (enrichType === 'investor_analysis') {
@@ -200,4 +209,9 @@ export async function handleEnrichLead(request, env, ctx) {
     cached: result.cached,
     recordId: body.recordId,
   });
+}
+
+function sanitize(value, maxLen) {
+  if (value == null) return '';
+  return String(value).trim().slice(0, maxLen).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
 }

@@ -6,13 +6,13 @@
  * acquisition channel management, and sales playbook execution.
  *
  * Integrates with: SEN division (40 agents), MCCO-009 Pipeline Fusion,
- * Atlas AI campaigns, Retell AI calls, Google Ads, Airtable Leads table.
+ * Retell AI calls, Google Ads, Airtable Leads table.
  */
 
 // ── Pipeline Stages ────────────────────────────────────────────────────────
 
 export const PIPELINE_STAGES = [
-  { id: 'new', label: 'New Lead', order: 1, sla: '5 min', action: 'Immediate outreach via Atlas AI', agent: 'SEN-001 Sentinel Alpha', color: '#3b82f6' },
+  { id: 'new', label: 'New Lead', order: 1, sla: '5 min', action: 'Immediate outreach via Retell AI', agent: 'SEN-001 Sentinel Alpha', color: '#3b82f6' },
   { id: 'contacted', label: 'Contacted', order: 2, sla: '24h', action: 'Qualify using SCAA-1 framework', agent: 'SEN-003 Battle Planner', color: '#8b5cf6' },
   { id: 'qualified', label: 'Qualified', order: 3, sla: '48h', action: 'Generate battle plan + schedule consultation', agent: 'SEN-004 Lead Scorer', color: '#a855f7' },
   { id: 'consultation', label: 'Consultation Booked', order: 4, sla: '72h', action: 'Prepare property assessment + pricing proposal', agent: 'SEN-023 Demo Conductor', color: '#d946ef' },
@@ -110,8 +110,8 @@ export const ACQUISITION_CHANNELS = [
   { id: 'retell', name: 'Retell AI Inbound Calls', type: 'inbound', agent: 'SEN-001', costPerLead: 0, status: 'active', webhook: '/v1/webhook/retell' },
   { id: 'website', name: 'Website Contact Form', type: 'inbound', agent: 'SEN-004', costPerLead: 0, status: 'active', endpoint: '/v1/leads/public' },
   { id: 'google_ads', name: 'Google Ads (3 campaigns)', type: 'paid', agent: 'MKT-008', costPerLead: 35, status: 'configured', endpoint: '/v1/ads/google/dashboard' },
-  { id: 'atlas_revival', name: 'Atlas Dead Lead Revival', type: 'outbound', agent: 'SEN-002', costPerLead: 5, status: 'configured', campaign: 'ATLAS_REVIVAL_CAMPAIGN_ID' },
-  { id: 'atlas_outreach', name: 'Atlas New Lead Outreach', type: 'outbound', agent: 'SEN-002', costPerLead: 3, status: 'configured', campaign: 'ATLAS_NEW_LEAD_CAMPAIGN_ID' },
+  { id: 'retell_revival', name: 'Retell Dead Lead Revival', type: 'outbound', agent: 'SEN-002', costPerLead: 5, status: 'configured', webhook: '/v1/webhook/retell' },
+  { id: 'retell_outreach', name: 'Retell Outbound Prospecting', type: 'outbound', agent: 'SEN-002', costPerLead: 3, status: 'configured', webhook: '/v1/webhook/retell' },
   { id: 'referral', name: 'Client Referral Program', type: 'organic', agent: 'SEN-014', costPerLead: 0, status: 'active', notes: 'Managed by Referral Engine' },
   { id: 'realtor', name: 'Realtor Partnerships', type: 'partnership', agent: 'EXC-006', costPerLead: 0, status: 'active', notes: '3+ realtor relationships' },
   { id: 'social', name: 'Social Media (organic)', type: 'organic', agent: 'MKT-002', costPerLead: 0, status: 'active', notes: 'MCCO-005 Scroll Breaker content' },

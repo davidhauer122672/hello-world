@@ -17,19 +17,20 @@ All Claude build sequences, creations, audits, reconfigurations, activities, tes
 ## Project Overview
 Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
+330 AI agents across 11 operational divisions. Launch phase — 0 clients, NHWA accredited.
 
 ## Live Endpoints
-- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (147 endpoints)
+- **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (142 endpoints)
 - **Sentinel Webhook**: https://sentinel-webhook.david-e59.workers.dev
-- **Nemotron Worker**: https://ck-nemotron-worker.david-e59.workers.dev
+- **Inference Worker**: https://ck-nemotron-worker.david-e59.workers.dev
 - **Website**: https://coastalkey-pm.com (reverse proxy → Manus origin)
 - **Command Center**: https://ck-command-center.pages.dev
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 147 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks (Cloudflare Worker)
+- **ck-api-gateway**: Central API — 147 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Retell AI campaigns, frameworks (Cloudflare Worker)
 - **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
-- **ck-command-center**: Dashboard UI for 383-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
+- **ck-command-center**: Dashboard UI for 384-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
 - **th-sentinel-campaign**: Campaign config, Retell prompts, Airtable field reference
@@ -47,8 +48,8 @@ npm run test:nemotron   # Test Nemotron worker only
 npm run deploy          # Deploy all services (requires CLOUDFLARE_API_TOKEN)
 ```
 
-## Autonomous Fleet (383 units)
-- **15 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
+## Autonomous Fleet (384 units)
+- **16 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales + Sovereign Marketing Officer (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
 - **297 AI Agents** across 9 operational divisions: EXC (20), SEN (40), OPS (45), INT (30), MKT (47), FIN (25), VEN (25), TEC (25), WEB (40)
 - **50 Intelligence Officers** in 5 squads: ALPHA (Infrastructure), BRAVO (Data), CHARLIE (Security), DELTA (Revenue), ECHO (Performance)
 - **20 Email AI Agents** in 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
@@ -116,7 +117,38 @@ POST /v1/mcco/post              — Generate high-engagement social post
 ## Secrets (all configured)
 - ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN
 - SLACK_WEBHOOK_URL, SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET
-- NVIDIA_API_KEY, ATLAS_API_KEY
+- RETELL_API_KEY, RETELL_WEBHOOK_SECRET
+
+## Agent Fleet (330 agents across 11 divisions)
+| Division | ID  | Agents | Focus |
+|----------|-----|--------|-------|
+| Executive | EXC | 20 | C-suite strategy, board reporting, enterprise decisions |
+| Sentinel Sales | SEN | 40 | Inbound/outbound sales, lead qualification, conversion |
+| Operations | OPS | 45 | Property management, maintenance, inspections, concierge |
+| Intelligence | INT | 30 | Market research, competitive intel, data analysis |
+| Marketing | MKT | 40 | Content creation, email campaigns, brand management, SEO |
+| Finance | FIN | 25 | Revenue tracking, budgeting, forecasting, compliance |
+| Vendor Management | VEN | 25 | Vendor compliance, procurement, contract management |
+| Technology | TEC | 25 | Platform ops, API integrations, monitoring, CI/CD |
+| Website Development | WEB | 40 | Website architecture, frontend dev, deployment |
+| Business Forecast | BFR | 20 | 18-month market forecasting, demand modeling, CEO briefings |
+| Social Campaign Mktg | SCM | 20 | Revenue-generating social media, CEO journey, content campaigns |
+
+## Key API Routes
+- `/v1/agents` — Fleet management (list, detail, action, metrics, dashboard)
+- `/v1/leads` — Lead creation, enrichment, public contact form
+- `/v1/inference` — Claude API with KV caching
+- `/v1/workflows` — SCAA-1, WF-3, WF-4 pipelines
+- `/v1/forecast` — BFR division (agents, dashboard, market-pulse, generate, scenario)
+- `/v1/social` — SCM division (agents, dashboard, calendar, generate, campaign)
+- `/v1/pricing` — Dynamic pricing engine
+- `/v1/property-intel` — ArcGIS property search
+- `/v1/campaign` — TH Sentinel campaign analytics
+- `/v1/intel` — Intelligence officer fleet
+- `/v1/email` — Email agent operations
+
+## Airtable Tables
+- Business Forecasts: `tblRjuthaIQcJaRBu` — BFR division output persistence
 
 ## CI/CD
 GitHub Actions on push to main: test → preflight token check → deploy all services to Cloudflare.
@@ -136,7 +168,7 @@ GET  /api/standup/history  — Previous standup entries (up to 90 days)
 ```
 
 ### Briefing Contents
-- Fleet status (383/383 active, operational readiness)
+- Fleet status (384/384 active, operational readiness)
 - Division-by-division 24h accomplishment summary (all 10 divisions + special units)
 - Agent health audit (data integrity, backup recency, service uptime)
 - Automatic triage with priority classification for inactive agents
@@ -162,7 +194,7 @@ GET  /api/standup              — CEO daily standup briefing
 ## Operational Schedulers
 - **Daily Report**: 9:00 AM UTC — SMS revenue + schedule summary
 - **Drip Engine**: Every hour — process 90-day email nurture sequences
-- **Publish Tracker**: Every 30 min — poll Buffer for publish confirmations
+- **Publish Tracker**: Every 30 min — poll for publish confirmations
 - **Backup**: 2:00 AM UTC — JSON data backup with 7-day retention
 - **CEO Standup**: 6:00 AM EST (11:00 UTC) — sovereign operations briefing
 

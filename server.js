@@ -21,12 +21,12 @@ const healthRouter = require('./routes/health');
 const dashboardRouter = require('./routes/dashboard');
 const workflowsRouter = require('./routes/workflows');
 const standupRouter = require('./routes/standup');
+const strategyRouter = require('./routes/strategy');
 
 // Services
 const { startDailyReport, buildReport } = require('./lib/daily-report');
 const { sendSMS } = require('./lib/sms');
 const { startDripScheduler } = require('./lib/drip-engine');
-const { startPublishTracker } = require('./lib/social-publisher');
 const { startBackupScheduler, runBackup } = require('./lib/backup');
 const { startCeoStandup } = require('./lib/ceo-standup');
 
@@ -82,6 +82,7 @@ app.use('/api/visuals', requireAdminToken, visualsRouter);
 app.use('/api/drip', requireAdminToken, dripRouter);
 app.use('/api/workflows', requireAdminToken, workflowsRouter);
 app.use('/api/standup', requireAdminToken, standupRouter);
+app.use('/api/strategy', requireAdminToken, strategyRouter);
 
 // Manual report trigger (protected)
 app.post('/api/report/send', requireAdminToken, asyncWrap(async (req, res) => {
@@ -131,7 +132,6 @@ server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   startDailyReport();
   startDripScheduler();
-  startPublishTracker();
   startBackupScheduler();
   startCeoStandup();
 });
