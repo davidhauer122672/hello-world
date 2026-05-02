@@ -8,13 +8,19 @@
  *   GET  /v1/orchestrator/gaps         — Top 1% industry gap analysis
  *   GET  /v1/orchestrator/noi-model    — NOI impact model from gap capitalization
  *   POST /v1/orchestrator/noi-model    — Calculate NOI with custom portfolio size
+ *   GET  /v1/orchestrator/fleet        — Sentry/Ledger/Acquisition/Report fleet status
+ *   GET  /v1/orchestrator/triggers     — TAS catalog (15 production scenarios)
+ *   POST /v1/orchestrator/dispatch     — Route an event through Priority×Risk + HITL gate
+ *   POST /v1/orchestrator/hitl         — Record CEO HITL decision (approve/reject/defer)
  */
 
-import { jsonResponse } from '../utils/response.js';
+import { jsonResponse, errorResponse } from '../utils/response.js';
 import { writeAudit } from '../utils/audit.js';
 import {
   AVATARS, MARKETING_ASSETS, INDUSTRY_GAPS,
+  AGENT_FLEET, TRIGGER_ACTION_SEQUENCES,
   calculateNOIGapImpact, getMasterPromptDashboard,
+  getOrchestratorFleetStatus, routeDispatch,
 } from '../engines/master-prompt-v21.js';
 
 export function handleOrchestratorDashboard() {
@@ -53,11 +59,88 @@ export async function handleOrchestratorNOICalculate(request, env, ctx) {
   const portfolioSize = body.portfolioSize || 30;
   const result = calculateNOIGapImpact(portfolioSize);
 
-  writeAudit(env, ctx, '/v1/orchestrator/noi-model', {
+  writeAudit(env, ctx, {
+    route: '/v1/orchestrator/noi-model',
     action: 'noi_model_calculated',
     portfolioSize,
     projectedNOI: result.coastalKey.projectedNOI,
   });
 
   return jsonResponse(result);
+}
+
+export function handleOrchestratorFleet() {
+  return jsonResponse(getOrchestratorFleetStatus());
+}
+
+export function handleOrchestratorTriggers() {
+  return jsonResponse({
+    sequences: TRIGGER_ACTION_SEQUENCES,
+    count: TRIGGER_ACTION_SEQUENCES.length,
+    source: 'docs/orchestrator/trigger-action-sequences.md',
+  });
+}
+
+export async function handleOrchestratorDispatch(request, env, ctx) {
+  let event;
+  try {
+    event = await request.json();
+  } catch {
+    return errorResponse('invalid_json_body', 400);
+  }
+  if (!event || typeof event !== 'object' || !event.action) {
+    return errorResponse('action_required', 400);
+  }
+
+  const result = routeDispatch(event);
+
+  writeAudit(env, ctx, {
+    route: '/v1/orchestrator/dispatch',
+    action: 'dispatch_routed',
+    event_action: event.action,
+    correlation_id: event.correlation_id || null,
+    outcome: result.status,
+    agent: result.agent,
+    priority: result.priority,
+    risk_class: result.risk_class,
+    hitl_required: result.status === 'hitl_pending',
+  });
+
+  const status = result.status === 'errored' ? 422
+    : result.status === 'quarantined' ? 409
+    : result.status === 'hitl_pending' ? 202
+    : 200;
+  return jsonResponse(result, status);
+}
+
+export async function handleOrchestratorHITL(request, env, ctx) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return errorResponse('invalid_json_body', 400);
+  }
+  const { blocked_envelope_id, decision, approver_id, rationale } = body || {};
+  if (!blocked_envelope_id || !decision || !approver_id) {
+    return errorResponse('blocked_envelope_id, decision, approver_id required', 400);
+  }
+  if (!['approve', 'reject', 'defer'].includes(decision)) {
+    return errorResponse('decision must be approve|reject|defer', 400);
+  }
+
+  const record = {
+    blocked_envelope_id,
+    decision,
+    approver_id,
+    rationale: rationale || null,
+    decided_at: new Date().toISOString(),
+  };
+
+  writeAudit(env, ctx, {
+    route: '/v1/orchestrator/hitl',
+    action: 'hitl_decision_recorded',
+    ...record,
+  });
+
+  return jsonResponse({ status: 'recorded', ...record });
 }
