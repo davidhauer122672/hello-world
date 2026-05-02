@@ -127,3 +127,47 @@ describe('Audit Writer', () => {
     assert.ok(keys.keys.length > 0);
   });
 });
+
+// ─�� Airtable Table Constants ──
+import { TABLES } from '../services/airtable.js';
+
+describe('Airtable Table Constants', () => {
+  it('defines all core tables', () => {
+    assert.ok(TABLES.LEADS, 'LEADS table required');
+    assert.ok(TABLES.CONTENT_CALENDAR, 'CONTENT_CALENDAR table required');
+    assert.ok(TABLES.PODCAST_PRODUCTION, 'PODCAST_PRODUCTION table required');
+    assert.ok(TABLES.AI_LOG, 'AI_LOG table required');
+    assert.ok(TABLES.TASKS, 'TASKS table required');
+  });
+
+  it('table IDs follow Airtable format', () => {
+    for (const [name, id] of Object.entries(TABLES)) {
+      assert.ok(id.startsWith('tbl'), `${name} should start with "tbl", got "${id}"`);
+    }
+  });
+});
+
+// ── Buffer Service Exports ──
+import * as bufferService from '../services/buffer.js';
+
+describe('Buffer Service', () => {
+  it('exports resolveProfileId function', () => {
+    assert.equal(typeof bufferService.resolveProfileId, 'function');
+  });
+
+  it('exports schedulePost function', () => {
+    assert.equal(typeof bufferService.schedulePost, 'function');
+  });
+
+  it('exports crossPostSchedule function', () => {
+    assert.equal(typeof bufferService.crossPostSchedule, 'function');
+  });
+
+  it('exports getProfiles function', () => {
+    assert.equal(typeof bufferService.getProfiles, 'function');
+  });
+
+  it('exports syncAnalyticsToCalendar function', () => {
+    assert.equal(typeof bufferService.syncAnalyticsToCalendar, 'function');
+  });
+});

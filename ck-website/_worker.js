@@ -1,4 +1,4 @@
-// ══════════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════���═════════════════════════════════
 // Coastal Key Property Management — Production Reverse Proxy
 //
 // Serves the Manus-hosted website (coastalkey-awfopuqz.manus.space) on
@@ -11,19 +11,20 @@
 //   - Retry with backoff on upstream failures
 //   - Custom robots.txt serving the canonical domain
 //   - Graceful fallback on origin downtime
-// ══════════════════════════════════════════════════════════════════════════
+// ═════════���═══════════════════════════════���═══════════════════════════���════
 
 const MANUS_ORIGIN = 'https://coastalkey-awfopuqz.manus.space';
 const MANUS_HOST = 'coastalkey-awfopuqz.manus.space';
 const CANONICAL_DOMAIN = 'coastalkey-pm.com';
 const CANONICAL_ORIGIN = 'https://coastalkey-pm.com';
+const API_GATEWAY_ORIGIN = 'https://ck-api-gateway.david-e59.workers.dev';
 
 // Cache TTLs (seconds)
 const CACHE_HTML = 300;         // 5 min — pages refresh quickly
 const CACHE_STATIC = 2592000;   // 30 days — versioned assets
 const CACHE_FONT = 31536000;    // 1 year — fonts never change
 
-// ── Helpers ──────────────────────────────────────────────────────────────
+// ── Helpers ───────────���──────────────────────────────────────────────────
 
 function isStaticAsset(pathname) {
   return /\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|avif|woff|woff2|ttf|eot|otf|mp4|webm|pdf)(\?.*)?$/i.test(pathname);
@@ -46,7 +47,7 @@ function isTextContent(contentType) {
     || contentType.includes('application/xml');
 }
 
-// ── Phase 3: BEM → Tailwind class rewriting at edge ────────────────────
+// ── Phase 3: BEM → Tailwind class rewriting at edge ──────────��─────────
 
 const BEM_TO_TAILWIND = [
   ['section-header', 'ck-section'],
@@ -162,7 +163,7 @@ function injectSEO(html, pathname, siteOrigin) {
   } else {
     // Replace any manus canonical with ours
     html = html.replace(
-      /(<link\s+rel="canonical"\s+href=")([^"]*)(">)/i,
+      /(<link\s+rel="canonical"\s+href=")([^"]*)("\s*>)/i,
       `$1${canonicalUrl}$3`
     );
   }
@@ -170,7 +171,7 @@ function injectSEO(html, pathname, siteOrigin) {
   // Inject/fix og:url
   if (html.includes('og:url')) {
     html = html.replace(
-      /(<meta\s+property="og:url"\s+content=")([^"]*)(">)/i,
+      /(<meta\s+property="og:url"\s+content=")([^"]*)("\s*>)/i,
       `$1${canonicalUrl}$3`
     );
   }
@@ -237,7 +238,7 @@ function maintenancePage() {
   });
 }
 
-// ── Main Handler ─────────────────────────────────────────────────────────
+// ── Main Handler ───────────────────────────────────────���─────────────────
 
 export default {
   async fetch(request, env, ctx) {
@@ -247,6 +248,26 @@ export default {
 
     // Serve our own robots.txt for the canonical domain
     if (url.pathname === '/robots.txt') return robotsTxt();
+
+    // Proxy /v1/* API calls to the gateway worker
+    if (url.pathname.startsWith('/v1/')) {
+      const apiUrl = API_GATEWAY_ORIGIN + url.pathname + url.search;
+      const apiHeaders = new Headers(request.headers);
+      apiHeaders.set('Host', new URL(API_GATEWAY_ORIGIN).hostname);
+      apiHeaders.set('X-Forwarded-Host', siteHost);
+      try {
+        return await fetch(apiUrl, {
+          method: request.method,
+          headers: apiHeaders,
+          body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: 'API gateway unreachable' }), {
+          status: 502,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
 
     // Build target URL
     const targetUrl = MANUS_ORIGIN + url.pathname + url.search;
