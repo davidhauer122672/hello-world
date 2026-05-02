@@ -6,13 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
 env:
-  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   WRANGLER_VERSION: '3'
 
@@ -54,6 +55,9 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -66,14 +70,35 @@ jobs:
 
       - name: Validate Cloudflare token
         run: |
-          echo "Runner IP: $(curl -s https://ifconfig.me)"
-          echo "Account ID length: ${#CLOUDFLARE_ACCOUNT_ID}"
-          echo "API Token length: ${#CLOUDFLARE_API_TOKEN}"
+          RUNNER_IP=$(curl -sf https://ifconfig.me || echo "unknown")
+          echo "Runner IP: $RUNNER_IP"
+          echo "Account ID set: $([ -n "$CLOUDFLARE_ACCOUNT_ID" ] && echo 'yes' || echo 'NO')"
+          echo "API Token set: $([ -n "$CLOUDFLARE_API_TOKEN" ] && echo 'yes' || echo 'NO')"
+
+          # Verify token via Cloudflare API (detects error 9109 before wrangler deploy)
+          TOKEN_CHECK=$(curl -sf -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/user/tokens/verify" 2>&1) || true
+
+          if echo "$TOKEN_CHECK" | grep -q '"status":"active"'; then
+            echo "Cloudflare API token verified: active"
+          else
+            echo "::warning::Cloudflare API token verification response: $TOKEN_CHECK"
+            # Check for IP restriction (error 9109)
+            if echo "$TOKEN_CHECK" | grep -q '9109\|not allowed'; then
+              echo ""
+              echo "::error::Cloudflare API token blocked by IP restriction (error 9109)."
+              echo "::error::Runner IP: $RUNNER_IP"
+              echo "::error::Fix: Cloudflare Dashboard > My Profile > API Tokens > Edit token"
+              echo "::error::Option A: Remove 'IP Address Filtering' entirely (recommended for CI/CD)"
+              echo "::error::Option B: Add GitHub Actions IP ranges (not recommended — they rotate)"
+              echo "::error::Docs: https://developers.cloudflare.com/fundamentals/api/get-started/create-token/"
+              exit 1
+            fi
+          fi
+
+          # Final wrangler verification
           if ! wrangler whoami 2>&1; then
-            echo ""
-            echo "::error::Cloudflare API token validation failed."
-            echo "::error::This is likely due to IP restrictions on the API token (error 9109)."
-            echo "::error::Fix: Cloudflare Dashboard > My Profile > API Tokens > Edit token > Remove IP restriction or add GitHub Actions runner IPs."
+            echo "::error::wrangler whoami failed. Token may be expired or revoked."
             exit 1
           fi
 
@@ -81,6 +106,9 @@ jobs:
     name: Deploy Website
     needs: preflight
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -98,15 +126,20 @@ jobs:
       - name: Deploy to Cloudflare Pages
         run: |
           for i in 1 2 3; do
-            wrangler pages deploy ck-website --project-name=coastalkey-pm --branch=main --commit-dirty=true && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
+            wrangler pages deploy ck-website --project-name=coastalkey-pm --branch=main --commit-dirty=true && exit 0
+            echo "Attempt $i failed, retrying in $((i * 15))s..."
+            sleep $((i * 15))
           done
+          echo "::error::All deploy retries exhausted for website"
+          exit 1
 
   deploy-gateway:
     name: Deploy API Gateway
     needs: preflight
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -124,15 +157,20 @@ jobs:
         working-directory: ck-api-gateway
         run: |
           for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
+            wrangler deploy && exit 0
+            echo "Attempt $i failed, retrying in $((i * 15))s..."
+            sleep $((i * 15))
           done
+          echo "::error::All deploy retries exhausted"
+          exit 1
 
   deploy-sentinel:
     name: Deploy Sentinel Webhook
     needs: [preflight, deploy-gateway]
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -150,15 +188,20 @@ jobs:
         working-directory: sentinel-webhook
         run: |
           for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
+            wrangler deploy && exit 0
+            echo "Attempt $i failed, retrying in $((i * 15))s..."
+            sleep $((i * 15))
           done
+          echo "::error::All deploy retries exhausted"
+          exit 1
 
   deploy-nemotron:
     name: Deploy Nemotron Worker
     needs: [preflight, deploy-gateway]
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -176,15 +219,20 @@ jobs:
         working-directory: ck-nemotron-worker
         run: |
           for i in 1 2 3; do
-            wrangler deploy && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
+            wrangler deploy && exit 0
+            echo "Attempt $i failed, retrying in $((i * 15))s..."
+            sleep $((i * 15))
           done
+          echo "::error::All deploy retries exhausted"
+          exit 1
 
   deploy-command-center:
     name: Deploy Command Center
     needs: preflight
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -201,7 +249,9 @@ jobs:
       - name: Deploy to Cloudflare Pages
         run: |
           for i in 1 2 3; do
-            wrangler pages deploy ck-command-center --project-name=ck-command-center --branch=main --commit-dirty=true && break
-            echo "Attempt $i failed, retrying in 15s..."
-            sleep 15
+            wrangler pages deploy ck-command-center --project-name=ck-command-center --branch=main --commit-dirty=true && exit 0
+            echo "Attempt $i failed, retrying in $((i * 15))s..."
+            sleep $((i * 15))
           done
+          echo "::error::All deploy retries exhausted for command-center"
+          exit 1
