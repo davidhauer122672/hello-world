@@ -38,6 +38,7 @@ export const TABLES = {
   INCOMPLETE_LEADS:       'tblYh4Rg4NxkRstJl',
   MISSED_FAILED_CALLS:    'tblWW25r6GmsQe3mQ',
   MCCO_SOVEREIGN_OPS:     'tblWJD4efsentwjLO',
+  BUSINESS_FORECASTS:     'tblRjuthaIQcJaRBu',
 };
 
 // ── Service Zones (Treasure Coast) ───────────────────────────────────────────
