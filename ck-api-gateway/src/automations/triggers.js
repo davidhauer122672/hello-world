@@ -21,6 +21,14 @@
  */
 
 /**
+ * WF2 - Content Calendar → Buffer Publish
+ *
+ * Triggers when a Content Calendar record's "Status" field changes to "Approved".
+ * Pushes the post to Buffer via the /v1/content/publish endpoint for automated
+ * multi-platform scheduling (Instagram, Facebook, LinkedIn, X, Alignable).
+ *
+
+/**
  * WF3 - Investor Escalation Workflow
  *
  * Triggers when a lead's "Sentinel Segment" field changes to "Investor" or
@@ -190,56 +198,62 @@ export const WF2_CONTENT_PUBLISH = {
   ],
 };
 
-/**
- * META_ADS_BOOST - Engagement-Based Boost Trigger
- *
- * Triggers when a published post's engagement exceeds 3x the rolling average.
- * Flags the post for paid amplification via Meta Ads Manager.
- * Requires active Meta Ads connector (OAuth authorization).
- *
- * @type {TriggerConfig}
- */
 export const META_ADS_BOOST = {
   id: 'meta-ads-boost',
   description: 'Flag high-engagement posts for Meta Ads paid amplification',
-  trigger: {
-    type: 'fieldChange',
-    table: 'Content Calendar',
-    field: 'Engagement Rate',
-  },
-  conditions: {
-    status: {
-      equals: 'Published',
-      field: 'Status',
-    },
-    engagementThreshold: {
-      multiplier: 3,
-      baseline: 'rolling_average_30d',
-      description: 'Engagement rate must exceed 3x the 30-day rolling average',
-    },
-  },
-  action: {
-    method: 'POST',
-    endpoint: '/v1/meta-ads/boost',
-    payload: {
-      recordId: '{{record.id}}',
-      platform: '{{record.Platform}}',
-      engagementRate: '{{record.Engagement Rate}}',
-      postUrl: '{{record.Post URL}}',
-    },
-  },
-  prerequisites: {
-    metaAdsConnector: 'Must be authorized via OAuth (see Directive 1)',
-    adAccountId: 'META_AD_ACCOUNT_ID must be set as Worker secret',
-    pageAccessToken: 'META_PAGE_ACCESS_TOKEN must be set as Worker secret',
-  },
+  trigger: { type: 'fieldChange', table: 'Content Calendar', field: 'Engagement Rate' },
+  conditions: { status: { equals: 'Published', field: 'Status' }, engagementThreshold: { multiplier: 3, baseline: 'rolling_average_30d' } },
+  action: { method: 'POST', endpoint: '/v1/meta-ads/boost', payload: { recordId: '{{record.id}}', platform: '{{record.Platform}}', engagementRate: '{{record.Engagement Rate}}', postUrl: '{{record.Post URL}}' } },
+  prerequisites: { metaAdsConnector: 'Must be authorized via OAuth', adAccountId: 'META_AD_ACCOUNT_ID', pageAccessToken: 'META_PAGE_ACCESS_TOKEN' },
   slack_channel: '#marketing-ops',
-  budget: {
-    default_daily: 25,
-    max_daily: 100,
-    duration_days: 3,
-    currency: 'USD',
-  },
+  budget: { default_daily: 25, max_daily: 100, duration_days: 3, currency: 'USD' },
+};
+
+export const WF2_CONTENT_ENGAGEMENT = {
+  id: 'wf2-content-engagement',
+  description: 'Generate and schedule content for new Content Calendar entries',
+  trigger: { type: 'recordCreated', table: 'Content Calendar' },
+  conditions: { status: { in: ['Draft', 'Planned'], field: 'Status' }, postType: { exists: true, field: 'Post Type' } },
+  action: { method: 'POST', endpoint: '/v1/workflows/wf2', payload: { topic: '{{record.Post Title}}', platforms: '{{record.Platform}}', contentType: '{{record.Post Type}}', tone: '{{record.Tone}}', scheduledAt: '{{record.Post Date}}' } },
+  integrations: ['claude-ai', 'banana-pro', 'buffer'],
+  slack_channel: '#content-alerts',
+};
+
+export const WF4_ALIGNABLE_BRANCH = {
+  id: 'wf4-alignable-branch',
+  description: 'Activate Alignable community engagement for local business leads',
+  trigger: { type: 'fieldChange', table: 'Leads', field: 'Call Disposition' },
+  conditions: { disposition: { in: ['No Answer', 'Not Interested'] }, serviceZone: { includes: 'Treasure Coast', field: 'Service Zone' } },
+  action: { method: 'POST', endpoint: '/v1/workflows/wf4-alignable', payload: { recordId: '{{record.id}}', businessName: '{{record.Business Name}}', businessCategory: '{{record.Business Category}}', location: '{{record.Service Zone}}' } },
+  integrations: ['claude-ai', 'alignable'],
+  slack_channel: '#community-alerts',
+};
+
+export const BANANA_PRO_CONTENT = {
+  id: 'banana-pro-content',
+  description: 'Enhance content with Banana Pro AI when Banana Pro Enhanced is unchecked',
+  trigger: { type: 'fieldChange', table: 'Content Calendar', field: 'Status' },
+  conditions: { status: { in: ['Scheduled', 'Ready'] }, bananaEnhanced: { equals: false, field: 'Banana Pro Enhanced' } },
+  action: { method: 'POST', endpoint: '/v1/banana/generate', payload: { topic: '{{record.Post Title}}', platform: '{{record.Platform}}', tone: '{{record.Tone}}' } },
+  integrations: ['banana-pro'],
+};
+
+export const BUFFER_AUTO_SCHEDULE = {
+  id: 'buffer-auto-schedule',
+  description: 'Auto-schedule ready content to Buffer for publishing',
+  trigger: { type: 'fieldChange', table: 'Content Calendar', field: 'Status' },
+  conditions: { status: { equals: 'Ready' }, bufferScheduled: { equals: false, field: 'CK-SPP Scheduled' } },
+  action: { method: 'POST', endpoint: '/v1/buffer/cross-post', payload: { text: '{{record.Caption}}', platforms: '{{record.Platform}}', scheduledAt: '{{record.Post Date}}' } },
+  integrations: ['buffer'],
+};
+
+export const MARKET_DAILY_SCAN = {
+  id: 'market-daily-scan',
+  description: 'Daily market intelligence scan and report generation',
+  trigger: { type: 'scheduled', cron: '0 12 * * 1-5' },
+  action: { method: 'GET', endpoint: '/v1/market/report' },
+  integrations: ['alpha-vantage', 'claude-ai', 'airtable'],
+  slack_channel: '#market-intel',
 };
 
 export const SLACK_CHANNELS = {
@@ -254,6 +268,18 @@ export const SLACK_CHANNELS = {
   INVESTOR_ESCALATIONS: {
     name: '#investor-escalations',
     purpose: 'High-value investor lead escalations',
+  },
+  CONTENT_ALERTS: {
+    name: '#content-alerts',
+    purpose: 'Content pipeline status, Buffer scheduling, engagement metrics',
+  },
+  COMMUNITY_ALERTS: {
+    name: '#community-alerts',
+    purpose: 'Alignable engagement, local business networking',
+  },
+  MARKET_INTEL: {
+    name: '#market-intel',
+    purpose: 'Market intelligence reports, stock alerts, economic indicators',
   },
   GENERAL: {
     name: '#general',
