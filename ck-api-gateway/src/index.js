@@ -9,7 +9,7 @@
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
  *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
- *   POST /v1/content/publish    — Publish Content Calendar record for direct platform posting (WF-2)
+ *   POST /v1/content/publish    — Publish Content Calendar record via Claude AI
  *   GET  /v1/coop/committee      — Cooperations Committee charter and dashboard
  *   GET  /v1/coop/agents         — List all 10 COOP agents
  *   GET  /v1/coop/agents/:id     — Get single COOP agent
@@ -126,6 +126,24 @@
  *   GET  /v1/compliance/calling-window — Check calling window status
  *   POST /v1/compliance/pre-call-check — Full pre-call compliance gate
  *   GET  /v1/compliance/audit          — Generate TCPA/DNC audit report
+ *   GET  /v1/campaign/peak-time/dashboard      — Peak-Time Intelligence Engine dashboard
+ *   GET  /v1/campaign/peak-time/schedule        — Generate posting schedule (DST-aware)
+ *   GET  /v1/campaign/peak-time/next-slots      — Next posting slots per platform
+ *   GET  /v1/campaign/peak-time/matrix          — Platform scheduling matrix
+ *   GET  /v1/campaign/peak-time/dst             — DST status and transitions
+ *   GET  /v1/campaign/peak-time/bulletin        — All Points Bulletin
+ *   GET  /v1/campaign/peak-time/publish-status   — Claude AI publishing status
+ *   POST /v1/campaign/peak-time/schedule-post   — Schedule single post via Claude AI
+ *   POST /v1/campaign/peak-time/schedule-batch  — Schedule batch of posts
+ *   GET  /v1/campaign/peak-time/smo             — Sovereign Marketing Officer status
+ *   POST /v1/campaign/peak-time/smo/analyze     — AI market analysis via Claude
+ *   GET  /v1/campaign/peak-time/market-analysis — Full market analysis
+ *   GET  /v1/campaign/peak-time/problems        — Top 10 problems table
+ *   GET  /v1/campaign/peak-time/offers          — Landing page offers
+ *   GET  /v1/campaign/peak-time/distribution    — 30-day distribution plan
+ *   GET  /v1/campaign/peak-time/division/:code  — Division-specific schedule
+ *   POST /v1/campaign/peak-time/validate-slot   — Validate a posting slot
+ *   GET  /v1/campaign/peak-time/weekly-counts   — Weekly post counts per platform
  *   GET  /v1/rnd/campaign              — Full 7-day R&D campaign plan
  *   GET  /v1/rnd/campaign/status       — Live campaign status
  *   GET  /v1/rnd/campaign/day/:day     — Single day's plan (1-7)
@@ -239,8 +257,16 @@ import { handlePaymentDashboard, handlePublicPricing, handleCreatePaymentLink } 
 import { handleAvatarDashboard, handleAvatarGenerate, handleAvatarStatus } from './routes/banana-avatar.js';
 import { handleITAMDashboard, handleITAMKpis, handleITAMCategory, handleITAMScore, handleITAMTco, handleITAMHealth, handleITAMStrategic } from './routes/itam-kpi.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
+import {
+  handleCampaignPeakTimeDashboard, handleCampaignSchedule, handleCampaignNextSlots,
+  handleCampaignMatrix, handleCampaignDST, handleCampaignBulletin, handleCampaignPublishStatus,
+  handleCampaignSchedulePost, handleCampaignScheduleBatch,
+  handleCampaignSMO, handleCampaignSMOAnalyze,
+  handleCampaignMarketAnalysis, handleCampaignProblems, handleCampaignOffers,
+  handleCampaignDistribution, handleCampaignDivisionSchedule, handleCampaignValidateSlot,
+  handleCampaignWeeklyCounts,
+} from './routes/campaign.js';
 import { handleBananaGenerate, handleBananaScoreLead, handleBananaPropertyDesc, handleBananaForecast, handleBananaBatch, handleBananaHealth } from './routes/banana-pro.js';
-import { handleBufferProfiles, handleBufferSchedule, handleBufferCrossPost, handleBufferQueue, handleBufferSent, handleBufferSync, handleBufferHealth } from './routes/buffer.js';
 import { handleWf2ContentPipeline, handleWf4AlignableBranch } from './routes/wf2-content-pipeline.js';
 import { handleMarketQuote, handleMarketScan, handleMarketReport, handleMarketPortfolio, handleMarketIndicators, handleMarketWatchlist } from './routes/market-intel.js';
 import { handleDiagnosticsScan, handleDataHealth, handleSystemActivation, handleSystemUpgrade, handleSOPRegistry, handleSOPDetail, handleFleetMandate } from './routes/diagnostics.js';
@@ -317,6 +343,13 @@ export default {
         if (!env.META_AD_ACCOUNT_ID) metaMissing.push('META_AD_ACCOUNT_ID');
         if (!env.META_PAGE_ID) metaMissing.push('META_PAGE_ID');
         checks.metaAds = { status: 'not_configured', missing: metaMissing };
+      }
+
+      // Buffer
+      if (env.BUFFER_ACCESS_TOKEN) {
+        checks.buffer = { status: 'configured' };
+      } else {
+        checks.buffer = { status: 'not_configured', impact: 'Content publish falls back to manual mode' };
       }
 
       // KV stores
@@ -1244,6 +1277,63 @@ export default {
         return jsonResponse(summary ? getManifestSummary() : getFullManifest());
       }
 
+      // ── Peak-Time Intelligence Engine (Campaign #1) ──
+      if (path === '/v1/campaign/peak-time/dashboard' && method === 'GET') {
+        return handleCampaignPeakTimeDashboard();
+      }
+      if (path === '/v1/campaign/peak-time/schedule' && method === 'GET') {
+        return handleCampaignSchedule(url);
+      }
+      if (path === '/v1/campaign/peak-time/next-slots' && method === 'GET') {
+        return handleCampaignNextSlots();
+      }
+      if (path === '/v1/campaign/peak-time/matrix' && method === 'GET') {
+        return handleCampaignMatrix();
+      }
+      if (path === '/v1/campaign/peak-time/dst' && method === 'GET') {
+        return handleCampaignDST(url);
+      }
+      if (path === '/v1/campaign/peak-time/bulletin' && method === 'GET') {
+        return handleCampaignBulletin(env, ctx);
+      }
+      if (path === '/v1/campaign/peak-time/publish-status' && method === 'GET') {
+        return handleCampaignPublishStatus(env);
+      }
+      if (path === '/v1/campaign/peak-time/schedule-post' && method === 'POST') {
+        return await handleCampaignSchedulePost(request, env, ctx);
+      }
+      if (path === '/v1/campaign/peak-time/schedule-batch' && method === 'POST') {
+        return await handleCampaignScheduleBatch(request, env, ctx);
+      }
+      if (path === '/v1/campaign/peak-time/smo' && method === 'GET') {
+        return handleCampaignSMO();
+      }
+      if (path === '/v1/campaign/peak-time/smo/analyze' && method === 'POST') {
+        return await handleCampaignSMOAnalyze(request, env, ctx);
+      }
+      if (path === '/v1/campaign/peak-time/market-analysis' && method === 'GET') {
+        return handleCampaignMarketAnalysis();
+      }
+      if (path === '/v1/campaign/peak-time/problems' && method === 'GET') {
+        return handleCampaignProblems();
+      }
+      if (path === '/v1/campaign/peak-time/offers' && method === 'GET') {
+        return handleCampaignOffers();
+      }
+      if (path === '/v1/campaign/peak-time/distribution' && method === 'GET') {
+        return handleCampaignDistribution(url);
+      }
+      if (path === '/v1/campaign/peak-time/weekly-counts' && method === 'GET') {
+        return handleCampaignWeeklyCounts();
+      }
+      if (path === '/v1/campaign/peak-time/validate-slot' && method === 'POST') {
+        return await handleCampaignValidateSlot(request);
+      }
+      if (path.match(/^\/v1\/campaign\/peak-time\/division\/[^/]+$/) && method === 'GET') {
+        const divisionCode = path.split('/v1/campaign/peak-time/division/')[1];
+        return handleCampaignDivisionSchedule(divisionCode, url);
+      }
+
       // ── Banana Pro AI ──
       if (path === '/v1/banana/generate' && method === 'POST') return await handleBananaGenerate(request, env, ctx);
       if (path === '/v1/banana/score-lead' && method === 'POST') return await handleBananaScoreLead(request, env, ctx);
@@ -1251,15 +1341,6 @@ export default {
       if (path === '/v1/banana/forecast' && method === 'POST') return await handleBananaForecast(request, env, ctx);
       if (path === '/v1/banana/batch' && method === 'POST') return await handleBananaBatch(request, env, ctx);
       if (path === '/v1/banana/health' && method === 'GET') return await handleBananaHealth(env);
-
-      // ── Buffer Integration ──
-      if (path === '/v1/buffer/profiles' && method === 'GET') return await handleBufferProfiles(env);
-      if (path === '/v1/buffer/schedule' && method === 'POST') return await handleBufferSchedule(request, env, ctx);
-      if (path === '/v1/buffer/cross-post' && method === 'POST') return await handleBufferCrossPost(request, env, ctx);
-      if (path === '/v1/buffer/sync' && method === 'POST') return await handleBufferSync(env, ctx);
-      if (path === '/v1/buffer/health' && method === 'GET') return await handleBufferHealth(env);
-      if (path.match(/^\/v1\/buffer\/queue\/[^/]+$/) && method === 'GET') return await handleBufferQueue(path.split('/v1/buffer/queue/')[1], env);
-      if (path.match(/^\/v1\/buffer\/sent\/[^/]+$/) && method === 'GET') return await handleBufferSent(path.split('/v1/buffer/sent/')[1], env, url);
 
       // ── WF-2 Content Pipeline & WF-4 Alignable ──
       if (path === '/v1/workflows/wf2' && method === 'POST') return await handleWf2ContentPipeline(request, env, ctx);
@@ -1283,52 +1364,22 @@ export default {
       if (path.match(/^\/v1\/diagnostics\/sops\/[^/]+$/) && method === 'GET') return handleSOPDetail(path.split('/v1/diagnostics/sops/')[1]);
 
       // ── Business Forecast Division ──
-      if (path === '/v1/forecast/agents' && method === 'GET') {
-        return handleListForecastAgents(url);
-      }
-
-      if (path === '/v1/forecast/dashboard' && method === 'GET') {
-        return handleForecastDashboard();
-      }
-
-      if (path === '/v1/forecast/market-pulse' && method === 'GET') {
-        return handleMarketPulse();
-      }
-
-      if (path === '/v1/forecast/generate' && method === 'POST') {
-        return await handleForecastGenerate(request, env, ctx);
-      }
-
-      if (path === '/v1/forecast/scenario' && method === 'POST') {
-        return await handleForecastScenario(request, env, ctx);
-      }
-
+      if (path === '/v1/forecast/agents' && method === 'GET') return handleListForecastAgents(url);
+      if (path === '/v1/forecast/dashboard' && method === 'GET') return handleForecastDashboard();
+      if (path === '/v1/forecast/market-pulse' && method === 'GET') return handleMarketPulse();
+      if (path === '/v1/forecast/generate' && method === 'POST') return await handleForecastGenerate(request, env, ctx);
+      if (path === '/v1/forecast/scenario' && method === 'POST') return await handleForecastScenario(request, env, ctx);
       if (path.match(/^\/v1\/forecast\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/forecast/agents/')[1];
         return handleGetForecastAgent(agentId);
       }
 
       // ── Social Campaign Marketing Division ──
-      if (path === '/v1/social/agents' && method === 'GET') {
-        return handleListSocialAgents(url);
-      }
-
-      if (path === '/v1/social/dashboard' && method === 'GET') {
-        return handleSocialDashboard();
-      }
-
-      if (path === '/v1/social/calendar' && method === 'GET') {
-        return handleSocialCalendar(url);
-      }
-
-      if (path === '/v1/social/generate' && method === 'POST') {
-        return await handleSocialGenerate(request, env, ctx);
-      }
-
-      if (path === '/v1/social/campaign' && method === 'POST') {
-        return await handleSocialCampaign(request, env, ctx);
-      }
-
+      if (path === '/v1/social/agents' && method === 'GET') return handleListSocialAgents(url);
+      if (path === '/v1/social/dashboard' && method === 'GET') return handleSocialDashboard();
+      if (path === '/v1/social/calendar' && method === 'GET') return handleSocialCalendar(url);
+      if (path === '/v1/social/generate' && method === 'POST') return await handleSocialGenerate(request, env, ctx);
+      if (path === '/v1/social/campaign' && method === 'POST') return await handleSocialCampaign(request, env, ctx);
       if (path.match(/^\/v1\/social\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/social/agents/')[1];
         return handleGetSocialAgent(agentId);

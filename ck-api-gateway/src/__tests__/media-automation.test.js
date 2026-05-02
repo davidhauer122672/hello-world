@@ -58,8 +58,8 @@ describe('WF-2 Content Publish Trigger Config', () => {
     assert.deepEqual(WF2_CONTENT_PUBLISH.conditions.requiredFields, ['Caption', 'Platform']);
   });
 
-  it('should target all 5 social platforms', () => {
-    assert.deepEqual(WF2_CONTENT_PUBLISH.platforms, ['instagram', 'facebook', 'linkedin', 'x', 'alignable']);
+  it('should target all 4 social platforms', () => {
+    assert.deepEqual(WF2_CONTENT_PUBLISH.platforms, ['instagram', 'facebook', 'linkedin', 'x']);
   });
 
   it('should reference correct Airtable table ID', () => {
@@ -71,8 +71,8 @@ describe('WF-2 Content Publish Trigger Config', () => {
     assert.ok(WF2_CONTENT_PUBLISH.airtable_setup_instructions.length >= 10);
   });
 
-  it('should have direct publishing mode', () => {
-    assert.equal(WF2_CONTENT_PUBLISH.mode.type, 'direct');
+  it('should have manual fallback mode', () => {
+    assert.equal(WF2_CONTENT_PUBLISH.fallback.mode, 'manual');
   });
 
   it('should notify #marketing-ops Slack channel', () => {
