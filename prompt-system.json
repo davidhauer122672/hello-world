@@ -1,0 +1,11 @@
+{
+  "schema": "coastal_key.prompt_system.v1",
+  "owner": "David Hauer, Founder and CEO, Coastal Key Asset Management",
+  "generated": "2026-04-17",
+  "hierarchy": {
+    "layer_1_governance": "CK_Northstar_Master_Prompt.md",
+    "layer_2_orchestrator": "CK_Genspark_Master_Prompt_v4.md",
+    "layer_3_reference": "CK_Fleet_Reference.md"
+  },
+  "inheritance_rule": "On any conflict, the North Star wins."
+}
