@@ -40,7 +40,7 @@ export const DIGITAL_PRODUCTS = {
     {
       id: 'ai_playbook', name: 'AI Automation Playbook for Property Managers', price: 197,
       format: 'PDF + video walkthrough', tier: 'Mid-Market ($197)',
-      contents: ['AI-powered inspection workflows', 'Client communication automation', 'Storm protocol triggers', 'Reporting dashboards', 'SOPs for Airtable-Slack-Buffer stack'],
+      contents: ['AI-powered inspection workflows', 'Client communication automation', 'Storm protocol triggers', 'Reporting dashboards', 'SOPs for Airtable-Slack-Claude AI stack'],
       positioning: 'The operational manual that took Coastal Key from zero to enterprise-grade in six months.',
     },
     {

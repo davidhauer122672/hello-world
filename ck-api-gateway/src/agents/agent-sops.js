@@ -167,10 +167,10 @@ export const DIVISION_SOPS = {
         instructions: [
           'Execute WF-2 Content Engagement Pipeline for all scheduled content.',
           'Generate AI content via Claude + Banana Pro for every Content Calendar entry.',
-          'Schedule all content to Buffer for multi-platform publishing.',
+          'Optimize all content via Claude AI for multi-platform publishing.',
           'Maintain content calendar 30 days in advance at all times.',
           'A/B test headlines and CTAs — promote top performers.',
-          'Sync Buffer analytics back to Airtable every 6 hours.',
+          'Sync publishing analytics back to Airtable every 6 hours.',
           'Ensure brand consistency across all platforms — luxury-professional tone.',
         ],
         kpis: ['Content calendar fill rate > 95%', 'Engagement rate > 3%', 'Content production 5+ posts/day', 'Brand compliance 100%'],
@@ -279,7 +279,7 @@ export const DIVISION_SOPS = {
         instructions: [
           'Manage Claude API integration — optimize token usage and caching.',
           'Manage Banana Pro AI models — monitor inference latency and quality.',
-          'Maintain Buffer API integration health.',
+          'Maintain Claude AI publishing integration health.',
           'Ensure all API keys and secrets are rotated per security policy.',
           'Monitor rate limits across all external APIs — preemptive throttling.',
         ],
