@@ -1,11 +1,13 @@
 {
-  "id": "ck-wallpaper-03-treasure-coast-dawn",
-  "title": "Treasure Coast Dawn — Live Wallpaper",
-  "role": "Brand-aligned iPhone 16 Pro live wallpaper for the Coastal Key CEO device.",
+  "id": "ck-avatar-05-claude-live",
+  "title": "Coastal Key Claude Live Production Avatar",
+  "role": "Real-time conversational avatar system bridging Banana Pro AI rendering with Claude LLM intelligence for live desktop production.",
   "version": "1.0.0",
   "generated": "2026-05-02",
   "targetPlatforms": [
-    "iphone_16_pro_wallpaper"
+    "desktop_live_production",
+    "virtual_camera",
+    "command_center_live_panel"
   ],
   "renderer": "banana_pro_ai",
   "technicalStandards": {
@@ -59,49 +61,62 @@
     ]
   },
   "subject": {
-    "name": "Treasure Coast Dawn",
+    "name": "Coastal Key Orchestrator",
     "kind": "non_human",
-    "contentRating": "G",
+    "contentRating": "PG",
     "description": [
-      "Wide Treasure Coast shoreline at civil twilight into sunrise",
-      "Foreground: damp sand with receding wash, scattered shell fragments",
-      "Midground: glassy shorebreak with low foam lines",
-      "Background: flat horizon with scattered low cumulus catching warm light",
-      "No people, no boats, no structures"
+      "AI system interface — non-human digital presence for orchestrator mode",
+      "Rendered as abstract executive HUD: translucent waveform overlay on neutral backdrop",
+      "Waveform amplitude driven by Claude response audio stream",
+      "Status indicators: active avatar ID, model tier, session duration, token usage",
+      "Transitions to human avatar (01, 02, or 04) on /avatar command"
     ]
   },
-  "wardrobe": null,
+  "wardrobe": [
+    "Not applicable — non-human orchestrator interface",
+    "Visual identity: Coastal Key brand gradient (deep navy to warm gold)",
+    "Waveform color: warm gold (#D4A843) on dark navy (#0A1628) field"
+  ],
   "environment": [
-    "Sun rising 3-8 degrees above horizon, warm amber to soft gold gradient",
-    "Sky gradient: deep indigo at top transitioning to warm gold at horizon",
-    "Two to three silhouetted seabirds drifting across upper third of frame",
-    "Palm frond edge visible in top-right corner, gently swaying",
-    "Subtle volumetric haze over water"
+    "Dark executive field, deep navy to black gradient",
+    "Subtle grid lines at 5% opacity suggesting spatial depth",
+    "Coastal Key logotype watermark at 8% opacity, lower-right",
+    "No windows, no text overlays beyond status indicators"
   ],
   "camera": {
-    "framing": "wide environmental, horizon on lower third",
-    "angle": "locked, eye-level with horizon",
-    "orientation": "portrait 1179 x 2556",
-    "lens": "equivalent 28mm full-frame, f/8, deep focus"
+    "framing": "full-frame, edge-to-edge",
+    "angle": "straight-on, centered",
+    "orientation": "landscape 1920 x 1080 (desktop default)"
   },
   "animation": {
     "loopSeconds": 5,
     "idleBehaviors": [
-      "wave wash advances and recedes over 4-second cycle",
-      "cloud drift at 2 degrees per second, left to right",
-      "palm frond sway at 0.3 Hz",
-      "seabird silhouettes complete one pass per loop",
-      "sun position static (loop point fixed at dawn)"
+      "waveform idle pulse at 0.5 Hz, 10% amplitude",
+      "status indicator heartbeat blink every 3 seconds",
+      "grid parallax drift at 0.2 degrees per second",
+      "ambient particle field — sparse, warm gold, slow drift"
     ]
   },
-  "voice": null,
-  "deliveryProfile": {
-    "tone": "environmental, calm, brand-aligned",
-    "cadence": "slow, meditative motion; no startle cuts",
+  "voice": {
+    "persona": "orchestrator-system",
+    "tone": "neutral system voice, clear, no personality affect",
+    "pace": "moderate, even",
+    "accent": "neutral North American",
     "prohibited": [
-      "hard zooms",
-      "lens flares beyond subtle bloom",
-      "visible text or watermarks"
+      "personality affect",
+      "emotional coloring",
+      "casual register"
+    ],
+    "ttsProfileHint": "ElevenLabs: professional-neutral-system or Coqui local VITS"
+  },
+  "deliveryProfile": {
+    "tone": "system-neutral, status-reporting, transition-announcing",
+    "cadence": "even, predictable, no dramatic pauses",
+    "prohibited": [
+      "casual filler",
+      "slang",
+      "sexualized framing",
+      "personality-driven banter"
     ]
   },
   "qualityGates": [

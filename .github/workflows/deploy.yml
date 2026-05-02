@@ -35,9 +35,11 @@ jobs:
         working-directory: ck-api-gateway
         run: npm install
       - name: Install sentinel dependencies
+        if: hashFiles('sentinel-webhook/package.json') != ''
         working-directory: sentinel-webhook
         run: npm install
       - name: Install nemotron dependencies
+        if: hashFiles('ck-nemotron-worker/package.json') != ''
         working-directory: ck-nemotron-worker
         run: npm install
       - name: Test Express Server
@@ -46,9 +48,11 @@ jobs:
         working-directory: ck-api-gateway
         run: npm test
       - name: Test Sentinel Webhook
+        if: hashFiles('sentinel-webhook/package.json') != ''
         working-directory: sentinel-webhook
         run: npm test
       - name: Test Nemotron Worker
+        if: hashFiles('ck-nemotron-worker/package.json') != ''
         working-directory: ck-nemotron-worker
         run: npm test
 

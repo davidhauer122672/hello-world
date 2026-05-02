@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-20T17:47:17.038Z",
-  "count": 4,
+  "generated": "2026-05-02T15:14:00.102Z",
+  "count": 5,
   "specs": [
     {
       "id": "ck-avatar-01-exec-comms",
@@ -17,6 +17,10 @@
     {
       "id": "ck-avatar-04-ceo-self",
       "json": "04-ceo-avatar.json"
+    },
+    {
+      "id": "ck-avatar-05-claude-live",
+      "json": "05-claude-live-production.json"
     }
   ]
 }

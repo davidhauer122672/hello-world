@@ -34,6 +34,7 @@ const SPEC_FILENAME_TO_PROMPT = {
   '02-executive-administrator-avatar.json':  '02-executive-administrator-avatar.prompt.md',
   '03-treasure-coast-dawn-wallpaper.json':   '03-treasure-coast-dawn-wallpaper.prompt.md',
   '04-ceo-avatar.json':                      '04-ceo-avatar.prompt.md',
+  '05-claude-live-production.json':          '05-claude-live-production.prompt.md',
 };
 
 function parseArgs(argv) {
