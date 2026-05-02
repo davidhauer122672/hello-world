@@ -92,4 +92,18 @@ export const DIVISIONS = [
     icon: 'target',
     description: 'Continuous market research, competitive intelligence, YouTube/web channel scanning, data integrity enforcement, and end-to-end system validation. 3 squads: Research (4 agents), Scan (3 agents), Integrity (3 agents). Reports to MCCO-000 Sovereign.',
   },
+  {
+    id: 'BFR',
+    name: 'Business Forecast',
+    color: '#dc2626',
+    icon: 'trending-up',
+    description: 'Ferrari-grade 18-month market forecasting, demand modeling, competitive intelligence, and CEO-ready strategic deliverables for home watch and property management.',
+  },
+  {
+    id: 'SCM',
+    name: 'Social Campaign Marketing',
+    color: '#e11d48',
+    icon: 'fire',
+    description: 'Revenue-generating social media operations. Campaign-driven, aggressive, content-savvy. Converts social presence into signed property management clients through the Coastal Key business framework and CEO journey narrative.',
+  },
 ];
