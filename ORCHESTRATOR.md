@@ -93,6 +93,10 @@ V2.1 is a dual-layer system. This document is the governance charter. The runtim
 | GET | `/v1/orchestrator/gaps` | Top 1% industry gap analysis from Notebook LM research |
 | GET | `/v1/orchestrator/noi-model` | NOI impact model at 30-property baseline |
 | POST | `/v1/orchestrator/noi-model` | NOI calculation at custom portfolio size. Body: `{ "portfolioSize": <int> }` |
+| GET | `/v1/orchestrator/fleet` | Sentry/Ledger/Acquisition/Report fleet status, rate limits, HITL thresholds |
+| GET | `/v1/orchestrator/triggers` | 15 production Trigger-Action sequences (TAS-001 … TAS-015) |
+| POST | `/v1/orchestrator/dispatch` | Route an event through Priority×Risk + Goal validation + HITL gate. Returns 200 dispatched / 202 hitl_pending / 409 quarantined / 422 errored |
+| POST | `/v1/orchestrator/hitl` | Record CEO HITL decision. Body: `{ "blocked_envelope_id", "decision": "approve\|reject\|defer", "approver_id", "rationale" }` |
 
 Authoritative constants exported by the engine:
 
@@ -100,7 +104,16 @@ Authoritative constants exported by the engine:
 - `MARKETING_ASSETS` — 10 V2.1 campaign assets (MA-001 through MA-010), each with version, type, specs, status.
 - `INDUSTRY_GAPS` — 3 top gaps with CK opportunity, goal alignment, and projected NOI impact.
 - `calculateNOIGapImpact(portfolioSize)` — Portfolio economics with traditional vs Coastal Key margin, uplift breakdown, and sensitivity bands.
-- `getMasterPromptDashboard()` — Unified dashboard payload for CEO and avatar consumption.
+- `getMasterPromptDashboard()` — Unified dashboard payload for CEO and avatar consumption (now includes fleet + 15 TAS).
+- `AGENT_FLEET` — 4 sub-agents (Sentry, Ledger, Acquisition, Report) with domains, inputs, outputs, kill-switches.
+- `RATE_LIMITS_CONFIG` — per-agent RPM / daily / burst budgets.
+- `HITL_THRESHOLDS` — $5,000 single transfer, $5,000 aggregate 24h, P0-always, inter-LLC-always, insurance-always.
+- `TRIGGER_ACTION_SEQUENCES` — 15 production scenarios (TAS-001 … TAS-015) with priority, risk, agent, HITL flag, retention.
+- `classifyDispatch(event)` — returns `{ priority, riskClass, agent }`.
+- `validateGoalAlignment(event)` — checks `goal_alignment[]` against G1/G2/G3/G4.
+- `evaluateHITL(event)` — returns `{ hitlRequired, reasons[] }`.
+- `routeDispatch(event)` — full router: classify → validate goals → HITL gate → dispatched | hitl_pending | quarantined | errored.
+- `getOrchestratorFleetStatus()` — fleet snapshot for `/v1/orchestrator/fleet`.
 
 ---
 
@@ -212,6 +225,7 @@ User input will follow. Execute with ruthless precision and zero tolerance for d
 |---------|------|--------|
 | 1.0.0 | 2026-04-15 | Initial Enterprise Orchestrator document. |
 | 2.1.0 | 2026-04-17 | Promoted to Master System Prompt. Grok SuperGrok AI agent codified as primary Automation First tool. 6-step Response Protocol with Avatar Briefing. Session Activation Protocol added. iPhone 16 Grok Mobile App and 13-step cadence in Deployment Mandate. Runtime Engine section added with pointers to `ck-api-gateway/src/engines/master-prompt-v21.js` and 6 `/v1/orchestrator/*` endpoints. Avatar, asset, and gap tables mirror engine constants. V1 Campaign Pack registered in Persistent Operating System. |
+| 2.2.0 | 2026-05-02 | Master Orchestrator fleet engine live: AGENT_FLEET (Sentry/Ledger/Acquisition/Report), RATE_LIMITS_CONFIG, HITL_THRESHOLDS, TRIGGER_ACTION_SEQUENCES (15 TAS), routeDispatch with Priority×Risk + Goal validation + $5K HITL gate. 4 new endpoints: `/v1/orchestrator/fleet`, `/triggers`, `/dispatch`, `/hitl`. Standalone dashboard at `ck-command-center/orchestrator.html`. Master Prompt dashboard now embeds fleet + TAS payload. |
 
 ---
 
