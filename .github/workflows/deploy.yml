@@ -180,6 +180,10 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -308,7 +312,20 @@ jobs:
           git add deploy-status.json
           if git diff --cached --quiet; then
             echo "No status change."
-          else
-            git commit -m "Record live deploy verification for ${{ github.sha }} [skip ci]"
-            git push
+            exit 0
           fi
+          git commit -m "Record live deploy verification for ${{ github.sha }} [skip ci]"
+          # Race-safe push: rebase against any commits that landed on main during the
+          # ~5-min deploy window, then push explicitly to main. Loop on conflict.
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort; echo "Rebase failed on attempt $attempt"; sleep 5; continue; }
+            if git push origin HEAD:main; then
+              echo "deploy-status.json committed back to main on attempt $attempt"
+              exit 0
+            fi
+            echo "Push attempt $attempt rejected (likely non-fast-forward), retrying in 5s..."
+            sleep 5
+          done
+          echo "::error::Failed to commit deploy-status.json after 4 attempts"
+          exit 1
