@@ -21,11 +21,11 @@
  */
 
 /**
- * WF2 - Content Calendar → Buffer Publish
+ * WF2 - Content Calendar → Direct Platform Publish
  *
  * Triggers when a Content Calendar record's "Status" field changes to "Approved".
- * Pushes the post to Buffer via the /v1/content/publish endpoint for automated
- * multi-platform scheduling (Instagram, Facebook, LinkedIn, X, Alignable).
+ * Prepares the post via the /v1/content/publish endpoint for direct
+ * multi-platform posting (Instagram, Facebook, LinkedIn, X, Alignable).
  *
  * Airtable Automation Setup (11 steps):
  *   1. Open Airtable base → Content Calendar table
@@ -41,8 +41,8 @@
  *   5. Body: {"recordId": "{{record.id}}"}
  *   6. Test the automation with a sample record
  *   7. Enable the automation
- *   8. Verify Buffer receives the post via GET /v1/health?deep=true
- *   9. Confirm Airtable record updates with Buffer Status field
+ *   8. Verify publish payload via GET /v1/health?deep=true
+ *   9. Confirm Airtable record updates with publish notes
  *  10. Check audit log at GET /v1/audit for publish confirmation
  *  11. Monitor #marketing-ops Slack channel for publish notifications
  *
@@ -50,7 +50,7 @@
  */
 export const WF2_CONTENT_PUBLISH = {
   id: 'wf2-content-publish',
-  description: 'Publish approved Content Calendar records to Buffer for multi-platform scheduling',
+  description: 'Publish approved Content Calendar records for direct multi-platform posting',
   trigger: {
     type: 'fieldChange',
     table: 'Content Calendar',
@@ -75,9 +75,9 @@ export const WF2_CONTENT_PUBLISH = {
       'Content-Type': 'application/json',
     },
   },
-  fallback: {
-    mode: 'manual',
-    description: 'If BUFFER_ACCESS_TOKEN is not set, returns manual posting payload with copy-paste instructions',
+  mode: {
+    type: 'direct',
+    description: 'Returns posting payload with copy-paste-ready content for each platform',
   },
   platforms: ['instagram', 'facebook', 'linkedin', 'x', 'alignable'],
   slack_channel: '#marketing-ops',

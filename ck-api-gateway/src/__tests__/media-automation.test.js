@@ -71,8 +71,8 @@ describe('WF-2 Content Publish Trigger Config', () => {
     assert.ok(WF2_CONTENT_PUBLISH.airtable_setup_instructions.length >= 10);
   });
 
-  it('should have manual fallback mode', () => {
-    assert.equal(WF2_CONTENT_PUBLISH.fallback.mode, 'manual');
+  it('should have direct publishing mode', () => {
+    assert.equal(WF2_CONTENT_PUBLISH.mode.type, 'direct');
   });
 
   it('should notify #marketing-ops Slack channel', () => {
