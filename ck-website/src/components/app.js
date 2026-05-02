@@ -364,9 +364,9 @@ function renderPortalDashboard(main) {
   ];
 
   const fallbackStats = {
-    totalAgents: 290,
-    activeAgents: 273,
-    divisions: 9,
+    totalAgents: 330,
+    activeAgents: 312,
+    divisions: 11,
     uptime: '99.9%',
   };
 
@@ -381,9 +381,9 @@ function renderPortalDashboard(main) {
   setPortalLayout(main, 'Dashboard', `
     <h1 class="portal-title">Operational Dashboard</h1>
     <div class="portal-stats" id="dash-stats">
-      <div class="stat-card"><span class="stat-num" id="stat-total">290</span><span class="stat-label">Total Agents</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-total">330</span><span class="stat-label">Total Agents</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-active">--</span><span class="stat-label">Active</span></div>
-      <div class="stat-card"><span class="stat-num" id="stat-divisions">9</span><span class="stat-label">Divisions</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-divisions">11</span><span class="stat-label">Divisions</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-uptime">99.9%</span><span class="stat-label">Uptime</span></div>
     </div>
     <div class="portal-card" id="dash-divisions">
@@ -480,7 +480,7 @@ function renderPortalAgents(main) {
     <div class="filter-bar">
       <input type="search" placeholder="Search agents..." class="filter-search">
       <select class="filter-select"><option value="">All Statuses</option><option>active</option><option>standby</option><option>training</option><option>maintenance</option></select>
-      <select class="filter-select"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option></select>
+      <select class="filter-select"><option value="">All Divisions</option><option value="EXC">Executive</option><option value="SEN">Sentinel Sales</option><option value="OPS">Operations</option><option value="INT">Intelligence</option><option value="MKT">Marketing</option><option value="FIN">Finance</option><option value="VEN">Vendor Mgmt</option><option value="TEC">Technology</option><option value="WEB">Web Development</option><option value="BFR">Business Forecast</option><option value="SCM">Social Campaigns</option></select>
     </div>
     <div class="agent-grid" id="agent-list">Loading agents...</div>
   `);
