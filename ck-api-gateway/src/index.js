@@ -144,8 +144,37 @@
  *   POST /v1/metrics/noi              — Calculate Net Operating Income
  *   POST /v1/metrics/gross-margin     — Calculate Gross Margin
  *   POST /v1/metrics/cac-ltv          — Calculate CAC vs LTV ratio
+ *   GET  /v1/thinking/frameworks       — List all 7 expert thinking frameworks
+ *   GET  /v1/thinking/frameworks/:id   — Get single thinking framework
+ *   POST /v1/thinking/session          — Run thinking session (single framework)
+ *   POST /v1/thinking/multi            — Multi-framework analysis with synthesis
+ *   POST /v1/thinking/learning-blueprint — 90-day neuro-optimized learning blueprint
+ *   POST /v1/thinking/daily-models     — CEO daily mental models briefing
+ *   POST /v1/thinking/pm-mastery       — Property management mastery training
+ *   POST /v1/thinking/cognitive-os     — Cognitive OS audit & rewrite
+ *   POST /v1/thinking/life-architecture — High-performance life architecture
+ *   POST /v1/thinking/time-leverage    — Time leverage strategy (1yr = 10yr)
+ *   POST /v1/thinking/reprogram        — Psychological identity reprogrammer
+ *   GET  /v1/thinking/dashboard        — Thinking Coach operational dashboard
+ *   POST /v1/ceo/directive             — Issue CEO directive (optimize/architect/execute/diagnose/integrate)
+ *   POST /v1/ceo/operations-review     — Full operations review (5 directives + synthesis)
+ *   GET  /v1/ceo/operating-state       — Enterprise operating state
+ *   GET  /v1/ceo/dashboard             — CEO sovereign command dashboard
+ *   GET  /v1/forecast/agents      — List all 20 Business Forecast agents
+ *   GET  /v1/forecast/agents/:id  — Get single BFR agent
+ *   GET  /v1/forecast/dashboard   — BFR division dashboard
+ *   GET  /v1/forecast/market-pulse — Current market conditions snapshot
+ *   POST /v1/forecast/generate    — Generate 18-month forecast via Claude
+ *   POST /v1/forecast/scenario    — Run stress-test scenario simulation
+ *   GET  /v1/social/agents        — List all 20 Social Campaign Marketing agents
+ *   GET  /v1/social/agents/:id    — Get single SCM agent
+ *   GET  /v1/social/dashboard     — SCM division dashboard
+ *   GET  /v1/social/calendar      — Content calendar with posting schedule
+ *   POST /v1/social/generate      — Generate social content via Claude
+ *   POST /v1/social/campaign      — Generate full campaign brief via Claude
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
+ * Total: 137 route handlers | 422 agents | 12 divisions | 7 thinking frameworks | 5 CEO directive types
  */
 
 import { authenticate } from './middleware/auth.js';
@@ -208,7 +237,15 @@ import { handleCKSODashboard, handleAppTemplates, handleGenerateApp, handleDataT
 import { handleDeliveryDashboard, handleDeliveryExecute, handleDeliveryTemplate, handleDeliveryGovernance } from './routes/delivery-protocol.js';
 import { handlePaymentDashboard, handlePublicPricing, handleCreatePaymentLink } from './routes/payments.js';
 import { handleAvatarDashboard, handleAvatarGenerate, handleAvatarStatus } from './routes/banana-avatar.js';
+import { handleITAMDashboard, handleITAMKpis, handleITAMCategory, handleITAMScore, handleITAMTco, handleITAMHealth, handleITAMStrategic } from './routes/itam-kpi.js';
 import { getFullManifest, getManifestSummary } from './agents/agent-manifest.js';
+import { handleBananaGenerate, handleBananaScoreLead, handleBananaPropertyDesc, handleBananaForecast, handleBananaBatch, handleBananaHealth } from './routes/banana-pro.js';
+import { handleBufferProfiles, handleBufferSchedule, handleBufferCrossPost, handleBufferQueue, handleBufferSent, handleBufferSync, handleBufferHealth } from './routes/buffer.js';
+import { handleWf2ContentPipeline, handleWf4AlignableBranch } from './routes/wf2-content-pipeline.js';
+import { handleMarketQuote, handleMarketScan, handleMarketReport, handleMarketPortfolio, handleMarketIndicators, handleMarketWatchlist } from './routes/market-intel.js';
+import { handleDiagnosticsScan, handleDataHealth, handleSystemActivation, handleSystemUpgrade, handleSOPRegistry, handleSOPDetail, handleFleetMandate } from './routes/diagnostics.js';
+import { handleListForecastAgents, handleGetForecastAgent, handleForecastDashboard, handleForecastGenerate, handleForecastScenario, handleMarketPulse } from './routes/business-forecast.js';
+import { handleListSocialAgents, handleGetSocialAgent, handleSocialDashboard, handleSocialGenerate, handleSocialCampaign, handleSocialCalendar } from './routes/social-campaign.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -231,8 +268,8 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 382,
-          divisions: 10,
+          agents: 422,
+          divisions: 12,
           timestamp: new Date().toISOString(),
         });
       }
@@ -305,8 +342,8 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 312,
-        divisions: 10,
+        agents: 422,
+        divisions: 12,
         checks,
         timestamp: new Date().toISOString(),
       });
@@ -1147,6 +1184,32 @@ export default {
         return await handleAvatarStatus(request, env);
       }
 
+      // ── ITAM KPI Engine ──
+      if (path === '/v1/itam/dashboard' && method === 'GET') {
+        return handleITAMDashboard();
+      }
+      if (path === '/v1/itam/kpis' && method === 'GET') {
+        return handleITAMKpis();
+      }
+      if (path.startsWith('/v1/itam/kpis/') && method === 'GET') {
+        const category = path.split('/v1/itam/kpis/')[1];
+        return handleITAMCategory(category);
+      }
+      if (path === '/v1/itam/score' && method === 'POST') {
+        const body = await request.json();
+        return handleITAMScore(body);
+      }
+      if (path === '/v1/itam/tco' && method === 'POST') {
+        const body = await request.json();
+        return handleITAMTco(body);
+      }
+      if (path === '/v1/itam/health' && method === 'GET') {
+        return handleITAMHealth();
+      }
+      if (path === '/v1/itam/strategic' && method === 'GET') {
+        return handleITAMStrategic();
+      }
+
       // ── Work Generator Orchestrator ──
       if (path === '/v1/workgen/cycle' && method === 'POST') {
         return await handleWorkgenCycle(request, env, ctx);
@@ -1186,6 +1249,96 @@ export default {
       if (path === '/v1/manifest' && method === 'GET') {
         const summary = url.searchParams.get('summary') === 'true';
         return jsonResponse(summary ? getManifestSummary() : getFullManifest());
+      }
+
+      // ── Banana Pro AI ──
+      if (path === '/v1/banana/generate' && method === 'POST') return await handleBananaGenerate(request, env, ctx);
+      if (path === '/v1/banana/score-lead' && method === 'POST') return await handleBananaScoreLead(request, env, ctx);
+      if (path === '/v1/banana/property-desc' && method === 'POST') return await handleBananaPropertyDesc(request, env, ctx);
+      if (path === '/v1/banana/forecast' && method === 'POST') return await handleBananaForecast(request, env, ctx);
+      if (path === '/v1/banana/batch' && method === 'POST') return await handleBananaBatch(request, env, ctx);
+      if (path === '/v1/banana/health' && method === 'GET') return await handleBananaHealth(env);
+
+      // ── Buffer Integration ──
+      if (path === '/v1/buffer/profiles' && method === 'GET') return await handleBufferProfiles(env);
+      if (path === '/v1/buffer/schedule' && method === 'POST') return await handleBufferSchedule(request, env, ctx);
+      if (path === '/v1/buffer/cross-post' && method === 'POST') return await handleBufferCrossPost(request, env, ctx);
+      if (path === '/v1/buffer/sync' && method === 'POST') return await handleBufferSync(env, ctx);
+      if (path === '/v1/buffer/health' && method === 'GET') return await handleBufferHealth(env);
+      if (path.match(/^\/v1\/buffer\/queue\/[^/]+$/) && method === 'GET') return await handleBufferQueue(path.split('/v1/buffer/queue/')[1], env);
+      if (path.match(/^\/v1\/buffer\/sent\/[^/]+$/) && method === 'GET') return await handleBufferSent(path.split('/v1/buffer/sent/')[1], env, url);
+
+      // ── WF-2 Content Pipeline & WF-4 Alignable ──
+      if (path === '/v1/workflows/wf2' && method === 'POST') return await handleWf2ContentPipeline(request, env, ctx);
+      if (path === '/v1/workflows/wf4-alignable' && method === 'POST') return await handleWf4AlignableBranch(request, env, ctx);
+
+      // ── Market Intelligence ──
+      if (path === '/v1/market/scan' && method === 'GET') return await handleMarketScan(env, ctx);
+      if (path === '/v1/market/report' && method === 'GET') return await handleMarketReport(env, ctx);
+      if (path === '/v1/market/portfolio' && method === 'POST') return await handleMarketPortfolio(request, env, ctx);
+      if (path === '/v1/market/indicators' && method === 'GET') return await handleMarketIndicators(env);
+      if (path === '/v1/market/watchlist' && method === 'GET') return handleMarketWatchlist();
+      if (path.match(/^\/v1\/market\/quote\/[^/]+$/) && method === 'GET') return await handleMarketQuote(path.split('/v1/market/quote/')[1], env);
+
+      // ── Enterprise Diagnostics ──
+      if (path === '/v1/diagnostics/scan' && method === 'GET') return await handleDiagnosticsScan(env, ctx);
+      if (path === '/v1/diagnostics/data-health' && method === 'GET') return await handleDataHealth(env, ctx);
+      if (path === '/v1/diagnostics/activate' && method === 'POST') return await handleSystemActivation(request, env, ctx);
+      if (path === '/v1/diagnostics/upgrade' && method === 'POST') return await handleSystemUpgrade(request, env, ctx);
+      if (path === '/v1/diagnostics/sops' && method === 'GET') return handleSOPRegistry(url);
+      if (path === '/v1/diagnostics/fleet' && method === 'GET') return handleFleetMandate();
+      if (path.match(/^\/v1\/diagnostics\/sops\/[^/]+$/) && method === 'GET') return handleSOPDetail(path.split('/v1/diagnostics/sops/')[1]);
+
+      // ── Business Forecast Division ──
+      if (path === '/v1/forecast/agents' && method === 'GET') {
+        return handleListForecastAgents(url);
+      }
+
+      if (path === '/v1/forecast/dashboard' && method === 'GET') {
+        return handleForecastDashboard();
+      }
+
+      if (path === '/v1/forecast/market-pulse' && method === 'GET') {
+        return handleMarketPulse();
+      }
+
+      if (path === '/v1/forecast/generate' && method === 'POST') {
+        return await handleForecastGenerate(request, env, ctx);
+      }
+
+      if (path === '/v1/forecast/scenario' && method === 'POST') {
+        return await handleForecastScenario(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/forecast\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/forecast/agents/')[1];
+        return handleGetForecastAgent(agentId);
+      }
+
+      // ── Social Campaign Marketing Division ──
+      if (path === '/v1/social/agents' && method === 'GET') {
+        return handleListSocialAgents(url);
+      }
+
+      if (path === '/v1/social/dashboard' && method === 'GET') {
+        return handleSocialDashboard();
+      }
+
+      if (path === '/v1/social/calendar' && method === 'GET') {
+        return handleSocialCalendar(url);
+      }
+
+      if (path === '/v1/social/generate' && method === 'POST') {
+        return await handleSocialGenerate(request, env, ctx);
+      }
+
+      if (path === '/v1/social/campaign' && method === 'POST') {
+        return await handleSocialCampaign(request, env, ctx);
+      }
+
+      if (path.match(/^\/v1\/social\/agents\/[^/]+$/) && method === 'GET') {
+        const agentId = path.split('/v1/social/agents/')[1];
+        return handleGetSocialAgent(agentId);
       }
 
       return errorResponse('Not found', 404);

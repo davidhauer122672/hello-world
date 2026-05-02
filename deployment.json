@@ -108,13 +108,15 @@
     "active_domain": "coastalkey-pm.com"
   },
   "agents": {
-    "total": 383,
-    "divisions": 9,
+    "total": 423,
+    "divisions": 12,
     "web_dev_agents": 40,
     "mcco_agents": 15,
     "intelligence_officers": 50,
     "email_agents": 20,
-    "trader_agents": 1
+    "trader_agents": 1,
+    "business_forecast_agents": 20,
+    "social_campaign_agents": 20
   },
   "validation": {
     "post_deploy_check": "Verify site loads at coastalkey-pm.com and audit fixes are reflected",

@@ -1,0 +1,101 @@
+{
+  "classification": "MCCO SOVEREIGN INTELLIGENCE",
+  "generatedBy": "MCCO-006 Revenue Architect",
+  "governance": "sovereign",
+  "standard": "ferrari",
+  "generatedAt": "2026-04-21",
+
+  "businessModelReview": {
+    "currentServices": [
+      {"service": "Home Watch", "description": "Weekly/biweekly property inspections for absentee owners", "revenueModel": "Monthly retainer", "avgMonthly": "$150-$350"},
+      {"service": "Full Property Management", "description": "Complete rental management including tenant placement, rent collection, maintenance", "revenueModel": "Percentage of rent (8-12%)", "avgMonthly": "$200-$600"},
+      {"service": "Concierge Services", "description": "Pre-arrival prep, vendor coordination, seasonal transitions", "revenueModel": "Per-service or bundled add-on", "avgMonthly": "$75-$200"},
+      {"service": "AI Monitoring", "description": "24/7 digital oversight via 383-agent fleet", "revenueModel": "Premium tier add-on", "avgMonthly": "$50-$150"},
+      {"service": "Vendor Management", "description": "Coordinating and managing property service vendors", "revenueModel": "Included in management or coordination fee", "avgMonthly": "$50-$100"}
+    ]
+  },
+
+  "offerLadder": [
+    {
+      "tier": "Watchdog",
+      "price": "$149/month",
+      "target": "Entry-level absentee homeowners, snowbirds testing the service",
+      "includes": ["Biweekly exterior inspection", "Photo documentation report", "Emergency contact response", "Quarterly property health score"],
+      "conversionPath": "Free property assessment lead magnet → Watchdog trial → upgrade to Guardian after first issue detected"
+    },
+    {
+      "tier": "Guardian",
+      "price": "$299/month",
+      "target": "Committed absentee homeowners who want comprehensive protection",
+      "includes": ["Weekly interior + exterior inspection", "AI-powered monitoring alerts", "Vendor coordination for issues detected", "Monthly detailed property report", "Pre-arrival and departure service", "Hurricane preparation protocol"],
+      "conversionPath": "Most popular tier. Upsell from Watchdog after first quarter. Content drives here: 'The difference between checking and protecting.'"
+    },
+    {
+      "tier": "Sovereign",
+      "price": "$549/month",
+      "target": "Luxury property owners, investors with $1M+ assets",
+      "includes": ["Everything in Guardian", "Dedicated property concierge", "Real-time dashboard access", "Investor-grade quarterly reporting", "Priority emergency response (1-hour SLA)", "Insurance documentation package", "Annual property optimization review"],
+      "conversionPath": "Position through Results pillar content. Case studies showing ROI. LinkedIn targeting for investors."
+    },
+    {
+      "tier": "Portfolio Command",
+      "price": "$449/property/month (3+ properties)",
+      "target": "Multi-property investors and family offices",
+      "includes": ["Everything in Sovereign for each property", "Portfolio-level dashboard", "Cross-property vendor rate negotiation", "Quarterly portfolio performance review", "Dedicated portfolio manager", "Tax-ready documentation"],
+      "conversionPath": "LinkedIn lead gen targeting property investors. Content: 'Managing 1 property is a job. Managing 5 is a system. We built the system.'"
+    }
+  ],
+
+  "followerToBuyerFunnel": {
+    "stage1_awareness": {
+      "goal": "Stop the scroll. Make them follow.",
+      "triggers": ["Lifestyle posts (Treasure Coast beauty)", "Bold AI claims (383 agents)", "Disaster prevention stories"],
+      "content": "Pillar 1 (AI Protection) + Pillar 2 (Lifestyle) — high reach, low ask",
+      "metric": "Follower growth rate"
+    },
+    "stage2_interest": {
+      "goal": "Earn their attention. Make them engage.",
+      "triggers": ["Educational carousels they save", "CEO stories they comment on", "Checklists they screenshot"],
+      "content": "Pillar 3 (CEO Journey) + Pillar 4 (Education) — value-first, trust-building",
+      "metric": "Save rate, comment rate, profile visits"
+    },
+    "stage3_consideration": {
+      "goal": "Move them from follower to prospect. Capture the lead.",
+      "triggers": ["Lead magnet download (hurricane checklist, property assessment)", "DM conversation", "Website visit from social"],
+      "content": "Pillar 5 (Results) + targeted CTAs — proof + clear next step",
+      "metric": "Lead magnet downloads, DMs, website clicks"
+    },
+    "stage4_decision": {
+      "goal": "Convert prospect to client. Close the deal.",
+      "triggers": ["Free property assessment booking", "Phone consultation", "Proposal request"],
+      "content": "Case studies, testimonials, competitive comparison, pricing transparency",
+      "metric": "Assessment bookings, proposal-to-close rate"
+    },
+    "stage5_retention": {
+      "goal": "Turn client into advocate. Generate referrals.",
+      "triggers": ["Monthly report delivery", "Issue resolution", "Milestone celebration"],
+      "content": "Client spotlight features, referral incentives, community building",
+      "metric": "Client retention rate, referral volume, NPS"
+    }
+  },
+
+  "leadMagnetStrategy": [
+    {"name": "2026 Hurricane Season Property Protection Checklist", "format": "PDF download", "targetSegment": "All property owners", "captureMethod": "Instagram bio link → landing page", "expectedConversion": "8-12% of page visitors"},
+    {"name": "Free AI-Powered Property Assessment", "format": "On-site visit + digital report", "targetSegment": "Absentee homeowners in service area", "captureMethod": "Facebook/Instagram ad → booking page", "expectedConversion": "15-25% of booked assessments → paid client"},
+    {"name": "Treasure Coast Property Owner's Guide", "format": "Digital guidebook", "targetSegment": "New and prospective property owners", "captureMethod": "LinkedIn content → gated download", "expectedConversion": "6-10% of page visitors"}
+  ],
+
+  "contentMonetizationAngles": [
+    "Every disaster-prevention story ends with: 'This is what AI-powered property management looks like. Want this for your property?'",
+    "Educational content builds expertise trust, then CTAs offer free assessment: 'Let us show you what we'd find at YOUR property.'",
+    "CEO journey content humanizes the brand, then invitation: 'I built this for people exactly like you. Let's talk.'",
+    "Lifestyle content creates emotional connection, then soft CTA: 'Love the Treasure Coast? Let us protect your piece of it.'",
+    "Result posts prove value, then direct CTA: 'Ready for zero-surprise property management? Book your free assessment.'"
+  ],
+
+  "revenueProjections": {
+    "conservative": {"newClientsPerMonth": 3, "avgMonthlyRevenue": "$299", "month12AnnualizedRevenue": "$129,168"},
+    "moderate": {"newClientsPerMonth": 6, "avgMonthlyRevenue": "$349", "month12AnnualizedRevenue": "$301,392"},
+    "aggressive": {"newClientsPerMonth": 10, "avgMonthlyRevenue": "$399", "month12AnnualizedRevenue": "$573,660"}
+  }
+}

@@ -36,6 +36,9 @@ id = "3d722426db4241209fd0444b42f84904"
 # SLACK_BOT_TOKEN           — Slack Bot OAuth token (xoxb-...) for Coastal Key app (A0APSJ44NV6)
 # SLACK_SIGNING_SECRET      — Slack app signing secret for request signature verification
 # RETELL_API_KEY              — Retell AI API key (outbound + inbound voice campaigns)
+# BANANA_PRO_API_KEY         — Banana Pro AI GPU inference key
+# ALPHA_VANTAGE_KEY          — Alpha Vantage financial data API key
+# FRED_API_KEY               — Federal Reserve Economic Data API key
 # BUFFER_ACCESS_TOKEN          — Buffer API access token (enables /v1/content/publish)
 # BUFFER_PROFILE_INSTAGRAM     — Buffer profile ID for Instagram
 # BUFFER_PROFILE_FACEBOOK      — Buffer profile ID for Facebook

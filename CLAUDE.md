@@ -17,6 +17,7 @@ All Claude build sequences, creations, audits, reconfigurations, activities, tes
 ## Project Overview
 Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
+330 AI agents across 11 operational divisions. Launch phase — 0 clients, NHWA accredited.
 
 ## Live Endpoints
 - **API Gateway**: https://ck-api-gateway.david-e59.workers.dev (142 endpoints)
@@ -116,7 +117,38 @@ POST /v1/mcco/post              — Generate high-engagement social post
 ## Secrets (all configured)
 - ANTHROPIC_API_KEY, AIRTABLE_API_KEY, WORKER_AUTH_TOKEN
 - SLACK_WEBHOOK_URL, SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET
-- ATLAS_API_KEY
+- ATLAS_API_KEY, RETELL_WEBHOOK_SECRET
+
+## Agent Fleet (330 agents across 11 divisions)
+| Division | ID  | Agents | Focus |
+|----------|-----|--------|-------|
+| Executive | EXC | 20 | C-suite strategy, board reporting, enterprise decisions |
+| Sentinel Sales | SEN | 40 | Inbound/outbound sales, lead qualification, conversion |
+| Operations | OPS | 45 | Property management, maintenance, inspections, concierge |
+| Intelligence | INT | 30 | Market research, competitive intel, data analysis |
+| Marketing | MKT | 40 | Content creation, email campaigns, brand management, SEO |
+| Finance | FIN | 25 | Revenue tracking, budgeting, forecasting, compliance |
+| Vendor Management | VEN | 25 | Vendor compliance, procurement, contract management |
+| Technology | TEC | 25 | Platform ops, API integrations, monitoring, CI/CD |
+| Website Development | WEB | 40 | Website architecture, frontend dev, deployment |
+| Business Forecast | BFR | 20 | 18-month market forecasting, demand modeling, CEO briefings |
+| Social Campaign Mktg | SCM | 20 | Revenue-generating social media, CEO journey, content campaigns |
+
+## Key API Routes
+- `/v1/agents` — Fleet management (list, detail, action, metrics, dashboard)
+- `/v1/leads` — Lead creation, enrichment, public contact form
+- `/v1/inference` — Claude API with KV caching
+- `/v1/workflows` — SCAA-1, WF-3, WF-4 pipelines
+- `/v1/forecast` — BFR division (agents, dashboard, market-pulse, generate, scenario)
+- `/v1/social` — SCM division (agents, dashboard, calendar, generate, campaign)
+- `/v1/pricing` — Dynamic pricing engine
+- `/v1/property-intel` — ArcGIS property search
+- `/v1/campaign` — TH Sentinel campaign analytics
+- `/v1/intel` — Intelligence officer fleet
+- `/v1/email` — Email agent operations
+
+## Airtable Tables
+- Business Forecasts: `tblRjuthaIQcJaRBu` — BFR division output persistence
 
 ## CI/CD
 GitHub Actions on push to main: test → preflight token check → deploy all services to Cloudflare.
