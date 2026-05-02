@@ -39,9 +39,6 @@ id = "3d722426db4241209fd0444b42f84904"
 # BANANA_PRO_API_KEY         — Banana Pro AI GPU inference key
 # ALPHA_VANTAGE_KEY          — Alpha Vantage financial data API key
 # FRED_API_KEY               — Federal Reserve Economic Data API key
-# ATLAS_API_KEY              — Atlas AI (youratlas.com) API key
-# ATLAS_REVIVAL_CAMPAIGN_ID  — Atlas campaign ID for dead-lead-revival follow-ups
-# ATLAS_CONFIRMATION_CAMPAIGN_ID — Atlas campaign ID for appointment confirmation calls
 # Content publishing powered by Claude AI platform (ANTHROPIC_API_KEY)
 # GOOGLE_CLIENT_ID             — Google OAuth 2.0 client ID (Gmail API)
 # GOOGLE_CLIENT_SECRET         — Google OAuth 2.0 client secret

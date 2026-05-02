@@ -39,7 +39,7 @@ npm run deploy             # Deploy all services to Cloudflare
 
 ## API Gateway Modules
 
-Inference, leads, agents, dashboards, workflows, pricing, property intelligence, campaigns, email agents, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, deals, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks, agent manifest.
+Inference, leads, agents, dashboards, workflows, pricing, property intelligence, campaigns, email agents, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, deals, agent hierarchy, Slack integration, thinking coach, Retell AI campaigns, frameworks, agent manifest.
 
 All routes prefixed `/v1/`. Auth via Bearer token or Slack HMAC-SHA256 signature.
 
@@ -48,7 +48,7 @@ All routes prefixed `/v1/`. Auth via Bearer token or Slack HMAC-SHA256 signature
 **Cloudflare** — Workers, Pages, KV (cache, sessions, rate limits, audit log)
 **Airtable** — 39 tables, base `appUSnNgpDkcEOzhN`
 **Slack** — 3 apps, 10 slash commands, 12 programmatic channels
-**Retell AI** — Voice agent campaigns via Atlas platform
+**Retell AI** — Voice agent campaigns (ElevenLabs voice synthesis)
 **Claude API** — Inference, content generation, thinking coach
 **Anthropic** — Claude AI inference (dedicated worker)
 **Stripe** — Payment processing

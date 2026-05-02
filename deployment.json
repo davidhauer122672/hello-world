@@ -8,7 +8,7 @@
   "classification": "Estate Management Enterprise",
   "ai_tech_stack": {
     "claude": "Primary AI reasoning, inference, and enterprise operations (Anthropic)",
-    "atlas_ai": "Voice AI campaigns, outbound sales automation, appointment confirmation",
+    "retell_ai": "Voice AI campaigns (ElevenLabs), outbound sales automation, appointment confirmation",
     "grok": "Market intelligence and real-time analysis",
     "gemini_3_1": "Multi-modal analysis and JetBrains IDE integration",
     "notebooklm": "Knowledge base synthesis and research aggregation",

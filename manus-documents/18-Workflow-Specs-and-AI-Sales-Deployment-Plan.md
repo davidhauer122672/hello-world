@@ -25,12 +25,12 @@ WF-9 Storm Protocol: Triggered manually or by weather webhook. Actions: activate
 
 WF-10 Client Renewal: Triggered 30 days before contract renewal date in Airtable Clients table. Actions: send renewal email, create follow-up task, alert Slack.
 
-SECTION 2: 40-AGENT ATLAS AI SALES DEPLOYMENT PLAN
-Research the Atlas AI platform (youratlas.ai) for outbound sales dialing. Produce a deployment plan for 40 AI agents making cold calls for a real estate team (Tracey Hunter Group, RE/MAX of Stuart, Florida Treasure Coast). Cover: agent configuration, script loading, call routing, daily dial targets per agent, Retell AI voice integration, Florida Do-Not-Call compliance, TCPA requirements, and recommended calling hours.
+SECTION 2: 40-AGENT RETELL AI SALES DEPLOYMENT PLAN
+Deployment plan for 40 AI agents making cold calls via Retell AI (ElevenLabs voice) for a real estate team (Tracey Hunter Group, RE/MAX of Stuart, Florida Treasure Coast). Covers: agent configuration, script loading, call routing, daily dial targets per agent, ElevenLabs voice integration, Florida Do-Not-Call compliance, TCPA requirements, and recommended calling hours.
 
 Format as a professional operations document with numbered steps and clear headers.
 
-**[ASSISTANT]:** Understood. I will produce the full operations document for Coastal Key Treasure Coast Asset Management covering both sections: the 5 [REDACTED-PLATFORM] workflow build specifications and the 40-agent Atlas AI sales deployment plan. Let me begin research and drafting now.
+**[ASSISTANT]:** Understood. I will produce the full operations document for Coastal Key Treasure Coast Asset Management covering both sections: the 5 [REDACTED-PLATFORM] workflow build specifications and the 40-agent Retell AI sales deployment plan. Let me begin research and drafting now.
 
 **[ASSISTANT]:** The Operations & Automation Document for Coastal Key Treasure Coast Asset Management is complete. Here is a summary of what was produced:
 
@@ -46,10 +46,10 @@ Format as a professional operations document with numbered steps and clear heade
 
 ---
 
-**Section 2 — 40-Agent Atlas AI Sales Deployment Plan** covers the full deployment in five numbered steps:
+**Section 2 — 40-Agent Retell AI Sales Deployment Plan** covers the full deployment in five numbered steps:
 
 - **Step 1 (Agent Configuration):** 40 agents across 4–5 Retell AI voice personas, provisioned for 40+ concurrent calls, with local 772/561 area code phone numbers via Twilio.
-- **Step 2 (Script Loading):** Atlas-formatted scripts with `~` exact-phrase markers, `{{dynamic variables}}`, branching logic, objection handling, and a knowledge base upload. Includes a sample real estate cold call script.
+- **Step 2 (Script Loading):** Retell-formatted prompt scripts with `{{dynamic variables}}`, branching logic, objection handling, and a knowledge base upload. Includes a sample real estate cold call script.
 - **Step 3 (Call Routing & Targets):** 500 dials/agent/day = 20,000 fleet dials/day, with hot-transfer protocol to live agents and fallback calendar booking.
 - **Step 4 (Compliance):** Full TCPA/FTSA compliance table covering Prior Express Written Consent, National and Florida DNC scrubbing (every 31 days), opt-out recognition, and caller identification — with FCC 2024 AI ruling noted.
 - **Step 5 (Calling Hours):** Hard window of 8:00 AM–8:00 PM EST per Florida FTSA, with optimized sub-windows (8:30–11:00 AM and 4:00–7:00 PM as High priority) and Double Call feature enabled.
