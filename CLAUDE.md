@@ -14,8 +14,17 @@
 ## Master Orchestrator Routing (Permanent Rule)
 All Claude build sequences, creations, audits, reconfigurations, activities, testing, deployments, pushes into production, and pull requests to go live are **indefinitely routed through the Coastal Key Master Orchestrator**. Every Claude-initiated operation on this repo executes under Orchestrator authority. Non-Orchestrator-routed actions are prohibited. The Orchestrator's manifest is at `systems-manifest.json` and its charter is in `ORCHESTRATOR.md`.
 
+## AI Tech Stack
+- **Claude** (Anthropic) — Primary AI reasoning, inference, and enterprise operations
+- **Atlas.AI** — Voice AI campaigns, outbound sales automation, appointment confirmation
+- **Grok** — Market intelligence and real-time analysis
+- **Gemini 3.1** — Multi-modal analysis and JetBrains IDE integration
+- **NotebookLM** — Knowledge base synthesis and research aggregation
+- **JetBrains** — Enterprise IDE with Gemini 3.1 AI code assistance
+
 ## Project Overview
-Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
+Coastal Key Property Management (CKPM) — Estate Management Enterprise on Florida's Treasure Coast.
+Serving absentee homeowners, seasonal residents, real estate investors, HOA boards, and trust executors with properties valued at $1M+.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 330 AI agents across 11 operational divisions. Launch phase — 0 clients, NHWA accredited.
 
@@ -194,7 +203,7 @@ GET  /api/standup              — CEO daily standup briefing
 ## Operational Schedulers
 - **Daily Report**: 9:00 AM UTC — SMS revenue + schedule summary
 - **Drip Engine**: Every hour — process 90-day email nurture sequences
-- **Publish Tracker**: Every 30 min — poll Buffer for publish confirmations
+- **Publish Tracker**: Every 30 min — content publish status tracking
 - **Backup**: 2:00 AM UTC — JSON data backup with 7-day retention
 - **CEO Standup**: 6:00 AM EST (11:00 UTC) — sovereign operations briefing
 
