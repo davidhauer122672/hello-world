@@ -1,0 +1,38 @@
+{
+  "platform": {
+    "name": "CKPM Retell Voice Operations",
+    "version": "3.0.0",
+    "provider": "Retell AI + ElevenLabs",
+    "cloud_stack": ["Retell AI (voice)", "ElevenLabs (voice synthesis)", "Cloudflare Workers (compute)", "Airtable (data + automations)", "Slack (notifications)"],
+    "organization": "Coastal Key Property Management",
+    "owner": "Tracey Merritt Hunter",
+    "transfer_number": "+17727638900",
+    "caller_id": "+17727638900"
+  },
+  "voice": {
+    "provider": "ElevenLabs",
+    "integration": "Via Retell AI platform",
+    "profile": "Nicole — Professional female, warm and conversational"
+  },
+  "campaigns": {
+    "inbound": [
+      {
+        "id": "inbound-receptionist",
+        "name": "CKPM Inbound Receptionist",
+        "prompt_file": "retell-agent-prompt.md",
+        "schedule": "24/7",
+        "webhook": "https://sentinel-webhook.david-e59.workers.dev"
+      }
+    ],
+    "outbound": [
+      { "id": "outbound-prospecting", "name": "CKPM Sentinel — Outbound Prospecting", "prompt_file": "retell-system-prompt.txt", "campaign_tag": "outbound_prospecting", "schedule": "Mon-Sat 10-3 ET" },
+      { "id": "dead-lead-revival", "name": "CKPM Sentinel — Dead Lead Revival", "prompt_file": "retell-prompts/revival.txt", "campaign_tag": "dead_lead_revival", "schedule": "Mon-Fri 10-3 ET" },
+      { "id": "appointment-confirmation", "name": "CKPM Sentinel — Appointment Confirmation", "prompt_file": "retell-prompts/appointment-confirmation.txt", "campaign_tag": "appointment_confirmation", "schedule": "Mon-Sat 9-5 ET" },
+      { "id": "post-closing-care", "name": "CKPM Sentinel — Post-Closing Care", "prompt_file": "retell-prompts/post-closing-care.txt", "campaign_tag": "post_closing_care", "schedule": "Mon-Fri 10-4 ET" },
+      { "id": "tenant-verification", "name": "CKPM Operations — Tenant Verification", "prompt_file": "retell-prompts/tenant-verification.txt", "campaign_tag": "tenant_verification", "schedule": "Mon-Fri 9-5 ET" },
+      { "id": "maintenance-followup", "name": "CKPM Operations — Maintenance Follow-Up", "prompt_file": "retell-prompts/maintenance-followup.txt", "campaign_tag": "maintenance_followup", "schedule": "Mon-Fri 10-4 ET" }
+    ]
+  },
+  "webhook": "https://ck-api-gateway.david-e59.workers.dev/v1/webhook/retell",
+  "routing": "Campaign-type-aware via metadata.campaign_tag. Operational campaigns route to call log. Lead campaigns route to Leads table."
+}

@@ -1,12 +1,15 @@
 /**
  * Retell Webhook Route — POST /v1/webhook/retell
  *
- * Receives Retell call events, filters for call_analyzed,
- * then splits routing:
- *   - Engaged calls (user_hangup, agent_hangup) → Leads table + Slack
- *   - Failed calls (inactivity_timeout, machine_hangup, error) → Missed/Failed Calls table (QA dashboard)
+ * Unified webhook for all Retell AI campaigns (ElevenLabs voice).
+ * Routes call_analyzed events based on metadata.campaign_tag:
  *
- * The QA path feeds directly into Sentinel prompt tuning.
+ *   - outbound_prospecting / dead_lead_revival / (default) → Leads table + Slack
+ *   - appointment_confirmation → Call log + Slack
+ *   - tenant_verification → Call log + Slack
+ *   - maintenance_followup → Call log + Slack
+ *   - post_closing_care → Call log + Slack
+ *   - Failed calls (any campaign) → Missed/Failed Calls QA table
  */
 
 import { createRecord, TABLES } from '../services/airtable.js';
@@ -174,17 +177,40 @@ export async function handleRetellWebhook(request, env, ctx) {
     });
   }
 
-  // ── Engaged call → Leads table (standard path) ──
+  // ── Campaign-type routing via metadata.campaign_tag ──
+  const campaignTag = (metadata.campaign_tag || '').toLowerCase();
+  const operationalTags = new Set(['appointment_confirmation', 'tenant_verification', 'maintenance_followup', 'post_closing_care']);
+
+  if (operationalTags.has(campaignTag)) {
+    const callLogRecord = await createRecord(env, TABLES.TH_CALL_LOG, {
+      'Call ID': call.call_id,
+      'Contact Name': leadName,
+      'Phone Dialed': phone,
+      'Call Date': dateCaptured,
+      'Call Duration (sec)': durationSec,
+      'Call Outcome': { name: disposition || 'Unknown' },
+      'Call Summary': transcript ? transcript.slice(0, 5000) : '',
+    });
+
+    const campaignLabel = campaignTag.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    if (env.SLACK_WEBHOOK_URL) {
+      ctx.waitUntil(sendSlackCampaignAlert(env, campaignLabel, leadName, phone, disposition, durationSec, callLogRecord.id));
+    }
+    writeAudit(env, ctx, { route: '/v1/webhook/retell', path: campaignTag, callId: call.call_id, recordId: callLogRecord.id });
+    return jsonResponse({ success: true, routed_to: campaignTag, record_id: callLogRecord.id });
+  }
+
+  // ── Default: Leads table (outbound_prospecting, dead_lead_revival, untagged) ──
   const record = await createRecord(env, TABLES.LEADS, fields);
 
-  // ── Slack notification (fire-and-forget) ──
   if (env.SLACK_WEBHOOK_URL) {
     ctx.waitUntil(sendSlackAlert(env, leadName, phone, disposition, SEGMENT_MAP[segmentKey], durationSec, transcript, record.id));
   }
 
   writeAudit(env, ctx, {
     route: '/v1/webhook/retell',
-    path: 'lead_created',
+    path: campaignTag || 'lead_created',
     callId: call.call_id,
     recordId: record.id,
     leadName,
@@ -194,7 +220,7 @@ export async function handleRetellWebhook(request, env, ctx) {
 
   return jsonResponse({
     success: true,
-    routed_to: 'leads',
+    routed_to: campaignTag || 'leads',
     airtable_record_id: record.id,
     lead_name: leadName,
   });
@@ -241,6 +267,28 @@ async function sendSlackFailedAlert(env, callId, phone, reason, duration, transc
     });
   } catch (err) {
     console.error('Slack failed call notification failed:', err);
+  }
+}
+
+async function sendSlackCampaignAlert(env, campaignName, contactName, phone, disposition, duration, recordId) {
+  const message = {
+    blocks: [
+      { type: 'header', text: { type: 'plain_text', text: `${campaignName}: ${contactName}` } },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*Phone:*\n${phone || 'N/A'}` },
+          { type: 'mrkdwn', text: `*Disposition:*\n${disposition || 'Unknown'}` },
+          { type: 'mrkdwn', text: `*Duration:*\n${duration}s` },
+          { type: 'mrkdwn', text: `*Campaign:*\n${campaignName}` },
+        ],
+      },
+    ],
+  };
+  try {
+    await fetch(env.SLACK_WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(message) });
+  } catch (err) {
+    console.error(`Slack ${campaignName} notification failed:`, err);
   }
 }
 
