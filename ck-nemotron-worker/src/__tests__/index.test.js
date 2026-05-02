@@ -57,7 +57,7 @@ describe('ck-nemotron-worker', () => {
     const res = await worker.fetch(req, env);
     assert.equal(res.status, 400);
     const body = await res.json();
-    assert.equal(body.error, 'Missing required field: prompt');
+    assert.equal(body.error, 'Missing or invalid required field: prompt');
   });
 
   it('handles CORS preflight', async () => {
