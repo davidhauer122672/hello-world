@@ -272,6 +272,8 @@ import { handleWf2ContentPipeline, handleWf4AlignableBranch } from './routes/wf2
 import { handleMarketQuote, handleMarketScan, handleMarketReport, handleMarketPortfolio, handleMarketIndicators, handleMarketWatchlist } from './routes/market-intel.js';
 import { handleDiagnosticsScan, handleDataHealth, handleSystemActivation, handleSystemUpgrade, handleSOPRegistry, handleSOPDetail, handleFleetMandate } from './routes/diagnostics.js';
 import { handleListForecastAgents, handleGetForecastAgent, handleForecastDashboard, handleForecastGenerate, handleForecastScenario, handleMarketPulse } from './routes/business-forecast.js';
+import { handlePeakTimeDashboard, handlePeakTimeOptimal, handlePeakTimeWindows, handlePeakTimeBlackouts } from './routes/peak-time.js';
+import { handleGrowthDashboard, handleGrowthCertifications, handleGrowthRecruitment, handleGrowthReferrals } from './routes/growth-platform.js';
 import { handleListSocialAgents, handleGetSocialAgent, handleSocialDashboard, handleSocialGenerate, handleSocialCampaign, handleSocialCalendar } from './routes/social-campaign.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
@@ -1390,6 +1392,34 @@ export default {
       if (path.match(/^\/v1\/forecast\/agents\/[^/]+$/) && method === 'GET') {
         const agentId = path.split('/v1/forecast/agents/')[1];
         return handleGetForecastAgent(agentId);
+      }
+
+      // ── Peak-Time Intelligence ──
+      if (path === '/v1/peak-time/dashboard' && method === 'GET') {
+        return handlePeakTimeDashboard();
+      }
+      if (path === '/v1/peak-time/optimal' && method === 'POST') {
+        return await handlePeakTimeOptimal(request);
+      }
+      if (path === '/v1/peak-time/windows' && method === 'GET') {
+        return handlePeakTimeWindows(url);
+      }
+      if (path === '/v1/peak-time/blackouts' && method === 'GET') {
+        return handlePeakTimeBlackouts();
+      }
+
+      // ── Growth Platform (Learning + Recruitment + Referral) ──
+      if (path === '/v1/growth/dashboard' && method === 'GET') {
+        return handleGrowthDashboard();
+      }
+      if (path === '/v1/growth/certifications' && method === 'GET') {
+        return handleGrowthCertifications(url);
+      }
+      if (path === '/v1/growth/recruitment' && method === 'GET') {
+        return handleGrowthRecruitment();
+      }
+      if (path === '/v1/growth/referrals' && method === 'GET') {
+        return handleGrowthReferrals();
       }
 
       // ── Social Campaign Marketing Division ──
