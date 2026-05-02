@@ -10,7 +10,7 @@
  * Every slot includes behavioral rationale specific to the target demographic.
  */
 
-import { easternToUTC, getTimezoneLabel, getTimezoneAbbr, toBufferTimestamp as toUTCTimestamp } from './dst-handler.js';
+import { easternToUTC, getTimezoneLabel, getTimezoneAbbr, toPublishTimestamp as toUTCTimestamp } from './dst-handler.js';
 
 // ── Day Constants ──────────────────────────────────────────────────────────
 

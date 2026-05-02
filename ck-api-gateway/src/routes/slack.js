@@ -95,9 +95,11 @@ async function handleStatusCommand(text, env) {
   };
 
   const totalAgents = 297;
+  const totalMCCO = 16;
   const totalIO = 50;
   const totalEmail = 20;
-  const grandTotal = totalAgents + totalIO + totalEmail;
+  const totalTrader = 1;
+  const grandTotal = totalAgents + totalMCCO + totalIO + totalEmail + totalTrader;
 
   const blocks = [
     { type: 'header', text: { type: 'plain_text', text: ':satellite: Coastal Key Fleet Status' } },
@@ -108,9 +110,10 @@ async function handleStatusCommand(text, env) {
         { type: 'mrkdwn', text: `*Total Fleet:*\n${grandTotal} units` },
         { type: 'mrkdwn', text: `*Status:*\n:green_circle: Operational` },
         { type: 'mrkdwn', text: `*Division Agents:*\n${totalAgents}` },
+        { type: 'mrkdwn', text: `*MCCO Command:*\n${totalMCCO}` },
         { type: 'mrkdwn', text: `*Intel Officers:*\n${totalIO}` },
         { type: 'mrkdwn', text: `*Email Agents:*\n${totalEmail}` },
-        { type: 'mrkdwn', text: `*Divisions:*\n9` },
+        { type: 'mrkdwn', text: `*Divisions:*\n10` },
       ],
     },
     { type: 'divider' },
