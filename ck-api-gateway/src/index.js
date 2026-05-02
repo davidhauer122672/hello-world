@@ -9,7 +9,7 @@
  *   GET  /v1/leads/:id          — Fetch lead by record ID
  *   POST /v1/webhook/retell     — Retell call_analyzed → Lead + Slack
  *   POST /v1/content/generate   — Generate content (social, email, script, youtube_*) via Claude
- *   POST /v1/content/publish    — Publish Content Calendar record via Claude AI
+ *   POST /v1/content/publish    — Publish Content Calendar record via Claude AI (WF-2)
  *   GET  /v1/coop/committee      — Cooperations Committee charter and dashboard
  *   GET  /v1/coop/agents         — List all 10 COOP agents
  *   GET  /v1/coop/agents/:id     — Get single COOP agent
@@ -248,7 +248,7 @@ import { getGoogleAdsDashboard } from './engines/google-ads-campaign.js';
 import { handleTokenDashboard, handleTokenScan, handleTokenRegistry } from './routes/token-maintenance.js';
 import { handleSalesDashboard, handleScoreLead, handleSalesPipeline, handleSalesChannels, handleSalesPlaybooks } from './routes/sales-acquisition.js';
 import { handleStrategyDashboard, handleStrategyGenerate, handleStrategyFramework } from './routes/market-strategy.js';
-import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate } from './routes/master-prompt.js';
+import { handleOrchestratorDashboard, handleOrchestratorAssets, handleOrchestratorAvatars, handleOrchestratorGaps, handleOrchestratorNOIModel, handleOrchestratorNOICalculate, handleOrchestratorFleet, handleOrchestratorTriggers, handleOrchestratorDispatch, handleOrchestratorHITL, handleOrchestratorPublicStatus } from './routes/master-prompt.js';
 import { handleCollectionsConfig, handleCollectionsGuardrails, handleCollectionsStatus, handleCollectionsEligibility, handleCollectionsSession } from './routes/collections.js';
 import { handleWorkgenCycle, handleWorkgenBuild, handleWorkgenDiagnose, handleWorkgenDashboard, handleWorkgenGoals, handleWorkgenFleet } from './routes/work-generator.js';
 import { handleCKSODashboard, handleAppTemplates, handleGenerateApp, handleDataTables, handleGenerateSchema, handleWorkflowTriggers, handleWorkflowActions, handleGenerateWorkflow, handleAnalyticsMetrics, handleGenerateReport, handleAICommand, handleGovernanceStatus, handleGovernanceRoles } from './routes/ckso.js';
@@ -267,6 +267,7 @@ import {
   handleCampaignWeeklyCounts,
 } from './routes/campaign.js';
 import { handleBananaGenerate, handleBananaScoreLead, handleBananaPropertyDesc, handleBananaForecast, handleBananaBatch, handleBananaHealth } from './routes/banana-pro.js';
+import { handleBufferProfiles, handleBufferSchedule, handleBufferCrossPost, handleBufferQueue, handleBufferSent, handleBufferSync, handleBufferHealth } from './routes/buffer.js';
 import { handleWf2ContentPipeline, handleWf4AlignableBranch } from './routes/wf2-content-pipeline.js';
 import { handleMarketQuote, handleMarketScan, handleMarketReport, handleMarketPortfolio, handleMarketIndicators, handleMarketWatchlist } from './routes/market-intel.js';
 import { handleDiagnosticsScan, handleDataHealth, handleSystemActivation, handleSystemUpgrade, handleSOPRegistry, handleSOPDetail, handleFleetMandate } from './routes/diagnostics.js';
@@ -345,13 +346,6 @@ export default {
         checks.metaAds = { status: 'not_configured', missing: metaMissing };
       }
 
-      // Claude AI Publishing
-      if (env.ANTHROPIC_API_KEY) {
-        checks.publishing = { status: 'configured', engine: 'claude-ai' };
-      } else {
-        checks.publishing = { status: 'not_configured', impact: 'Content publish falls back to manual mode' };
-      }
-
       // KV stores
       checks.kv = {
         cache: env.CACHE ? 'available' : 'missing',
@@ -376,6 +370,9 @@ export default {
     }
 
     // ── Public routes (no auth) ──
+    if (path === '/v1/orchestrator/public-status' && method === 'GET') {
+      return handleOrchestratorPublicStatus();
+    }
     if (path === '/v1/leads/public' && method === 'POST') {
       return await handlePublicLead(request, env, ctx);
     }
@@ -1159,6 +1156,18 @@ export default {
       if (path === '/v1/orchestrator/noi-model' && method === 'POST') {
         return await handleOrchestratorNOICalculate(request, env, ctx);
       }
+      if (path === '/v1/orchestrator/fleet' && method === 'GET') {
+        return handleOrchestratorFleet();
+      }
+      if (path === '/v1/orchestrator/triggers' && method === 'GET') {
+        return handleOrchestratorTriggers();
+      }
+      if (path === '/v1/orchestrator/dispatch' && method === 'POST') {
+        return await handleOrchestratorDispatch(request, env, ctx);
+      }
+      if (path === '/v1/orchestrator/hitl' && method === 'POST') {
+        return await handleOrchestratorHITL(request, env, ctx);
+      }
 
       // ── Collections Agent (FIN Division, reports to MCCO-000) ──
       if (path === '/v1/collections/config' && method === 'GET') {
@@ -1341,6 +1350,15 @@ export default {
       if (path === '/v1/banana/forecast' && method === 'POST') return await handleBananaForecast(request, env, ctx);
       if (path === '/v1/banana/batch' && method === 'POST') return await handleBananaBatch(request, env, ctx);
       if (path === '/v1/banana/health' && method === 'GET') return await handleBananaHealth(env);
+
+      // ── Buffer Integration ──
+      if (path === '/v1/buffer/profiles' && method === 'GET') return await handleBufferProfiles(env);
+      if (path === '/v1/buffer/schedule' && method === 'POST') return await handleBufferSchedule(request, env, ctx);
+      if (path === '/v1/buffer/cross-post' && method === 'POST') return await handleBufferCrossPost(request, env, ctx);
+      if (path === '/v1/buffer/sync' && method === 'POST') return await handleBufferSync(env, ctx);
+      if (path === '/v1/buffer/health' && method === 'GET') return await handleBufferHealth(env);
+      if (path.match(/^\/v1\/buffer\/queue\/[^/]+$/) && method === 'GET') return await handleBufferQueue(path.split('/v1/buffer/queue/')[1], env);
+      if (path.match(/^\/v1\/buffer\/sent\/[^/]+$/) && method === 'GET') return await handleBufferSent(path.split('/v1/buffer/sent/')[1], env, url);
 
       // ── WF-2 Content Pipeline & WF-4 Alignable ──
       if (path === '/v1/workflows/wf2' && method === 'POST') return await handleWf2ContentPipeline(request, env, ctx);
