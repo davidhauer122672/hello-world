@@ -1,53 +1,73 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { CONTACT_WINDOWS, SEASONAL_ADJUSTMENTS, BLACKOUT_DATES, getOptimalTime, getPeakTimeDashboard } from '../engines/peak-time-intelligence.js';
+import { ENGINE_VERSION, ENGINE_ID, ENGINE_NAME, PLATFORM_MATRIX, TARGET_DEMOGRAPHIC, isEDT, generateSchedule, getNextSlot, getAllNextSlots } from '../engines/peak-time-intelligence.js';
 import { CERTIFICATION_TRACKS, RECRUITMENT_PIPELINE, REFERRAL_TIERS, getGrowthDashboard } from '../engines/growth-platform.js';
 
 describe('Peak-Time Intelligence Engine', () => {
-  it('has 4 channels with contact windows', () => {
-    const channels = Object.keys(CONTACT_WINDOWS);
-    assert.equal(channels.length, 4);
-    assert.deepEqual(channels.sort(), ['email', 'sms', 'social', 'voice']);
+  it('exports correct engine metadata', () => {
+    assert.equal(ENGINE_VERSION, '1.0.0');
+    assert.equal(ENGINE_ID, 'PEAK-TIME-INTEL-001');
+    assert.equal(ENGINE_NAME, 'Peak-Time Intelligence Engine');
   });
 
-  it('has 2 seasonal adjustments', () => {
-    assert.ok(SEASONAL_ADJUSTMENTS.snowbird);
-    assert.ok(SEASONAL_ADJUSTMENTS.summer);
-    assert.ok(SEASONAL_ADJUSTMENTS.snowbird.multiplier > 1);
-    assert.ok(SEASONAL_ADJUSTMENTS.summer.multiplier < 1);
+  it('has 5 platforms in the scheduling matrix', () => {
+    const platforms = Object.keys(PLATFORM_MATRIX);
+    assert.equal(platforms.length, 5);
+    assert.deepEqual(platforms.sort(), ['facebook', 'instagram', 'linkedin', 'threads', 'x']);
   });
 
-  it('has blackout dates', () => {
-    assert.ok(BLACKOUT_DATES.length >= 10);
-    assert.ok(BLACKOUT_DATES.every((d) => d.date && d.name));
+  it('each platform has at least one slot with days and hour', () => {
+    for (const [name, platform] of Object.entries(PLATFORM_MATRIX)) {
+      assert.ok(platform.label, `${name} missing label`);
+      assert.ok(platform.slots.length > 0, `${name} has no slots`);
+      for (const slot of platform.slots) {
+        assert.ok(Array.isArray(slot.days), `${name} slot missing days`);
+        assert.ok(typeof slot.hour === 'number', `${name} slot missing hour`);
+      }
+    }
   });
 
-  it('getOptimalTime returns valid window for Tuesday voice', () => {
-    const result = getOptimalTime('voice', '2026-01-06');
-    assert.equal(result.channel, 'voice');
-    assert.ok(result.window);
-    assert.ok(result.engagementScore > 0);
-    assert.ok(result.recommendation);
+  it('TARGET_DEMOGRAPHIC defines age range 45-65', () => {
+    assert.equal(TARGET_DEMOGRAPHIC.ageRange, '45-65');
+    assert.ok(TARGET_DEMOGRAPHIC.segments.length > 0);
   });
 
-  it('getOptimalTime returns blackout for Christmas', () => {
-    const result = getOptimalTime('voice', '2026-12-25');
-    assert.equal(result.blackout, true);
-    assert.equal(result.holiday, 'Christmas Day');
+  it('isEDT correctly identifies summer as EDT', () => {
+    const july = new Date('2026-07-15T12:00:00Z');
+    assert.equal(isEDT(july), true);
   });
 
-  it('getOptimalTime returns unavailable for Sunday voice', () => {
-    const result = getOptimalTime('voice', '2026-01-04');
-    assert.equal(result.available, false);
+  it('isEDT correctly identifies winter as EST', () => {
+    const jan = new Date('2026-01-15T12:00:00Z');
+    assert.equal(isEDT(jan), false);
   });
 
-  it('getPeakTimeDashboard returns full structure', () => {
-    const d = getPeakTimeDashboard();
-    assert.equal(d.engine, 'Peak-Time Intelligence');
-    assert.ok(d.channels.length === 4);
-    assert.ok(d.totalWindows > 0);
-    assert.ok(d.currentSeason);
-    assert.ok(d.timestamp);
+  it('generateSchedule returns payload with schedule array', () => {
+    const result = generateSchedule({ weeksAhead: 1 });
+    assert.equal(result.engine, 'Peak-Time Intelligence Engine');
+    assert.ok(Array.isArray(result.schedule));
+    assert.ok(result.schedule.length > 0);
+    for (const item of result.schedule.slice(0, 3)) {
+      assert.ok(item.platform);
+      assert.ok(item.utcTimestamp);
+      assert.ok(item.easternTime);
+    }
+  });
+
+  it('getNextSlot returns a valid next slot for instagram', () => {
+    const slot = getNextSlot('instagram');
+    assert.ok(slot);
+    assert.ok(slot.utcTimestamp);
+    assert.ok(slot.easternTime);
+    assert.equal(slot.platform, 'instagram');
+  });
+
+  it('getAllNextSlots returns one entry per platform', () => {
+    const slots = getAllNextSlots();
+    assert.equal(Object.keys(slots).length, 5);
+    assert.ok(slots.instagram);
+    assert.ok(slots.facebook);
+    assert.ok(slots.linkedin);
   });
 });
 

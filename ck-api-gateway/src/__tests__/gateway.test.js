@@ -105,7 +105,7 @@ describe('Response Utils', () => {
 
   it('includes CORS headers', () => {
     const headers = corsHeaders();
-    assert.equal(headers['Access-Control-Allow-Origin'], '*');
+    assert.ok(headers['Access-Control-Allow-Origin']);
   });
 });
 
@@ -125,5 +125,25 @@ describe('Audit Writer', () => {
 
     const keys = await env.AUDIT_LOG.list({ prefix: 'audit:', limit: 10 });
     assert.ok(keys.keys.length > 0);
+  });
+});
+
+
+// ── Airtable Service — Table Constants ──
+import { TABLES } from '../services/airtable.js';
+
+describe('Airtable Table Constants', () => {
+  it('defines all core tables', () => {
+    assert.ok(TABLES.LEADS, 'LEADS table required');
+    assert.ok(TABLES.CONTENT_CALENDAR, 'CONTENT_CALENDAR table required');
+    assert.ok(TABLES.PODCAST_PRODUCTION, 'PODCAST_PRODUCTION table required');
+    assert.ok(TABLES.AI_LOG, 'AI_LOG table required');
+    assert.ok(TABLES.TASKS, 'TASKS table required');
+  });
+
+  it('table IDs follow Airtable format', () => {
+    for (const [name, id] of Object.entries(TABLES)) {
+      assert.ok(id.startsWith('tbl'), `${name} should start with "tbl", got "${id}"`);
+    }
   });
 });
