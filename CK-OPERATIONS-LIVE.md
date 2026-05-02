@@ -71,7 +71,7 @@
 | AI inference executed | WF-7 AI Log Write | Log to ai-log.json (1000-entry buffer) | Audit trail maintained |
 | Retell call analyzed | Sentinel Pipeline | Transform → Airtable lead → Slack notification | Lead captured + team alerted |
 | Retell call failed | Sentinel QA Pipeline | Lead created + QA record + Slack alert | QA dashboard updated |
-| New website visitor | Speed-to-Lead | Atlas AI voice call within 60 seconds | Prospect contacted |
+| New website visitor | Speed-to-Lead | Retell AI voice call within 60 seconds | Prospect contacted |
 
 ### 2.3 AI Agent Fleet (383 Units — Fully Activated)
 
@@ -102,7 +102,7 @@
 |----------|------------------|-------------|----------|--------|
 | Airtable | API Gateway → 39 tables | Bearer token (`AIRTABLE_API_KEY`) | CRM, leads, operations, analytics | WIRED |
 | Slack | 3 apps → 12 channels | Bot OAuth + HMAC-SHA256 | Notifications, commands, events | WIRED |
-| Atlas AI / Retell | 8 campaigns → voice calls | Bearer token (`ATLAS_API_KEY`) | Inbound, outbound, speed-to-lead | WIRED |
+| Retell AI (ElevenLabs) | 7 campaigns → voice calls | Bearer token (`RETELL_API_KEY`) | Inbound, outbound, campaign routing | WIRED |
 | Anthropic Claude | Inference + content + thinking | API key (`ANTHROPIC_API_KEY`) | AI operations across all modules | WIRED |
 | Anthropic Claude (Worker) | Inference Worker → Messages API | API key (`ANTHROPIC_API_KEY`) | Dedicated Claude inference | WIRED |
 | Stripe | Express → checkout + webhooks | Secret key + webhook secret | Payment processing | WIRED |
@@ -117,7 +117,7 @@
 
 | Channel | Division | Content | Auto-Populated By |
 |---------|----------|---------|-------------------|
-| #sales-alerts | SEN | New leads, speed-to-lead | Sentinel webhook, Atlas campaigns |
+| #sales-alerts | SEN | New leads, campaign alerts | Sentinel webhook, Retell campaigns |
 | #investor-escalations | SEN | High-value lead alerts | WF-3 Investor Escalation |
 | #pipeline-updates | SEN | Pipeline status changes | Lead status automations |
 | #ops-alerts | OPS | Maintenance, inspection alerts | OPS division agents |
@@ -132,7 +132,7 @@
 
 ---
 
-## 4. VOICE CAMPAIGN OPERATIONS (Atlas AI)
+## 4. VOICE CAMPAIGN OPERATIONS (Retell AI + ElevenLabs)
 
 ### 4.1 Campaign Status
 
@@ -202,7 +202,7 @@
 | Pipeline value | Airtable Leads table | Continuous | CEO standup (6 AM EST) |
 | Drip conversion | drip-sequences.json | Hourly | Dashboard |
 | Social ROI | Buffer + content-calendar.json | Every 30 min | Dashboard |
-| Call metrics | Atlas AI / Retell | Real-time | Slack #sales-alerts |
+| Call metrics | Retell AI (ElevenLabs) | Real-time | Slack #sales-alerts |
 
 ### 6.2 Automated Financial Endpoints
 
@@ -247,7 +247,7 @@ Push to main
 ### 8.1 What Runs Without the CEO
 
 | Function | Automation Level | CEO Intervention |
-|----------|-----------------|-----------------|
+|----------|-----------------|------------------|
 | Lead capture & qualification | 100% automated | None |
 | Speed-to-lead callbacks | 100% automated | None |
 | 90-day drip nurture | 100% automated | None |

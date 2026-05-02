@@ -228,7 +228,7 @@ Conservative estimate. The $400K MRR target assumes accelerated Sentinel pipelin
 | Anthropic Claude API | $200-500 | AI inference (149 endpoints) |
 | Slack (Pro, 3 apps) | $25 | Communication layer |
 | Buffer (Pro) | $15 | Social media distribution |
-| Atlas AI / Retell | $200-400 | Voice AI campaigns |
+| Retell AI (ElevenLabs) | $200-400 | Voice AI campaigns |
 | Domain and DNS | $15 | coastalkey-pm.com |
 | **Total Technology Stack** | **$500-1,000** | |
 
@@ -243,7 +243,7 @@ Conservative estimate. The $400K MRR target assumes accelerated Sentinel pipelin
 | Asset | Specification | Replication Difficulty |
 |---|---|---|
 | 383-Agent Autonomous Fleet | 10 divisions, 50 intelligence officers, 20 email agents, 1 trader | 18-24 months minimum |
-| 149-Endpoint API Gateway | Financial engine, analysis suite, trading engine, MCCO, Atlas, Slack | 12-18 months |
+| 149-Endpoint API Gateway | Financial engine, analysis suite, trading engine, MCCO, Retell AI, Slack | 12-18 months |
 | 39-Table Airtable Infrastructure | Full schema with verified field mappings across all operations | 6-9 months |
 | Sovereign Governance Framework | MCCO command structure, CEO authority middleware, directive engine | 12 months |
 | 7-Agent Sovereign Operations System | Sentinel Auditor, Integration Auditor, Build Agent, Parallel Audit, Router, CEO Gate, Executive Dashboard | 6-12 months |
