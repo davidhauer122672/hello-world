@@ -2,12 +2,13 @@
  * Master Prompt V2.1 Routes
  *
  * Routes:
- *   GET  /v1/orchestrator/dashboard    — Full V2.1 production dashboard
- *   GET  /v1/orchestrator/assets       — Marketing assets registry
- *   GET  /v1/orchestrator/avatars      — Executive Administrator avatars
- *   GET  /v1/orchestrator/gaps         — Top 1% industry gap analysis
- *   GET  /v1/orchestrator/noi-model    — NOI impact model from gap capitalization
- *   POST /v1/orchestrator/noi-model    — Calculate NOI with custom portfolio size
+ *   GET  /v1/orchestrator/dashboard       - Full V2.1 production dashboard (auth required)
+ *   GET  /v1/orchestrator/public-status   - Public structural status (no auth, smoke-test target)
+ *   GET  /v1/orchestrator/assets          - Marketing assets registry (auth required)
+ *   GET  /v1/orchestrator/avatars         - Executive Administrator avatars (auth required)
+ *   GET  /v1/orchestrator/gaps            - Top 1% industry gap analysis (auth required)
+ *   GET  /v1/orchestrator/noi-model       - NOI impact model from gap capitalization (auth required)
+ *   POST /v1/orchestrator/noi-model       - Calculate NOI with custom portfolio size (auth required)
  */
 
 import { jsonResponse } from '../utils/response.js';
@@ -19,6 +20,37 @@ import {
 
 export function handleOrchestratorDashboard() {
   return jsonResponse(getMasterPromptDashboard());
+}
+
+/**
+ * Public structural status. Returns identity and registration metadata only.
+ * No financial figures, no audit trail, no agent assignments. Designed for
+ * unauthenticated smoke tests, status pages, and external dashboards.
+ */
+export function handleOrchestratorPublicStatus() {
+  const d = getMasterPromptDashboard();
+  return jsonResponse({
+    system: d.system,
+    status: d.status,
+    governance: d.governance,
+    avatars: {
+      count: d.avatars.length,
+      ids: d.avatars.map(a => a.id),
+    },
+    marketingAssets: {
+      count: d.marketingAssets.count,
+      live: d.marketingAssets.live,
+    },
+    researchGaps: { count: d.researchGaps.length },
+    collectionsAgent: d.collectionsAgent ? {
+      id: d.collectionsAgent.id,
+      status: d.collectionsAgent.status,
+      complianceControls: d.collectionsAgent.complianceControls,
+      endpoints: d.collectionsAgent.endpoints,
+      reportsTo: d.collectionsAgent.reportsTo,
+    } : null,
+    timestamp: d.timestamp,
+  });
 }
 
 export function handleOrchestratorAssets() {
