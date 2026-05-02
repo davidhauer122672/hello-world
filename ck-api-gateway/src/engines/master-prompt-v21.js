@@ -13,7 +13,9 @@
  * Governance: 100% aligned with Sovereign Governance, Mission, 4 Core Goals.
  */
 
-// ── Executive Administrator Avatars ────────────────────────────────
+import { getCollectionsAgentStatus } from './collections-agent.js';
+
+// ── Executive Administrator Avatars ────────────────────────────────────────
 
 export const AVATARS = {
   daphne: {
@@ -70,7 +72,7 @@ export const AVATARS = {
   },
 };
 
-// ── V2.1 Marketing Assets ─────────────────────────────────────
+// ── V2.1 Marketing Assets ──────────────────────────────────────────────────
 
 export const MARKETING_ASSETS = [
   {
@@ -215,7 +217,7 @@ export const INDUSTRY_GAPS = [
   },
 ];
 
-// ── NOI Impact Model ────────────────────────────────────────
+// ── NOI Impact Model ───────────────────────────────────────────────────────
 
 export function calculateNOIGapImpact(portfolioSize = 30) {
   const revenuePerProperty = 295 * 12;
@@ -472,7 +474,7 @@ export const TRIGGER_ACTION_SEQUENCES = [
   { id: 'TAS-015', name: 'CEO Daily Standup Ingestion',        priority: 'P2', risk: 'R1', agent: 'orchestrator',hitl: false, retention: '90d'  },
 ];
 
-// ── Master Dashboard ────────────────────────────────────────
+// ── Master Dashboard ───────────────────────────────────────────────────────
 
 export function getMasterPromptDashboard() {
   return {
@@ -499,12 +501,14 @@ export function getMasterPromptDashboard() {
     fleet: getOrchestratorFleetStatus(),
     triggerSequences: { count: TRIGGER_ACTION_SEQUENCES.length, sequences: TRIGGER_ACTION_SEQUENCES },
     noiModel: calculateNOIGapImpact(30),
+    collectionsAgent: getCollectionsAgentStatus(),
     processExecuted: 'Create → Plan → Build → Test → Audit → Reconfigure → Deploy → Test → Audit → Reconfigure → Push to Production → Final Test/Audit/Reconfigure → Zero failures → Live',
     nextActions: [
       { avatar: 'Daphne', action: 'Prepare Investor PDF V3 for external sharing' },
       { avatar: 'Stephanie', action: 'Monitor first RPA research loop output' },
       { avatar: 'Twin', action: 'Run sensitivity analysis on NOI model with latest 2026 insurance data' },
       { avatar: 'Orchestrator', action: 'Deliver Q2 scaling brief and log Founder feedback' },
+      { avatar: 'Twin', action: 'Monitor Collections Agent KPIs (RPC rate, promise-to-pay, kept promises) weekly' },
     ],
     timestamp: new Date().toISOString(),
   };
