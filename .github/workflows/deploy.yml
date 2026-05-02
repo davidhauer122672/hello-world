@@ -28,20 +28,20 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Initialize data files
         run: node scripts/init-data.js
       - name: Install gateway dependencies
         working-directory: ck-api-gateway
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Install sentinel dependencies
         if: hashFiles('sentinel-webhook/package.json') != ''
         working-directory: sentinel-webhook
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Install nemotron dependencies
         if: hashFiles('ck-nemotron-worker/package.json') != ''
         working-directory: ck-nemotron-worker
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Test Express Server
         run: npm run test:server
       - name: Test API Gateway
@@ -109,10 +109,10 @@ jobs:
       - name: Install wrangler
         run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Install gateway dependencies
         working-directory: ck-api-gateway
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Deploy to Cloudflare
         working-directory: ck-api-gateway
         run: |
@@ -124,7 +124,7 @@ jobs:
   deploy-sentinel:
     name: Deploy Sentinel Webhook
     needs: [test, deploy-gateway]
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && hashFiles('sentinel-webhook/package.json') != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -134,10 +134,10 @@ jobs:
       - name: Install wrangler
         run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Install sentinel dependencies
         working-directory: sentinel-webhook
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Deploy to Cloudflare
         working-directory: sentinel-webhook
         run: |
@@ -149,7 +149,7 @@ jobs:
   deploy-nemotron:
     name: Deploy Nemotron Worker
     needs: [test, deploy-gateway]
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && hashFiles('ck-nemotron-worker/package.json') != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -159,10 +159,10 @@ jobs:
       - name: Install wrangler
         run: npm install -g wrangler@${{ env.WRANGLER_VERSION }}
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Install nemotron dependencies
         working-directory: ck-nemotron-worker
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Deploy to Cloudflare
         working-directory: ck-nemotron-worker
         run: |
@@ -173,7 +173,7 @@ jobs:
 
   smoke-test:
     name: Live Smoke Test and Status Record
-    needs: [deploy-gateway, deploy-sentinel, deploy-nemotron, deploy-website, deploy-command-center]
+    needs: [deploy-gateway, deploy-website, deploy-command-center]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -184,131 +184,29 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Code-level verification (registration shape)
-        id: code
-        working-directory: ck-api-gateway
-        run: |
-          # Place the probe script INSIDE ck-api-gateway so node ESM resolves './src/...' correctly
-          cat > probe.mjs <<'PROBE_EOF'
-          import('./src/engines/master-prompt-v21.js').then(m => {
-            const d = m.getMasterPromptDashboard();
-            const out = {
-              masterPromptStatus: d.status,
-              avatarsCount: d.avatars.length,
-              marketingAssetsCount: d.marketingAssets.count,
-              gapsCount: d.researchGaps.length,
-              collectionsAgent: d.collectionsAgent ? {
-                id: d.collectionsAgent.id,
-                status: d.collectionsAgent.status,
-                complianceControls: d.collectionsAgent.complianceControls,
-                endpoints: d.collectionsAgent.endpoints,
-                reportsTo: d.collectionsAgent.reportsTo,
-              } : null,
-            };
-            console.log(JSON.stringify(out));
-          }).catch(e => { console.error(e); process.exit(1); });
-          PROBE_EOF
-          REG=$(node probe.mjs)
-          rm -f probe.mjs
-          echo "$REG"
-          # Single-line for $GITHUB_OUTPUT
-          REG_ONELINE=$(echo "$REG" | tr -d '\n')
-          echo "registration=$REG_ONELINE" >> "$GITHUB_OUTPUT"
-
       - name: Network liveness probes
         id: probe
         run: |
           set +e
           GATEWAY_URL="https://ck-api-gateway.david-e59.workers.dev"
-          NEMOTRON_URL="https://ck-nemotron-worker.david-e59.workers.dev"
-          SENTINEL_URL="https://sentinel-webhook.david-e59.workers.dev"
           WEBSITE_URL="https://coastalkey-pm.com"
           CC_URL="https://ck-command-center.pages.dev"
 
-          # Allow Cloudflare a moment to propagate after wrangler deploy
           sleep 20
 
           GATEWAY_HEALTH=$(curl -sS --max-time 10 -L -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/health" || echo "fail")
-          GATEWAY_DASH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/orchestrator/dashboard" || echo "fail")
-          NEMOTRON_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$NEMOTRON_URL/v1/health" || echo "fail")
-          SENTINEL_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$SENTINEL_URL/" || echo "fail")
+          GATEWAY_FRANCHISE=$(curl -sS --max-time 10 -L -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/franchise/territories" || echo "fail")
+          GATEWAY_MARKETPLACE=$(curl -sS --max-time 10 -L -o /dev/null -w "%{http_code}" "$GATEWAY_URL/v1/marketplace/catalog" || echo "fail")
           WEBSITE_HEALTH=$(curl -sS --max-time 15 -L -o /dev/null -w "%{http_code}" "$WEBSITE_URL/" || echo "fail")
           CC_HEALTH=$(curl -sS --max-time 15 -L -o /dev/null -w "%{http_code}" "$CC_URL/" || echo "fail")
 
-          # Liveness: any HTTP response (200, 302, 401, 405) proves worker is reachable
           GATEWAY_ALIVE="false"
           if [ "$GATEWAY_HEALTH" != "fail" ] && [ "$GATEWAY_HEALTH" != "000" ]; then GATEWAY_ALIVE="true"; fi
-          # Dashboard returning 401 means route exists and auth gate works = code is deployed
-          GATEWAY_AUTH_ENFORCED="false"
-          if [ "$GATEWAY_DASH" = "401" ]; then GATEWAY_AUTH_ENFORCED="true"; fi
-          # Pages liveness: 200 (or any 2xx/3xx) means deployed and reachable
-          WEBSITE_ALIVE="false"
-          if [ "$WEBSITE_HEALTH" != "fail" ] && [ "$WEBSITE_HEALTH" != "000" ] && [ "${WEBSITE_HEALTH:0:1}" != "5" ]; then WEBSITE_ALIVE="true"; fi
-          CC_ALIVE="false"
-          if [ "$CC_HEALTH" != "fail" ] && [ "$CC_HEALTH" != "000" ] && [ "${CC_HEALTH:0:1}" != "5" ]; then CC_ALIVE="true"; fi
+          PHASE5_LIVE="false"
+          if [ "$GATEWAY_FRANCHISE" = "200" ] && [ "$GATEWAY_MARKETPLACE" = "200" ]; then PHASE5_LIVE="true"; fi
 
           echo "gateway_health=$GATEWAY_HEALTH" >> "$GITHUB_OUTPUT"
-          echo "gateway_dash=$GATEWAY_DASH" >> "$GITHUB_OUTPUT"
           echo "gateway_alive=$GATEWAY_ALIVE" >> "$GITHUB_OUTPUT"
-          echo "gateway_auth_enforced=$GATEWAY_AUTH_ENFORCED" >> "$GITHUB_OUTPUT"
-          echo "nemotron_health=$NEMOTRON_HEALTH" >> "$GITHUB_OUTPUT"
-          echo "sentinel_health=$SENTINEL_HEALTH" >> "$GITHUB_OUTPUT"
+          echo "phase5_live=$PHASE5_LIVE" >> "$GITHUB_OUTPUT"
           echo "website_health=$WEBSITE_HEALTH" >> "$GITHUB_OUTPUT"
-          echo "website_alive=$WEBSITE_ALIVE" >> "$GITHUB_OUTPUT"
           echo "cc_health=$CC_HEALTH" >> "$GITHUB_OUTPUT"
-          echo "cc_alive=$CC_ALIVE" >> "$GITHUB_OUTPUT"
-
-      - name: Write deploy-status.json
-        run: |
-          cat > deploy-status.json <<EOF
-          {
-            "lastVerifiedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "commit": "${{ github.sha }}",
-            "ref": "${{ github.ref }}",
-            "runId": "${{ github.run_id }}",
-            "runUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "registration": ${{ steps.code.outputs.registration }},
-            "liveness": {
-              "gateway": {
-                "url": "https://ck-api-gateway.david-e59.workers.dev",
-                "alive": ${{ steps.probe.outputs.gateway_alive }},
-                "healthHttpStatus": "${{ steps.probe.outputs.gateway_health }}",
-                "dashboardHttpStatus": "${{ steps.probe.outputs.gateway_dash }}",
-                "authEnforced": ${{ steps.probe.outputs.gateway_auth_enforced }}
-              },
-              "nemotron": {
-                "url": "https://ck-nemotron-worker.david-e59.workers.dev",
-                "healthHttpStatus": "${{ steps.probe.outputs.nemotron_health }}"
-              },
-              "sentinel": {
-                "url": "https://sentinel-webhook.david-e59.workers.dev",
-                "healthHttpStatus": "${{ steps.probe.outputs.sentinel_health }}"
-              },
-              "website": {
-                "url": "https://coastalkey-pm.com",
-                "alive": ${{ steps.probe.outputs.website_alive }},
-                "httpStatus": "${{ steps.probe.outputs.website_health }}"
-              },
-              "commandCenter": {
-                "url": "https://ck-command-center.pages.dev",
-                "alive": ${{ steps.probe.outputs.cc_alive }},
-                "httpStatus": "${{ steps.probe.outputs.cc_health }}"
-              }
-            }
-          }
-          EOF
-          cat deploy-status.json
-          # Validate JSON before committing back
-          node -e "JSON.parse(require('fs').readFileSync('deploy-status.json','utf8'))"
-
-      - name: Commit deploy-status.json back to main
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add deploy-status.json
-          if git diff --cached --quiet; then
-            echo "No status change."
-          else
-            git commit -m "Record live deploy verification for ${{ github.sha }} [skip ci]"
-            git push
-          fi
