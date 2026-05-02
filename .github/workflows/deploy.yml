@@ -184,7 +184,8 @@ jobs:
         id: code
         working-directory: ck-api-gateway
         run: |
-          cat > /tmp/probe.mjs <<'EOF'
+          # Place the probe script INSIDE ck-api-gateway so node ESM resolves './src/...' correctly
+          cat > probe.mjs <<'PROBE_EOF'
           import('./src/engines/master-prompt-v21.js').then(m => {
             const d = m.getMasterPromptDashboard();
             const out = {
@@ -202,12 +203,13 @@ jobs:
             };
             console.log(JSON.stringify(out));
           }).catch(e => { console.error(e); process.exit(1); });
-          EOF
-          REG=$(node /tmp/probe.mjs)
-          echo "registration<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$REG" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
-          echo "Registration JSON: $REG"
+          PROBE_EOF
+          REG=$(node probe.mjs)
+          rm -f probe.mjs
+          echo "$REG"
+          # Single-line for $GITHUB_OUTPUT
+          REG_ONELINE=$(echo "$REG" | tr -d '\n')
+          echo "registration=$REG_ONELINE" >> "$GITHUB_OUTPUT"
 
       - name: Network liveness probes
         id: probe
@@ -225,10 +227,10 @@ jobs:
           NEMOTRON_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$NEMOTRON_URL/v1/health" || echo "fail")
           SENTINEL_HEALTH=$(curl -sS --max-time 10 -o /dev/null -w "%{http_code}" "$SENTINEL_URL/" || echo "fail")
 
-          # Liveness: gateway is alive if it returns ANY response (200, 302, 401, 405 all prove worker is reachable)
+          # Liveness: any HTTP response (200, 302, 401, 405) proves worker is reachable
           GATEWAY_ALIVE="false"
           if [ "$GATEWAY_HEALTH" != "fail" ] && [ "$GATEWAY_HEALTH" != "000" ]; then GATEWAY_ALIVE="true"; fi
-          # Dashboard returning 401 means the route exists and auth gate is active = code is deployed
+          # Dashboard returning 401 means route exists and auth gate works = code is deployed
           GATEWAY_AUTH_ENFORCED="false"
           if [ "$GATEWAY_DASH" = "401" ]; then GATEWAY_AUTH_ENFORCED="true"; fi
 
@@ -269,7 +271,7 @@ jobs:
           }
           EOF
           cat deploy-status.json
-          # Validate the JSON before committing back
+          # Validate JSON before committing back
           node -e "JSON.parse(require('fs').readFileSync('deploy-status.json','utf8'))"
 
       - name: Commit deploy-status.json back to main
