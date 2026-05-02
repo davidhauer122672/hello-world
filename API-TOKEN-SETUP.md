@@ -17,7 +17,7 @@
 | `SLACK_BOT_TOKEN` | Server | Slash commands and interactivity |
 | `SLACK_SIGNING_SECRET` | Server | HMAC verification on Slack inbound |
 | `RETELL_WEBHOOK_SECRET` | Sentinel | HMAC verification on Retell webhooks |
-| `ATLAS_API_KEY` | Server | Voice campaign automation |
+| `RETELL_API_KEY` | Server | Voice campaign automation (Retell AI) |
 | `ADMIN_TOKEN` | Server | Admin-only endpoints (standup, dashboard, drip) |
 | `CLOUDFLARE_API_TOKEN` | GitHub Actions | CI/CD deploy authority |
 | `CLOUDFLARE_ACCOUNT_ID` | GitHub Actions | Cloudflare account identity |
