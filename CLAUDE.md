@@ -14,17 +14,8 @@
 ## Master Orchestrator Routing (Permanent Rule)
 All Claude build sequences, creations, audits, reconfigurations, activities, testing, deployments, pushes into production, and pull requests to go live are **indefinitely routed through the Coastal Key Master Orchestrator**. Every Claude-initiated operation on this repo executes under Orchestrator authority. Non-Orchestrator-routed actions are prohibited. The Orchestrator's manifest is at `systems-manifest.json` and its charter is in `ORCHESTRATOR.md`.
 
-## AI Tech Stack
-- **Claude** (Anthropic) — Primary AI reasoning, inference, and enterprise operations
-- **Atlas.AI** — Voice AI campaigns, outbound sales automation, appointment confirmation
-- **Grok** — Market intelligence and real-time analysis
-- **Gemini 3.1** — Multi-modal analysis and JetBrains IDE integration
-- **NotebookLM** — Knowledge base synthesis and research aggregation
-- **JetBrains** — Enterprise IDE with Gemini 3.1 AI code assistance
-
 ## Project Overview
-Coastal Key Property Management (CKPM) — Estate Management Enterprise on Florida's Treasure Coast.
-Serving absentee homeowners, seasonal residents, real estate investors, HOA boards, and trust executors with properties valued at $1M+.
+Coastal Key Property Management (CKPM) Enterprise AI Operations Platform.
 Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, and Claude API integrations.
 330 AI agents across 11 operational divisions. Launch phase — 0 clients, NHWA accredited.
 
@@ -37,9 +28,9 @@ Monorepo with Cloudflare Workers, Cloudflare Pages, Airtable, Retell AI, Slack, 
 - **Gazette**: Available at `/gazette.html` on Command Center deployment
 
 ## Architecture
-- **ck-api-gateway**: Central API — 142 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, frameworks (Cloudflare Worker)
-- **ck-nemotron-worker**: Claude AI inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
-- **ck-command-center**: Dashboard UI for 383-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
+- **ck-api-gateway**: Central API — 147 endpoints: inference, leads, agents, workflows, pricing, property intel, campaign, email, intelligence officers, MCCO sovereign command, financial engine, analysis suite, trading engine, agent hierarchy, Slack integration, thinking coach, Atlas AI campaigns, frameworks (Cloudflare Worker)
+- **ck-nemotron-worker**: NVIDIA Nemotron inference endpoint — `/v1/inference`, `/v1/health` (Cloudflare Worker)
+- **ck-command-center**: Dashboard UI for 384-agent fleet + Coastal Key Gazette + Enterprise Dashboard + Trading Desk (Cloudflare Pages)
 - **ck-website**: Reverse proxy to Manus production site — _worker.js proxies coastalkey-awfopuqz.manus.space on coastalkey-pm.com domain with edge caching, SEO injection, URL rewriting (Cloudflare Pages)
 - **sentinel-webhook**: Retell call_analyzed → Airtable + Slack pipeline (Cloudflare Worker)
 - **th-sentinel-campaign**: Campaign config, Retell prompts, Airtable field reference
@@ -57,8 +48,8 @@ npm run test:nemotron   # Test Nemotron worker only
 npm run deploy          # Deploy all services (requires CLOUDFLARE_API_TOKEN)
 ```
 
-## Autonomous Fleet (383 units)
-- **15 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
+## Autonomous Fleet (384 units)
+- **16 MCCO Agents** — Sovereign Governance: Master Chief Commanding Officer of Marketing & Sales + Sovereign Marketing Officer (Ferrari-Standard execution, commands MKT + SEN divisions, CMO reports to MCCO)
 - **297 AI Agents** across 9 operational divisions: EXC (20), SEN (40), OPS (45), INT (30), MKT (47), FIN (25), VEN (25), TEC (25), WEB (40)
 - **50 Intelligence Officers** in 5 squads: ALPHA (Infrastructure), BRAVO (Data), CHARLIE (Security), DELTA (Revenue), ECHO (Performance)
 - **20 Email AI Agents** in 4 squads: INTAKE, COMPOSE, NURTURE, MONITOR
@@ -177,7 +168,7 @@ GET  /api/standup/history  — Previous standup entries (up to 90 days)
 ```
 
 ### Briefing Contents
-- Fleet status (383/383 active, operational readiness)
+- Fleet status (384/384 active, operational readiness)
 - Division-by-division 24h accomplishment summary (all 10 divisions + special units)
 - Agent health audit (data integrity, backup recency, service uptime)
 - Automatic triage with priority classification for inactive agents
@@ -203,7 +194,7 @@ GET  /api/standup              — CEO daily standup briefing
 ## Operational Schedulers
 - **Daily Report**: 9:00 AM UTC — SMS revenue + schedule summary
 - **Drip Engine**: Every hour — process 90-day email nurture sequences
-- **Publish Tracker**: Every 30 min — content publish status tracking
+- **Publish Tracker**: Every 30 min — poll for publish confirmations
 - **Backup**: 2:00 AM UTC — JSON data backup with 7-day retention
 - **CEO Standup**: 6:00 AM EST (11:00 UTC) — sovereign operations briefing
 
