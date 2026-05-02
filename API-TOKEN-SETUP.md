@@ -1,99 +1,123 @@
-# Coastal Key PM — API Token Configuration Guide
+# Coastal Key — API Token Configuration Guide
 
-## Overview
-
-Coastal Key's infrastructure relies on four secret tokens and one development key. Each token is scoped to a single responsibility and must never be committed to version control.
+**Authority:** Coastal Key AI CEO under Master Orchestrator routing.
+**Scope:** Production secrets for the live platform — gateway, nemotron, sentinel, website, command center.
+**Status:** Production live. All endpoints verified (`deploy-status.json`).
 
 ---
 
-## Required Tokens
+## Token Inventory
 
-### 1. ANTHROPIC_API_KEY
+| Token | Service | Purpose |
+|-------|---------|---------|
+| `ANTHROPIC_API_KEY` | Gateway, Nemotron, Server | Claude inference for all AI reasoning |
+| `AIRTABLE_API_KEY` | Gateway, Sentinel, Server | CRM persistence (base `appUSnNgpDkcEOzhN`) |
+| `WORKER_AUTH_TOKEN` | Gateway | Bearer auth for external callers |
+| `SLACK_WEBHOOK_URL` | Gateway, Sentinel, Server | Notifications across 12 programmatic channels |
+| `SLACK_BOT_TOKEN` | Server | Slash commands and interactivity |
+| `SLACK_SIGNING_SECRET` | Server | HMAC verification on Slack inbound |
+| `RETELL_WEBHOOK_SECRET` | Sentinel | HMAC verification on Retell webhooks |
+| `ATLAS_API_KEY` | Server | Voice campaign automation |
+| `ADMIN_TOKEN` | Server | Admin-only endpoints (standup, dashboard, drip) |
+| `CLOUDFLARE_API_TOKEN` | GitHub Actions | CI/CD deploy authority |
+| `CLOUDFLARE_ACCOUNT_ID` | GitHub Actions | Cloudflare account identity |
 
-**Purpose:** Claude inference for the API gateway, content generation, and agent orchestration.
+---
 
-**Create:**
+## 1. ANTHROPIC_API_KEY
+
+**Create**
 1. Sign in at [console.anthropic.com](https://console.anthropic.com)
-2. Navigate to **Settings > API Keys**
-3. Click **Create Key**, name it `coastalkey-production`
-4. Copy the key (format: `sk-ant-...`) — it is shown only once
+2. **Settings → API Keys → Create Key**, name it `coastalkey-production`
+3. Copy the `sk-ant-...` value — shown only once
 
-**Deploy:**
+**Deploy**
 ```bash
-cd ck-api-gateway
-wrangler secret put ANTHROPIC_API_KEY
+cd ck-api-gateway && wrangler secret put ANTHROPIC_API_KEY
+cd ../ck-nemotron-worker && wrangler secret put ANTHROPIC_API_KEY
 ```
 
-**Claude Code (local development):**
+**Local development (Claude Code)**
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-your-key-here
-```
-Add to your shell profile (`~/.bashrc` or `~/.zshrc`) to persist across sessions. Alternatively, run `claude login` for browser-based OAuth without managing a key manually.
-
----
-
-### 2. AIRTABLE_API_KEY
-
-**Purpose:** CRM read/write across Lead Contacts, Call Log, Agent Performance, and Campaign Analytics tables in base `appUSnNgpDkcEOzhN`.
-
-**Create:**
-1. Sign in at [airtable.com/create/tokens](https://airtable.com/create/tokens)
-2. Click **Create new token**
-3. Set scopes: `data.records:read`, `data.records:write`, `schema.bases:read`
-4. Restrict access to the **Coastal Key Master Orchestrator** base only
-5. Copy the token (format: `pat...`)
-
-**Deploy:**
-```bash
-cd ck-api-gateway
-wrangler secret put AIRTABLE_API_KEY
-
-cd ../sentinel-webhook
-wrangler secret put AIRTABLE_API_KEY
+export ANTHROPIC_API_KEY=sk-ant-...
+# Or run `claude login` for browser-based OAuth
 ```
 
 ---
 
-### 3. WORKER_AUTH_TOKEN
+## 2. AIRTABLE_API_KEY
 
-**Purpose:** Bearer authentication for external callers (Retell webhooks, Zapier triggers, command center) hitting the API gateway.
+**Create**
+1. [airtable.com/create/tokens](https://airtable.com/create/tokens) → **Create new token**
+2. Scopes: `data.records:read`, `data.records:write`, `schema.bases:read`
+3. Restrict to base **Coastal Key Master Orchestrator** (`appUSnNgpDkcEOzhN`, 39 tables)
+4. Copy the `pat...` value
 
-**Create:**
-Generate a cryptographically random token:
+**Deploy**
+```bash
+cd ck-api-gateway && wrangler secret put AIRTABLE_API_KEY
+cd ../sentinel-webhook && wrangler secret put AIRTABLE_API_KEY
+```
+
+---
+
+## 3. WORKER_AUTH_TOKEN
+
+**Generate**
 ```bash
 openssl rand -base64 48
 ```
 
-**Deploy:**
+**Deploy**
 ```bash
-cd ck-api-gateway
-wrangler secret put WORKER_AUTH_TOKEN
+cd ck-api-gateway && wrangler secret put WORKER_AUTH_TOKEN
 ```
 
-**Usage by callers:**
+**Caller usage**
 ```
 Authorization: Bearer <WORKER_AUTH_TOKEN>
 ```
-
-All API gateway endpoints except `/health` and `/v1/leads/contact` require this header. The gateway uses constant-time comparison to validate tokens.
+The gateway uses constant-time comparison (`src/middleware/auth.js`) to prevent timing attacks. Public routes (`/v1/health`, `/v1/leads/contact`) bypass this gate.
 
 ---
 
-### 4. SLACK_WEBHOOK_URL
+## 4. Slack Triple
 
-**Purpose:** Real-time notifications for call outcomes, lead escalations, and system alerts.
+**`SLACK_WEBHOOK_URL`** — incoming webhook URL from each Slack app (Coastal Key, CK Gateway, CK Content). Used for outbound notifications.
 
-**Create:**
-1. Go to [api.slack.com/apps](https://api.slack.com/apps) and select the Coastal Key app
-2. Navigate to **Incoming Webhooks > Add New Webhook to Workspace**
-3. Select the target channel and authorize
-4. Copy the webhook URL
+**`SLACK_BOT_TOKEN`** — `xoxb-...` from app's OAuth & Permissions page. Required for slash commands and interactivity.
 
-**Deploy:**
+**`SLACK_SIGNING_SECRET`** — from app's Basic Information page. Verifies HMAC-SHA256 signature with 5-minute replay window on every Slack inbound request.
+
+**Deploy**
 ```bash
-cd sentinel-webhook
-wrangler secret put SLACK_WEBHOOK_URL
+cd ck-api-gateway && wrangler secret put SLACK_WEBHOOK_URL
+# Repeat for sentinel-webhook
+# SLACK_BOT_TOKEN and SLACK_SIGNING_SECRET go in Express server .env
 ```
+
+---
+
+## 5. RETELL_WEBHOOK_SECRET
+
+Used by `sentinel-webhook` to verify Retell `call_analyzed` payloads before persisting to Airtable.
+
+**Source:** Retell dashboard → Webhook configuration page → copy signing secret.
+
+**Deploy**
+```bash
+cd sentinel-webhook && wrangler secret put RETELL_WEBHOOK_SECRET
+```
+
+---
+
+## 6. CI/CD Tokens (GitHub Actions)
+
+**`CLOUDFLARE_API_TOKEN`** — scoped to: Account.Workers Scripts:Edit, Account.Pages:Edit, Zone.DNS:Edit. **No IP restriction** (removed 2026-04-08 to enable GitHub-hosted runners). Configured at: GitHub → Settings → Secrets → Actions.
+
+**`CLOUDFLARE_ACCOUNT_ID`** — Cloudflare dashboard → right sidebar. Same location.
+
+The deploy workflow (`.github/workflows/deploy.yml`) validates these in a preflight job before any deployment runs. Failure halts the pipeline before any service is touched.
 
 ---
 
@@ -101,25 +125,51 @@ wrangler secret put SLACK_WEBHOOK_URL
 
 | Rule | Detail |
 |------|--------|
-| **No plaintext storage** | All tokens live in Cloudflare Worker secrets or local environment variables only |
-| **No version control** | Never commit tokens to `.env` files, config, or code |
-| **Least privilege** | Scope each token to its minimum required permissions |
-| **Rotation cadence** | Rotate all tokens quarterly; rotate immediately on suspected exposure |
-| **Audit** | Token usage is logged to the `AUDIT_LOG` KV namespace |
+| **No plaintext storage** | Tokens live only in Cloudflare Worker secrets, GitHub encrypted secrets, or local `.env` (gitignored) |
+| **No version control** | `.env` and `*.secret*` are gitignored — verify before every commit |
+| **Least privilege** | Each token scoped to minimum required permissions and resources |
+| **Rotation cadence** | Quarterly. Immediate rotation on suspected exposure |
+| **Audit trail** | Every authenticated operation logged to `AUDIT_LOG` KV namespace, 30-day TTL |
+| **Replay protection** | HMAC + 5-minute timestamp window on all inbound webhooks |
+| **Rate limit** | 60 RPM per caller via `RATE_LIMITS` KV namespace |
 
 ---
 
 ## Verification
 
-After deploying all secrets, confirm each service is operational:
+After deploying secrets, run the live smoke test that the CI pipeline executes:
 
 ```bash
-# API Gateway health (no auth required)
-curl https://coastalkey-pm.com/health
+# Gateway liveness
+curl -sS https://ck-api-gateway.david-e59.workers.dev/v1/health
+# Expected: {"status":"healthy",...}
 
-# Authenticated endpoint test
-curl -H "Authorization: Bearer <WORKER_AUTH_TOKEN>" \
-  https://coastalkey-pm.com/v1/agents
+# Authenticated endpoint
+curl -H "Authorization: Bearer $WORKER_AUTH_TOKEN" \
+  https://ck-api-gateway.david-e59.workers.dev/v1/agents
+# Expected: 200 with agent fleet payload
+
+# Nemotron inference worker
+curl -sS https://ck-nemotron-worker.david-e59.workers.dev/v1/health
+# Expected: {"status":"healthy"}
+
+# Sentinel webhook
+curl -sS -o /dev/null -w "%{http_code}\n" \
+  https://sentinel-webhook.david-e59.workers.dev/
+# Expected: 405 (method not allowed on GET — proves worker is reachable)
 ```
 
-Both should return `200`. If any return `500` with `auth token not set`, the corresponding secret was not deployed to the Worker.
+A 500 with `auth token not set` means the secret was not deployed to that Worker. A 401 on the dashboard confirms the auth gate is enforced (deployment is healthy).
+
+---
+
+## Token Rotation Procedure
+
+1. Generate new value at the source (Anthropic, Airtable, etc.)
+2. Deploy to all consuming Workers via `wrangler secret put`
+3. Update GitHub Actions secrets if applicable
+4. Verify with smoke test above
+5. Revoke old value at source
+6. Log rotation in `CEO-AUTHORIZATION-LOG.md`
+
+Rotation is non-blocking — `wrangler secret put` activates the new value on the next request without redeploying code.
