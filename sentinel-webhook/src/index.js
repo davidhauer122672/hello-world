@@ -33,9 +33,33 @@ export default {
       return json({ error: 'Not found' }, 404);
     }
 
+    // ── Parse body and optionally verify webhook signature ──
+    let payload;
     try {
-      const payload = await request.json();
+      if (env.RETELL_WEBHOOK_SECRET) {
+        const signature = request.headers.get('x-retell-signature') || '';
+        const bodyText = await request.text();
+        const encoder = new TextEncoder();
+        const key = await crypto.subtle.importKey(
+          'raw', encoder.encode(env.RETELL_WEBHOOK_SECRET),
+          { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+        );
+        const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(bodyText));
+        const expected = Array.from(new Uint8Array(sig))
+          .map(b => b.toString(16).padStart(2, '0')).join('');
+        if (signature !== expected) {
+          console.error('Webhook signature verification failed');
+          return json({ error: 'Invalid webhook signature' }, 401);
+        }
+        payload = JSON.parse(bodyText);
+      } else {
+        payload = await request.json();
+      }
+    } catch {
+      return json({ error: 'Invalid JSON body' }, 400);
+    }
 
+    try {
       // ── Step 1: Filter — only process call_analyzed events ──
       const event = payload.event;
       if (event !== 'call_analyzed') {
