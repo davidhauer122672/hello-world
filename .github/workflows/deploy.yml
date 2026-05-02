@@ -50,6 +50,9 @@ jobs:
       - name: Test Nemotron Worker
         run: npm run test:nemotron
 
+      - name: Build avatar-studio specs (content policy gate)
+        run: node avatar-studio/scripts/build-specs.js
+
   preflight:
     name: Preflight Token Check
     needs: test
