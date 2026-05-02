@@ -49,9 +49,26 @@ jobs:
         working-directory: ck-nemotron-worker
         run: npm test
 
+  preflight:
+    name: Preflight Token Check
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Cloudflare API Token
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/user/tokens/verify")
+          if [ "$response" != "200" ]; then
+            echo "::error::Cloudflare API token validation failed (HTTP $response)"
+            exit 1
+          fi
+          echo "Cloudflare API token verified successfully"
+
   deploy-gateway:
     name: Deploy API Gateway
-    needs: test
+    needs: preflight
     if: github.ref == "refs/heads/main" && github.event_name == "push"
     runs-on: ubuntu-latest
     steps:
@@ -70,7 +87,7 @@ jobs:
 
   deploy-sentinel:
     name: Deploy Sentinel Webhook
-    needs: test
+    needs: [preflight, deploy-gateway]
     if: github.ref == "refs/heads/main" && github.event_name == "push"
     runs-on: ubuntu-latest
     steps:
@@ -89,7 +106,7 @@ jobs:
 
   deploy-nemotron:
     name: Deploy Nemotron Worker
-    needs: test
+    needs: [preflight, deploy-gateway]
     if: github.ref == "refs/heads/main" && github.event_name == "push"
     runs-on: ubuntu-latest
     steps:
@@ -108,7 +125,7 @@ jobs:
 
   deploy-command-center:
     name: Deploy Command Center
-    needs: test
+    needs: preflight
     if: github.ref == "refs/heads/main" && github.event_name == "push"
     runs-on: ubuntu-latest
     steps:
