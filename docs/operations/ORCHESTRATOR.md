@@ -1,8 +1,8 @@
 # COASTAL KEY ENTERPRISE ORCHESTRATOR — Master System Prompt
 
-**Version**: 2.1.0
-**Effective**: 2026-04-17
-**Supersedes**: V1.0.0 (2026-04-15)
+**Version**: 2.2.0
+**Effective**: 2026-05-02
+**Supersedes**: V2.1.1 (2026-04-17)
 **Authority**: Sovereign AI Executive Administrator
 **Classification**: Enterprise Operating System — Single Source of Truth
 **Implementation**: Documentation layer. Runtime engine lives in `ck-api-gateway/src/engines/master-prompt-v21.js` and is served under `/v1/orchestrator/*`.
@@ -93,6 +93,11 @@ V2.1 is a dual-layer system. This document is the governance charter. The runtim
 | GET | `/v1/orchestrator/gaps` | Top 1% industry gap analysis from Notebook LM research |
 | GET | `/v1/orchestrator/noi-model` | NOI impact model at 30-property baseline |
 | POST | `/v1/orchestrator/noi-model` | NOI calculation at custom portfolio size. Body: `{ "portfolioSize": <int> }` |
+| GET | `/v1/orchestrator/fleet` | Sentry/Ledger/Acquisition/Report fleet status, rate limits, HITL thresholds |
+| GET | `/v1/orchestrator/triggers` | 15 production Trigger-Action sequences (TAS-001…TAS-015) |
+| POST | `/v1/orchestrator/dispatch` | Route event through Priority×Risk + Goal validation + HITL gate. Returns 200 dispatched / 202 hitl_pending / 409 quarantined / 422 errored |
+| POST | `/v1/orchestrator/hitl` | Record CEO HITL decision (approve/reject/defer). Body: `{ "blocked_envelope_id", "decision", "approver_id", "rationale" }` |
+| GET | `/v1/orchestrator/public-status` | Public structural status — no auth required, smoke-test target |
 
 ### Collections Agent (FIN Division, registered with Orchestrator)
 
@@ -112,7 +117,16 @@ Authoritative constants exported by the engine:
 - `MARKETING_ASSETS` — 10 V2.1 campaign assets (MA-001 through MA-010), each with version, type, specs, status.
 - `INDUSTRY_GAPS` — 3 top gaps with CK opportunity, goal alignment, and projected NOI impact.
 - `calculateNOIGapImpact(portfolioSize)` — Portfolio economics with traditional vs Coastal Key margin, uplift breakdown, and sensitivity bands.
-- `getMasterPromptDashboard()` — Unified dashboard payload for CEO and avatar consumption.
+- `getMasterPromptDashboard()` — Unified dashboard payload for CEO and avatar consumption (now includes fleet + 15 TAS).
+- `AGENT_FLEET` — 4-agent runtime roster: Sentry (OPS), Ledger (FIN), Acquisition (MKT), Report (INT). Each entry includes domain, inputs, outputs, rate limits, and kill-switch.
+- `RATE_LIMITS_CONFIG` — per-agent RPM / daily / burst budgets.
+- `HITL_THRESHOLDS` — $5,000 single transfer, $5,000 aggregate 24h, P0-always, inter-LLC-always, insurance-always.
+- `TRIGGER_ACTION_SEQUENCES` — 15 production scenarios (TAS-001…TAS-015) with priority, risk, agent, HITL flag, retention.
+- `classifyDispatch(event)` — returns `{ priority, riskClass, agent }`.
+- `validateGoalAlignment(event)` — checks `goal_alignment[]` against G1/G2/G3/G4.
+- `evaluateHITL(event)` — returns `{ hitlRequired, reasons[] }`.
+- `routeDispatch(event)` — full router: classify → validate goals → HITL gate → dispatched | hitl_pending | quarantined | errored.
+- `getOrchestratorFleetStatus()` — fleet snapshot for `/v1/orchestrator/fleet`.
 
 ---
 
@@ -226,7 +240,8 @@ User input will follow. Execute with ruthless precision and zero tolerance for d
 | 1.0.0 | 2026-04-15 | Initial Enterprise Orchestrator document. |
 | 2.1.0 | 2026-04-17 | Promoted to Master System Prompt. Grok SuperGrok AI agent codified as primary Automation First tool. 6-step Response Protocol with Avatar Briefing. Session Activation Protocol added. iPhone 16 Grok Mobile App and 13-step cadence in Deployment Mandate. Runtime Engine section added with pointers to `ck-api-gateway/src/engines/master-prompt-v21.js` and 6 `/v1/orchestrator/*` endpoints. Avatar, asset, and gap tables mirror engine constants. V1 Campaign Pack registered in Persistent Operating System. |
 | 2.1.1 | 2026-04-17 | Collections Agent COLL-001 integrated. UiPath collections reference architecture applied. 7 compliance controls (FDCPA best-practice, TCPA, Florida FCCPA, CFPB Reg F, PCI-DSS). 5 endpoints under `/v1/collections/*`. Registered in `getMasterPromptDashboard()` under `collectionsAgent`. Voice config bug fixes against incoming diff: `max_tokens: 10 → -1`, hard-coded `customer_name` removed, duplicated Fortune 500 prompt prefix removed. 21 new tests. Gateway suite 325 passing. |
+| 2.2.0 | 2026-05-02 | Master Orchestrator fleet engine live. 4-agent runtime fleet (Sentry/Ledger/Acquisition/Report) with Priority×Risk dispatch matrix (P0–P3 × R0–R3), Goal Alignment validation (G1–G4), HITL gate at $5,000 / P0-always / inter-LLC-always / insurance-always. 15 Trigger-Action Sequences (TAS-001…TAS-015). 5 new endpoints: `/v1/orchestrator/fleet`, `/v1/orchestrator/triggers`, `/v1/orchestrator/dispatch`, `/v1/orchestrator/hitl`, `/v1/orchestrator/public-status`. JSON Schema (Draft 2020-12) for 9 cross-agent envelope types. Standalone `orchestrator.html` dispatch console with live fleet roster and TAS table. Blueprint docs in `docs/orchestrator/`. Gateway suite 583 passing. |
 
 ---
 
-*Coastal Key Enterprise Orchestrator v2.1.0. Sovereign Governance. Ferrari Precision. Red Bull Speed. SpaceX Ambition.*
+*Coastal Key Enterprise Orchestrator v2.2.0. Sovereign Governance. Ferrari Precision. Red Bull Speed. SpaceX Ambition.*
