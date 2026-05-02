@@ -345,11 +345,11 @@ export default {
         checks.metaAds = { status: 'not_configured', missing: metaMissing };
       }
 
-      // Buffer
-      if (env.BUFFER_ACCESS_TOKEN) {
-        checks.buffer = { status: 'configured' };
+      // Claude AI Publishing
+      if (env.ANTHROPIC_API_KEY) {
+        checks.publishing = { status: 'configured', engine: 'claude-ai' };
       } else {
-        checks.buffer = { status: 'not_configured', impact: 'Content publish falls back to manual mode' };
+        checks.publishing = { status: 'not_configured', impact: 'Content publish falls back to manual mode' };
       }
 
       // KV stores
