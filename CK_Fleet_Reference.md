@@ -19,7 +19,7 @@ Email Agents            20     Execute 5-touch email sequences. Monitor delivera
 Retell Voice            1      Live dialing via API. Follow COASTAL framework.
 
 TECHNOLOGY STACK (20 platforms)
-Cloudflare Workers. Atlas AI. Retell AI. Claude AI. Genspark AI.
+Cloudflare Workers. Retell AI (ElevenLabs). Claude AI. Genspark AI.
 GitHub. Custom edge computing nodes. Plus supporting infrastructure.
 Legacy middleware: removed. Sovereign Command: online.
 
