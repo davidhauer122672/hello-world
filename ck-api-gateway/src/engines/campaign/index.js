@@ -5,13 +5,13 @@
  * Wires together all campaign sub-modules and exports a unified API.
  */
 
-// ── Sub-modules ────────────────────────────────────────────────────────────
+// ── Sub-modules ──────────────────────────────────────────────────────────
 
-export { EDT_OFFSET, EST_OFFSET, isEDT, getUTCOffset, getTimezoneLabel, getTimezoneAbbr, easternToUTC, utcToEastern, toBufferTimestamp, getDSTTransitions, getSpringForwardUTC, getFallBackUTC } from './dst-handler.js';
+export { EDT_OFFSET, EST_OFFSET, isEDT, getUTCOffset, getTimezoneLabel, getTimezoneAbbr, easternToUTC, utcToEastern, toPublishTimestamp, getDSTTransitions, getSpringForwardUTC, getFallBackUTC } from './dst-handler.js';
 
 export { PLATFORMS, DAYS, generateScheduleSlots, getWeeklyPostCounts, getNextSlot, getAllNextSlots, validateSlot } from './scheduling-matrix.js';
 
-export { schedulePost, scheduleBatch, checkPostStatus, getPublishConfigStatus } from './buffer-integration.js';
+export { schedulePost, scheduleBatch, checkPostStatus, getPublishConfigStatus } from './claude-ai-publisher.js';
 
 export { SMO_AGENT, TARGET_SEGMENTS, BUSINESS_TYPES, generateSMOAnalysisPrompt, getSMOStatus } from './sovereign-marketing-officer.js';
 
@@ -23,7 +23,7 @@ export { OFFER_ESTATE_MANAGEMENT, OFFER_PM_SOFTWARE, OFFER_SOFTWARE_DEV, ALL_OFF
 
 export { WEEKLY_THEMES, DISTRIBUTION_CHANNELS, generate30DayPlan, getSegmentPrioritization, getDistributionPlan } from './distribution-plan.js';
 
-// ── Re-export from parent peak-time engine ─────────────────────────────────
+// ── Re-export from parent peak-time engine ─────────────────────────────
 
 export {
   ENGINE_VERSION, ENGINE_ID, ENGINE_NAME, PLATFORM_MATRIX, TARGET_DEMOGRAPHIC,
@@ -31,7 +31,7 @@ export {
   getDivisionSchedule, generateAllPointsBulletin,
 } from '../peak-time-intelligence.js';
 
-// ── Unified Campaign Dashboard ─────────────────────────────────────────────
+// ── Unified Campaign Dashboard ─────────────────────────────────────────
 
 /**
  * Get the full campaign status across all sub-engines.

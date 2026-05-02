@@ -5,8 +5,8 @@
  * Coastal Key AI CEO. This manifest is the single source of truth for
  * fleet composition, hierarchy, capabilities, and operational status.
  *
- * Fleet Composition: 383 Total Units
- *   - 15 MCCO Sovereign Command (MCCO-000 through MCCO-014)
+ * Fleet Composition: 384 Total Units
+ *   - 16 MCCO Sovereign Command (MCCO-000 through MCCO-014 + SMO-001)
  *   - 297 Division Agents (9 divisions: EXC, SEN, OPS, INT, MKT, FIN, VEN, TEC, WEB)
  *   - 50 Intelligence Officers (5 squads: ALPHA, BRAVO, CHARLIE, DELTA, ECHO)
  *   - 20 Email AI Agents (4 squads: INTAKE, COMPOSE, NURTURE, MONITOR)
@@ -41,9 +41,9 @@ export const MANIFEST_DATE = '2026-04-05';
 // ── FLEET COMPOSITION ───────────────────────────────────────────────────────
 
 export const FLEET = {
-  totalUnits: 383,
+  totalUnits: 384,
   composition: {
-    mccoSovereignCommand: 15,
+    mccoSovereignCommand: 16,
     divisionAgents: 297,
     intelligenceOfficers: 50,
     emailAgents: 20,
@@ -83,7 +83,7 @@ export const DIVISIONS = {
     code: 'MCCO',
     color: '#dc2626',
     icon: 'shield',
-    agentCount: 15,
+    agentCount: 16,
     headAgent: 'MCCO-000',
     reportsTo: 'CEO',
     governance: 'sovereign',
@@ -95,6 +95,7 @@ export const DIVISIONS = {
       strategy: { name: 'Strategy Units', agents: ['MCCO-001', 'MCCO-002', 'MCCO-003', 'MCCO-006', 'MCCO-007'] },
       execution: { name: 'Execution Units', agents: ['MCCO-004', 'MCCO-005', 'MCCO-008', 'MCCO-009'] },
       intelligence: { name: 'Intelligence Units', agents: ['MCCO-010', 'MCCO-011', 'MCCO-012', 'MCCO-013', 'MCCO-014'] },
+      marketing: { name: 'Sovereign Marketing Officer', agents: ['SMO-001'] },
     },
   },
   EXC: {

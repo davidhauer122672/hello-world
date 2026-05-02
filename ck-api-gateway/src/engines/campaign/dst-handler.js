@@ -143,7 +143,7 @@ export function utcToEastern(utcDate) {
  * @param {Date} utcDate
  * @returns {string} ISO 8601 UTC string
  */
-export function toBufferTimestamp(utcDate) {
+export function toPublishTimestamp(utcDate) {
   return utcDate.toISOString().replace(/\.\d{3}Z$/, 'Z');
 }
 
