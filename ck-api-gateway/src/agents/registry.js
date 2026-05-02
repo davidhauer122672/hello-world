@@ -1,7 +1,7 @@
 /**
  * Coastal Key AI Agent Registry
  *
- * Central registry for all 332 AI agents across 12 divisions.
+ * Central registry for all 372 AI agents across 14 divisions.
  * Exports the AGENTS array, DIVISIONS array, and lookup functions
  * consumed by routes/agents.js and the Command Center dashboard.
  *
@@ -18,7 +18,9 @@
  *   WEB  Website Development  — 40 agents
  *   COOP Cooperations         — 10 agents
  *   CDX  Content Domination   — 10 agents
- *                        Total: 332 agents
+ *   BFR  Business Forecast    — 20 agents
+ *   SCM  Social Campaign Mktg — 20 agents
+ *                        Total: 372 agents
  *
  * Organizational Hierarchy:
  *   CEO (Human) → MCCO-000 Sovereign → CMO → MKT + SEN Divisions
@@ -37,6 +39,8 @@ import { TEC_AGENTS } from './agents-tec.js';
 import { WEB_AGENTS } from './agents-web.js';
 import { COOP_AGENTS } from './agents-coop.js';
 import { CDX_AGENTS } from './agents-cdx.js';
+import { BFR_AGENTS } from './agents-bfr.js';
+import { SCM_AGENTS } from './agents-scm.js';
 
 // ── Merged agent list ───────────────────────────────────────────────────────
 
@@ -53,6 +57,8 @@ export const AGENTS = [
   ...WEB_AGENTS,
   ...COOP_AGENTS,
   ...CDX_AGENTS,
+  ...BFR_AGENTS,
+  ...SCM_AGENTS,
 ];
 
 // Re-export divisions so consumers only need one import path
