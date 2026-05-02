@@ -59,7 +59,7 @@ function GoldmanSachsView() {
   return (
     <div>
       <div className="card" style={{ marginBottom: '16px' }}>
-        <div className="card-header"><span className="card-title">Goldman Sachs Stock Screener</span><span className="badge badge-gold">INSTITUTIONAL GRADE</span></div>
+        <div className="card-header"><span className="card-title">Goldman Sachs Stock Screener</span><span className="badge badge-gold">ENTERPRISE GRADE</span></div>
       </div>
       <div className="card">
         <table className="data-table">
