@@ -12,7 +12,7 @@ describe('CEO Directive Service', () => {
   it('getOperatingState returns fleet totals', async () => {
     const { getOperatingState } = await import('../services/ceo-directives.js');
     const state = getOperatingState();
-    assert.equal(state.fleet.total, 382);
+    assert.equal(state.fleet.total, 383);
     assert.equal(Object.keys(state.fleet.divisions).length, 10);
     assert.equal(state.fleet.intelligenceOfficers, 50);
     assert.equal(state.fleet.emailAgents, 20);
@@ -69,7 +69,7 @@ describe('CEO Directive Routes', () => {
     assert.equal(data.status, 'operational');
     assert.equal(data.governance, 'sovereign');
     assert.equal(data.executionStandard, 'ferrari');
-    assert.equal(data.enterprise.fleet_total, 382);
+    assert.equal(data.enterprise.fleet_total, 383);
     assert.equal(data.enterprise.divisions, 10);
     assert.equal(data.directive_capabilities.length, 5);
   });
