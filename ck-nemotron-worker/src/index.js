@@ -33,11 +33,29 @@ function authenticate(request, env) {
 }
 
 async function handleInference(request, env) {
-  const body = await request.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'Invalid JSON body' }, 400);
+  }
+
   const { prompt, system, max_tokens = 1024, temperature = 0.7 } = body;
 
-  if (!prompt) {
-    return json({ error: 'Missing required field: prompt' }, 400);
+  if (!prompt || typeof prompt !== 'string') {
+    return json({ error: 'Missing or invalid required field: prompt' }, 400);
+  }
+  if (prompt.length > 100000) {
+    return json({ error: 'Prompt exceeds maximum length of 100000 characters' }, 400);
+  }
+  if (system && typeof system !== 'string') {
+    return json({ error: 'system must be a string' }, 400);
+  }
+  if (typeof max_tokens !== 'number' || max_tokens < 1 || max_tokens > 16384) {
+    return json({ error: 'max_tokens must be between 1 and 16384' }, 400);
+  }
+  if (typeof temperature !== 'number' || temperature < 0 || temperature > 2) {
+    return json({ error: 'temperature must be between 0 and 2' }, 400);
   }
 
   const messages = [];
@@ -72,10 +90,20 @@ async function handleInference(request, env) {
     return json({ error: 'Nemotron inference failed', detail: errorText }, response.status);
   }
 
-  const result = await response.json();
+  let result;
+  try {
+    result = await response.json();
+  } catch {
+    return json({ error: 'Failed to parse NVIDIA API response' }, 502);
+  }
+
+  if (!result.choices || !Array.isArray(result.choices) || result.choices.length === 0) {
+    return json({ error: 'NVIDIA API returned no choices', detail: JSON.stringify(result).slice(0, 500) }, 502);
+  }
+
   return json({
     model: payload.model,
-    content: result.choices?.[0]?.message?.content || '',
+    content: result.choices[0]?.message?.content || '',
     usage: result.usage || {},
   });
 }
