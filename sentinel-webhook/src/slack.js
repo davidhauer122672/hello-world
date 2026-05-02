@@ -77,7 +77,8 @@ export async function sendSlackNotification(env, fields, record, call) {
   });
 
   if (!response.ok) {
-    console.error(`Slack notification failed (${response.status}): ${await response.text()}`);
+    const detail = await response.text();
+    throw new Error(`Slack notification failed (${response.status}): ${detail}`);
   }
 }
 
