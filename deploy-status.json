@@ -1,8 +1,23 @@
 {
-  "lastVerifiedAt": "pending-first-deploy",
-  "commit": "pending",
-  "note": "Auto-updated by the smoke-test job in .github/workflows/deploy.yml after each successful deploy to main. This is the live deploy-confirmation surface readable by AI agents and humans without requiring egress to *.workers.dev.",
-  "gateway": { "masterPromptStatus": "pending", "collectionsAgent": { "id": "pending", "status": "pending" } },
-  "nemotron": { "healthHttpStatus": "pending" },
-  "sentinel": { "healthHttpStatus": "pending" }
+  "lastVerifiedAt": "2026-05-02T13:18:21Z",
+  "commit": "761398332da487305fc6c9af90c423b1a6d25bb1",
+  "ref": "refs/heads/main",
+  "runId": "25252721852",
+  "runUrl": "https://github.com/Coastal-Key/hello-world/actions/runs/25252721852",
+  "gateway": {
+    "url": "https://ck-api-gateway.david-e59.workers.dev",
+    "masterPromptStatus": "parse_error",
+    "collectionsAgent": {
+      "id": "parse_error",
+      "status": "parse_error"
+    }
+  },
+  "nemotron": {
+    "url": "https://ck-nemotron-worker.david-e59.workers.dev",
+    "healthHttpStatus": "200"
+  },
+  "sentinel": {
+    "url": "https://sentinel-webhook.david-e59.workers.dev",
+    "healthHttpStatus": "405"
+  }
 }
