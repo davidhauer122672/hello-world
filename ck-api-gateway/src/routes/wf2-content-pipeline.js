@@ -4,14 +4,14 @@
  *   POST /v1/workflows/wf2         — Content Engagement Pipeline
  *   POST /v1/workflows/wf4-alignable — Alignable Community Alert Branch
  *
- * WF-2: Generates content, schedules to Buffer, updates Content Calendar in Airtable.
+ * WF-2: Generates content, optimizes via Claude AI, updates Content Calendar in Airtable.
  * WF-4 Alignable: Extends WF-4 nurture with Alignable community engagement alerts.
  */
 
 import { inference } from '../services/anthropic.js';
 import { createRecord, updateRecord, listRecords, TABLES } from '../services/airtable.js';
 import { generateSocialContent } from '../services/banana-pro.js';
-import { crossPostSchedule, getProfiles } from '../services/buffer.js';
+import { schedulePost } from '../engines/campaign/claude-ai-publisher.js';
 import { writeAudit } from '../utils/audit.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 
@@ -47,7 +47,7 @@ function sendSlack(env, ctx, channel, text) {
  *  1. Receive content brief (topic, platforms, tone, schedule)
  *  2. Generate content via Claude AI + Banana Pro
  *  3. Create Content Calendar entry in Airtable
- *  4. Schedule to Buffer for multi-platform publishing
+ *  4. Optimize via Claude AI for multi-platform publishing
  *  5. Create follow-up engagement task
  *  6. Log to AI Log + Slack notification
  *
@@ -136,28 +136,26 @@ Generate platform-optimized content for each platform. Include:
     calendarRecord = null;
   }
 
-  // ── 4. Schedule to Buffer ──
-  let bufferResult = null;
-  if (env.BUFFER_ACCESS_TOKEN) {
+  // ── 4. Optimize via Claude AI Publishing Engine ──
+  let publishResult = null;
+  if (env.ANTHROPIC_API_KEY) {
     try {
-      bufferResult = await crossPostSchedule(env, {
+      publishResult = await schedulePost(env, {
+        platform: platforms[0],
         text: aiContent.slice(0, 2200),
-        platforms,
-        scheduledAt: publishNow ? undefined : (scheduledAt || undefined),
-        media: undefined,
+        scheduledAt: new Date(scheduledAt || addDays(today(), 1)),
       });
 
-      // Update calendar record with Buffer status
       if (calendarRecord) {
         ctx.waitUntil(
           updateRecord(env, TABLES.CONTENT_CALENDAR, calendarRecord.id, {
             'CK-SPP Scheduled': true,
-            'Platform Post ID': bufferResult?.updates?.[0]?.id || 'pending',
-          }).catch(err => console.error('Calendar Buffer update failed:', err))
+            'Platform Post ID': publishResult?.publishId || 'pending',
+          }).catch(err => console.error('Calendar publish update failed:', err))
         );
       }
     } catch (err) {
-      console.error('Buffer scheduling failed (non-blocking):', err);
+      console.error('Claude AI publishing failed (non-blocking):', err);
     }
   }
 
@@ -196,7 +194,7 @@ Generate platform-optimized content for each platform. Include:
     `*Topic:* ${topic}`,
     `*Platforms:* ${platforms.join(', ')}`,
     `*Status:* ${publishNow ? 'Published' : 'Scheduled'}`,
-    `*Buffer:* ${bufferResult ? 'Queued' : 'Manual'}`,
+    `*Publishing:* ${publishResult ? 'Claude AI' : 'Manual'}`,
     `*Calendar:* ${calendarRecord ? 'Created' : 'Failed'}`,
   ].join('\n'));
 
@@ -205,7 +203,7 @@ Generate platform-optimized content for each platform. Include:
     action: 'content_pipeline',
     topic: topic.slice(0, 100),
     platforms: platforms.join(','),
-    bufferScheduled: !!bufferResult,
+    publishScheduled: !!publishResult,
     calendarRecordId: calendarRecord?.id,
   });
 
@@ -213,7 +211,7 @@ Generate platform-optimized content for each platform. Include:
     content: aiContent,
     bananaEnhanced: !!bananaContent,
     calendarRecordId: calendarRecord?.id || null,
-    bufferScheduled: !!bufferResult,
+    publishScheduled: !!publishResult,
     taskId: taskRecord?.id || null,
     platforms,
     status: publishNow ? 'published' : 'scheduled',

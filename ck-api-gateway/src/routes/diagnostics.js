@@ -22,7 +22,7 @@ const SUBSYSTEMS = [
   { id: 'sentinel-webhook', name: 'Sentinel Webhook', type: 'core', critical: true },
   { id: 'command-center', name: 'Command Center Dashboard', type: 'ui', critical: true },
   { id: 'banana-pro', name: 'Banana Pro AI', type: 'integration', critical: false, envKey: 'BANANA_PRO_API_KEY' },
-  { id: 'buffer', name: 'Buffer Social Media', type: 'integration', critical: false, envKey: 'BUFFER_ACCESS_TOKEN' },
+  { id: 'claude-publisher', name: 'Claude AI Publishing', type: 'integration', critical: false, envKey: 'ANTHROPIC_API_KEY' },
   { id: 'anthropic', name: 'Claude AI (Anthropic)', type: 'ai', critical: true, envKey: 'ANTHROPIC_API_KEY' },
   { id: 'airtable', name: 'Airtable Database', type: 'data', critical: true, envKey: 'AIRTABLE_API_KEY' },
   { id: 'retell', name: 'Retell AI Voice', type: 'integration', critical: false, envKey: 'RETELL_WEBHOOK_SECRET' },
@@ -320,15 +320,15 @@ export async function handleSystemUpgrade(request, env, ctx) {
     });
   }
 
-  // Check if Buffer is configured
-  if (!env.BUFFER_ACCESS_TOKEN) {
+  // Check if Claude AI publishing is configured
+  if (!env.ANTHROPIC_API_KEY) {
     upgrades.push({
-      system: 'Buffer Integration',
-      recommendation: 'Configure BUFFER_ACCESS_TOKEN for automated social media publishing',
+      system: 'Claude AI Publishing',
+      recommendation: 'Configure ANTHROPIC_API_KEY for AI-powered content publishing',
       priority: 'high',
       impact: 'Enable WF-2 Content Pipeline auto-publishing to all social channels',
       status: 'action_required',
-      instruction: 'wrangler secret put BUFFER_ACCESS_TOKEN',
+      instruction: 'wrangler secret put ANTHROPIC_API_KEY',
     });
   }
 

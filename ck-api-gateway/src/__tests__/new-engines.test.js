@@ -93,8 +93,8 @@ describe('Sales Acquisition Routes', async () => {
 describe('Token Maintenance Agent', async () => {
   const { CREDENTIAL_REGISTRY, getTokenAgentDashboard } = await import('../engines/token-maintenance.js');
 
-  it('registers 13 credentials', () => {
-    assert.equal(CREDENTIAL_REGISTRY.length, 13);
+  it('registers 12 credentials', () => {
+    assert.equal(CREDENTIAL_REGISTRY.length, 12);
   });
 
   it('includes all critical credentials', () => {
@@ -109,7 +109,7 @@ describe('Token Maintenance Agent', async () => {
     const d = getTokenAgentDashboard({});
     assert.equal(d.agent.id, 'TEC-026');
     assert.equal(d.agent.name, 'Token Sentinel');
-    assert.equal(d.fleet.total, 13);
+    assert.equal(d.fleet.total, 12);
     assert.equal(d.fleet.configured, 0);
   });
 
@@ -122,11 +122,11 @@ describe('Token Maintenance Agent', async () => {
 describe('Token Maintenance Routes', async () => {
   const { handleTokenRegistry } = await import('../routes/token-maintenance.js');
 
-  it('GET /v1/tokens/registry returns 13 credentials', async () => {
+  it('GET /v1/tokens/registry returns 12 credentials', async () => {
     const res = handleTokenRegistry();
     assert.equal(res.status, 200);
     const b = await body(res);
-    assert.equal(b.count, 13);
+    assert.equal(b.count, 12);
     assert.ok(b.rotationPolicy);
   });
 });
