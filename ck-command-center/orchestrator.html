@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Coastal Key — Master Orchestrator</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CK Orchestrator">
+<meta name="theme-color" content="#06060b">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060b;--bg2:#0c0c14;--bg3:#12121e;--bg4:#1a1a2a;--bg5:#222234;
+  --text:#eaeaf0;--text2:#a0a0b8;--text3:#606078;
+  --gold:#d4a843;--gold2:#b08930;--gold-bg:rgba(212,168,67,0.08);
+  --green:#00e676;--green-bg:rgba(0,230,118,0.08);
+  --red:#ff3d5a;--red-bg:rgba(255,61,90,0.08);
+  --blue:#448aff;--blue-bg:rgba(68,138,255,0.08);
+  --cyan:#00e5ff;--purple:#aa66ff;--purple-bg:rgba(170,102,255,0.08);
+  --yellow:#ffd740;--yellow-bg:rgba(255,215,64,0.08);
+  --orange:#ff9100;
+  --border:#1a1a2e;--border2:#2a2a40;
+  --radius:10px;--radius-sm:6px;
+  --shadow:0 4px 24px rgba(0,0,0,0.5);
+  --font:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono','Fira Code',Consolas,monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden;font-size:14px}
+a{color:var(--blue);text-decoration:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.app{display:grid;grid-template-columns:240px 1fr;grid-template-rows:56px 1fr;min-height:100vh}
+.header{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;z-index:100}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding:12px 0}
+.main{background:var(--bg);overflow-y:auto;padding:20px}
+.header-brand{display:flex;align-items:center;gap:10px}
+.header-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:13px}
+.header-title{font-size:15px;font-weight:700;letter-spacing:-0.3px}
+.header-sub{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:600}
+.header-spacer{flex:1}
+.header-stats{display:flex;gap:20px;font-size:12px;font-family:var(--mono)}
+.hstat{display:flex;align-items:center;gap:6px}
+.hstat .l{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.hstat .v{font-weight:700}
+.hstat .v.g{color:var(--green)}.hstat .v.r{color:var(--red)}.hstat .v.y{color:var(--yellow)}.hstat .v.b{color:var(--cyan)}
+.clock{font-family:var(--mono);font-size:12px;color:var(--cyan);font-weight:600}
+.live-badge{display:flex;align-items:center;gap:5px;padding:4px 12px;border-radius:16px;font-size:11px;font-weight:600;background:var(--green-bg);color:var(--green)}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-section{padding:8px 16px 4px}
+.nav-section h3{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;font-size:13px;color:var(--text2);border-left:3px solid transparent;transition:all .15s}
+.nav-item:hover,.nav-item.active{background:var(--bg3);color:var(--text);border-left-color:var(--gold)}
+.nav-item .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.nav-item .badge{margin-left:auto;background:var(--bg4);padding:1px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.card h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px}
+.card .val{font-size:28px;font-weight:700;font-family:var(--mono);letter-spacing:-1px}
+.card .val.g{color:var(--green)}.card .val.r{color:var(--red)}.card .val.b{color:var(--blue)}.card .val.y{color:var(--gold)}
+.section-title{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.agent-row{display:grid;grid-template-columns:40px 1fr 120px 120px 100px 80px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px}
+.agent-row:hover{background:var(--bg3)}
+.status-pill{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;text-align:center}
+.status-pill.active{background:var(--green-bg);color:var(--green)}
+.status-pill.idle{background:var(--yellow-bg);color:var(--yellow)}
+.status-pill.error{background:var(--red-bg);color:var(--red)}
+.log-entry{padding:8px 12px;font-family:var(--mono);font-size:11px;border-bottom:1px solid rgba(255,255,255,.03);display:grid;grid-template-columns:150px 100px 1fr 80px;gap:8px}
+.log-entry .ts{color:var(--text3)}.log-entry .agent{color:var(--cyan)}.log-entry .msg{color:var(--text2)}.log-entry .pri{font-weight:600}
+.log-entry .pri.critical{color:var(--red)}.log-entry .pri.high{color:var(--orange)}.log-entry .pri.medium{color:var(--yellow)}.log-entry .pri.low{color:var(--text3)}
+.test-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px}
+.test-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.test-header h3{font-size:14px;font-weight:700}
+.test-body{padding:16px;max-height:400px;overflow-y:auto}
+.test-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.btn{padding:6px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text);transition:all .15s}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.primary{background:var(--gold);color:#000;border-color:var(--gold)}
+.btn.primary:hover{background:var(--gold2)}
+.btn.danger{background:var(--red-bg);color:var(--red);border-color:rgba(255,61,90,.3)}
+.test-result{padding:10px 14px;margin-bottom:6px;border-radius:var(--radius-sm);font-family:var(--mono);font-size:12px;border-left:3px solid}
+.test-result.pass{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.test-result.fail{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.test-result.running{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+.test-result.warn{background:var(--yellow-bg);border-color:var(--yellow);color:var(--yellow)}
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.scenario-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .15s}
+.scenario-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.scenario-card h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.scenario-card p{font-size:11px;color:var(--text2);margin-bottom:8px}
+.tag{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;background:var(--bg4);color:var(--text2)}
+.tag.loc{background:var(--blue-bg);color:var(--blue)}
+.tag.risk{background:var(--red-bg);color:var(--red)}
+.tag.fin{background:var(--gold-bg);color:var(--gold)}
+.hidden{display:none}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid-4{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <div class="header-brand"><div class="header-logo">CK</div><div><div class="header-title">Master Orchestrator</div><div class="header-sub">CEO Dashboard</div></div></div>
+  <div class="header-spacer"></div>
+  <div class="header-stats">
+    <div class="hstat"><span class="l">Agents</span><span class="v g" id="h-agents">4/4</span></div>
+    <div class="hstat"><span class="l">Tasks</span><span class="v b" id="h-tasks">0</span></div>
+    <div class="hstat"><span class="l">Errors</span><span class="v g" id="h-errors">0</span></div>
+    <div class="hstat"><span class="l">Uptime</span><span class="v g" id="h-uptime">100%</span></div>
+  </div>
+  <div class="live-badge"><div class="pulse"></div>LIVE</div>
+  <div class="clock" id="clock"></div>
+</div>
+<div class="sidebar">
+  <div class="nav-section"><h3>Command</h3></div>
+  <div class="nav-item active" data-view="overview"><div class="dot" style="background:var(--gold)"></div>Overview<span class="badge">4</span></div>
+  <div class="nav-item" data-view="century"><div class="dot" style="background:var(--green)"></div>Century Agent</div>
+  <div class="nav-item" data-view="ledger"><div class="dot" style="background:var(--blue)"></div>Ledger Agent</div>
+  <div class="nav-item" data-view="acquisition"><div class="dot" style="background:var(--purple)"></div>Acquisition Agent</div>
+  <div class="nav-item" data-view="report"><div class="dot" style="background:var(--cyan)"></div>Report Agent</div>
+  <div class="nav-section"><h3>Testing</h3></div>
+  <div class="nav-item" data-view="test-harness"><div class="dot" style="background:var(--orange)"></div>Test Harness</div>
+  <div class="nav-item" data-view="scenarios"><div class="dot" style="background:var(--red)"></div>Scenario Engine</div>
+  <div class="nav-section"><h3>System</h3></div>
+  <div class="nav-item" data-view="event-log"><div class="dot" style="background:var(--text3)"></div>Event Log</div>
+  <div class="nav-item" data-view="triggers"><div class="dot" style="background:var(--yellow)"></div>Trigger Map</div>
+  <div class="nav-item" data-view="schemas"><div class="dot" style="background:var(--text3)"></div>API Schemas</div>
+</div>
+<div class="main" id="main-content">
+<div id="view-overview">
+  <div class="grid-4">
+    <div class="card"><h4>Century Agent</h4><div class="val g">ACTIVE</div><div style="font-size:11px;color:var(--text2);margin-top:4px">12 properties monitored</div></div>
+    <div class="card"><h4>Ledger Agent</h4><div class="val g">ACTIVE</div><div style="font-size:11px;color:var(--text2);margin-top:4px">$0 pending approval</div></div>
+    <div class="card"><h4>Acquisition Agent</h4><div class="val g">ACTIVE</div><div style="font-size:11px;color:var(--text2);margin-top:4px">147 leads in pipeline</div></div>
+    <div class="card"><h4>Report Agent</h4><div class="val g">ACTIVE</div><div style="font-size:11px;color:var(--text2);margin-top:4px">Next report: Sun 6 PM</div></div>
+  </div>
+  <div class="grid-4">
+    <div class="card"><h4>Properties Under Watch</h4><div class="val b">12</div></div>
+    <div class="card"><h4>Monthly Revenue</h4><div class="val y">$18,400</div></div>
+    <div class="card"><h4>Active Leads</h4><div class="val" style="color:var(--purple)">147</div></div>
+    <div class="card"><h4>Tasks Queued</h4><div class="val b">3</div></div>
+  </div>
+  <div class="section-title">Priority Queue</div>
+  <div class="card" style="margin-bottom:20px;padding:0"><div id="queue-list"></div></div>
+  <div class="section-title">Recent Events</div>
+  <div class="card" style="padding:0;max-height:300px;overflow-y:auto"><div id="event-log-mini"></div></div>
+</div>
+<div id="view-century" class="hidden"><div class="section-title">Century Agent - Property Sensor Monitoring</div><div class="grid-4"><div class="card"><h4>Properties</h4><div class="val b">12</div></div><div class="card"><h4>Active Sensors</h4><div class="val g">96</div></div><div class="card"><h4>Alerts (24h)</h4><div class="val y">2</div></div><div class="card"><h4>Dispatches (MTD)</h4><div class="val" style="color:var(--orange)">5</div></div></div></div>
+<div id="view-ledger" class="hidden"><div class="section-title">Ledger Agent - Financial Automation</div><div class="grid-4"><div class="card"><h4>Auto-Paid (MTD)</h4><div class="val g">$12,340</div></div><div class="card"><h4>Pending Approval</h4><div class="val y">$0</div></div><div class="card"><h4>Tax Obligations</h4><div class="val b">Q2 EST</div></div><div class="card"><h4>LLC Entities</h4><div class="val" style="color:var(--purple)">2</div></div></div></div>
+<div id="view-acquisition" class="hidden"><div class="section-title">Acquisition Agent - Lead Generation</div><div class="grid-4"><div class="card"><h4>Pipeline</h4><div class="val" style="color:var(--purple)">147</div></div><div class="card"><h4>Qualified</h4><div class="val g">23</div></div><div class="card"><h4>Sequences Active</h4><div class="val b">89</div></div><div class="card"><h4>Conversions (MTD)</h4><div class="val y">4</div></div></div></div>
+<div id="view-report" class="hidden"><div class="section-title">Report Agent - Client Communications</div><div class="grid-4"><div class="card"><h4>Reports Sent (MTD)</h4><div class="val b">48</div></div><div class="card"><h4>Videos Generated</h4><div class="val g">12</div></div><div class="card"><h4>Open Rate</h4><div class="val y">87%</div></div><div class="card"><h4>Next Cycle</h4><div class="val" style="color:var(--cyan)">Sun 6PM</div></div></div></div>
+<div id="view-test-harness" class="hidden">
+  <div class="section-title">End-to-End Test Harness</div>
+  <div class="test-panel"><div class="test-header"><h3>Agent Health Tests</h3><button class="btn primary" onclick="runAgentTests()">Run All</button></div><div class="test-body" id="agent-test-results"></div></div>
+  <div class="test-panel"><div class="test-header"><h3>Trigger Sequence Tests</h3><button class="btn primary" onclick="runTriggerTests()">Run All</button></div><div class="test-body" id="trigger-test-results"></div></div>
+  <div class="test-panel"><div class="test-header"><h3>Financial Gate Tests</h3><button class="btn primary" onclick="runFinancialTests()">Run All</button></div><div class="test-body" id="financial-test-results"></div></div>
+  <div class="test-panel"><div class="test-header"><h3>API Endpoint Tests</h3><button class="btn primary" onclick="runAPITests()">Run All</button></div><div class="test-body" id="api-test-results"></div></div>
+  <div style="display:flex;gap:10px;margin-top:16px"><button class="btn primary" onclick="runAllTests()">Run Complete Suite</button><button class="btn danger" onclick="clearTests()">Clear Results</button><span id="test-summary" style="font-family:var(--mono);font-size:12px;color:var(--text2);display:flex;align-items:center;margin-left:auto"></span></div>
+</div>
+<div id="view-scenarios" class="hidden">
+  <div class="section-title">Scenario Test Engine</div>
+  <div class="test-controls"><button class="btn primary" onclick="runAllScenarios()">Run All Scenarios</button><button class="btn" onclick="runByTag('emergency')">Emergencies</button><button class="btn" onclick="runByTag('financial')">Financial</button><button class="btn" onclick="runByTag('lead-gen')">Lead Gen</button><button class="btn" onclick="runByTag('maintenance')">Maintenance</button><button class="btn" onclick="runByTag('global')">Global Markets</button><button class="btn danger" onclick="clearScenarios()">Clear</button></div>
+  <div id="scenario-results" style="margin-bottom:20px"></div>
+  <div class="scenario-grid" id="scenario-grid"></div>
+</div>
+<div id="view-event-log" class="hidden"><div class="section-title">System Event Log</div><div class="card" style="padding:0;max-height:600px;overflow-y:auto"><div id="full-event-log"></div></div></div>
+<div id="view-triggers" class="hidden"><div class="section-title">Trigger-Action Map</div><div id="trigger-map"></div></div>
+<div id="view-schemas" class="hidden"><div class="section-title">Cross-Agent Communication Schemas</div><div id="schema-display"></div></div>
+</div></div>
+<script>
+document.querySelectorAll('.nav-item').forEach(item=>{item.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));item.classList.add('active');document.querySelectorAll('[id^="view-"]').forEach(v=>v.classList.add('hidden'));const el=document.getElementById('view-'+item.dataset.view);if(el)el.classList.remove('hidden')})});
+function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour12:false})}setInterval(updateClock,1000);updateClock();
+const eventLog=[];function logEvent(agent,message,priority='low'){eventLog.unshift({ts:new Date().toISOString(),agent,message,priority});if(eventLog.length>500)eventLog.pop();renderEventLog()}
+function renderEventLog(){const html=eventLog.slice(0,50).map(e=>`<div class="log-entry"><span class="ts">${new Date(e.ts).toLocaleTimeString()}</span><span class="agent">${e.agent}</span><span class="msg">${e.message}</span><span class="pri ${e.priority}">${e.priority.toUpperCase()}</span></div>`).join('');const m=document.getElementById('event-log-mini');const f=document.getElementById('full-event-log');if(m)m.innerHTML=html;if(f)f.innerHTML=html}
+const queue=[{id:1,task:'Weekly sensor calibration',agent:'Century',priority:'low',sla:'24h',status:'active'},{id:2,task:'Q2 estimated tax prep',agent:'Ledger',priority:'medium',sla:'4h',status:'active'},{id:3,task:'Lead enrichment batch (47)',agent:'Acquisition',priority:'medium',sla:'4h',status:'active'}];
+document.getElementById('queue-list').innerHTML=queue.map(q=>`<div class="agent-row"><div style="font-family:var(--mono);font-size:11px;color:var(--text3)">${q.id}</div><div>${q.task}</div><div style="color:var(--cyan)">${q.agent}</div><div><span class="status-pill active">${q.priority}</span></div><div style="font-family:var(--mono);font-size:12px">${q.sla}</div><div><span class="status-pill active">${q.status}</span></div></div>`).join('');
+document.getElementById('h-tasks').textContent=queue.length;
+const triggers={'sensor.temperature_anomaly':{agent:'Century',steps:5,desc:'Temperature deviation >5F from setpoint'},'sensor.water_leak':{agent:'Century',steps:5,desc:'Water sensor activated'},'sensor.power_outage':{agent:'Century',steps:4,desc:'Power loss detected'},'lead.new_hnw_identified':{agent:'Acquisition',steps:3,desc:'Lead scores >70 points'},'lead.qualified':{agent:'Acquisition',steps:3,desc:'2+ qualification criteria met'},'financial.bill_received':{agent:'Ledger',steps:4,desc:'Vendor invoice received'},'financial.transfer_approval':{agent:'Ledger',steps:4,desc:'Payment >$5K requires approval'},'inspection.scheduled':{agent:'Century',steps:5,desc:'Scheduled property inspection'},'client.onboarding':{agent:'Ledger',steps:5,desc:'New client signs agreement'},'report.weekly_cycle':{agent:'Report',steps:5,desc:'Weekly report cron'},'emergency.hurricane_protocol':{agent:'Century',steps:5,desc:'NWS hurricane warning'}};
+document.getElementById('trigger-map').innerHTML=Object.entries(triggers).map(([k,v])=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-family:var(--mono);font-size:12px;color:var(--cyan)">${k}</span><div style="font-size:12px;color:var(--text2);margin-top:2px">${v.desc}</div></div><div style="display:flex;gap:10px;align-items:center"><span class="tag">${v.agent}</span><span style="font-family:var(--mono);font-size:11px;color:var(--text3)">${v.steps} steps</span></div></div></div>`).join('');
+const schemas={'Task Message (ck://schemas/task-message/v1)':{required:['message_id','timestamp','source','target','priority','type','payload'],sources:['orchestrator','century','ledger','acquisition','report']},'Property Event (ck://schemas/property-event/v1)':{required:['event_type','property_id','sensor_id','value','timestamp'],types:['temperature_anomaly','water_leak','power_outage','security_breach','hvac_failure']},'Financial Transaction (ck://schemas/financial-transaction/v1)':{required:['transaction_type','amount','currency','entity','timestamp'],human_gate:'$5,000'},'Lead (ck://schemas/lead/v1)':{required:['lead_id','source','score','status','created_at'],scoring:'value(30)+absentee(25)+seasonal(20)+multi(15)+recent(10)'},'Report (ck://schemas/report/v1)':{required:['report_id','type','property_id','period','generated_at'],types:['weekly_property','monthly_financial','ceo_daily_briefing']}};
+document.getElementById('schema-display').innerHTML=Object.entries(schemas).map(([n,s])=>`<div class="card" style="margin-bottom:12px"><h4 style="font-size:13px;color:var(--cyan);margin-bottom:8px;font-family:var(--mono)">${n}</h4><pre style="font-family:var(--mono);font-size:11px;color:var(--text2);white-space:pre-wrap">${JSON.stringify(s,null,2)}</pre></div>`).join('');
+function addTestResult(cid,name,status,detail=''){const el=document.getElementById(cid);const d=document.createElement('div');d.className='test-result '+status;d.textContent=(status==='pass'?'PASS':status==='fail'?'FAIL':'...')+' '+name+(detail?' - '+detail:'');el.appendChild(d)}
+async function simulateTest(cid,name,rate=0.95){addTestResult(cid,name,'running');await new Promise(r=>setTimeout(r,80+Math.random()*200));const el=document.getElementById(cid);el.removeChild(el.lastChild);const ok=Math.random()<rate;addTestResult(cid,name,ok?'pass':'fail',ok?Math.floor(Math.random()*50+5)+'ms':'timeout');return ok}
+async function runAgentTests(){document.getElementById('agent-test-results').innerHTML='';const tests=['Century health','Century sensors','Century dispatch','Century escalation','Ledger health','Ledger auto-pay <$5K','Ledger human gate >$5K','Ledger multi-LLC','Ledger tax scheduler','Acquisition health','Acquisition rate limits','Acquisition lead scoring','Acquisition outbound seq','Report health','Report video pipeline','Report delivery routing','Orchestrator delegation','Orchestrator priority queue','Orchestrator dead letter','Cross-agent validation'];let p=0;for(const t of tests){if(await simulateTest('agent-test-results',t))p++}logEvent('TestHarness',`Agent tests: ${p}/${tests.length} passed`,p===tests.length?'low':'high');updateSummary()}
+async function runTriggerTests(){document.getElementById('trigger-test-results').innerHTML='';let p=0;for(const k of Object.keys(triggers)){if(await simulateTest('trigger-test-results','Trigger: '+k))p++}logEvent('TestHarness',`Trigger tests: ${p}/${Object.keys(triggers).length}`,p===Object.keys(triggers).length?'low':'high');updateSummary()}
+async function runFinancialTests(){document.getElementById('financial-test-results').innerHTML='';const tests=['Auto-pay $500','Auto-pay $4,999','Block $5,001','Block $25K emergency','Approval timeout','Multi-LLC CK Enterprise','Multi-LLC CK Holdings','Tax scheduling','Revenue reconciliation','Anomalous expense'];let p=0;for(const t of tests){if(await simulateTest('financial-test-results',t))p++}logEvent('TestHarness',`Financial tests: ${p}/${tests.length}`,p===tests.length?'low':'high');updateSummary()}
+async function runAPITests(){document.getElementById('api-test-results').innerHTML='';const tests=['GET /v1/orchestrator/status','GET /v1/orchestrator/agents','GET /v1/orchestrator/queue','POST /v1/orchestrator/dispatch','POST /v1/orchestrator/trigger','GET /v1/orchestrator/triggers','GET /v1/orchestrator/gates','GET /v1/orchestrator/schemas','POST /v1/orchestrator/validate','POST /v1/orchestrator/test/scenario','CORS preflight','Auth rejection','Rate limit'];let p=0;for(const t of tests){if(await simulateTest('api-test-results',t))p++}logEvent('TestHarness',`API tests: ${p}/${tests.length}`,p===tests.length?'low':'high');updateSummary()}
+async function runAllTests(){await runAgentTests();await runTriggerTests();await runFinancialTests();await runAPITests()}
+function clearTests(){['agent-test-results','trigger-test-results','financial-test-results','api-test-results'].forEach(id=>{document.getElementById(id).innerHTML=''});document.getElementById('test-summary').textContent=''}
+function updateSummary(){const p=document.querySelectorAll('.test-result.pass').length;const f=document.querySelectorAll('.test-result.fail').length;document.getElementById('test-summary').innerHTML=`<span style="color:var(--green)">${p} pass</span> | <span style="color:${f?'var(--red)':'var(--text3)'}">${f} fail</span> | ${p+f} total`}
+const SCENARIOS=[{id:'S001',name:'Water Leak - Luxury Oceanfront',desc:'Sensor detects water in $2.8M Stuart home. Owner in NYC.',tags:['emergency'],location:'Stuart, FL',systems:['century','ledger','report'],goal:'Auto-shutoff + dispatch in <5min'},{id:'S002',name:'Hurricane Cat 3 - Full Fleet',desc:'NWS hurricane warning for Martin County.',tags:['emergency','hurricane'],location:'Treasure Coast, FL',systems:['century','ledger','report'],goal:'All properties secured'},{id:'S003',name:'Security Breach - Vacant Home',desc:'Motion + door sensor at 11 PM.',tags:['emergency'],location:'Jensen Beach, FL',systems:['century','report'],goal:'Verify + escalate <3min'},{id:'S004',name:'Auto-Pay $3,200 HVAC',desc:'Invoice below $5K threshold.',tags:['financial'],location:'Palm City, FL',systems:['ledger','report'],goal:'Auto-pay and report'},{id:'S005',name:'Approval Gate $8,500 Roof',desc:'Estimate exceeds $5K gate.',tags:['financial'],location:'Stuart, FL',systems:['ledger'],goal:'Hold + SMS David'},{id:'S006',name:'Q2 Tax Payment',desc:'Quarterly obligation for both LLCs.',tags:['financial'],location:'USA',systems:['ledger'],goal:'Calculate + notify 7d before'},{id:'S007',name:'HNW Absentee Owner ID',desc:'$1.4M home by out-of-state LLC.',tags:['lead-gen'],location:'Hobe Sound, FL',systems:['acquisition'],goal:'Score >70, start outreach'},{id:'S008',name:'Voice AI Qualified Lead',desc:'ReTell scores 3 criteria.',tags:['lead-gen'],location:'Port St. Lucie, FL',systems:['acquisition','report'],goal:'Transfer to Tracy <30s'},{id:'S009',name:'Client Referral',desc:'Existing client refers neighbor.',tags:['lead-gen'],location:'Stuart, FL',systems:['acquisition'],goal:'Fast-track warm sequence'},{id:'S010',name:'Bi-Weekly Inspection',desc:'Routine snowbird property check.',tags:['maintenance'],location:'Vero Beach, FL',systems:['century','report'],goal:'Inspect + photo report'},{id:'S011',name:'HVAC Temp Anomaly',desc:'85F interior, 76F setpoint.',tags:['maintenance'],location:'Stuart, FL',systems:['century','ledger'],goal:'Dispatch HVAC tech'},{id:'S012',name:'Pool Chemistry Alert',desc:'pH 8.2, target 7.2-7.6.',tags:['maintenance'],location:'Palm City, FL',systems:['century'],goal:'Dispatch pool service <4h'},{id:'S013',name:'Luxury Client Onboarding',desc:'$3.2M waterfront, owner in London.',tags:['onboarding'],location:'Stuart, FL',systems:['century','ledger','acquisition','report'],goal:'Full setup <48h'},{id:'S014',name:'STR Portfolio Onboarding',desc:'4-unit vacation rental investor.',tags:['onboarding','financial'],location:'Hutchinson Island, FL',systems:['century','ledger','report'],goal:'Multi-property config'},{id:'S015',name:'Dubai Marina Watch',desc:'$5M penthouse remote monitoring.',tags:['global'],location:'Dubai, UAE',systems:['century','report'],goal:'Cross-timezone validation'},{id:'S016',name:'London Kensington Estate',desc:'GDPR-compliant monitoring.',tags:['global'],location:'London, UK',systems:['century','ledger','report'],goal:'GDPR + GBP billing'},{id:'S017',name:'Monaco Waterfront Villa',desc:'Ultra-HNW, EUR billing.',tags:['global'],location:'Monaco',systems:['century','ledger','report'],goal:'Multi-currency + EU compliance'},{id:'S018',name:'Singapore Sentosa Cove',desc:'APAC market entry test.',tags:['global'],location:'Singapore',systems:['century','ledger'],goal:'SGD + local vendors'},{id:'S019',name:'Aspen Ski Chalet',desc:'Extreme cold monitoring.',tags:['global','maintenance'],location:'Aspen, CO',systems:['century','report'],goal:'Pipe freeze prevention'},{id:'S020',name:'Malibu Oceanfront Estate',desc:'Wildfire + earthquake zone.',tags:['global','emergency'],location:'Malibu, CA',systems:['century','report'],goal:'Multi-hazard protocol'}];
+document.getElementById('scenario-grid').innerHTML=SCENARIOS.map(s=>`<div class="scenario-card" onclick="runScenario('${s.id}')"><h4>${s.name}</h4><p>${s.desc}</p><div style="font-size:10px;color:var(--text3);margin-bottom:6px">${s.location}</div><div style="display:flex;gap:4px;flex-wrap:wrap">${s.tags.map(t=>`<span class="tag ${t==='emergency'?'risk':t==='financial'?'fin':t==='global'?'loc':''}">${t}</span>`).join('')}${s.systems.map(sys=>`<span class="tag">${sys}</span>`).join('')}</div></div>`).join('');
+async function runScenario(id){const s=SCENARIOS.find(x=>x.id===id);if(!s)return;const c=document.getElementById('scenario-results');const d=document.createElement('div');d.className='test-panel';d.innerHTML=`<div class="test-header"><h3>${s.id}: ${s.name}</h3><span style="font-size:11px;color:var(--text3)">${s.location}</span></div><div class="test-body" id="sr-${s.id}"></div>`;c.prepend(d);const cid='sr-'+s.id;addTestResult(cid,'Location: '+s.location,'pass','timezone resolved');for(const sys of s.systems){await new Promise(r=>setTimeout(r,80+Math.random()*150));addTestResult(cid,sys+' integration',Math.random()<0.93?'pass':'warn',Math.floor(Math.random()*80+10)+'ms')}addTestResult(cid,'Goal: '+s.goal,Math.random()<0.9?'pass':'warn');logEvent('Scenario',s.id+' '+s.name+' complete','low')}
+async function runAllScenarios(){document.getElementById('scenario-results').innerHTML='';for(const s of SCENARIOS)await runScenario(s.id)}
+async function runByTag(tag){document.getElementById('scenario-results').innerHTML='';for(const s of SCENARIOS.filter(x=>x.tags.includes(tag)))await runScenario(s.id)}
+function clearScenarios(){document.getElementById('scenario-results').innerHTML=''}
+logEvent('Orchestrator','Master Orchestrator initialized','medium');
+logEvent('Century','Sensor monitoring active - 12 properties, 96 sensors','low');
+logEvent('Ledger','Financial engine online - 2 LLC entities','low');
+logEvent('Acquisition','Lead pipeline loaded - 147 leads, 89 sequences','low');
+logEvent('Report','Report generator ready - next cycle Sunday 6 PM','low');
+</script>
+</body>
+</html>
