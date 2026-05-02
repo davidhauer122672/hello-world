@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key — Master Orchestrator</title>
+<meta name="theme-color" content="#0a0a0f">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;--bg4:#22223a;
+  --text:#e8e8f0;--text2:#9898b0;--text3:#585870;
+  --accent:#4f8fff;--accent2:#7c5cfc;
+  --green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;
+  --border:#2a2a3e;--radius:12px;--shadow:0 6px 32px rgba(0,0,0,0.45);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding:0;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+.wrap{max-width:1280px;margin:0 auto;padding:32px 24px 80px}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:32px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
+h1{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.subtitle{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
+.badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+section{margin-bottom:36px}
+section h2{font-size:13px;text-transform:uppercase;letter-spacing:1.8px;color:var(--text2);margin-bottom:14px}
+.grid{display:grid;gap:16px}
+.grid-4{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h3{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card .meta{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
+.card p{font-size:13px;color:var(--text2);margin-bottom:6px}
+.metric{font-size:32px;font-weight:800;letter-spacing:-1px;margin:6px 0}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dot.green{background:var(--green)}
+.dot.yellow{background:var(--yellow)}
+.dot.red{background:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--text2);font-weight:600}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;letter-spacing:.5px}
+.tag.p0{background:rgba(239,68,68,.18);color:var(--red)}
+.tag.p1{background:rgba(249,115,22,.18);color:var(--orange)}
+.tag.p2{background:rgba(234,179,8,.15);color:var(--yellow)}
+.tag.p3{background:rgba(124,92,252,.15);color:var(--accent2)}
+.tag.r3{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.tag.r2{background:rgba(249,115,22,.12);color:var(--orange);border:1px solid rgba(249,115,22,.3)}
+.tag.r1{background:rgba(234,179,8,.1);color:var(--yellow);border:1px solid rgba(234,179,8,.3)}
+.tag.r0{background:rgba(152,152,176,.1);color:var(--text2);border:1px solid var(--border)}
+.tag.hitl{background:rgba(79,143,255,.15);color:var(--accent);border:1px solid rgba(79,143,255,.3)}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.toolbar input{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px;flex:1;min-width:240px}
+.toolbar button{background:var(--accent);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600}
+.toolbar button:hover{background:var(--accent2)}
+.toolbar button:disabled{opacity:.5;cursor:not-allowed}
+.console{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:ui-monospace,Menlo,Monaco,monospace;font-size:12px;white-space:pre-wrap;color:var(--text);max-height:380px;overflow:auto}
+.muted{color:var(--text3);font-size:12px}
+.kill-switch{font-size:11px;color:var(--orange);margin-top:6px;padding-top:6px;border-top:1px dashed var(--border)}
+.crumbs{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text2);margin-bottom:8px}
+.crumbs a{color:var(--text2)}
+footer{border-top:1px solid var(--border);padding-top:18px;text-align:center;color:var(--text3);font-size:12px;margin-top:48px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-icon">CK</div>
+      <div>
+        <h1>Master Orchestrator</h1>
+        <div class="subtitle">Sovereign Routing &middot; Founder-Invisible</div>
+      </div>
+    </div>
+    <span class="badge" id="status-badge"><span class="dot green"></span> Loading…</span>
+  </header>
+
+  <div class="crumbs"><a href="/">Command Center</a> <span>›</span> <span>Orchestrator</span></div>
+
+  <section>
+    <h2>Control Plane</h2>
+    <div class="grid grid-4">
+      <div class="card"><div class="meta">Fleet Agents</div><div class="metric" id="m-agents">–</div><p>Sentry · Ledger · Acquisition · Report</p></div>
+      <div class="card"><div class="meta">Trigger Sequences</div><div class="metric" id="m-tas">–</div><p>Production scenarios catalogued</p></div>
+      <div class="card"><div class="meta">HITL Threshold</div><div class="metric" id="m-hitl">$5,000</div><p>Single transfer &middot; aggregate 24h</p></div>
+      <div class="card"><div class="meta">Goal Filter</div><div class="metric">4</div><p>G1 Automation · G2 Risk · G3 Financial · G4 Market</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Fleet Roster</h2>
+    <div class="grid grid-2" id="fleet-grid"></div>
+  </section>
+
+  <section>
+    <h2>Trigger-Action Sequences</h2>
+    <div class="card" style="padding:0;overflow:auto">
+      <table>
+        <thead><tr><th>ID</th><th>Scenario</th><th>Priority</th><th>Risk</th><th>Agent</th><th>HITL</th><th>Retention</th></tr></thead>
+        <tbody id="tas-tbody"><tr><td colspan="7" class="muted" style="padding:18px">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dispatch Console</h2>
+    <p class="muted" style="margin-bottom:14px">POST an envelope to <code>/v1/orchestrator/dispatch</code> and inspect routing, goal validation, and HITL gating in real time.</p>
+    <div class="toolbar">
+      <input id="endpoint" placeholder="https://ck-api-gateway.david-e59.workers.dev" />
+      <input id="token" placeholder="Bearer token (WORKER_AUTH_TOKEN)" type="password" />
+      <button id="btn-fleet">Refresh Fleet</button>
+    </div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Sample Envelope</h3>
+        <textarea id="payload" style="width:100%;height:240px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:ui-monospace,Menlo,Monaco,monospace;font-size:12px"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button id="btn-dispatch">Dispatch</button>
+          <button id="btn-load-p0" style="background:var(--bg4)">P0 sample</button>
+          <button id="btn-load-pay" style="background:var(--bg4)">$5K Pay sample</button>
+          <button id="btn-load-lead" style="background:var(--bg4)">Lead sample</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Routing Result</h3>
+        <div class="console" id="console">// Awaiting dispatch…</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Coastal Key Master Orchestrator v1.0.0 · Routed through Sovereign Authority · Ferrari Precision · Red Bull Speed · SpaceX Ambition
+  </footer>
+</div>
+
+<script>
+const SAMPLES = {
+  p0: {
+    action: 'dispatch_work_order',
+    priority: 'P0',
+    risk_class: 'R3',
+    goal_alignment: ['G2_risk'],
+    correlation_id: 'incident_water_001',
+    payload: {
+      property_id: 'prop_stuart_001',
+      trade: 'plumbing',
+      urgency: 'emergency',
+      estimated_cost: { amount_cents: 280000, currency: 'USD' },
+      scope_of_work: 'Emergency shut-off and remediation under kitchen sink',
+    },
+  },
+  pay: {
+    action: 'bill_pay_execute',
+    priority: 'P1',
+    risk_class: 'R2',
+    goal_alignment: ['G3_financial'],
+    payload: {
+      invoice_id: 'inv_2026_04_017',
+      payee: 'Treasure Coast Roofing LLC',
+      amount: { amount_cents: 750000, currency: 'USD' },
+      llc_entity: 'CKPM_LLC',
+      gl_account: '6100-Repairs',
+      due_date: '2026-04-30',
+    },
+  },
+  lead: {
+    action: 'lead_enriched',
+    priority: 'P3',
+    risk_class: 'R0',
+    goal_alignment: ['G4_market'],
+    payload: {
+      lead_id: 'ld_vero_2026_001',
+      source: 'mls',
+      confidence_score: 0.82,
+      segment: 'seasonal_snowbirds',
+      property: { property_id: 'prop_vero_002', county: 'Indian River', state: 'FL' },
+      daily_outbound_count: 14,
+    },
+  },
+};
+
+const $ = (id) => document.getElementById(id);
+const fmt = (o) => JSON.stringify(o, null, 2);
+
+const STORAGE_KEY = 'ck-orchestrator-cfg';
+const cfg = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+$('endpoint').value = cfg.endpoint || 'https://ck-api-gateway.david-e59.workers.dev';
+$('token').value = cfg.token || '';
+$('payload').value = fmt(SAMPLES.p0);
+
+function saveCfg() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ endpoint: $('endpoint').value.trim(), token: $('token').value.trim() }));
+}
+$('endpoint').addEventListener('change', saveCfg);
+$('token').addEventListener('change', saveCfg);
+
+async function api(method, path, body) {
+  saveCfg();
+  const url = $('endpoint').value.trim().replace(/\/$/, '') + path;
+  const headers = { 'Content-Type': 'application/json' };
+  const tok = $('token').value.trim();
+  if (tok) headers.Authorization = 'Bearer ' + tok;
+  const res = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const text = await res.text();
+  let json; try { json = JSON.parse(text); } catch { json = { raw: text }; }
+  return { status: res.status, json };
+}
+
+function render(json) {
+  const fleet = json.fleet || [];
+  const tas = json.sequences || [];
+  $('m-agents').textContent = json.count || fleet.length || '–';
+  $('m-tas').textContent = tas.length || '–';
+  $('status-badge').innerHTML = '<span class="dot green"></span> Sovereign · Live';
+
+  const grid = $('fleet-grid');
+  grid.innerHTML = fleet.map(a => `
+    <div class="card">
+      <h3><span class="dot green"></span> ${a.name}</h3>
+      <div class="meta">${a.id}</div>
+      <p><strong>Domain:</strong> ${a.domain}</p>
+      <p><strong>Inputs:</strong> ${(a.inputs || []).join(', ')}</p>
+      <p><strong>Outputs:</strong> ${(a.outputs || []).join(', ')}</p>
+      <div class="kill-switch"><strong>Kill switch:</strong> ${a.killSwitch}</div>
+    </div>
+  `).join('');
+}
+
+function renderTas(seqs) {
+  $('tas-tbody').innerHTML = seqs.map(s => `
+    <tr>
+      <td><strong>${s.id}</strong></td>
+      <td>${s.name}</td>
+      <td><span class="tag ${s.priority.toLowerCase()}">${s.priority}</span></td>
+      <td><span class="tag ${s.risk.toLowerCase()}">${s.risk}</span></td>
+      <td>${s.agent}</td>
+      <td>${s.hitl ? '<span class="tag hitl">HITL</span>' : '<span class="muted">auto</span>'}</td>
+      <td>${s.retention}</td>
+    </tr>
+  `).join('');
+}
+
+async function loadFleet() {
+  $('btn-fleet').disabled = true;
+  try {
+    const fleet = await api('GET', '/v1/orchestrator/fleet');
+    if (fleet.json && fleet.json.fleet) render(fleet.json);
+    const triggers = await api('GET', '/v1/orchestrator/triggers');
+    if (triggers.json && triggers.json.sequences) renderTas(triggers.json.sequences);
+  } catch (e) {
+    $('status-badge').innerHTML = '<span class="dot yellow"></span> Endpoint unreachable';
+  } finally {
+    $('btn-fleet').disabled = false;
+  }
+}
+
+async function dispatch() {
+  let body;
+  try { body = JSON.parse($('payload').value); } catch { $('console').textContent = 'Invalid JSON'; return; }
+  $('btn-dispatch').disabled = true;
+  try {
+    const res = await api('POST', '/v1/orchestrator/dispatch', body);
+    $('console').textContent = `HTTP ${res.status}\n\n${fmt(res.json)}`;
+  } catch (e) {
+    $('console').textContent = 'Network error: ' + e.message;
+  } finally {
+    $('btn-dispatch').disabled = false;
+  }
+}
+
+$('btn-fleet').addEventListener('click', loadFleet);
+$('btn-dispatch').addEventListener('click', dispatch);
+$('btn-load-p0').addEventListener('click', () => $('payload').value = fmt(SAMPLES.p0));
+$('btn-load-pay').addEventListener('click', () => $('payload').value = fmt(SAMPLES.pay));
+$('btn-load-lead').addEventListener('click', () => $('payload').value = fmt(SAMPLES.lead));
+
+loadFleet();
+</script>
+</body>
+</html>

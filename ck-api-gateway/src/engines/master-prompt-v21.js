@@ -13,7 +13,7 @@
  * Governance: 100% aligned with Sovereign Governance, Mission, 4 Core Goals.
  */
 
-// ── Executive Administrator Avatars ────────────────────────────────────────
+// ── Executive Administrator Avatars ────────────────────────────────
 
 export const AVATARS = {
   daphne: {
@@ -70,7 +70,7 @@ export const AVATARS = {
   },
 };
 
-// ── V2.1 Marketing Assets ──────────────────────────────────────────────────
+// ── V2.1 Marketing Assets ─────────────────────────────────────
 
 export const MARKETING_ASSETS = [
   {
@@ -215,7 +215,7 @@ export const INDUSTRY_GAPS = [
   },
 ];
 
-// ── NOI Impact Model ───────────────────────────────────────────────────────
+// ── NOI Impact Model ────────────────────────────────────────
 
 export function calculateNOIGapImpact(portfolioSize = 30) {
   const revenuePerProperty = 295 * 12;
@@ -263,7 +263,216 @@ export function calculateNOIGapImpact(portfolioSize = 30) {
   };
 }
 
-// ── Master Dashboard ───────────────────────────────────────────────────────
+// ── Master Orchestrator Fleet (Sentry, Ledger, Acquisition, Report) ────────
+
+export const AGENT_FLEET = {
+  sentry: {
+    id: 'AGT-SENTRY',
+    name: 'Sentry-Agent',
+    domain: 'Property telemetry & autonomous maintenance dispatch',
+    inputs: ['iot_sensors', 'weather_api', 'retell_calls', 'security_cameras'],
+    outputs: ['work_orders', 'owner_notifications', 'insurance_evidence'],
+    actions: ['telemetry_ingest', 'dispatch_work_order', 'storm_protocol', 'security_response'],
+    killSwitch: 'Cost > $5,000 OR structural/electrical scope',
+    status: 'active',
+  },
+  ledger: {
+    id: 'AGT-LEDGER',
+    name: 'Ledger-Agent',
+    domain: 'Bill-pay, multi-LLC accounting, tax compliance',
+    inputs: ['stripe_webhooks', 'vendor_invoices', 'bank_feeds', 'airtable_fin'],
+    outputs: ['paid_invoices', 'gl_entries', 'tax_provisions', 'llc_pnl'],
+    actions: ['bill_pay_execute', 'tax_provision_calculate', 'gl_post', 'reconcile'],
+    killSwitch: 'Transfer > $5,000 OR inter-LLC OR new vendor',
+    status: 'active',
+  },
+  acquisition: {
+    id: 'AGT-ACQUISITION',
+    name: 'Acquisition-Agent',
+    domain: 'HNW lead scraping, enrichment, outbound sequencing',
+    inputs: ['mls', 'public_records', 'luxury_portals', 'web_form'],
+    outputs: ['enriched_leads', 'drip_enrollment', 'sen_queue'],
+    actions: ['lead_enriched', 'sequence_enroll', 'do_not_contact_check'],
+    killSwitch: 'Outbound > 100/day OR unverified source',
+    status: 'active',
+  },
+  report: {
+    id: 'AGT-REPORT',
+    name: 'Report-Agent',
+    domain: 'Weekly AI-narrated owner updates (PDF + video)',
+    inputs: ['sentry_telemetry', 'completed_work_orders', 'photos'],
+    outputs: ['owner_pdf', 'narration_mp4', 'evidence_vault_archive'],
+    actions: ['report_published', 'narration_render', 'send_dispatch'],
+    killSwitch: 'Unresolved P0 on property OR negative narrative detected',
+    status: 'active',
+  },
+};
+
+export const RATE_LIMITS_CONFIG = {
+  sentry:      { rpm: 60,  daily: 2000, burst: 10 },
+  ledger:      { rpm: 20,  daily: 500,  burst: 5  },
+  acquisition: { rpm: 30,  daily: 100,  burst: 5  },
+  report:      { rpm: 10,  daily: 50,   burst: 3  },
+  orchestrator:{ rpm: 600, daily: null, burst: 60 },
+};
+
+export const HITL_THRESHOLDS = {
+  financialTransferSingleCents: 500000,
+  financialTransferAggregate24hCents: 500000,
+  newVendorContractCents: 250000,
+  acquisitionOutboundDailyCap: 100,
+  priorityP0Always: true,
+  interLlcTransferAlways: true,
+  insuranceClaimAlways: true,
+};
+
+const VALID_PRIORITIES = ['P0', 'P1', 'P2', 'P3'];
+const VALID_RISK_CLASSES = ['R0', 'R1', 'R2', 'R3'];
+const VALID_AGENTS = Object.keys(AGENT_FLEET);
+
+function pickAgentForAction(action) {
+  if (!action) return null;
+  for (const [key, agent] of Object.entries(AGENT_FLEET)) {
+    if (agent.actions.includes(action)) return key;
+  }
+  return null;
+}
+
+export function classifyDispatch(event) {
+  const priority = event.priority && VALID_PRIORITIES.includes(event.priority) ? event.priority : 'P2';
+  const riskClass = event.risk_class && VALID_RISK_CLASSES.includes(event.risk_class) ? event.risk_class : 'R1';
+  const agent = event.recipient && VALID_AGENTS.includes(event.recipient)
+    ? event.recipient
+    : pickAgentForAction(event.action);
+  return { priority, riskClass, agent };
+}
+
+export function validateGoalAlignment(event) {
+  const claimed = Array.isArray(event.goal_alignment) ? event.goal_alignment : [];
+  const valid = ['G1_automation', 'G2_risk', 'G3_financial', 'G4_market'];
+  const matched = claimed.filter(g => valid.includes(g));
+  return { passed: matched.length > 0, matched, claimed };
+}
+
+export function evaluateHITL(event) {
+  const reasons = [];
+  const cents = Number(event?.payload?.amount?.amount_cents || event?.payload?.estimated_cost?.amount_cents || 0);
+
+  if (cents > HITL_THRESHOLDS.financialTransferSingleCents) {
+    reasons.push(`financial_exposure_exceeds_$${HITL_THRESHOLDS.financialTransferSingleCents / 100}`);
+  }
+  if (event.priority === 'P0' && HITL_THRESHOLDS.priorityP0Always) {
+    reasons.push('p0_priority_always_requires_hitl');
+  }
+  if (event.action === 'bill_pay_execute' && event?.payload?.requires_hitl === true) {
+    reasons.push('bill_pay_marked_hitl_required');
+  }
+  if (event.action === 'insurance_claim_initiate') {
+    reasons.push('insurance_claim_always_requires_hitl');
+  }
+  if (event.action === 'inter_llc_transfer') {
+    reasons.push('inter_llc_transfer_always_requires_hitl');
+  }
+  if (event.action === 'lead_enriched' && Number(event?.payload?.daily_outbound_count || 0) > HITL_THRESHOLDS.acquisitionOutboundDailyCap) {
+    reasons.push('acquisition_outbound_daily_cap_exceeded');
+  }
+  if (event?.payload?.scope_of_work && /structural|electrical|roofing/i.test(event.payload.scope_of_work)) {
+    reasons.push('structural_or_electrical_scope_requires_hitl');
+  }
+
+  return { hitlRequired: reasons.length > 0, reasons };
+}
+
+export function routeDispatch(event) {
+  const issuedAt = new Date().toISOString();
+  const { priority, riskClass, agent } = classifyDispatch(event);
+
+  if (!agent) {
+    return {
+      status: 'errored',
+      issued_at: issuedAt,
+      error: 'no_agent_matched',
+      action: event.action,
+    };
+  }
+
+  const goal = validateGoalAlignment(event);
+  if (!goal.passed) {
+    return {
+      status: 'quarantined',
+      issued_at: issuedAt,
+      reason: 'goal_alignment_validation_failed',
+      action: event.action,
+      agent,
+      priority,
+      risk_class: riskClass,
+      goal_alignment: goal,
+    };
+  }
+
+  const hitl = evaluateHITL({ ...event, priority, risk_class: riskClass });
+  if (hitl.hitlRequired) {
+    return {
+      status: 'hitl_pending',
+      issued_at: issuedAt,
+      action: event.action,
+      agent,
+      priority,
+      risk_class: riskClass,
+      goal_alignment: goal.matched,
+      hitl: {
+        required: true,
+        reasons: hitl.reasons,
+        decision_ttl_seconds: 600,
+        escalation_channels: ['sms', 'slack', 'email'],
+      },
+    };
+  }
+
+  return {
+    status: 'dispatched',
+    issued_at: issuedAt,
+    action: event.action,
+    agent,
+    priority,
+    risk_class: riskClass,
+    goal_alignment: goal.matched,
+    rate_limit: RATE_LIMITS_CONFIG[agent],
+    correlation_id: event.correlation_id || null,
+  };
+}
+
+export function getOrchestratorFleetStatus() {
+  return {
+    fleet: Object.values(AGENT_FLEET),
+    count: Object.keys(AGENT_FLEET).length,
+    rateLimits: RATE_LIMITS_CONFIG,
+    hitlThresholds: HITL_THRESHOLDS,
+    activeAgents: Object.values(AGENT_FLEET).filter(a => a.status === 'active').length,
+    governance: '100% routed through Coastal Key Master Orchestrator',
+    timestamp: new Date().toISOString(),
+  };
+}
+
+export const TRIGGER_ACTION_SEQUENCES = [
+  { id: 'TAS-001', name: 'Water Intrusion Detected',           priority: 'P0', risk: 'R3', agent: 'sentry',      hitl: true,  retention: '365d' },
+  { id: 'TAS-002', name: 'HVAC Humidity Anomaly (Mold Risk)',  priority: 'P1', risk: 'R2', agent: 'sentry',      hitl: false, retention: '30d'  },
+  { id: 'TAS-003', name: 'Security Breach',                    priority: 'P0', risk: 'R3', agent: 'sentry',      hitl: true,  retention: '365d' },
+  { id: 'TAS-004', name: 'Vendor Invoice Received',            priority: 'P2', risk: 'R1', agent: 'ledger',      hitl: false, retention: '7y'   },
+  { id: 'TAS-005', name: 'New Acquisition Lead (MLS)',         priority: 'P3', risk: 'R0', agent: 'acquisition', hitl: false, retention: '30d'  },
+  { id: 'TAS-006', name: 'Weekly Owner Report Cycle',          priority: 'P2', risk: 'R1', agent: 'report',      hitl: false, retention: '2y'   },
+  { id: 'TAS-007', name: 'Insurance Claim Initiation',         priority: 'P0', risk: 'R3', agent: 'sentry',      hitl: true,  retention: '7y'   },
+  { id: 'TAS-008', name: 'Quarterly Tax Provision',            priority: 'P1', risk: 'R2', agent: 'ledger',      hitl: true,  retention: '7y'   },
+  { id: 'TAS-009', name: 'Sensor Battery Low',                 priority: 'P2', risk: 'R1', agent: 'sentry',      hitl: false, retention: '30d'  },
+  { id: 'TAS-010', name: 'Storm Protocol Activation',          priority: 'P0', risk: 'R3', agent: 'sentry',      hitl: true,  retention: '365d' },
+  { id: 'TAS-011', name: 'New Client Onboarding',              priority: 'P1', risk: 'R1', agent: 'sentry',      hitl: false, retention: '7y'   },
+  { id: 'TAS-012', name: 'Owner Complaint Received',           priority: 'P1', risk: 'R2', agent: 'report',      hitl: true,  retention: '2y'   },
+  { id: 'TAS-013', name: 'Monthly NOI & Financial Checkpoint', priority: 'P2', risk: 'R1', agent: 'ledger',      hitl: false, retention: '7y'   },
+  { id: 'TAS-014', name: 'Vendor Performance Review',          priority: 'P3', risk: 'R1', agent: 'ledger',      hitl: false, retention: '30d'  },
+  { id: 'TAS-015', name: 'CEO Daily Standup Ingestion',        priority: 'P2', risk: 'R1', agent: 'orchestrator',hitl: false, retention: '90d'  },
+];
+
+// ── Master Dashboard ────────────────────────────────────────
 
 export function getMasterPromptDashboard() {
   return {
@@ -287,6 +496,8 @@ export function getMasterPromptDashboard() {
       assets: MARKETING_ASSETS.map(a => ({ id: a.id, name: a.name, type: a.type, status: a.status })),
     },
     researchGaps: INDUSTRY_GAPS,
+    fleet: getOrchestratorFleetStatus(),
+    triggerSequences: { count: TRIGGER_ACTION_SEQUENCES.length, sequences: TRIGGER_ACTION_SEQUENCES },
     noiModel: calculateNOIGapImpact(30),
     processExecuted: 'Create → Plan → Build → Test → Audit → Reconfigure → Deploy → Test → Audit → Reconfigure → Push to Production → Final Test/Audit/Reconfigure → Zero failures → Live',
     nextActions: [
