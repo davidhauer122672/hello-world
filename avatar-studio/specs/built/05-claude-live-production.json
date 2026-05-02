@@ -3,7 +3,7 @@
   "title": "Coastal Key Claude Live Production Avatar",
   "role": "Real-time conversational avatar system bridging Banana Pro AI rendering with Claude LLM intelligence for live desktop production.",
   "version": "1.0.0",
-  "generated": "2026-04-20",
+  "generated": "2026-05-02",
   "targetPlatforms": [
     "desktop_live_production",
     "virtual_camera",
