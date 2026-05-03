@@ -1,0 +1,21 @@
+{
+  "name": "ck-agent-os",
+  "version": "1.0.0",
+  "description": "Coastal Key — 40-Agent Operating System | Sovereign Governance Compendium Enforced",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "ck-os": "./cli/terminal.js"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node --experimental-vm-modules src/__tests__/agent-os.test.js",
+    "cli": "node cli/terminal.js",
+    "fleet-status": "node cli/terminal.js fleet status",
+    "fleet-health": "node cli/terminal.js fleet health",
+    "governance": "node cli/terminal.js governance report"
+  },
+  "author": "Coastal Key Enterprise — David Hauer, CEO",
+  "license": "PROPRIETARY"
+}

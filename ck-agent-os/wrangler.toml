@@ -1,0 +1,40 @@
+name = "ck-agent-os"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+
+# Sovereign Governance Compendium — Agent Operating System
+# 40 AI Agents | 8 Divisions | Industrial Grade | Luxury Standard
+
+[vars]
+AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
+AGENT_COUNT = "40"
+GOVERNANCE_VERSION = "1.0.0"
+CEO_DECISION_AUTHORITY = "0.01"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "ck-agent-os-cache"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "ck-agent-os-sessions"
+
+[[kv_namespaces]]
+binding = "RATE_LIMITS"
+id = "ck-agent-os-rate-limits"
+
+[[kv_namespaces]]
+binding = "AUDIT_LOG"
+id = "ck-agent-os-audit"
+
+[[kv_namespaces]]
+binding = "AGENT_STATE"
+id = "ck-agent-os-agent-state"
+
+[[kv_namespaces]]
+binding = "MESSAGE_BUS"
+id = "ck-agent-os-message-bus"
+
+[[kv_namespaces]]
+binding = "TASK_QUEUE"
+id = "ck-agent-os-task-queue"

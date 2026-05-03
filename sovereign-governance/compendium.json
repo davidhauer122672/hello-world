@@ -1,0 +1,117 @@
+{
+  "title": "Coastal Key — Sovereign Governance Compendium",
+  "version": "1.0.0",
+  "effective_date": "2026-03-28",
+  "authority": "Coastal Key Enterprise Board",
+  "ceo_oversight": {
+    "name": "David Hauer",
+    "decision_authority_percent": 1,
+    "role": "Final oversight only — all operational decisions delegated to AI Agent Fleet",
+    "escalation_threshold": "Critical risk events, capital deployments exceeding $500K, legal exposure"
+  },
+  "governance_principles": [
+    {
+      "id": "SGC-001",
+      "name": "Autonomous Execution with Accountability",
+      "description": "All 40 agents operate autonomously within defined guardrails. Every action is logged, auditable, and traceable to the originating agent and governance rule."
+    },
+    {
+      "id": "SGC-002",
+      "name": "Capital Growth Mandate",
+      "description": "Every agent action must demonstrably contribute to regional and international capital growth. Idle cycles are redirected to revenue-generating activities."
+    },
+    {
+      "id": "SGC-003",
+      "name": "Industrial-Grade Reliability",
+      "description": "All systems maintain 99.9% uptime. Failover, redundancy, and self-healing are mandatory for all production agents."
+    },
+    {
+      "id": "SGC-004",
+      "name": "Luxury-Grade Quality Standards",
+      "description": "All client-facing outputs meet luxury market standards. No draft-quality content reaches external stakeholders."
+    },
+    {
+      "id": "SGC-005",
+      "name": "Risk Mitigation as Core Function",
+      "description": "Risk assessment is embedded in every workflow. Agents cannot execute high-impact actions without risk scoring."
+    },
+    {
+      "id": "SGC-006",
+      "name": "5-Year Goals in 6-Month Execution",
+      "description": "Compression ratio of 10:1 on traditional timelines. Agents operate at machine speed, not human speed."
+    },
+    {
+      "id": "SGC-007",
+      "name": "Inter-Agent Cooperation Protocol",
+      "description": "Agents communicate through the message bus. No agent operates in isolation. Cross-division coordination is mandatory for multi-step workflows."
+    },
+    {
+      "id": "SGC-008",
+      "name": "Continuous Self-Improvement",
+      "description": "Agents analyze their own performance metrics weekly and propose optimization plans to the Master Orchestrator."
+    }
+  ],
+  "risk_framework": {
+    "levels": [
+      {
+        "level": 1,
+        "name": "Routine",
+        "description": "Standard operations within established parameters",
+        "approval": "Agent self-authorized",
+        "examples": ["Data retrieval", "Report generation", "Status updates", "Internal messaging"]
+      },
+      {
+        "level": 2,
+        "name": "Elevated",
+        "description": "Operations with moderate business impact",
+        "approval": "Division Controller approval",
+        "examples": ["Lead outreach campaigns", "Content publication", "Vendor communications", "Budget allocations under $10K"]
+      },
+      {
+        "level": 3,
+        "name": "High",
+        "description": "Operations with significant financial or reputational impact",
+        "approval": "Master Orchestrator approval + audit log",
+        "examples": ["Contract negotiations", "Capital deployments $10K-$500K", "Market expansion initiatives", "Partnership agreements"]
+      },
+      {
+        "level": 4,
+        "name": "Critical",
+        "description": "Operations requiring CEO oversight per governance charter",
+        "approval": "CEO David Hauer direct approval",
+        "examples": ["Capital deployments exceeding $500K", "Legal exposure events", "Brand-defining decisions", "International market entry"]
+      }
+    ]
+  },
+  "compliance_mandates": {
+    "regulatory": ["TCPA", "DNC Registry", "CAN-SPAM", "CCPA", "Fair Housing Act", "RESPA"],
+    "operational": ["SOC 2 Type II alignment", "Data encryption at rest and in transit", "90-day audit log retention", "Real-time anomaly detection"],
+    "financial": ["GAAP reporting standards", "Monthly P&L reconciliation", "Quarterly investor reporting", "Capital reserve requirements"]
+  },
+  "performance_standards": {
+    "response_time_ms": 500,
+    "uptime_percent": 99.9,
+    "audit_retention_days": 90,
+    "risk_assessment_required": true,
+    "quality_score_minimum": 8.5,
+    "daily_performance_review": true,
+    "weekly_optimization_cycle": true
+  },
+  "division_hierarchy": {
+    "tier_1_executive": ["EXC"],
+    "tier_2_revenue": ["SEN", "MKT", "FIN"],
+    "tier_3_operations": ["OPS", "INT", "VEN"],
+    "tier_4_infrastructure": ["TEC"]
+  },
+  "agent_lifecycle_states": [
+    "initializing", "active", "standby", "executing", "paused",
+    "training", "maintenance", "error", "decommissioned"
+  ],
+  "inter_agent_protocols": {
+    "message_format": "JSON-RPC 2.0",
+    "max_message_size_kb": 256,
+    "acknowledgment_timeout_ms": 5000,
+    "retry_policy": { "max_retries": 3, "backoff_multiplier": 2 },
+    "priority_levels": ["critical", "high", "standard", "low"]
+  }
+}
