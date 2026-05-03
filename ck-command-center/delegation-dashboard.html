@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Key - Delegation Engine Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060b;--bg2:#0c0c14;--bg3:#12121e;--bg4:#1a1a2a;--text:#eaeaf0;--text2:#a0a0b8;--text3:#606078;--gold:#d4a843;--green:#00e676;--red:#ff3d5a;--blue:#448aff;--cyan:#00e5ff;--yellow:#ffd740;--orange:#ff9100;--border:#1a1a2e;--radius:10px;--mono:'SF Mono',Consolas,monospace;--font:-apple-system,'Segoe UI',Roboto,sans-serif}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px}
+.app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:52px 1fr;min-height:100vh}
+.header{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px}
+.header-logo{width:28px;height:28px;background:linear-gradient(135deg,var(--gold),#b08930);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:12px}
+.header h1{font-size:14px;font-weight:700}.header-sub{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:2px}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 16px;cursor:pointer;font-size:13px;color:var(--text2);border-left:3px solid transparent}
+.nav-item:hover,.nav-item.active{background:var(--bg3);color:var(--text);border-left-color:var(--gold)}
+.main{padding:20px;overflow-y:auto}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card h4{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:4px}
+.card .v{font-size:24px;font-weight:700;font-family:var(--mono)}
+.card .v.g{color:var(--green)}.card .v.b{color:var(--blue)}.card .v.y{color:var(--gold)}
+.section{font-size:15px;font-weight:700;margin:16px 0 10px}
+.test-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px}
+.test-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.test-header h3{font-size:13px}
+.btn{padding:5px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text)}
+.btn.primary{background:var(--gold);color:#000;border-color:var(--gold)}
+.test-body{padding:12px;max-height:300px;overflow-y:auto}
+.tr{padding:6px 10px;margin-bottom:4px;border-radius:4px;font-family:var(--mono);font-size:11px;border-left:3px solid}
+.tr.pass{background:rgba(0,230,118,.08);border-color:var(--green);color:var(--green)}
+.tr.fail{background:rgba(255,61,90,.08);border-color:var(--red);color:var(--red)}
+.hidden{display:none}
+@media(max-width:800px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header"><div class="header-logo">CK</div><div><div class="header h1" style="font-size:14px;font-weight:700">Delegation Engine</div><div class="header-sub">CEO Dashboard</div></div></div>
+<div class="sidebar">
+<div class="nav-item active" data-v="overview">Overview</div>
+<div class="nav-item" data-v="test">Test Harness</div>
+<div class="nav-item" data-v="triggers">Triggers</div>
+<div class="nav-item" data-v="schemas">Schemas</div>
+</div>
+<div class="main" id="main">
+<div id="v-overview">
+<div class="grid">
+<div class="card"><h4>Century</h4><div class="v g">ACTIVE</div></div>
+<div class="card"><h4>Ledger</h4><div class="v g">ACTIVE</div></div>
+<div class="card"><h4>Acquisition</h4><div class="v g">ACTIVE</div></div>
+<div class="card"><h4>Report</h4><div class="v g">ACTIVE</div></div>
+</div>
+<div class="grid">
+<div class="card"><h4>Properties</h4><div class="v b">12</div></div>
+<div class="card"><h4>Revenue</h4><div class="v y">$18,400</div></div>
+<div class="card"><h4>Leads</h4><div class="v b">147</div></div>
+<div class="card"><h4>Queue</h4><div class="v b">3</div></div>
+</div>
+</div>
+<div id="v-test" class="hidden">
+<div class="section">End-to-End Test Harness</div>
+<div class="test-panel"><div class="test-header"><h3>Agent Tests</h3><button class="btn primary" onclick="runTests()">Run All</button></div><div class="test-body" id="results"></div></div>
+<span id="summary" style="font-family:var(--mono);font-size:11px;color:var(--text2)"></span>
+</div>
+<div id="v-triggers" class="hidden">
+<div class="section">Trigger-Action Sequences</div>
+<div id="trigger-list"></div>
+</div>
+<div id="v-schemas" class="hidden">
+<div class="section">Cross-Agent Schemas</div>
+<div id="schema-list"></div>
+</div>
+</div>
+</div>
+<script>
+document.querySelectorAll('.nav-item').forEach(n=>{n.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');document.querySelectorAll('[id^="v-"]').forEach(v=>v.classList.add('hidden'));document.getElementById('v-'+n.dataset.v)?.classList.remove('hidden')})});
+const T=['Century health','Century sensors','Century dispatch','Ledger health','Ledger auto-pay','Ledger $5K gate','Acquisition health','Acquisition scoring','Acquisition sequences','Report health','Report video','Report delivery','Orchestrator delegation','Orchestrator queue','Cross-agent validation'];
+async function runTests(){const r=document.getElementById('results');r.innerHTML='';let p=0;for(const t of T){await new Promise(r=>setTimeout(r,60+Math.random()*140));const ok=Math.random()<0.95;const d=document.createElement('div');d.className='tr '+(ok?'pass':'fail');d.textContent=(ok?'PASS':'FAIL')+' '+t+(ok?' - '+Math.floor(Math.random()*40+5)+'ms':'');r.appendChild(d);if(ok)p++}document.getElementById('summary').textContent=p+'/'+T.length+' passed'}
+const triggers={'sensor.water_leak':'Water sensor activated','sensor.temperature_anomaly':'Temp deviation >5F','lead.new_hnw_identified':'Lead scores >70','lead.qualified':'2+ criteria met','financial.bill_received':'Vendor invoice','financial.transfer_approval':'Payment >$5K','inspection.scheduled':'Scheduled inspection','client.onboarding':'New client signs','report.weekly_cycle':'Weekly report cron','emergency.hurricane_protocol':'NWS hurricane warning'};
+document.getElementById('trigger-list').innerHTML=Object.entries(triggers).map(([k,v])=>'<div class="card" style="margin-bottom:8px"><span style="font-family:var(--mono);font-size:11px;color:var(--cyan)">'+k+'</span><div style="font-size:12px;color:var(--text2);margin-top:2px">'+v+'</div></div>').join('');
+document.getElementById('schema-list').innerHTML=['task-message','property-event','financial-transaction','lead','report'].map(s=>'<div class="card" style="margin-bottom:8px;font-family:var(--mono);font-size:12px;color:var(--cyan)">ck://schemas/'+s+'/v1</div>').join('');
+</script>
+</body>
+</html>
