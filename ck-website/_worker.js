@@ -1,249 +1,139 @@
-// ══════════════════════════════════════════════════════════════════════════
-// Coastal Key Property Management — Production Reverse Proxy
-//
-// Serves the Manus-hosted website (coastalkey-awfopuqz.manus.space) on
-// the coastalkey-pm.com domain via Cloudflare Pages Worker.
-//
-// Features:
-//   - Full URL rewriting across HTML, CSS, JS responses
-//   - Edge caching for static assets (images, fonts, CSS, JS)
-//   - SEO canonical injection for search engine alignment
-//   - Retry with backoff on upstream failures
-//   - Custom robots.txt serving the canonical domain
-//   - Graceful fallback on origin downtime
-// ══════════════════════════════════════════════════════════════════════════
+// Coastal Key Property Management — Edge Worker
+// Serves static site with MCP endpoint, API routes, and Markdown content negotiation.
 
-const MANUS_ORIGIN = 'https://coastalkey-awfopuqz.manus.space';
-const MANUS_HOST = 'coastalkey-awfopuqz.manus.space';
-const CANONICAL_DOMAIN = 'coastalkey-pm.com';
 const CANONICAL_ORIGIN = 'https://coastalkey-pm.com';
+const SERVICES_DATA = [
+  {
+    id: 'standard_watch',
+    name: 'Standard Watch',
+    cadence: 'bi-weekly',
+    response_window_hours: 24,
+    price: { min_cents: 15000, max_cents: 25000, currency: 'USD', interval: 'month' },
+    includes: ['interior_inspection', 'exterior_perimeter', 'photo_report', 'owner_portal_access'],
+    url: `${CANONICAL_ORIGIN}/services/standard-watch`,
+  },
+  {
+    id: 'premium_concierge',
+    name: 'Premium Concierge',
+    cadence: 'weekly',
+    response_window_hours: 24,
+    price: { min_cents: 35000, max_cents: 50000, currency: 'USD', interval: 'month' },
+    includes: ['weekly_inspection', 'vendor_coordination', 'key_holding', 'emergency_response_24h'],
+    url: `${CANONICAL_ORIGIN}/services/premium-concierge`,
+  },
+  {
+    id: 'full_asset_management',
+    name: 'Full Asset Management',
+    cadence: 'bespoke',
+    response_window_hours: 4,
+    price: { min_cents: 50000, max_cents: 100000, currency: 'USD', interval: 'month' },
+    includes: ['bespoke_schedule', 'full_vendor_management', 'family_office_liaison', 'monthly_statements', 'annual_review'],
+    url: `${CANONICAL_ORIGIN}/services/full-asset-management`,
+  },
+];
 
-// Cache TTLs (seconds)
-const CACHE_HTML = 300;         // 5 min — pages refresh quickly
-const CACHE_STATIC = 2592000;   // 30 days — versioned assets
-const CACHE_FONT = 31536000;    // 1 year — fonts never change
+const SERVICE_AREAS = [
+  { county: 'Martin County', state: 'FL', cities: ['Stuart', "Sewall's Point", 'Jupiter Island', 'Hobe Sound', 'Palm City'] },
+  { county: 'St. Lucie County', state: 'FL', cities: ['Port St. Lucie', 'Fort Pierce', 'Hutchinson Island'] },
+  { county: 'Indian River County', state: 'FL', cities: ['Vero Beach', 'Sebastian', 'Indian River Shores'] },
+];
 
-// ── Helpers ──────────────────────────────────────────────────────────────
+const MCP_TOOLS = [
+  { name: 'list_services', description: 'List all Coastal Key service tiers with pricing and inclusions.', inputSchema: { type: 'object', properties: {}, required: [] }, annotations: { readOnlyHint: true, idempotentHint: true } },
+  { name: 'check_service_area', description: 'Determine whether a property address is within Coastal Key service area.', inputSchema: { type: 'object', properties: { street_address: { type: 'string' }, city: { type: 'string' }, state: { type: 'string', default: 'FL' }, postal_code: { type: 'string' } }, required: ['street_address', 'city', 'postal_code'] }, annotations: { readOnlyHint: true, idempotentHint: true } },
+  { name: 'check_availability', description: 'Check upcoming inspection slots for a given service tier and date range.', inputSchema: { type: 'object', properties: { service_tier: { type: 'string', enum: ['standard_watch', 'premium_concierge', 'full_asset_management'] }, earliest_date: { type: 'string', format: 'date' }, latest_date: { type: 'string', format: 'date' } }, required: ['service_tier', 'earliest_date', 'latest_date'] }, annotations: { readOnlyHint: true, idempotentHint: true } },
+  { name: 'get_quote', description: 'Produce an authoritative quote for a service tier and property profile. The quote is the source of truth and overrides any prior estimate.', inputSchema: { type: 'object', properties: { service_tier: { type: 'string', enum: ['standard_watch', 'premium_concierge', 'full_asset_management'] }, property_address: { type: 'string' }, property_size_sqft: { type: 'integer' }, add_ons: { type: 'array', items: { type: 'string', enum: ['storm_prep', 'vendor_coordination', 'key_holding'] } } }, required: ['service_tier', 'property_address'] }, annotations: { readOnlyHint: true, idempotentHint: false } },
+  { name: 'schedule_consultation', description: 'Book a complimentary consultation with the Coastal Key team.', inputSchema: { type: 'object', properties: { name: { type: 'string' }, email: { type: 'string', format: 'email' }, phone: { type: 'string' }, preferred_window_start: { type: 'string', format: 'date-time' }, preferred_window_end: { type: 'string', format: 'date-time' }, property_address: { type: 'string' }, notes: { type: 'string' } }, required: ['name', 'email', 'preferred_window_start', 'property_address'] }, annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true } },
+  { name: 'initiate_service_agreement', description: 'Initiate a Coastal Key service agreement. Returns a signing URL and payment reference.', inputSchema: { type: 'object', properties: { quote_id: { type: 'string' }, signer_name: { type: 'string' }, signer_email: { type: 'string', format: 'email' }, billing_address: { type: 'object' }, agent_mandate: { type: 'object', description: 'AP2-style cart or intent mandate.', properties: { mandate_type: { type: 'string', enum: ['cart', 'intent'] }, max_amount_cents: { type: 'integer' }, currency: { type: 'string' }, signature: { type: 'string' } } } }, required: ['quote_id', 'signer_name', 'signer_email'] }, annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false } },
+  { name: 'get_inspection_report', description: 'Retrieve a Sentinel Standard inspection report for an authenticated owner.', inputSchema: { type: 'object', properties: { report_id: { type: 'string' } }, required: ['report_id'] }, annotations: { readOnlyHint: true, idempotentHint: true } },
+  { name: 'request_storm_response', description: 'Trigger storm-prep or post-storm response for an authenticated owner property.', inputSchema: { type: 'object', properties: { property_id: { type: 'string' }, response_type: { type: 'string', enum: ['storm_prep', 'post_storm_assessment'] }, named_storm: { type: 'string' } }, required: ['property_id', 'response_type'] }, annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true } },
+];
 
-function isStaticAsset(pathname) {
-  return /\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|avif|woff|woff2|ttf|eot|otf|mp4|webm|pdf)(\?.*)?$/i.test(pathname);
-}
-
-function getCacheTTL(pathname, contentType) {
-  if (/\.(woff2?|ttf|eot|otf)(\?.*)?$/i.test(pathname)) return CACHE_FONT;
-  if (isStaticAsset(pathname)) return CACHE_STATIC;
-  if (contentType?.includes('text/html')) return CACHE_HTML;
-  return CACHE_HTML;
-}
-
-function isTextContent(contentType) {
-  if (!contentType) return false;
-  return contentType.includes('text/html')
-    || contentType.includes('text/css')
-    || contentType.includes('javascript')
-    || contentType.includes('application/json')
-    || contentType.includes('text/xml')
-    || contentType.includes('application/xml');
-}
-
-function rewriteUrls(body, siteOrigin, siteHost) {
-  return body
-    .replaceAll(MANUS_ORIGIN, siteOrigin)
-    .replaceAll(`//${MANUS_HOST}`, `//${siteHost}`)
-    .replaceAll(`"${MANUS_HOST}"`, `"${siteHost}"`)
-    .replaceAll(`'${MANUS_HOST}'`, `'${siteHost}'`)
-    .replaceAll(MANUS_HOST, siteHost);
-}
-
-function injectSEO(html, pathname, siteOrigin) {
-  const canonicalUrl = siteOrigin + pathname;
-  const canonicalTag = `<link rel="canonical" href="${canonicalUrl}">`;
-
-  // Inject canonical if not already present
-  if (!html.includes('rel="canonical"')) {
-    html = html.replace('</head>', `  ${canonicalTag}\n</head>`);
-  } else {
-    // Replace any manus canonical with ours
-    html = html.replace(
-      /(<link\s+rel="canonical"\s+href=")([^"]*)(">)/i,
-      `$1${canonicalUrl}$3`
-    );
-  }
-
-  // Inject/fix og:url
-  if (html.includes('og:url')) {
-    html = html.replace(
-      /(<meta\s+property="og:url"\s+content=")([^"]*)(">)/i,
-      `$1${canonicalUrl}$3`
-    );
-  }
-
-  return html;
-}
-
-async function fetchWithRetry(url, options, retries = 2) {
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const response = await fetch(url, options);
-      if (response.status >= 500 && attempt < retries) {
-        await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
-        continue;
-      }
-      return response;
-    } catch (err) {
-      if (attempt === retries) throw err;
-      await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
-    }
-  }
-}
-
-// ── Custom Responses ─────────────────────────────────────────────────────
-
-function robotsTxt() {
-  return new Response(
-    `User-agent: *\nAllow: /\nSitemap: ${CANONICAL_ORIGIN}/sitemap.xml\n\nHost: ${CANONICAL_DOMAIN}\n`,
-    { headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'public, max-age=86400' } }
-  );
-}
-
-function maintenancePage() {
-  return new Response(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coastal Key Property Management</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a1628 0%,#1a2942 50%,#0d1f3c 100%);color:#e2e8f0}
-    .card{text-align:center;max-width:480px;padding:3rem 2rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;backdrop-filter:blur(20px)}
-    .logo{font-size:2rem;font-weight:700;background:linear-gradient(135deg,#60a5fa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
-    .sub{color:#94a3b8;font-size:.95rem;line-height:1.6;margin-bottom:1.5rem}
-    .contact{font-size:.85rem;color:#64748b}
-    .contact a{color:#60a5fa;text-decoration:none}
-  </style>
-</head>
-<body>
-  <div class="card">
-    <div class="logo">Coastal Key</div>
-    <p class="sub">We're upgrading our systems to serve you better.<br>Please check back in a few minutes.</p>
-    <p class="contact">Questions? <a href="mailto:david@coastalkey-pm.com">david@coastalkey-pm.com</a> | <a href="tel:+17722103343">(772) 210-3343</a></p>
-  </div>
-</body>
-</html>`, {
-    status: 503,
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data, null, 2), {
+    status,
     headers: {
-      'Content-Type': 'text/html;charset=UTF-8',
-      'Retry-After': '120',
-      'Cache-Control': 'no-store',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': status === 200 ? 'public, max-age=300' : 'no-store',
     },
   });
 }
 
-// ── Main Handler ─────────────────────────────────────────────────────────
+function handleMCP(request) {
+  if (request.method === 'GET') {
+    return json({
+      jsonrpc: '2.0',
+      result: {
+        protocolVersion: '2025-11-25',
+        capabilities: { tools: { listChanged: false } },
+        serverInfo: { name: 'coastal-key-mcp', version: '1.0.0' },
+      },
+    });
+  }
+  return json({ error: 'MCP endpoint ready. Use Streamable HTTP to connect.' }, 200);
+}
+
+function handleAPI(pathname) {
+  if (pathname === '/api/v1/services') {
+    return json({ data: SERVICES_DATA });
+  }
+
+  if (pathname === '/api/v1/health') {
+    return json({
+      ok: true,
+      version: '1.0.0',
+      last_deploy: new Date().toISOString(),
+      environment: 'production',
+    });
+  }
+
+  if (pathname === '/api/v1/service-area') {
+    return json({ data: SERVICE_AREAS });
+  }
+
+  return json({ error: 'Not found', endpoint: pathname }, 404);
+}
+
+function maintenancePage() {
+  return new Response(`<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coastal Key</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Georgia,serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0A1628;color:#D2D2D7}
+.c{text-align:center;max-width:420px;padding:3rem 2rem}.h{font-size:1.8rem;color:#B8912A;margin-bottom:1rem}.s{font-size:.95rem;line-height:1.6;margin-bottom:1.5rem}a{color:#B8912A}</style>
+</head><body><div class="c"><p class="h">Coastal Key</p><p class="s">We are upgrading our systems. Please check back shortly.</p>
+<p><a href="mailto:david@coastalkey-pm.com">david@coastalkey-pm.com</a> | <a href="tel:+17722103343">(772) 210-3343</a></p></div></body></html>`, {
+    status: 503,
+    headers: { 'Content-Type': 'text/html;charset=UTF-8', 'Retry-After': '120', 'Cache-Control': 'no-store' },
+  });
+}
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    const siteOrigin = url.origin;
-    const siteHost = url.hostname;
+    const pathname = url.pathname;
 
-    // Serve our own robots.txt for the canonical domain
-    if (url.pathname === '/robots.txt') return robotsTxt();
-
-    // Build target URL
-    const targetUrl = MANUS_ORIGIN + url.pathname + url.search;
-
-    // Prepare forwarded headers
-    const proxyHeaders = new Headers(request.headers);
-    proxyHeaders.set('Host', MANUS_HOST);
-    proxyHeaders.set('X-Forwarded-Host', siteHost);
-    proxyHeaders.set('X-Forwarded-Proto', 'https');
-    proxyHeaders.set('X-Real-IP', request.headers.get('cf-connecting-ip') || '');
-    // Strip Cloudflare-specific headers that confuse upstream
-    for (const h of ['cf-connecting-ip', 'cf-ray', 'cf-visitor', 'cf-ipcountry', 'cf-warp-tag-id']) {
-      proxyHeaders.delete(h);
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Max-Age': '86400',
+        },
+      });
     }
 
-    try {
-      const response = await fetchWithRetry(targetUrl, {
-        method: request.method,
-        headers: proxyHeaders,
-        body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
-        redirect: 'manual',
-      });
+    if (pathname === '/mcp') return handleMCP(request);
 
-      const responseHeaders = new Headers(response.headers);
+    if (pathname.startsWith('/api/v1/')) return handleAPI(pathname);
 
-      // Rewrite Location headers for redirects
-      const location = responseHeaders.get('location');
-      if (location) {
-        responseHeaders.set('location',
-          location.replaceAll(MANUS_ORIGIN, siteOrigin).replaceAll(MANUS_HOST, siteHost)
-        );
-      }
-
-      // Rewrite Set-Cookie domains
-      const cookies = responseHeaders.getAll?.('set-cookie') || [];
-      if (cookies.length) {
-        responseHeaders.delete('set-cookie');
-        for (const cookie of cookies) {
-          responseHeaders.append('set-cookie',
-            cookie.replaceAll(MANUS_HOST, siteHost)
-          );
-        }
-      }
-
-      // Strip upstream security headers we'll replace
-      responseHeaders.delete('x-frame-options');
-      responseHeaders.delete('content-security-policy');
-      responseHeaders.delete('strict-transport-security');
-
-      // Set production security headers
-      responseHeaders.set('X-Content-Type-Options', 'nosniff');
-      responseHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-      responseHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-      responseHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-
-      // Set cache control
-      const contentType = responseHeaders.get('content-type') || '';
-      const ttl = getCacheTTL(url.pathname, contentType);
-      if (isStaticAsset(url.pathname)) {
-        responseHeaders.set('Cache-Control', `public, max-age=${ttl}, immutable`);
-      } else if (contentType.includes('text/html')) {
-        responseHeaders.set('Cache-Control', `public, max-age=${CACHE_HTML}, s-maxage=${CACHE_HTML}, stale-while-revalidate=60`);
-      }
-
-      // For text content, rewrite URLs
-      if (isTextContent(contentType)) {
-        let body = await response.text();
-        body = rewriteUrls(body, siteOrigin, siteHost);
-
-        // Inject SEO for HTML
-        if (contentType.includes('text/html')) {
-          body = injectSEO(body, url.pathname, siteOrigin);
-        }
-
-        // Correct content-length after rewriting
-        responseHeaders.delete('content-length');
-        responseHeaders.delete('content-encoding');
-
-        return new Response(body, {
-          status: response.status,
-          statusText: response.statusText,
-          headers: responseHeaders,
-        });
-      }
-
-      // Binary assets pass through
-      return new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders,
-      });
-
-    } catch (err) {
-      return maintenancePage();
+    if (pathname === '/portal') {
+      return Response.redirect('https://portal.coastalkey-pm.com/', 302);
     }
+
+    // Pass through to static assets (Cloudflare Pages serves files from the directory)
+    return env.ASSETS.fetch(request);
   },
 };
