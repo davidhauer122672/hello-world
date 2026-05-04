@@ -190,6 +190,13 @@
  *   GET  /v1/social/calendar      — Content calendar with posting schedule
  *   POST /v1/social/generate      — Generate social content via Claude
  *   POST /v1/social/campaign      — Generate full campaign brief via Claude
+ *   GET  /v1/ai-agency/dashboard       — AI Automation Agency overview with economics
+ *   GET  /v1/ai-agency/units           — All AI workforce units with detail
+ *   GET  /v1/ai-agency/units/:id       — Single AI workforce unit
+ *   POST /v1/ai-agency/units/:id/review — Log weekly review for AI workforce unit
+ *   GET  /v1/ai-agency/board-memo      — Quarterly AI EBITDA board memo
+ *   GET  /v1/ai-agency/sop/:id         — Manual fallback SOP for AI workforce unit
+ *   POST /v1/ai-agency/onboard         — Register new AI workforce unit
  *
  * Auth: Bearer token via WORKER_AUTH_TOKEN secret (Slack routes use signature verification)
  * Total: 137 route handlers | 422 agents | 12 divisions | 7 thinking frameworks | 5 CEO directive types
@@ -276,7 +283,8 @@ import { handleListForecastAgents, handleGetForecastAgent, handleForecastDashboa
 import { handlePeakTimeDashboard, handlePeakTimeOptimal, handlePeakTimeWindows, handlePeakTimeBlackouts } from './routes/peak-time.js';
 import { handleGrowthDashboard, handleGrowthCertifications, handleGrowthRecruitment, handleGrowthReferrals } from './routes/growth-platform.js';
 import { handleListSocialAgents, handleGetSocialAgent, handleSocialDashboard, handleSocialGenerate, handleSocialCampaign, handleSocialCalendar } from './routes/social-campaign.js';
-import { handleGenerateReport as handleSentinelGenerateReport, handleGenerateSummary, handleSentinelWorkforceStatus } from './routes/sentinel-report.js';
+import { handleGenerateReport, handleGenerateSummary, handleSentinelWorkforceStatus } from './routes/sentinel-report.js';
+import { handleAgencyDashboard, handleListUnits, handleGetUnit, handleUnitReview, handleBoardMemo, handleUnitSOP, handleOnboardUnit } from './routes/ai-workforce.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -948,13 +956,39 @@ export default {
 
       // ── Sentinel Standard Report Generator (AI Workforce Unit #1) ──
       if (path === '/v1/sentinel/generate-report' && method === 'POST') {
-        return await handleSentinelGenerateReport(request, env, ctx);
+        return await handleGenerateReport(request, env, ctx);
       }
       if (path === '/v1/sentinel/generate-summary' && method === 'POST') {
         return await handleGenerateSummary(request, env, ctx);
       }
       if (path === '/v1/sentinel/workforce-status' && method === 'GET') {
         return handleSentinelWorkforceStatus();
+      }
+
+      // ── AI Automation Agency ──
+      if (path === '/v1/ai-agency/dashboard' && method === 'GET') {
+        return handleAgencyDashboard();
+      }
+      if (path === '/v1/ai-agency/units' && method === 'GET') {
+        return handleListUnits(url);
+      }
+      if (path === '/v1/ai-agency/board-memo' && method === 'GET') {
+        return await handleBoardMemo(request, env, ctx);
+      }
+      if (path === '/v1/ai-agency/onboard' && method === 'POST') {
+        return await handleOnboardUnit(request, env, ctx);
+      }
+      if (path.match(/^\/v1\/ai-agency\/sop\/[^/]+$/) && method === 'GET') {
+        const unitId = path.split('/v1/ai-agency/sop/')[1];
+        return handleUnitSOP(unitId);
+      }
+      if (path.match(/^\/v1\/ai-agency\/units\/[^/]+\/review$/) && method === 'POST') {
+        const unitId = path.split('/v1/ai-agency/units/')[1].replace('/review', '');
+        return await handleUnitReview(request, unitId, env, ctx);
+      }
+      if (path.match(/^\/v1\/ai-agency\/units\/[^/]+$/) && method === 'GET') {
+        const unitId = path.split('/v1/ai-agency/units/')[1];
+        return handleGetUnit(unitId);
       }
 
       // ── Cooperations Committee ──
