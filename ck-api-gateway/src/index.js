@@ -107,7 +107,7 @@
  *   POST /v1/deals/investor-package     — Generate investor package
  *   POST /v1/deals/portfolio            — Evaluate property portfolio
  *   GET  /v1/hierarchy/command-chain     — Full org command chain & escalation matrix
- *   GET  /v1/hierarchy/fleet-status      — 382-agent fleet status summary
+ *   GET  /v1/hierarchy/fleet-status      — 383-agent fleet status summary
  *   GET  /v1/hierarchy/chain/:agentId    — Chain of command for specific agent
  *   GET  /v1/hierarchy/reports/:agentId  — Direct reports for specific agent
  *   GET  /v1/hierarchy/division/:code    — Division hierarchy tree
@@ -227,7 +227,7 @@ export default {
           status: 'operational',
           service: 'ck-api-gateway',
           version: '2.0.0',
-          agents: 382,
+          agents: 383,
           divisions: 10,
           timestamp: new Date().toISOString(),
         });
@@ -315,7 +315,7 @@ export default {
         status: allOk ? 'operational' : 'degraded',
         service: 'ck-api-gateway',
         version: '2.0.0',
-        agents: 312,
+        agents: 383,
         divisions: 10,
         checks,
         timestamp: new Date().toISOString(),
@@ -866,8 +866,8 @@ export default {
       if (path === '/v1/thinking/frameworks' && method === 'GET') {
         return handleListThinkingFrameworks(url);
       }
-      if (path.startsWith('/v1/thinking/frameworks/') && method === 'GET') {
-        const frameworkId = path.split('/')[4];
+      if (path.match(/^\/v1\/thinking\/frameworks\/[^/]+$/) && method === 'GET') {
+        const frameworkId = path.split('/v1/thinking/frameworks/')[1];
         return handleGetThinkingFramework(frameworkId);
       }
       if (path === '/v1/thinking/session' && method === 'POST') {
