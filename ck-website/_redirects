@@ -1,5 +1,4 @@
 # Coastal Key — Cloudflare Pages Redirects
-# Consolidates ALL subdomains and legacy paths to coastalkey-pm.com
 
 # Subdomain consolidation
 https://www.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
@@ -13,14 +12,12 @@ https://staging.coastalkey-pm.com/*   https://coastalkey-pm.com/:splat       301
 https://dev.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat       301
 https://beta.coastalkey-pm.com/*      https://coastalkey-pm.com/:splat       301
 
-# API proxy — routes /v1/* to the CK API Gateway worker
+# API proxy
 /v1/*                                 https://ck-api-gateway.coastalkey-pm.workers.dev/v1/:splat 200
 
-# Legacy path redirects
+# Internal ops redirect
+/ops/*                                https://ops.coastalkey-pm.com/:splat   302
 /dashboard                            /portal/dashboard                      301
 /command-center                       /portal/dashboard                      301
 /login                                /portal                                301
 /admin                                /portal                                301
-
-# SPA fallback
-/*                                    /index.html                            200
