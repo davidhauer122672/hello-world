@@ -1,0 +1,23 @@
+{
+  "name": "coastal-key-mcp",
+  "version": "1.0.0",
+  "description": "Coastal Key Property Management MCP Server. Discover, quote, and book institutional-grade home watch and asset management services on the Florida Treasure Coast.",
+  "transport": "streamable-http",
+  "endpoint": "https://coastalkey-pm.com/mcp",
+  "auth": "oauth2.1+pkce",
+  "tools": [
+    { "name": "list_services", "description": "List all service tiers with pricing." },
+    { "name": "check_service_area", "description": "Check if an address is in our service area." },
+    { "name": "check_availability", "description": "Check inspection slot availability." },
+    { "name": "get_quote", "description": "Get an authoritative quote for a service tier." },
+    { "name": "schedule_consultation", "description": "Book a complimentary consultation." },
+    { "name": "initiate_service_agreement", "description": "Start a service agreement with payment." },
+    { "name": "get_inspection_report", "description": "Retrieve a Sentinel Standard inspection report." },
+    { "name": "request_storm_response", "description": "Trigger storm-prep or post-storm assessment." }
+  ],
+  "provider": {
+    "name": "Coastal Key Property Management LLC",
+    "url": "https://coastalkey-pm.com",
+    "terms": "https://coastalkey-pm.com/terms"
+  }
+}
