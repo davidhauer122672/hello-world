@@ -230,6 +230,7 @@ import { handleSlackCommand, handleSlackInteraction, handleSlackEvent, handleSla
 import { handleMetaAdsStatus, handleMetaAdsBoost, handleMetaAdsCampaigns } from './routes/meta-ads.js';
 import { handleListThinkingFrameworks, handleGetThinkingFramework, handleThinkingSession, handleMultiFramework, handleLearningBlueprint, handleDailyModels, handlePMMastery, handleCognitiveOS, handleLifeArchitecture, handleTimeLeverage, handleReprogram, handleThinkingDashboard } from './routes/thinking-coach.js';
 import { handleCeoDirective, handleOperationsReview, handleOperatingState, handleCeoDashboard } from './routes/ceo-directives.js';
+import { handleCampaignMatrix, handleCampaignSchedule, handleNextSlot, handleBufferTimestamp, handleBatchSchedule, handleCampaignEngineHealth } from './routes/campaign-engine.js';
 import { handleEmailSend, handleEmailDraft, handleEmailOAuthHealth } from './routes/email-operations.js';
 import { handleDNCAdd, handleDNCCheck, handleDNCBulkCheck, handleDNCRemove, handleConsentRecord, handleConsentCheck, handleCallingWindow, handlePreCallCheck, handleComplianceAudit } from './routes/compliance.js';
 import { handleSpearTrigger, handleSpearReply, handleSpearStatus, handleSpearDashboard, handleSpearGenerate } from './routes/spear.js';
@@ -921,6 +922,27 @@ export default {
       }
       if (path === '/v1/ceo/dashboard' && method === 'GET') {
         return handleCeoDashboard();
+      }
+
+      // ── Peak-Time Intelligence Engine (Campaign #1) ──
+      if (path === '/v1/campaign-engine/matrix' && method === 'GET') {
+        return handleCampaignMatrix();
+      }
+      if (path === '/v1/campaign-engine/schedule' && method === 'GET') {
+        return handleCampaignSchedule(request);
+      }
+      if (path.startsWith('/v1/campaign-engine/next/') && method === 'GET') {
+        const platform = path.split('/').pop();
+        return handleNextSlot(request, platform);
+      }
+      if (path === '/v1/campaign-engine/timestamp' && method === 'POST') {
+        return await handleBufferTimestamp(request);
+      }
+      if (path === '/v1/campaign-engine/batch' && method === 'POST') {
+        return await handleBatchSchedule(request, env, ctx);
+      }
+      if (path === '/v1/campaign-engine/health' && method === 'GET') {
+        return handleCampaignEngineHealth();
       }
 
       // ── Cooperations Committee ──
