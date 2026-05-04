@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.coastalkey.data-residency-watchdog</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>WATCHDOG_DIR/data-residency-watchdog.sh</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>7</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>SLACK_WEBHOOK_URL</key>
+        <string>YOUR_SLACK_WEBHOOK_URL</string>
+        <key>SLACK_CHANNEL</key>
+        <string>#exec-briefing</string>
+        <key>ALERT_TAG</key>
+        <string>@david</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>LOG_DIR/data-residency-stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>LOG_DIR/data-residency-stderr.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>
