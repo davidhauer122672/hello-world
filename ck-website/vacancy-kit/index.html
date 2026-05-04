@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0A1628">
+  <title>Is Your Vacant Florida Home Actually Insured? | Coastal Key</title>
+  <meta name="description" content="Florida insurers deny claims on homes left empty for 60 days. The 5-minute audit that could save you $23,000. Free 12-page guide with 3 fillable templates.">
+  <link rel="canonical" href="https://coastalkey-pm.com/vacancy-kit">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Is Your Vacant Florida Home Actually Insured?">
+  <meta property="og:description" content="The 5-minute audit that could save you $23,000. Free 12-page guide with 3 fillable templates.">
+  <meta property="og:url" content="https://coastalkey-pm.com/vacancy-kit">
+  <meta property="og:image" content="https://coastalkey-pm.com/assets/og-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Is Your Vacant Florida Home Actually Insured?">
+  <meta name="twitter:description" content="The 5-minute audit that could save you $23,000. Free 12-page guide.">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      --navy:#0A1628;--gold:#B8912A;--teal:#006B6B;
+      --white:#FFFFFF;--gray:#D2D2D7;--gray-deep:#4B5563;
+      --red:#9B2C2C;--red-light:#FED7D7;
+      --font-display:"Georgia",serif;
+      --font-text:"Inter",system-ui,-apple-system,sans-serif;
+    }
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{margin:0;font-family:var(--font-text);font-size:1rem;line-height:1.6;color:var(--navy);background:var(--white);-webkit-font-smoothing:antialiased}
+    img{max-width:100%;height:auto}
+
+    /* ── Alert Bar ── */
+    .alert-bar{
+      background:var(--red);color:var(--white);
+      text-align:center;padding:0.6rem 1rem;
+      font-size:0.85rem;font-weight:600;letter-spacing:0.02em;
+    }
+    .alert-bar span{color:var(--gold)}
+
+    /* ── Hero ── */
+    .hero{
+      background:var(--navy);color:var(--white);
+      padding:4rem 1.5rem 3.5rem;text-align:center;
+      position:relative;overflow:hidden;
+    }
+    .hero::before{
+      content:"";position:absolute;top:0;left:0;right:0;bottom:0;
+      background:radial-gradient(ellipse at 30% 20%, rgba(184,145,42,0.08) 0%, transparent 60%),
+                 radial-gradient(ellipse at 70% 80%, rgba(0,107,107,0.06) 0%, transparent 50%);
+      pointer-events:none;
+    }
+    .hero-inner{max-width:720px;margin:0 auto;position:relative;z-index:1}
+    .hook{
+      font-size:clamp(1rem,1.1rem + 0.5vw,1.25rem);
+      color:var(--gold);font-weight:500;
+      margin-bottom:1.5rem;line-height:1.5;
+      letter-spacing:0.01em;
+    }
+    .hero h1{
+      font-family:var(--font-display);
+      font-size:clamp(2rem,1.5rem + 3vw,3.5rem);
+      line-height:1.08;letter-spacing:-0.02em;
+      margin:0 0 0.75rem;font-weight:700;
+    }
+    .hero .sub{
+      font-size:clamp(1.1rem,1rem + 0.5vw,1.4rem);
+      color:var(--gray);margin:0 0 2rem;
+      font-family:var(--font-display);font-style:italic;
+    }
+    .hero-body{
+      font-size:1.05rem;color:var(--gray);
+      max-width:580px;margin:0 auto 2.5rem;line-height:1.7;
+    }
+    .hero-body strong{color:var(--white)}
+
+    /* ── CTA Form ── */
+    .cta-form{
+      max-width:440px;margin:0 auto;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:12px;padding:2rem 1.5rem;
+      backdrop-filter:blur(8px);
+    }
+    .cta-form .form-label{
+      display:block;font-size:0.8rem;
+      color:var(--gold);text-transform:uppercase;
+      letter-spacing:0.08em;margin-bottom:0.5rem;
+      font-weight:600;
+    }
+    .cta-form input[type="email"]{
+      width:100%;padding:0.9rem 1rem;
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:6px;background:rgba(255,255,255,0.06);
+      color:var(--white);font-size:1.05rem;
+      font-family:var(--font-text);
+      outline:none;transition:border-color 0.2s;
+      min-height:50px;
+    }
+    .cta-form input[type="email"]::placeholder{color:rgba(255,255,255,0.35)}
+    .cta-form input[type="email"]:focus{border-color:var(--gold)}
+    .cta-form .btn-cta{
+      display:block;width:100%;margin-top:0.75rem;
+      padding:1rem;border:none;border-radius:6px;
+      background:var(--gold);color:var(--navy);
+      font-size:1.1rem;font-weight:700;
+      font-family:var(--font-text);
+      cursor:pointer;transition:all 0.2s;
+      min-height:54px;letter-spacing:0.01em;
+    }
+    .cta-form .btn-cta:hover{background:var(--white);transform:translateY(-1px)}
+    .cta-form .btn-cta:active{transform:translateY(0)}
+    .cta-form .privacy-note{
+      font-size:0.78rem;color:rgba(255,255,255,0.4);
+      text-align:center;margin-top:0.75rem;line-height:1.4;
+    }
+
+    /* ── Bullets Section ── */
+    .bullets{
+      padding:4rem 1.5rem;
+      background:var(--white);
+    }
+    .bullets-inner{max-width:680px;margin:0 auto}
+    .bullets h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.5rem,1.3rem + 1vw,2rem);
+      text-align:center;margin:0 0 2.5rem;
+      line-height:1.2;color:var(--navy);
+    }
+    .bullet-item{
+      display:grid;grid-template-columns:3rem 1fr;
+      gap:0.75rem;margin-bottom:2rem;align-items:start;
+    }
+    .bullet-icon{
+      width:3rem;height:3rem;
+      background:rgba(184,145,42,0.08);
+      border-radius:50%;display:flex;
+      align-items:center;justify-content:center;
+      flex-shrink:0;margin-top:0.15rem;
+    }
+    .bullet-icon svg{width:20px;height:20px;color:var(--gold)}
+    .bullet-item h3{
+      font-family:var(--font-display);
+      font-size:1.1rem;margin:0 0 0.3rem;
+      line-height:1.3;color:var(--navy);
+    }
+    .bullet-item p{
+      margin:0;color:var(--gray-deep);
+      font-size:0.95rem;line-height:1.6;
+    }
+
+    /* ── Proof Section ── */
+    .proof{
+      padding:4rem 1.5rem;
+      background:#F8F7F5;
+    }
+    .proof-inner{max-width:680px;margin:0 auto}
+    .proof h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.5rem,1.3rem + 1vw,2rem);
+      margin:0 0 1.5rem;line-height:1.2;
+      color:var(--navy);
+    }
+    .stat-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:1.25rem;margin:2rem 0;
+    }
+    .stat-card{
+      background:var(--white);border:1px solid var(--gray);
+      border-radius:8px;padding:1.25rem;text-align:center;
+    }
+    .stat-card .number{
+      font-family:var(--font-display);
+      font-size:1.75rem;font-weight:700;
+      color:var(--red);margin-bottom:0.25rem;
+    }
+    .stat-card .label{
+      font-size:0.82rem;color:var(--gray-deep);
+      line-height:1.4;
+    }
+    .proof p{
+      color:var(--gray-deep);line-height:1.7;
+      margin:0 0 1.25rem;font-size:1rem;
+    }
+    .proof strong{color:var(--navy)}
+    .doesnt-fix{margin:2rem 0}
+    .doesnt-fix li{
+      color:var(--gray-deep);margin-bottom:0.5rem;
+      font-size:0.95rem;line-height:1.5;
+      list-style:none;padding-left:1.5rem;
+      position:relative;
+    }
+    .doesnt-fix li::before{
+      content:"\2717";position:absolute;left:0;
+      color:var(--red);font-weight:700;
+    }
+    .does-fix{
+      background:var(--navy);color:var(--white);
+      border-radius:8px;padding:1.75rem;
+      margin:2rem 0;
+    }
+    .does-fix p{color:var(--gray);margin:0 0 0.75rem}
+    .does-fix p:last-child{margin:0}
+    .does-fix strong{color:var(--white)}
+
+    /* ── Mid CTA ── */
+    .mid-cta{
+      padding:3.5rem 1.5rem;
+      background:var(--navy);text-align:center;
+    }
+    .mid-cta-inner{max-width:480px;margin:0 auto}
+    .mid-cta h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.4rem,1.2rem + 1vw,1.8rem);
+      color:var(--white);margin:0 0 1.5rem;line-height:1.2;
+    }
+    .mid-cta .cta-form{background:transparent;border:none;padding:0}
+
+    /* ── Authority ── */
+    .authority{
+      padding:4rem 1.5rem;
+      background:var(--white);
+    }
+    .authority-inner{max-width:680px;margin:0 auto}
+    .authority h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.4rem,1.2rem + 1vw,1.75rem);
+      margin:0 0 1.25rem;line-height:1.2;
+      color:var(--navy);
+    }
+    .authority p{
+      color:var(--gray-deep);line-height:1.7;
+      margin:0 0 1.25rem;font-size:1rem;
+    }
+    .authority strong{color:var(--navy)}
+    .credentials{
+      display:flex;flex-wrap:wrap;gap:1.5rem;
+      margin:1.5rem 0;padding:1.25rem 0;
+      border-top:1px solid var(--gray);
+      border-bottom:1px solid var(--gray);
+    }
+    .credential{font-size:0.85rem;color:var(--gray-deep);font-weight:600}
+    .credential span{color:var(--teal)}
+    .authority .closing{
+      font-family:var(--font-display);
+      font-size:1.15rem;color:var(--navy);
+      font-style:italic;margin:1.5rem 0;
+    }
+
+    /* ── Final CTA ── */
+    .final-cta{
+      padding:4rem 1.5rem 3rem;
+      background:var(--navy);text-align:center;
+      position:relative;
+    }
+    .final-cta::before{
+      content:"";position:absolute;top:0;left:0;right:0;bottom:0;
+      background:radial-gradient(ellipse at 50% 50%, rgba(184,145,42,0.06) 0%, transparent 60%);
+      pointer-events:none;
+    }
+    .final-cta-inner{max-width:480px;margin:0 auto;position:relative;z-index:1}
+    .final-cta h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.5rem,1.3rem + 1vw,2rem);
+      color:var(--white);margin:0 0 0.5rem;line-height:1.15;
+    }
+    .final-cta .sub{
+      color:var(--gray);font-size:0.95rem;
+      margin:0 0 2rem;
+    }
+    .final-cta .or-call{
+      color:rgba(255,255,255,0.4);
+      font-size:0.85rem;margin-top:1.5rem;
+    }
+    .final-cta .or-call a{color:var(--gold);text-decoration:none}
+    .final-cta .or-call a:hover{text-decoration:underline}
+
+    /* ── Footer ── */
+    .lp-footer{
+      background:var(--navy);
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding:1.5rem;text-align:center;
+      font-size:0.78rem;color:rgba(255,255,255,0.3);
+    }
+    .lp-footer a{color:rgba(255,255,255,0.4);text-decoration:none}
+    .lp-footer a:hover{color:var(--gold)}
+
+    /* ── Mobile ── */
+    @media(max-width:600px){
+      .hero{padding:3rem 1.25rem 2.5rem}
+      .cta-form{padding:1.5rem 1.25rem}
+      .bullets,.proof,.authority{padding:3rem 1.25rem}
+      .stat-grid{grid-template-columns:1fr 1fr}
+      .credentials{flex-direction:column;gap:0.75rem}
+      .bullet-item{grid-template-columns:2.5rem 1fr;gap:0.5rem}
+      .bullet-icon{width:2.5rem;height:2.5rem}
+    }
+
+    /* ── Focus ── */
+    :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+
+    /* ── Reduced Motion ── */
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:0.001ms!important;transition-duration:0.001ms!important}
+    }
+
+    /* ── Success State ── */
+    .form-success{display:none;text-align:center;padding:1rem}
+    .form-success .checkmark{
+      width:48px;height:48px;margin:0 auto 0.75rem;
+      background:rgba(72,191,132,0.15);border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .form-success .checkmark svg{color:#48BF84}
+    .form-success h3{
+      font-family:var(--font-display);
+      color:var(--white);font-size:1.2rem;margin:0 0 0.5rem;
+    }
+    .form-success p{color:var(--gray);font-size:0.9rem;margin:0}
+  </style>
+</head>
+<body>
+
+  <!-- Alert Bar -->
+  <div class="alert-bar" role="alert">
+    <span>264,000</span> mold claims filed in Florida in 2022. Is your vacant home covered?
+  </div>
+
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="hero-h1">
+    <div class="hero-inner">
+      <p class="hook">A Venice homeowner came home to $23,000 in water damage.<br>Her insurance company said two words: <strong>claim denied.</strong></p>
+
+      <h1 id="hero-h1">Is Your Vacant Florida Home Actually Insured?</h1>
+      <p class="sub">The 5-minute audit that could save you $23,000.</p>
+
+      <p class="hero-body">Florida insurers bury a clause on page 47 of your homeowners policy. It says if your home is unoccupied for <strong>60 days</strong>, they can deny your claim. Fire. Water. Wind. <strong>All of it.</strong><br><br>You leave for the season every year. You've never checked.</p>
+
+      <!-- CTA Form #1 -->
+      <form class="cta-form" id="form-hero" action="/api/v1/lead" method="POST" aria-label="Download the Vacancy Clause Survival Kit">
+        <input type="hidden" name="source" value="vacancy-kit-hero">
+        <input type="hidden" name="lead_magnet" value="vacancy-clause-survival-kit">
+        <label class="form-label" for="email-hero">Get the free survival kit</label>
+        <input type="email" id="email-hero" name="email" placeholder="Your email address" required autocomplete="email" aria-label="Email address">
+        <button type="submit" class="btn-cta">Download the Survival Kit — Free</button>
+        <p class="privacy-note">Your email. The PDF. No sales call. No spam.<br>Just the document you need before you lock the door.</p>
+        <div class="form-success" aria-live="polite">
+          <div class="checkmark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3>Check your inbox.</h3>
+          <p>The Vacancy Clause Survival Kit is on its way.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Bullets -->
+  <section class="bullets" aria-labelledby="bullets-h2">
+    <div class="bullets-inner">
+      <h2 id="bullets-h2">What's inside the 12-page kit.</h2>
+
+      <div class="bullet-item">
+        <div class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div>
+          <h3>The exact policy language that kills your claim.</h3>
+          <p>Buried on page 47 of your homeowners policy is the clause that lets Florida insurers deny fire, water, and hurricane claims on any home left empty for 60 days. We show you the language from the top 10 FL carriers so you know what to look for in yours.</p>
+        </div>
+      </div>
+
+      <div class="bullet-item">
+        <div class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+        <div>
+          <h3>A fill-in-the-blank letter to send your carrier this week.</h3>
+          <p>Use the template to get written confirmation from your insurer that your coverage holds while you're away. Takes five minutes. Could save you $23,000.</p>
+        </div>
+      </div>
+
+      <div class="bullet-item">
+        <div class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div>
+          <h3>The documentation standard accepted by every major FL insurer.</h3>
+          <p>Citizens, Universal, Heritage, and seven other carriers accept this format as proof your property is being monitored. Follow it every time someone enters your home.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof -->
+  <section class="proof" aria-labelledby="proof-h2">
+    <div class="proof-inner">
+      <h2 id="proof-h2">This is not hypothetical.</h2>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="number">264,000</div>
+          <div class="label">Mold claims filed in Florida in 2022</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">20%</div>
+          <div class="label">Of all FL home insurance claims are mold-related</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">$10,000</div>
+          <div class="label">Typical mold coverage cap in FL policies</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">$30,000</div>
+          <div class="label">Average remediation cost. The gap is yours.</div>
+        </div>
+      </div>
+
+      <p>New <strong>2026 Florida regulations</strong> require documented proof of property monitoring to maintain full coverage. If you can't produce it, your insurer has the clause they need to walk away.</p>
+
+      <ul class="doesnt-fix">
+        <li>A $5,000 vacant home insurance rider doesn't fix this.</li>
+        <li>A Ring camera that lost WiFi in July doesn't fix this.</li>
+        <li>Your neighbor who "keeps an eye on things" doesn't fix this.</li>
+      </ul>
+
+      <div class="does-fix">
+        <p><strong>What fixes this</strong> is a five-minute audit of your policy, a one-page letter to your carrier, and a documentation standard you follow every time someone enters your property.</p>
+        <p><strong>That's what's in the kit.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mid CTA -->
+  <section class="mid-cta" aria-label="Download form">
+    <div class="mid-cta-inner">
+      <h2>Check your policy before you leave.</h2>
+      <form class="cta-form" id="form-mid" action="/api/v1/lead" method="POST" aria-label="Download the Vacancy Clause Survival Kit">
+        <input type="hidden" name="source" value="vacancy-kit-mid">
+        <input type="hidden" name="lead_magnet" value="vacancy-clause-survival-kit">
+        <label class="form-label" for="email-mid">Get the free survival kit</label>
+        <input type="email" id="email-mid" name="email" placeholder="Your email address" required autocomplete="email" aria-label="Email address">
+        <button type="submit" class="btn-cta">Download the Survival Kit — Free</button>
+        <p class="privacy-note">No sales call. No spam. Just the kit.</p>
+        <div class="form-success" aria-live="polite">
+          <div class="checkmark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3>Check your inbox.</h3>
+          <p>The Vacancy Clause Survival Kit is on its way.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Authority -->
+  <section class="authority" aria-labelledby="auth-h2">
+    <div class="authority-inner">
+      <h2 id="auth-h2">Who built this.</h2>
+
+      <p><strong>Coastal Key Property Management</strong> is an NHWA-accredited home watch and residential asset management firm on the Florida Treasure Coast. Every property visit produces a timestamped photographic record under our 47-checkpoint Sentinel Standard inspection methodology.</p>
+
+      <div class="credentials">
+        <div class="credential"><span>&#10003;</span> NHWA Accredited</div>
+        <div class="credential"><span>&#10003;</span> Florida Licensed</div>
+        <div class="credential"><span>&#10003;</span> $2M General Liability</div>
+        <div class="credential"><span>&#10003;</span> Crime &amp; Fidelity Coverage</div>
+      </div>
+
+      <p>We built this kit because the homeowners who need it most don't know the clause exists until the claim is denied.</p>
+
+      <p class="closing">Whether you hire us or not, check your policy.</p>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta" aria-label="Final download form">
+    <div class="final-cta-inner">
+      <h2>Don't leave without checking.</h2>
+      <p class="sub">Five minutes now. Or $23,000 later.</p>
+
+      <form class="cta-form" id="form-final" action="/api/v1/lead" method="POST" aria-label="Download the Vacancy Clause Survival Kit">
+        <input type="hidden" name="source" value="vacancy-kit-final">
+        <input type="hidden" name="lead_magnet" value="vacancy-clause-survival-kit">
+        <label class="form-label" for="email-final">Get the free survival kit</label>
+        <input type="email" id="email-final" name="email" placeholder="Your email address" required autocomplete="email" aria-label="Email address">
+        <button type="submit" class="btn-cta">Download the Survival Kit — Free</button>
+        <p class="privacy-note">Your email. The PDF. Nothing else.</p>
+        <div class="form-success" aria-live="polite">
+          <div class="checkmark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3>Check your inbox.</h3>
+          <p>The Vacancy Clause Survival Kit is on its way.</p>
+        </div>
+      </form>
+
+      <p class="or-call">Or call us directly: <a href="tel:+17722103343">(772) 210-3343</a></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="lp-footer">
+    <p>Coastal Key Property Management LLC &middot; Stuart, Florida &middot; <a href="mailto:david@coastalkey-pm.com">david@coastalkey-pm.com</a></p>
+    <p><a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/">coastalkey-pm.com</a></p>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.cta-form').forEach(form => {
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const email = form.querySelector('input[type="email"]').value;
+        const source = form.querySelector('input[name="source"]').value;
+        if (!email) return;
+
+        const btn = form.querySelector('.btn-cta');
+        const origText = btn.textContent;
+        btn.textContent = 'Sending...';
+        btn.disabled = true;
+
+        try {
+          await fetch('/api/v1/lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, source, lead_magnet: 'vacancy-clause-survival-kit' }),
+          });
+        } catch {}
+
+        form.querySelector('.form-success').style.display = 'block';
+        btn.style.display = 'none';
+        form.querySelector('input[type="email"]').style.display = 'none';
+        form.querySelector('.form-label').style.display = 'none';
+        if (form.querySelector('.privacy-note')) form.querySelector('.privacy-note').style.display = 'none';
+
+        document.querySelectorAll('.cta-form').forEach(f => {
+          if (f !== form) {
+            const inp = f.querySelector('input[type="email"]');
+            if (inp) inp.value = email;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
