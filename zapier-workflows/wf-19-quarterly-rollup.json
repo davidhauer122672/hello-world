@@ -1,0 +1,117 @@
+{
+  "workflow_id": "WF-19",
+  "name": "Quarterly Executive Rollup",
+  "tier": "4",
+  "automation_id": "D4",
+  "description": "Last business day of each quarter. Nemotron assembles board-ready report from Airtable data covering all KPIs, revenue by segment, CPA trend, top/bottom zones, and conversion funnel.",
+  "trigger": {
+    "app": "Schedule by Zapier",
+    "event": "Every Day",
+    "config": {
+      "time": "17:00",
+      "timezone": "America/New_York",
+      "condition": "Run on last business day of March, June, September, December"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Check if today is last business day of quarter",
+        "code": "const today = new Date(); const month = today.getMonth() + 1; const quarterEnds = [3, 6, 9, 12]; if (!quarterEnds.includes(month)) { output = { is_quarter_end: false }; } else { const lastDay = new Date(today.getFullYear(), month, 0).getDate(); const lastDate = new Date(today.getFullYear(), month - 1, lastDay); while (lastDate.getDay() === 0 || lastDate.getDay() === 6) { lastDate.setDate(lastDate.getDate() - 1); } const isLastBizDay = today.getDate() === lastDate.getDate(); const quarter = 'Q' + Math.ceil(month / 3); output = { is_quarter_end: isLastBizDay, quarter, year: today.getFullYear() }; }"
+      }
+    },
+    {
+      "step": 2,
+      "app": "Filter by Zapier",
+      "config": {
+        "condition": "{{step1.is_quarter_end}} = true"
+      }
+    },
+    {
+      "step": 3,
+      "app": "Airtable",
+      "action": "Find Records",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "KPI Events",
+        "formula": "IS_SAME(CREATED_TIME(), TODAY(), 'quarter')",
+        "description": "Pull all KPI events for current quarter"
+      }
+    },
+    {
+      "step": 4,
+      "app": "Airtable",
+      "action": "Find Records",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Inference Cost Log",
+        "formula": "IS_SAME({Date}, TODAY(), 'quarter')"
+      }
+    },
+    {
+      "step": 5,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Aggregate quarterly KPIs",
+        "code": "const events = inputData.kpi_events || []; const costs = inputData.cost_records || []; const stats = { total_dials: 0, connections: 0, bookings: 0, closes: 0, investor_flags: 0, content_published: 0, total_inference_cost: 0 }; events.forEach(e => { if (e.metric === 'call_disposition') { stats.total_dials++; if (e.connected) stats.connections++; if (e.booked) stats.bookings++; } if (e.metric === 'content_published') stats.content_published++; }); costs.forEach(c => { stats.total_inference_cost += parseFloat(c.est_cost_usd || 0); }); stats.connect_rate = stats.total_dials > 0 ? ((stats.connections / stats.total_dials) * 100).toFixed(1) : '0'; stats.book_rate = stats.connections > 0 ? ((stats.bookings / stats.connections) * 100).toFixed(1) : '0'; output = stats;"
+      }
+    },
+    {
+      "step": 6,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}",
+        "description": "Generate Nemotron executive report",
+        "payload": {
+          "prompt": "Generate a board-ready quarterly executive report for Coastal Key Treasure Coast Asset Management. Quarter: {{step1.quarter}} {{step1.year}}. Data: Total dials: {{step5.total_dials}}. Connect rate: {{step5.connect_rate}}%. Book rate: {{step5.book_rate}}%. Content pieces published: {{step5.content_published}}. AI inference cost: ${{step5.total_inference_cost}}. Format as: EXECUTIVE SUMMARY, KEY METRICS TABLE, SEGMENT PERFORMANCE, ZONE ANALYSIS, CONTENT OPERATIONS, AI COST EFFICIENCY, RECOMMENDATIONS. Keep under 1500 words. Close with forward-looking risk assessment.",
+          "module_override": "MODULE_C"
+        }
+      }
+    },
+    {
+      "step": 7,
+      "app": "Gmail",
+      "action": "Send Email",
+      "config": {
+        "to": "david@coastalkey-pm.com",
+        "subject": "Coastal Key {{step1.quarter}} {{step1.year}} Executive Report",
+        "body": "{{step6.output}}",
+        "attachments": "PDF version generated from content"
+      }
+    },
+    {
+      "step": 8,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#executive",
+        "message": "{{step1.quarter}} {{step1.year}} QUARTERLY REPORT DELIVERED | Dials: {{step5.total_dials}} | Connect: {{step5.connect_rate}}% | Content: {{step5.content_published}} | AI Cost: ${{step5.total_inference_cost}} | Full report emailed to CEO"
+      }
+    },
+    {
+      "step": 9,
+      "app": "Airtable",
+      "action": "Create Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Quarterly Reports",
+        "fields": {
+          "Quarter": "{{step1.quarter}} {{step1.year}}",
+          "Report": "{{step6.output}}",
+          "Total Dials": "{{step5.total_dials}}",
+          "Connect Rate": "{{step5.connect_rate}}",
+          "Content Published": "{{step5.content_published}}",
+          "AI Cost": "{{step5.total_inference_cost}}",
+          "Generated": "{{now}}"
+        }
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

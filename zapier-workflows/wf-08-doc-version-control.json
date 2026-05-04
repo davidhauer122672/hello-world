@@ -1,0 +1,56 @@
+{
+  "workflow_id": "WF-8",
+  "name": "Document Version Control",
+  "tier": "1",
+  "automation_id": "A1",
+  "description": "Tracks changes to Master Orchestrator and module spec documents, enforces character/length targets, and notifies governance channel.",
+  "trigger": {
+    "app": "GitHub",
+    "event": "New Push to Branch",
+    "config": {
+      "repository": "coastalkey/master-orchestrator",
+      "branch_pattern": "claude/*",
+      "file_filter": ["master-orchestrator.txt", "*.md", "governance/*.json"]
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Extract commit details and calculate document metrics",
+        "code": "const commitMsg = inputData.commit_message; const filesChanged = inputData.files_changed; const additions = parseInt(inputData.additions); const deletions = parseInt(inputData.deletions); const netChange = additions - deletions; output = { commit_message: commitMsg, files_changed: filesChanged, additions: additions, deletions: deletions, net_change: netChange, timestamp: new Date().toISOString() };"
+      }
+    },
+    {
+      "step": 2,
+      "app": "Airtable",
+      "action": "Create Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Document Versions",
+        "fields": {
+          "Version": "{{commit_sha_short}}",
+          "Commit Message": "{{step1.commit_message}}",
+          "Files Changed": "{{step1.files_changed}}",
+          "Net Character Change": "{{step1.net_change}}",
+          "Author": "{{commit_author}}",
+          "Timestamp": "{{step1.timestamp}}",
+          "Branch": "{{branch_name}}"
+        }
+      }
+    },
+    {
+      "step": 3,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#governance",
+        "message": "Document Update | {{step1.files_changed}} | {{step1.commit_message}} | Net change: {{step1.net_change}} chars | Branch: {{branch_name}}"
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

@@ -1,0 +1,59 @@
+{
+  "version": "2.0",
+  "owner": "David Hauer, Founder & CEO",
+  "last_updated": "2026-03-11",
+  "currency": "USD",
+  "services": {
+    "weekly_home_watch": {
+      "label": "Weekly Home Watch",
+      "amount": 395,
+      "unit": "month",
+      "display": "$395/month"
+    },
+    "biweekly_home_watch": {
+      "label": "Biweekly Home Watch",
+      "amount": 295,
+      "unit": "month",
+      "display": "$295/month"
+    },
+    "monthly_home_watch": {
+      "label": "Monthly Home Watch",
+      "amount": 195,
+      "unit": "month",
+      "display": "$195/month"
+    },
+    "property_mgmt_oversight": {
+      "label": "Property Management Oversight",
+      "amount_min": 95,
+      "unit": "month",
+      "display": "from $95/month"
+    },
+    "str_oversight": {
+      "label": "STR Oversight",
+      "percentage": 10,
+      "basis": "gross rental income",
+      "display": "10% of gross rental income"
+    },
+    "pre_storm": {
+      "label": "Pre-Storm Services",
+      "amount": 295,
+      "unit": "event",
+      "display": "$295/event"
+    },
+    "post_storm": {
+      "label": "Post-Storm Services",
+      "amount": 500,
+      "unit": "event",
+      "display": "$500/event"
+    },
+    "first_inspection": {
+      "label": "First Inspection",
+      "amount": 0,
+      "display": "Complimentary",
+      "sales_note": "Use as close tool"
+    }
+  },
+  "valid_amounts": [0, 95, 195, 295, 395, 500],
+  "valid_percentages": [10],
+  "drift_detection_regex": "\\$\\d+[,\\d]*(?:\\.\\d{2})?(?:/(?:month|mo|event))?|\\d+%\\s*(?:of|gross)"
+}

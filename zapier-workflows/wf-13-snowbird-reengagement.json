@@ -1,0 +1,95 @@
+{
+  "workflow_id": "WF-13",
+  "name": "Snowbird Season Re-Engagement",
+  "tier": "2",
+  "automation_id": "B3",
+  "description": "Annual October 1 trigger for Seasonal Residents segment. Dispatches pre-arrival inspection offer and 30/60/90 day touchpoint sequence via Constant Contact with Nemotron-personalized content.",
+  "trigger": {
+    "app": "Schedule by Zapier",
+    "event": "Every Day",
+    "config": {
+      "time": "08:00",
+      "timezone": "America/New_York",
+      "condition": "Run on October 1 each year and trigger 30/60/90 day follow-ups"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Check if today is a snowbird trigger date",
+        "code": "const today = new Date(); const month = today.getMonth() + 1; const day = today.getDate(); const triggerDates = { '10-1': 'initial', '11-1': '30day', '12-1': '60day', '1-1': '90day' }; const key = month + '-' + day; const phase = triggerDates[key]; output = { is_trigger_day: !!phase, phase: phase || 'none', date: today.toISOString().split('T')[0] };"
+      }
+    },
+    {
+      "step": 2,
+      "app": "Filter by Zapier",
+      "config": {
+        "condition": "{{step1.is_trigger_day}} = true"
+      }
+    },
+    {
+      "step": 3,
+      "app": "Airtable",
+      "action": "Find Records",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Leads",
+        "formula": "OR({Segment} = 'Seasonal', {Segment} = 'Snowbird')"
+      }
+    },
+    {
+      "step": 4,
+      "app": "Webhooks by Zapier",
+      "action": "POST (for each lead)",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}",
+        "description": "Generate personalized snowbird re-engagement content",
+        "payload": {
+          "prompt": "Generate a {{step1.phase}} snowbird re-engagement email for {{lead.name}} in {{lead.zone}}. Property value: {{lead.property_value}}. Phase context: initial = pre-arrival inspection offer with complimentary first inspection, 30day = service confirmation and storm season recap, 60day = property status update and service upsell to weekly ($395/month), 90day = season wrap-up and year-round monitoring pitch. Personalize to property and zone. Close with risk of unmonitored property.",
+          "module_override": "MODULE_A"
+        }
+      }
+    },
+    {
+      "step": 5,
+      "app": "Constant Contact",
+      "action": "Add/Update Contact and Send Email",
+      "config": {
+        "list": "Snowbird Season {{current_year}}",
+        "email": "{{lead.email}}",
+        "subject_template": {
+          "initial": "Your {{lead.zone}} Property - Pre-Arrival Inspection Available",
+          "30day": "30-Day Property Status Update - {{lead.zone}}",
+          "60day": "Service Recommendation for {{lead.zone}} Property",
+          "90day": "Season Wrap-Up - Year-Round Monitoring Options"
+        },
+        "body": "{{step4.output}}"
+      }
+    },
+    {
+      "step": 6,
+      "app": "Airtable",
+      "action": "Update Record (for each lead)",
+      "config": {
+        "fields": {
+          "Snowbird Phase": "{{step1.phase}}",
+          "Last Snowbird Touch": "{{step1.date}}"
+        }
+      }
+    },
+    {
+      "step": 7,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#operations",
+        "message": "SNOWBIRD {{step1.phase}} TRIGGER | {{step3.total}} seasonal leads contacted | Phase: {{step1.phase}} | Date: {{step1.date}}"
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

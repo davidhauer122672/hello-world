@@ -1,0 +1,27 @@
+name = "coastalkey-master-orchestrator"
+main = "nemotron-router.js"
+compatibility_date = "2026-03-11"
+
+[ai]
+binding = "AI"
+
+[vars]
+ENVIRONMENT = "production"
+
+# Secrets (set via `wrangler secret put`):
+# AIRTABLE_API_KEY
+# AIRTABLE_BASE_ID
+# SLACK_WEBHOOK_URL
+# ANTHROPIC_API_KEY
+
+[[services]]
+binding = "BRAND_LINTER"
+service = "coastalkey-brand-linter"
+
+[[services]]
+binding = "PRICING_DETECTOR"
+service = "coastalkey-pricing-detector"
+
+[[services]]
+binding = "ZONE_VALIDATOR"
+service = "coastalkey-zone-validator"

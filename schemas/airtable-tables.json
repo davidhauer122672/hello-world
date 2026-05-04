@@ -1,0 +1,256 @@
+{
+  "base_name": "Coastal Key Master Orchestrator",
+  "version": "2.0",
+  "tables": {
+    "Leads": {
+      "description": "Module A - All outbound sales leads across 5 segments and 10 zones",
+      "fields": {
+        "Name": { "type": "singleLineText" },
+        "Email": { "type": "email" },
+        "Phone": { "type": "phoneNumber" },
+        "Segment": {
+          "type": "singleSelect",
+          "options": ["Absentee", "Luxury", "Investor", "Seasonal", "STR"]
+        },
+        "Zone": {
+          "type": "singleSelect",
+          "options": ["Vero Beach", "Sebastian", "Fort Pierce", "Port Saint Lucie", "Jensen Beach", "Palm City", "Stuart", "Hobe Sound", "Jupiter", "North Palm Beach"]
+        },
+        "Property Value": { "type": "currency" },
+        "Property Address": { "type": "singleLineText" },
+        "Status": {
+          "type": "singleSelect",
+          "options": ["New", "Queued for Dial", "In Sequence", "Connected", "Booked", "Closed", "Lost", "Recovery"]
+        },
+        "Sequence Step": { "type": "number" },
+        "Connected": { "type": "checkbox" },
+        "Assigned To": { "type": "singleLineText" },
+        "Hook Variant A": { "type": "multilineText" },
+        "Hook Variant B": { "type": "multilineText" },
+        "Active Hook": { "type": "multilineText" },
+        "Selected Variant": { "type": "singleSelect", "options": ["A", "B"] },
+        "AB Test ID": { "type": "singleLineText" },
+        "Investor Brief": { "type": "multilineText" },
+        "Investor Brief Status": { "type": "singleSelect", "options": ["", "Generated", "Reviewed", "Sent"] },
+        "Recovery Script": { "type": "multilineText" },
+        "Recovery Status": { "type": "singleSelect", "options": ["", "Reassigned", "Recovered", "Lost"] },
+        "Recovery Timestamp": { "type": "dateTime" },
+        "Snowbird Phase": { "type": "singleSelect", "options": ["initial", "30day", "60day", "90day"] },
+        "Last Snowbird Touch": { "type": "date" },
+        "Created": { "type": "createdTime" }
+      }
+    },
+    "Content Calendar": {
+      "description": "Module B - Social media content from brief to publish",
+      "fields": {
+        "Post Date": { "type": "date" },
+        "Platform": {
+          "type": "multipleSelects",
+          "options": ["Instagram", "Facebook", "LinkedIn", "Alignable"]
+        },
+        "Caption": { "type": "multilineText" },
+        "Asset": { "type": "multipleAttachments" },
+        "Content Pillar": { "type": "singleSelect", "options": ["Brand", "CEO Journey"] },
+        "Status": {
+          "type": "singleSelect",
+          "options": ["Draft", "Needs Revision", "Approved", "Scheduled", "Published"]
+        },
+        "AI Draft ID": { "type": "multipleRecordLinks", "linkedTable": "AI Log" },
+        "Notes": { "type": "multilineText" },
+        "Source Type": { "type": "singleLineText" },
+        "Created": { "type": "createdTime" }
+      }
+    },
+    "Video Production": {
+      "description": "Module C - Video content from brief to publish",
+      "fields": {
+        "Title": { "type": "singleLineText" },
+        "Content Type": {
+          "type": "singleSelect",
+          "options": ["Short-Form Video", "Long-Form Video", "Podcast", "Repurposed"]
+        },
+        "Target Segment": {
+          "type": "singleSelect",
+          "options": ["Absentee", "Luxury", "Investor", "Seasonal", "STR"]
+        },
+        "Platform(s)": {
+          "type": "multipleSelects",
+          "options": ["Instagram Reels", "Facebook Reels", "YouTube Shorts", "TikTok", "YouTube", "LinkedIn Video"]
+        },
+        "Script": { "type": "multilineText" },
+        "B-Roll Notes": { "type": "multilineText" },
+        "Thumbnail Brief": { "type": "multilineText" },
+        "Caption Variants": { "type": "multilineText" },
+        "Status": {
+          "type": "singleSelect",
+          "options": ["Brief", "Draft", "Needs Revision", "Approved", "In Production", "Published"]
+        },
+        "AI Log ID": { "type": "multipleRecordLinks", "linkedTable": "AI Log" },
+        "Created": { "type": "createdTime" }
+      }
+    },
+    "Podcast Production": {
+      "description": "Module C - Podcast episodes from brief to publish",
+      "fields": {
+        "Episode Title": { "type": "singleLineText" },
+        "Target Segment": {
+          "type": "singleSelect",
+          "options": ["Absentee", "Luxury", "Investor", "Seasonal", "STR", "General"]
+        },
+        "Outline": { "type": "multilineText" },
+        "Talking Points": { "type": "multilineText" },
+        "Intro Script": { "type": "multilineText" },
+        "Outro Script": { "type": "multilineText" },
+        "Show Notes": { "type": "multilineText" },
+        "Status": {
+          "type": "singleSelect",
+          "options": ["Brief", "Draft", "Needs Revision", "Approved", "Published"]
+        },
+        "AI Log ID": { "type": "multipleRecordLinks", "linkedTable": "AI Log" },
+        "Created": { "type": "createdTime" }
+      }
+    },
+    "AI Log": {
+      "description": "WF-7 - Every Nemotron inference call logged for audit",
+      "fields": {
+        "Module": { "type": "singleSelect", "options": ["MODULE_A", "MODULE_B", "MODULE_C", "MODULE_UNDEFINED"] },
+        "Input Brief": { "type": "multilineText" },
+        "Output Text": { "type": "multilineText" },
+        "Model ID": { "type": "singleLineText" },
+        "Timestamp": { "type": "dateTime" },
+        "Tokens Est": { "type": "number" }
+      }
+    },
+    "KPI Events": {
+      "description": "C1 - Real-time event stream for dashboard",
+      "fields": {
+        "Event Type": { "type": "singleSelect", "options": ["call_disposition", "content_published", "status_change"] },
+        "Data": { "type": "multilineText" },
+        "Metric": { "type": "singleLineText" },
+        "Zone": { "type": "singleLineText" },
+        "Segment": { "type": "singleLineText" },
+        "Timestamp": { "type": "dateTime" }
+      }
+    },
+    "AB Test Log": {
+      "description": "C3 - A/B hook testing records",
+      "fields": {
+        "Test ID": { "type": "singleLineText" },
+        "Lead": { "type": "singleLineText" },
+        "Segment": { "type": "singleLineText" },
+        "Zone": { "type": "singleLineText" },
+        "Variant A": { "type": "multilineText" },
+        "Variant B": { "type": "multilineText" },
+        "Selected": { "type": "singleSelect", "options": ["A", "B"] },
+        "Outcome": { "type": "singleSelect", "options": ["Pending", "Connected", "Converted", "No Answer", "Rejected"] },
+        "Created": { "type": "dateTime" },
+        "Resolved": { "type": "dateTime" }
+      }
+    },
+    "Recovery Log": {
+      "description": "C4 - Sequence recovery interventions",
+      "fields": {
+        "Lead": { "type": "singleLineText" },
+        "Segment": { "type": "singleLineText" },
+        "Zone": { "type": "singleLineText" },
+        "Completion Rate": { "type": "singleLineText" },
+        "Step": { "type": "number" },
+        "Action": { "type": "singleLineText" },
+        "Script Generated": { "type": "checkbox" },
+        "Timestamp": { "type": "dateTime" }
+      }
+    },
+    "Storm Service Queue": {
+      "description": "B1 - Storm-triggered service dispatch records",
+      "fields": {
+        "Client": { "type": "singleLineText" },
+        "Zone": { "type": "singleLineText" },
+        "Alert Type": { "type": "singleLineText" },
+        "Severity": { "type": "singleLineText" },
+        "Pre-Storm Status": { "type": "singleSelect", "options": ["Notified", "Scheduled", "Completed"] },
+        "Post-Storm Inspection": { "type": "singleSelect", "options": ["Scheduled", "Completed", "Cancelled"] },
+        "Pre-Storm Revenue": { "type": "singleLineText" },
+        "Post-Storm Revenue": { "type": "singleLineText" },
+        "Alert Onset": { "type": "dateTime" },
+        "Created": { "type": "dateTime" }
+      }
+    },
+    "Inference Cost Log": {
+      "description": "C2 - Daily inference cost rollup",
+      "fields": {
+        "Date": { "type": "date" },
+        "Total Calls": { "type": "number" },
+        "Module A Calls": { "type": "number" },
+        "Module B Calls": { "type": "number" },
+        "Module C Calls": { "type": "number" },
+        "Est Cost USD": { "type": "currency" },
+        "Over Threshold": { "type": "checkbox" }
+      }
+    },
+    "Investor Compliance Log": {
+      "description": "D3 - Investor interaction archive records",
+      "fields": {
+        "Lead": { "type": "singleLineText" },
+        "Property Value": { "type": "currency" },
+        "Zone": { "type": "singleLineText" },
+        "Archive Key": { "type": "singleLineText" },
+        "Retention Expires": { "type": "dateTime" },
+        "Artifacts Complete": { "type": "checkbox" },
+        "Missing Artifacts": { "type": "singleLineText" },
+        "Archived At": { "type": "dateTime" }
+      }
+    },
+    "Document Versions": {
+      "description": "A1 - Document version tracking",
+      "fields": {
+        "Version": { "type": "singleLineText" },
+        "Commit Message": { "type": "singleLineText" },
+        "Files Changed": { "type": "singleLineText" },
+        "Net Character Change": { "type": "number" },
+        "Author": { "type": "singleLineText" },
+        "Branch": { "type": "singleLineText" },
+        "Timestamp": { "type": "dateTime" }
+      }
+    },
+    "Authorization Log": {
+      "description": "A4 - Authorization gate events",
+      "fields": {
+        "Action": { "type": "singleLineText" },
+        "Authorized By": { "type": "email" },
+        "Modules Activated": { "type": "singleLineText" },
+        "Workflows Activated": { "type": "singleLineText" },
+        "Timestamp": { "type": "dateTime" }
+      }
+    },
+    "Quarterly Reports": {
+      "description": "D4 - Quarterly executive rollup archive",
+      "fields": {
+        "Quarter": { "type": "singleLineText" },
+        "Report": { "type": "multilineText" },
+        "Total Dials": { "type": "number" },
+        "Connect Rate": { "type": "singleLineText" },
+        "Content Published": { "type": "number" },
+        "AI Cost": { "type": "singleLineText" },
+        "Generated": { "type": "dateTime" }
+      }
+    },
+    "Clients": {
+      "description": "Active client records for storm and service dispatch",
+      "fields": {
+        "Name": { "type": "singleLineText" },
+        "Email": { "type": "email" },
+        "Phone": { "type": "phoneNumber" },
+        "Zone": {
+          "type": "singleSelect",
+          "options": ["Vero Beach", "Sebastian", "Fort Pierce", "Port Saint Lucie", "Jensen Beach", "Palm City", "Stuart", "Hobe Sound", "Jupiter", "North Palm Beach"]
+        },
+        "Service Tier": { "type": "singleSelect", "options": ["Weekly", "Biweekly", "Monthly", "STR", "Oversight"] },
+        "Property Address": { "type": "singleLineText" },
+        "Property Value": { "type": "currency" },
+        "Status": { "type": "singleSelect", "options": ["Active", "Inactive", "Prospect"] },
+        "Monthly Revenue": { "type": "currency" },
+        "Start Date": { "type": "date" }
+      }
+    }
+  }
+}

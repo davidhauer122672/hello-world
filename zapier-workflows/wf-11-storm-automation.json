@@ -1,0 +1,108 @@
+{
+  "workflow_id": "WF-11",
+  "name": "Weather/Storm Automation",
+  "tier": "2",
+  "automation_id": "B1",
+  "description": "Monitors NOAA alerts for Treasure Coast zones. On watch/warning, dispatches pre-storm service notifications to active clients and auto-books post-storm inspections.",
+  "trigger": {
+    "app": "Schedule by Zapier",
+    "event": "Every 15 Minutes",
+    "config": {
+      "interval": 15,
+      "note": "Polls NOAA API for active alerts in monitored zones"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Webhooks by Zapier",
+      "action": "GET",
+      "config": {
+        "url": "https://api.weather.gov/alerts/active",
+        "params": {
+          "zone": "FLZ060,FLZ061,FLZ062,FLZ063",
+          "severity": "Moderate,Severe,Extreme",
+          "event": "Hurricane Warning,Hurricane Watch,Tropical Storm Warning,Tropical Storm Watch,Storm Surge Warning,Flood Warning"
+        }
+      }
+    },
+    {
+      "step": 2,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Parse NOAA alerts and map to service zones",
+        "code": "const alerts = JSON.parse(inputData.response).features || []; const zoneMap = { FLZ060: ['Vero Beach', 'Sebastian'], FLZ061: ['Fort Pierce', 'Port Saint Lucie'], FLZ062: ['Jensen Beach', 'Palm City', 'Stuart', 'Hobe Sound'], FLZ063: ['Jupiter', 'North Palm Beach'] }; const activeAlerts = alerts.map(a => ({ event: a.properties.event, severity: a.properties.severity, zones: (a.properties.geocode?.UGC || []).filter(z => zoneMap[z]).flatMap(z => zoneMap[z]), onset: a.properties.onset, expires: a.properties.expires })).filter(a => a.zones.length > 0); output = { has_alerts: activeAlerts.length > 0, alerts: activeAlerts, affected_zones: [...new Set(activeAlerts.flatMap(a => a.zones))] };"
+      }
+    },
+    {
+      "step": 3,
+      "app": "Filter by Zapier",
+      "config": {
+        "condition": "{{step2.has_alerts}} = true"
+      }
+    },
+    {
+      "step": 4,
+      "app": "Airtable",
+      "action": "Find Records",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Clients",
+        "formula": "AND({Status} = 'Active', OR({{affected_zone_formula}}))",
+        "description": "Find active clients in affected service zones"
+      }
+    },
+    {
+      "step": 5,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}",
+        "description": "Generate Nemotron storm advisory content",
+        "payload": {
+          "prompt": "Generate a pre-storm client advisory for the following zones: {{step2.affected_zones}}. Alert type: {{step2.alerts[0].event}}. Include pre-storm service availability at $295/event and post-storm inspection at $500/event. Close with property risk frame.",
+          "module_override": "MODULE_B"
+        }
+      }
+    },
+    {
+      "step": 6,
+      "app": "Gmail",
+      "action": "Send Email (for each client)",
+      "config": {
+        "to": "{{client.email}}",
+        "subject": "Coastal Key Storm Advisory - {{step2.alerts[0].event}} - Action Required",
+        "body": "{{step5.output}}"
+      }
+    },
+    {
+      "step": 7,
+      "app": "Airtable",
+      "action": "Create Record (for each client)",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Storm Service Queue",
+        "fields": {
+          "Client": "{{client.name}}",
+          "Zone": "{{client.zone}}",
+          "Alert Type": "{{step2.alerts[0].event}}",
+          "Pre-Storm Status": "Notified",
+          "Post-Storm Inspection": "Scheduled",
+          "Revenue": "$295 pre + $500 post"
+        }
+      }
+    },
+    {
+      "step": 8,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#operations",
+        "message": "STORM ALERT ACTIVATED | {{step2.alerts[0].event}} | Zones: {{step2.affected_zones}} | {{step4.total}} clients notified | Pre-storm + post-storm services queued"
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

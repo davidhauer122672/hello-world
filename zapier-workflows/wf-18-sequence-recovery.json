@@ -1,0 +1,91 @@
+{
+  "workflow_id": "WF-18",
+  "name": "Sequence Completion Recovery",
+  "tier": "3",
+  "automation_id": "C4",
+  "description": "Detects leads dropping below 85% sequence completion threshold. Auto-reassigns to senior closer, triggers Nemotron win-back script, logs intervention.",
+  "trigger": {
+    "app": "Airtable",
+    "event": "Record Updated",
+    "config": {
+      "base": "Master Orchestrator",
+      "table": "Leads",
+      "formula": "AND({Sequence Step} >= 4, {Connected} = FALSE(), {Touches Remaining} <= 2)"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Calculate sequence health and determine recovery action",
+        "code": "const totalTouches = 6; const completedTouches = parseInt(inputData.sequence_step); const connected = inputData.connected === 'true'; const completionRate = (completedTouches / totalTouches) * 100; const atRisk = completionRate < 85 && !connected; output = { at_risk: atRisk, completion_rate: completionRate.toFixed(1), completed_touches: completedTouches, total_touches: totalTouches, remaining: totalTouches - completedTouches, action: atRisk ? 'reassign_senior' : 'continue', lead_name: inputData.name, segment: inputData.segment, zone: inputData.zone };"
+      }
+    },
+    {
+      "step": 2,
+      "app": "Filter by Zapier",
+      "config": {
+        "condition": "{{step1.at_risk}} = true"
+      }
+    },
+    {
+      "step": 3,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}",
+        "description": "Generate Nemotron win-back script variant",
+        "payload": {
+          "prompt": "Generate a win-back call script for a lead that has not connected after {{step1.completed_touches}} of {{step1.total_touches}} attempts. Lead: {{step1.lead_name}}. Segment: {{step1.segment}}. Zone: {{step1.zone}}. This is a senior closer recovery call. Open with urgency and property risk. Reference previous outreach attempts without being aggressive. Close with complimentary first inspection offer.",
+          "module_override": "MODULE_A"
+        }
+      }
+    },
+    {
+      "step": 4,
+      "app": "Airtable",
+      "action": "Update Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Leads",
+        "record_id": "{{trigger.record_id}}",
+        "fields": {
+          "Assigned To": "Senior Closer",
+          "Recovery Script": "{{step3.output}}",
+          "Recovery Status": "Reassigned",
+          "Recovery Timestamp": "{{now}}"
+        }
+      }
+    },
+    {
+      "step": 5,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#sales-team",
+        "message": "SEQUENCE RECOVERY | {{step1.lead_name}} | {{step1.segment}} | {{step1.zone}} | {{step1.completion_rate}}% completion | Reassigned to senior closer with win-back script"
+      }
+    },
+    {
+      "step": 6,
+      "app": "Airtable",
+      "action": "Create Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Recovery Log",
+        "fields": {
+          "Lead": "{{step1.lead_name}}",
+          "Segment": "{{step1.segment}}",
+          "Completion Rate": "{{step1.completion_rate}}%",
+          "Action": "Senior closer reassignment",
+          "Script Generated": true,
+          "Timestamp": "{{now}}"
+        }
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

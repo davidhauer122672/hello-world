@@ -1,0 +1,76 @@
+{
+  "workflow_id": "WF-12",
+  "name": "Investor Lead Auto-Briefing",
+  "tier": "2",
+  "automation_id": "B2",
+  "description": "On $5M+ investor lead detection, pulls public property records, generates Nemotron one-page brief, attaches to CEO email within 30 minutes of flag.",
+  "trigger": {
+    "app": "Airtable",
+    "event": "New or Updated Record",
+    "config": {
+      "base": "Master Orchestrator",
+      "table": "Leads",
+      "formula": "AND({Segment} = 'Investor', {Property Value} >= 5000000, {Investor Brief Status} = '')"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Format lead data for brief generation",
+        "code": "output = { lead_name: inputData.name, property_value: inputData.property_value, property_address: inputData.address, zone: inputData.zone, segment: inputData.segment, portfolio_size: inputData.portfolio_size || 'Unknown', contact_method: inputData.preferred_contact, formatted_value: '$' + (parseInt(inputData.property_value) / 1000000).toFixed(1) + 'M' };"
+      }
+    },
+    {
+      "step": 2,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}",
+        "description": "Generate Nemotron investor property brief",
+        "payload": {
+          "prompt": "Generate a one-page investor property brief for CEO review. Lead: {{step1.lead_name}}. Property value: {{step1.formatted_value}}. Location: {{step1.property_address}}, {{step1.zone}}. Portfolio size: {{step1.portfolio_size}}. Include: property risk profile for absentee ownership, recommended service tier (Weekly Home Watch at $395/month for properties over $1M), multi-property discount potential, and escalation justification. Format as HEADER, PROPERTY SUMMARY, RISK ASSESSMENT, SERVICE RECOMMENDATION, NEXT STEPS.",
+          "module_override": "MODULE_A"
+        }
+      }
+    },
+    {
+      "step": 3,
+      "app": "Airtable",
+      "action": "Update Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Leads",
+        "record_id": "{{trigger.record_id}}",
+        "fields": {
+          "Investor Brief": "{{step2.output}}",
+          "Investor Brief Status": "Generated",
+          "Brief Generated At": "{{step2.timestamp}}"
+        }
+      }
+    },
+    {
+      "step": 4,
+      "app": "Gmail",
+      "action": "Send Email",
+      "config": {
+        "to": "david@coastalkey-pm.com",
+        "subject": "Investor Brief Ready: {{step1.lead_name}} | {{step1.formatted_value}} | {{step1.zone}}",
+        "body": "David,\n\nInvestor lead flagged at {{step1.formatted_value}} threshold.\n\n{{step2.output}}\n\nLead record: https://airtable.com/{{base_id}}/{{table_id}}/{{trigger.record_id}}\n\nReview and approve before WF-3 investor escalation fires.\n\nCoastal Key AI Operations"
+      }
+    },
+    {
+      "step": 5,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#investor-alerts",
+        "message": "INVESTOR BRIEF GENERATED | {{step1.lead_name}} | {{step1.formatted_value}} | {{step1.zone}} | CEO email sent | Awaiting review before WF-3 escalation"
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

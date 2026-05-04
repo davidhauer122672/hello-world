@@ -1,0 +1,66 @@
+{
+  "workflow_id": "WF-15",
+  "name": "Real-Time KPI Dashboard Feed",
+  "tier": "3",
+  "automation_id": "C1",
+  "description": "Feeds every Atlas call disposition, Buffer publish event, and Airtable status change to a real-time KPI dashboard tracking Section 3.5 metrics.",
+  "trigger": {
+    "app": "Multi-Trigger",
+    "events": [
+      {
+        "source": "Airtable",
+        "event": "Record Updated",
+        "table": "Leads",
+        "description": "Atlas call disposition recorded"
+      },
+      {
+        "source": "Buffer",
+        "event": "Post Published",
+        "description": "Social content published"
+      },
+      {
+        "source": "Airtable",
+        "event": "Record Updated",
+        "table": "Content Calendar",
+        "description": "Content status change"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Classify event type and extract KPI data",
+        "code": "const eventType = inputData.source; let kpiData = {}; if (eventType === 'atlas_disposition') { kpiData = { metric: 'call_disposition', outcome: inputData.disposition, agent: inputData.agent, zone: inputData.zone, segment: inputData.segment, connected: inputData.connected === 'true', booked: inputData.booked === 'true', investor_flagged: inputData.investor_flag === 'true' }; } else if (eventType === 'buffer_publish') { kpiData = { metric: 'content_published', platform: inputData.platform, pillar: inputData.pillar }; } else { kpiData = { metric: 'status_change', table: inputData.table, old_status: inputData.old_status, new_status: inputData.new_status }; } kpiData.timestamp = new Date().toISOString(); output = kpiData;"
+      }
+    },
+    {
+      "step": 2,
+      "app": "Airtable",
+      "action": "Create Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "KPI Events",
+        "fields": {
+          "Event Type": "{{step1.metric}}",
+          "Data": "{{step1}}",
+          "Timestamp": "{{step1.timestamp}}"
+        }
+      }
+    },
+    {
+      "step": 3,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{DASHBOARD_WEBHOOK_URL}}",
+        "description": "Push event to real-time dashboard",
+        "payload": "{{step1}}"
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

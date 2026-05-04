@@ -1,0 +1,76 @@
+{
+  "workflow_id": "WF-16",
+  "name": "Nemotron Inference Cost Monitor",
+  "tier": "3",
+  "automation_id": "C2",
+  "description": "Daily rollup of Nemotron token spend per module from AI Log table. Alerts if spend exceeds thresholds and identifies prompt inefficiency.",
+  "trigger": {
+    "app": "Schedule by Zapier",
+    "event": "Every Day",
+    "config": {
+      "time": "23:55",
+      "timezone": "America/New_York"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Airtable",
+      "action": "Find Records",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "AI Log",
+        "formula": "IS_SAME(CREATED_TIME(), TODAY(), 'day')",
+        "sort": [{"field": "Module", "direction": "asc"}]
+      }
+    },
+    {
+      "step": 2,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Calculate daily inference costs per module",
+        "code": "const records = inputData.records || []; const costPerToken = 0.0001; const modules = { MODULE_A: { calls: 0, est_tokens: 0 }, MODULE_B: { calls: 0, est_tokens: 0 }, MODULE_C: { calls: 0, est_tokens: 0 } }; records.forEach(r => { const mod = r.module || 'MODULE_A'; if (modules[mod]) { modules[mod].calls++; modules[mod].est_tokens += (r.input_brief?.length || 0) + (r.output_text?.length || 0); } }); const totalCalls = Object.values(modules).reduce((s, m) => s + m.calls, 0); const totalTokens = Object.values(modules).reduce((s, m) => s + m.est_tokens, 0); const estCost = (totalTokens * costPerToken).toFixed(2); const threshold = 50; output = { modules, total_calls: totalCalls, total_est_tokens: totalTokens, est_cost_usd: estCost, over_threshold: parseFloat(estCost) > threshold, threshold_usd: threshold, date: new Date().toISOString().split('T')[0] };"
+      }
+    },
+    {
+      "step": 3,
+      "app": "Airtable",
+      "action": "Create Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Inference Cost Log",
+        "fields": {
+          "Date": "{{step2.date}}",
+          "Total Calls": "{{step2.total_calls}}",
+          "Module A Calls": "{{step2.modules.MODULE_A.calls}}",
+          "Module B Calls": "{{step2.modules.MODULE_B.calls}}",
+          "Module C Calls": "{{step2.modules.MODULE_C.calls}}",
+          "Est Cost USD": "{{step2.est_cost_usd}}",
+          "Over Threshold": "{{step2.over_threshold}}"
+        }
+      }
+    },
+    {
+      "step": 4,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#ai-operations",
+        "message": "DAILY INFERENCE REPORT | {{step2.date}} | Calls: {{step2.total_calls}} | Est Cost: ${{step2.est_cost_usd}} | A: {{step2.modules.MODULE_A.calls}} | B: {{step2.modules.MODULE_B.calls}} | C: {{step2.modules.MODULE_C.calls}}{{step2.over_threshold ? ' | OVER THRESHOLD' : ''}}"
+      }
+    },
+    {
+      "step": 5,
+      "app": "Slack",
+      "action": "Send Direct Message",
+      "config": {
+        "user": "david@coastalkey-pm.com",
+        "message": "COST ALERT: Daily inference spend ${{step2.est_cost_usd}} exceeds ${{step2.threshold_usd}} threshold. Review prompt efficiency.",
+        "condition": "{{step2.over_threshold}} = true"
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

@@ -1,0 +1,78 @@
+{
+  "workflow_id": "WF-9",
+  "name": "Stalled Draft Escalation",
+  "tier": "1",
+  "automation_id": "A3",
+  "description": "Monitors Airtable drafts that remain in Draft status beyond SLA thresholds (24h warning, 48h escalation, 72h critical) and alerts CEO.",
+  "trigger": {
+    "app": "Schedule by Zapier",
+    "event": "Every Hour",
+    "config": {
+      "interval": 60
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Airtable",
+      "action": "Find Records",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Content Calendar",
+        "formula": "AND({Status} = 'Draft', DATETIME_DIFF(NOW(), {Created}, 'hours') > 24)",
+        "sort": [{"field": "Created", "direction": "asc"}]
+      }
+    },
+    {
+      "step": 2,
+      "app": "Airtable",
+      "action": "Find Records",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Video Production",
+        "formula": "AND({Status} = 'Draft', DATETIME_DIFF(NOW(), {Created}, 'hours') > 24)"
+      }
+    },
+    {
+      "step": 3,
+      "app": "Airtable",
+      "action": "Find Records",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Podcast Production",
+        "formula": "AND({Status} = 'Draft', DATETIME_DIFF(NOW(), {Created}, 'hours') > 24)"
+      }
+    },
+    {
+      "step": 4,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Classify each stalled record by severity",
+        "code": "const records = [...inputData.content_records, ...inputData.video_records, ...inputData.podcast_records]; const now = Date.now(); const classified = records.map(r => { const hours = (now - new Date(r.created).getTime()) / 3600000; let severity = 'warning'; if (hours > 72) severity = 'critical'; else if (hours > 48) severity = 'escalation'; return { ...r, hours_stalled: Math.round(hours), severity }; }); output = { stalled_records: classified, total: classified.length, critical: classified.filter(r => r.severity === 'critical').length };"
+      }
+    },
+    {
+      "step": 5,
+      "app": "Slack",
+      "action": "Send Direct Message",
+      "config": {
+        "user": "david@coastalkey-pm.com",
+        "message": "STALLED DRAFTS: {{step4.total}} records pending review\nCritical (72h+): {{step4.critical}}\nReview at: https://airtable.com/{{base_id}}",
+        "condition": "{{step4.total}} > 0"
+      }
+    },
+    {
+      "step": 6,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#ai-drafts",
+        "message": "Draft SLA Monitor | {{step4.total}} stalled records | {{step4.critical}} critical",
+        "condition": "{{step4.total}} > 0"
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

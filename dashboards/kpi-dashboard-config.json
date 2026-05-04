@@ -1,0 +1,209 @@
+{
+  "dashboard_name": "Coastal Key Master Orchestrator - Live KPIs",
+  "version": "2.0",
+  "refresh_interval_seconds": 30,
+  "data_source": {
+    "primary": "Airtable KPI Events table",
+    "feed_workflow": "WF-15",
+    "webhook_endpoint": "{{DASHBOARD_WEBHOOK_URL}}"
+  },
+  "panels": {
+    "module_a_sentinel": {
+      "title": "Module A - Project Sentinel",
+      "position": "top-left",
+      "widgets": [
+        {
+          "id": "dials_today",
+          "type": "number",
+          "label": "Dials Today",
+          "source": "KPI Events WHERE metric=call_disposition AND date=TODAY",
+          "target": { "min": 80, "max": 100, "unit": "per agent" },
+          "color_rules": { "green": ">= 80", "yellow": "60-79", "red": "< 60" }
+        },
+        {
+          "id": "connect_rate",
+          "type": "gauge",
+          "label": "Connect Rate",
+          "source": "connections / total_dials * 100",
+          "target": { "min": 12, "max": 18, "unit": "%" },
+          "color_rules": { "green": ">= 12", "yellow": "8-11", "red": "< 8" }
+        },
+        {
+          "id": "book_rate",
+          "type": "gauge",
+          "label": "Consultation Book Rate",
+          "source": "bookings / connections * 100",
+          "target": { "min": 25, "max": 35, "unit": "%" },
+          "color_rules": { "green": ">= 25", "yellow": "15-24", "red": "< 15" }
+        },
+        {
+          "id": "close_rate",
+          "type": "gauge",
+          "label": "Close Rate",
+          "source": "closes / bookings * 100",
+          "target": { "min": 40, "max": 60, "unit": "%" },
+          "color_rules": { "green": ">= 40", "yellow": "25-39", "red": "< 25" }
+        },
+        {
+          "id": "cpa",
+          "type": "number",
+          "label": "Cost Per Acquisition",
+          "source": "total_cost / closes",
+          "target": { "max": 150, "unit": "USD" },
+          "color_rules": { "green": "<= 150", "yellow": "151-200", "red": "> 200" }
+        },
+        {
+          "id": "sequence_completion",
+          "type": "gauge",
+          "label": "Sequence Completion",
+          "source": "completed_sequences / total_sequences * 100",
+          "target": { "min": 85, "unit": "%" },
+          "color_rules": { "green": ">= 85", "yellow": "70-84", "red": "< 70" }
+        },
+        {
+          "id": "investor_flags",
+          "type": "number",
+          "label": "Investor Flags ($5M+)",
+          "source": "KPI Events WHERE investor_flagged=true",
+          "target": { "accuracy": "100%", "unit": "flags" }
+        }
+      ]
+    },
+    "module_b_social": {
+      "title": "Module B - Social Automation",
+      "position": "top-right",
+      "widgets": [
+        {
+          "id": "content_pipeline",
+          "type": "funnel",
+          "label": "Content Pipeline",
+          "stages": ["Draft", "Approved", "Scheduled", "Published"],
+          "source": "Content Calendar GROUP BY Status"
+        },
+        {
+          "id": "posts_this_week",
+          "type": "number",
+          "label": "Posts Published This Week",
+          "source": "Content Calendar WHERE Status=Published AND date >= START_OF_WEEK"
+        },
+        {
+          "id": "platform_distribution",
+          "type": "pie",
+          "label": "Posts by Platform",
+          "source": "Content Calendar GROUP BY Platform",
+          "segments": ["Instagram", "Facebook", "LinkedIn", "Alignable"]
+        }
+      ]
+    },
+    "module_c_content": {
+      "title": "Module C - Content Production",
+      "position": "middle-left",
+      "widgets": [
+        {
+          "id": "video_pipeline",
+          "type": "funnel",
+          "label": "Video Pipeline",
+          "stages": ["Brief", "Draft", "Approved", "In Production", "Published"],
+          "source": "Video Production GROUP BY Status"
+        },
+        {
+          "id": "derivatives_generated",
+          "type": "number",
+          "label": "Derivatives Generated",
+          "source": "Content Calendar WHERE Source Type='Cross-Module Syndication'"
+        },
+        {
+          "id": "podcast_episodes",
+          "type": "number",
+          "label": "Podcast Episodes",
+          "source": "Podcast Production COUNT"
+        }
+      ]
+    },
+    "zone_performance": {
+      "title": "Performance by Zone",
+      "position": "middle-right",
+      "widgets": [
+        {
+          "id": "zone_heatmap",
+          "type": "heatmap",
+          "label": "Zone Activity",
+          "source": "KPI Events GROUP BY zone",
+          "zones": ["Vero Beach", "Sebastian", "Fort Pierce", "Port Saint Lucie", "Jensen Beach", "Palm City", "Stuart", "Hobe Sound", "Jupiter", "North Palm Beach"],
+          "metric": "dials"
+        },
+        {
+          "id": "zone_conversion",
+          "type": "bar",
+          "label": "Connect Rate by Zone",
+          "source": "KPI Events GROUP BY zone, CALCULATE connect_rate"
+        }
+      ]
+    },
+    "ai_operations": {
+      "title": "AI Operations",
+      "position": "bottom-left",
+      "widgets": [
+        {
+          "id": "inference_calls_today",
+          "type": "number",
+          "label": "Nemotron Calls Today",
+          "source": "AI Log WHERE date=TODAY COUNT"
+        },
+        {
+          "id": "daily_cost",
+          "type": "number",
+          "label": "Est. Daily Cost",
+          "source": "Inference Cost Log LATEST",
+          "format": "currency",
+          "threshold_alert": 50
+        },
+        {
+          "id": "model_usage",
+          "type": "pie",
+          "label": "Calls by Module",
+          "source": "AI Log GROUP BY Module",
+          "segments": ["MODULE_A", "MODULE_B", "MODULE_C"]
+        },
+        {
+          "id": "fallback_rate",
+          "type": "number",
+          "label": "Fallback Rate",
+          "source": "AI Log WHERE Model ID != nemotron / total * 100",
+          "format": "percentage"
+        }
+      ]
+    },
+    "governance": {
+      "title": "Governance & Compliance",
+      "position": "bottom-right",
+      "widgets": [
+        {
+          "id": "stalled_drafts",
+          "type": "number",
+          "label": "Stalled Drafts (>24h)",
+          "source": "Content Calendar + Video Production + Podcast Production WHERE Status=Draft AND age > 24h",
+          "color_rules": { "green": "0", "yellow": "1-3", "red": "> 3" }
+        },
+        {
+          "id": "brand_violations",
+          "type": "number",
+          "label": "Brand Voice Violations Today",
+          "source": "Content Calendar WHERE Status='Needs Revision' AND date=TODAY"
+        },
+        {
+          "id": "pricing_drift",
+          "type": "number",
+          "label": "Pricing Drift Alerts",
+          "source": "AI Log WHERE pricing_drift_flag=true"
+        },
+        {
+          "id": "compliance_incomplete",
+          "type": "number",
+          "label": "Incomplete Investor Archives",
+          "source": "Investor Compliance Log WHERE Artifacts Complete=false"
+        }
+      ]
+    }
+  }
+}

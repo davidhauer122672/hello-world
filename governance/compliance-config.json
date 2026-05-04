@@ -1,0 +1,42 @@
+{
+  "version": "2.0",
+  "owner": "David Hauer, Founder & CEO",
+  "last_updated": "2026-03-11",
+  "investor_compliance": {
+    "threshold": 5000000,
+    "threshold_display": "$5M+",
+    "retention_years": 7,
+    "archive_storage": "s3-object-lock",
+    "archive_bucket": "coastalkey-investor-compliance",
+    "required_artifacts": [
+      "call_recording",
+      "nemotron_brief",
+      "follow_up_emails",
+      "property_brief",
+      "ceo_review_timestamp"
+    ],
+    "escalation_window_hours": 4
+  },
+  "audit_trail": {
+    "ai_log_table": "AI Log",
+    "required_fields": ["module_tag", "input_brief", "output_text", "timestamp", "model_id"],
+    "retention_days": 365
+  },
+  "authorization": {
+    "trigger_phrase": "AUTHORIZE MASTER ORCHESTRATOR",
+    "authorized_users": ["david@coastalkey-pm.com"],
+    "channels": ["slack_dm", "email"],
+    "on_authorize": [
+      "activate_atlas_step_10",
+      "set_wf1_through_wf7_live",
+      "route_worker_to_production",
+      "notify_sales_team_slack"
+    ]
+  },
+  "draft_sla": {
+    "warning_hours": 24,
+    "escalation_hours": 48,
+    "critical_hours": 72,
+    "notify_channel": "#ai-drafts"
+  }
+}

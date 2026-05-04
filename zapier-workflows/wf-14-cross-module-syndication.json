@@ -1,0 +1,69 @@
+{
+  "workflow_id": "WF-14",
+  "name": "Cross-Module Content Syndication",
+  "tier": "2",
+  "automation_id": "B4",
+  "description": "When Module C long-form content is approved, auto-creates Module B social calendar entries for all 8 repurposed derivatives and schedules across 4 platforms over 14 days via Buffer.",
+  "trigger": {
+    "app": "Airtable",
+    "event": "Record Updated",
+    "config": {
+      "base": "Master Orchestrator",
+      "table": "Video Production",
+      "filter": "AND({Status} = 'Approved', {Content Type} != 'Short-Form Video')"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}",
+        "description": "Generate all 8 derivative assets in single Nemotron pass",
+        "payload": {
+          "prompt": "Repurpose the following approved content into 8 derivative assets. Source title: {{trigger.title}}. Source script: {{trigger.script}}. Generate all 8 in this exact format: ASSET_1: Full script (original). ASSET_2: 60-second short-form hook cut. ASSET_3: LinkedIn long-form article adaptation. ASSET_4: Instagram carousel outline (5-7 slides). ASSET_5: Facebook post (short form, 150 words). ASSET_6: Email newsletter segment. ASSET_7: Podcast talking point expansion. ASSET_8: YouTube description and chapter breakdown.",
+          "module_override": "MODULE_C"
+        }
+      }
+    },
+    {
+      "step": 2,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Parse 8 derivatives and generate 14-day schedule",
+        "code": "const output_text = inputData.nemotron_output; const assets = output_text.split(/ASSET_\\d+:/).filter(a => a.trim()); const platforms = ['Instagram', 'Facebook', 'LinkedIn', 'YouTube']; const schedule = []; const baseDate = new Date(); for (let i = 0; i < assets.length; i++) { const postDate = new Date(baseDate); postDate.setDate(postDate.getDate() + (i * 2)); schedule.push({ asset_number: i + 1, content: assets[i]?.trim(), platform: platforms[i % platforms.length], scheduled_date: postDate.toISOString().split('T')[0], status: 'Draft' }); } output = { derivatives: schedule, total: schedule.length, span_days: 14, source_title: inputData.source_title };"
+      }
+    },
+    {
+      "step": 3,
+      "app": "Airtable",
+      "action": "Create Records (batch)",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Content Calendar",
+        "records": "{{step2.derivatives}}",
+        "field_mapping": {
+          "Post Date": "scheduled_date",
+          "Platform": "platform",
+          "Caption": "content",
+          "Content Pillar": "Brand",
+          "Status": "Draft",
+          "Notes": "Auto-syndicated from {{step2.source_title}} (Asset {{asset_number}} of 8)"
+        }
+      }
+    },
+    {
+      "step": 4,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#content-calendar",
+        "message": "CONTENT SYNDICATION | {{step2.source_title}} | {{step2.total}} derivatives created | Scheduled across {{step2.span_days}} days | All posted to Content Calendar as Draft for CEO review"
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

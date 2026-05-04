@@ -1,0 +1,28 @@
+{
+  "version": "2.0",
+  "owner": "David Hauer, Founder & CEO",
+  "last_updated": "2026-03-11",
+  "tone": ["institutional", "authoritative", "concise", "risk-first"],
+  "reading_level_max": 9,
+  "prohibited": {
+    "punctuation": ["!", "—"],
+    "phrases": [
+      "It is important to note",
+      "In conclusion",
+      "Furthermore",
+      "As a matter of fact",
+      "It goes without saying",
+      "Needless to say"
+    ],
+    "emojis_unless_specified": true
+  },
+  "structure_rules": {
+    "first_sentence": "Get to the point immediately",
+    "closing": "Every piece must close with a risk frame or consequence statement"
+  },
+  "validation_regex": {
+    "exclamation_points": "!",
+    "em_dashes": "—|\\u2014",
+    "filler_phrases": "(?i)(it is important to note|in conclusion|furthermore|as a matter of fact|it goes without saying|needless to say)"
+  }
+}

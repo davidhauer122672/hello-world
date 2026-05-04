@@ -1,0 +1,32 @@
+{
+  "version": "2.0",
+  "owner": "David Hauer, Founder & CEO",
+  "last_updated": "2026-03-11",
+  "region": "Florida Treasure Coast",
+  "zones": [
+    {"name": "Vero Beach", "county": "Indian River", "noaa_zone": "FLZ060"},
+    {"name": "Sebastian", "county": "Indian River", "noaa_zone": "FLZ060"},
+    {"name": "Fort Pierce", "county": "St. Lucie", "noaa_zone": "FLZ061"},
+    {"name": "Port Saint Lucie", "county": "St. Lucie", "noaa_zone": "FLZ061"},
+    {"name": "Jensen Beach", "county": "Martin", "noaa_zone": "FLZ062"},
+    {"name": "Palm City", "county": "Martin", "noaa_zone": "FLZ062"},
+    {"name": "Stuart", "county": "Martin", "noaa_zone": "FLZ062"},
+    {"name": "Hobe Sound", "county": "Martin", "noaa_zone": "FLZ062"},
+    {"name": "Jupiter", "county": "Palm Beach", "noaa_zone": "FLZ063"},
+    {"name": "North Palm Beach", "county": "Palm Beach", "noaa_zone": "FLZ063"}
+  ],
+  "zone_names_canonical": [
+    "Vero Beach", "Sebastian", "Fort Pierce", "Port Saint Lucie",
+    "Jensen Beach", "Palm City", "Stuart", "Hobe Sound",
+    "Jupiter", "North Palm Beach"
+  ],
+  "noaa_alert_zones": ["FLZ060", "FLZ061", "FLZ062", "FLZ063"],
+  "headquarters": {
+    "address": "1407 SE Legacy Cove Circle, Ste 100",
+    "city": "Stuart",
+    "state": "FL",
+    "zip": "34997",
+    "phone": "(772) 247-0982",
+    "email": "david@coastalkey-pm.com"
+  }
+}

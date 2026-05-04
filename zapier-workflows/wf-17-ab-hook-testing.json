@@ -1,0 +1,92 @@
+{
+  "workflow_id": "WF-17",
+  "name": "A/B Hook Testing Engine",
+  "tier": "3",
+  "automation_id": "C3",
+  "description": "Generates 2 opening hook variants per lead for Module A, randomizes assignment, tracks which variant converts, and feeds winning patterns back to Nemotron.",
+  "trigger": {
+    "app": "Airtable",
+    "event": "New Record",
+    "config": {
+      "base": "Master Orchestrator",
+      "table": "Leads",
+      "formula": "{Status} = 'Queued for Dial'"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}",
+        "description": "Generate Hook Variant A",
+        "payload": {
+          "prompt": "Generate opening hook VARIANT A for outbound call. Lead: {{trigger.name}}. Segment: {{trigger.segment}}. Zone: {{trigger.zone}}. Property value: {{trigger.property_value}}. Style: direct risk statement about unmonitored property.",
+          "module_override": "MODULE_A"
+        }
+      }
+    },
+    {
+      "step": 2,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}",
+        "description": "Generate Hook Variant B",
+        "payload": {
+          "prompt": "Generate opening hook VARIANT B for outbound call. Lead: {{trigger.name}}. Segment: {{trigger.segment}}. Zone: {{trigger.zone}}. Property value: {{trigger.property_value}}. Style: value proposition and service benefit lead-in.",
+          "module_override": "MODULE_A"
+        }
+      }
+    },
+    {
+      "step": 3,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Randomly assign variant and record test allocation",
+        "code": "const variant = Math.random() < 0.5 ? 'A' : 'B'; const selectedHook = variant === 'A' ? inputData.hook_a : inputData.hook_b; output = { selected_variant: variant, hook_a: inputData.hook_a, hook_b: inputData.hook_b, active_hook: selectedHook, test_id: 'AB-' + Date.now(), lead_id: inputData.lead_id };"
+      }
+    },
+    {
+      "step": 4,
+      "app": "Airtable",
+      "action": "Update Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Leads",
+        "record_id": "{{trigger.record_id}}",
+        "fields": {
+          "Hook Variant A": "{{step3.hook_a}}",
+          "Hook Variant B": "{{step3.hook_b}}",
+          "Active Hook": "{{step3.active_hook}}",
+          "Selected Variant": "{{step3.selected_variant}}",
+          "AB Test ID": "{{step3.test_id}}"
+        }
+      }
+    },
+    {
+      "step": 5,
+      "app": "Airtable",
+      "action": "Create Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "AB Test Log",
+        "fields": {
+          "Test ID": "{{step3.test_id}}",
+          "Lead": "{{trigger.name}}",
+          "Segment": "{{trigger.segment}}",
+          "Zone": "{{trigger.zone}}",
+          "Variant A": "{{step3.hook_a}}",
+          "Variant B": "{{step3.hook_b}}",
+          "Selected": "{{step3.selected_variant}}",
+          "Outcome": "Pending",
+          "Created": "{{now}}"
+        }
+      }
+    }
+  ],
+  "status": "draft",
+  "activate_on_authorization": true
+}

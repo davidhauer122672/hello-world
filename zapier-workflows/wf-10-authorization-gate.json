@@ -1,0 +1,102 @@
+{
+  "workflow_id": "WF-10",
+  "name": "Authorization Gate Receiver",
+  "tier": "1",
+  "automation_id": "A4",
+  "description": "Listens for AUTHORIZE MASTER ORCHESTRATOR from CEO via Slack or email. On receipt, activates Atlas Step 10, flips WF-1 through WF-7 live, routes Worker to production, and notifies sales team.",
+  "trigger": {
+    "app": "Slack",
+    "event": "New Message in Channel",
+    "config": {
+      "channel": "#ceo-commands",
+      "trigger_phrase": "AUTHORIZE MASTER ORCHESTRATOR",
+      "authorized_users": ["david@coastalkey-pm.com"]
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "app": "Code by Zapier",
+      "action": "Run JavaScript",
+      "config": {
+        "description": "Validate authorization sender",
+        "code": "const authorizedEmails = ['david@coastalkey-pm.com']; const senderEmail = inputData.sender_email; if (!authorizedEmails.includes(senderEmail)) { throw new Error('Unauthorized sender: ' + senderEmail); } output = { authorized: true, sender: senderEmail, timestamp: new Date().toISOString() };"
+      }
+    },
+    {
+      "step": 2,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{ATLAS_API_URL}}/campaigns/sentinel/activate",
+        "description": "Activate Atlas Step 10 for Module A",
+        "payload": {
+          "action": "activate_step_10",
+          "campaign": "project_sentinel",
+          "authorized_by": "{{step1.sender}}",
+          "timestamp": "{{step1.timestamp}}"
+        }
+      }
+    },
+    {
+      "step": 3,
+      "app": "Webhooks by Zapier",
+      "action": "POST",
+      "config": {
+        "url": "{{CLOUDFLARE_WORKER_URL}}/admin/go-live",
+        "description": "Route Cloudflare Worker to production Nemotron endpoint",
+        "payload": {
+          "action": "set_production",
+          "authorized_by": "{{step1.sender}}",
+          "timestamp": "{{step1.timestamp}}"
+        }
+      }
+    },
+    {
+      "step": 4,
+      "app": "Airtable",
+      "action": "Create Record",
+      "config": {
+        "base": "Master Orchestrator",
+        "table": "Authorization Log",
+        "fields": {
+          "Action": "MASTER ORCHESTRATOR AUTHORIZED",
+          "Authorized By": "{{step1.sender}}",
+          "Timestamp": "{{step1.timestamp}}",
+          "Modules Activated": "A, B, C",
+          "Workflows Activated": "WF-1 through WF-19"
+        }
+      }
+    },
+    {
+      "step": 5,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#general",
+        "message": "MASTER ORCHESTRATOR AUTHORIZED by {{step1.sender}} at {{step1.timestamp}}. All modules live. Atlas Step 10 active. Workflows WF-1 through WF-19 enabled. Production inference routing confirmed."
+      }
+    },
+    {
+      "step": 6,
+      "app": "Slack",
+      "action": "Send Channel Message",
+      "config": {
+        "channel": "#sales-team",
+        "message": "Project Sentinel is LIVE. Atlas dialing activated. All segments armed. Begin outbound operations."
+      }
+    },
+    {
+      "step": 7,
+      "app": "Gmail",
+      "action": "Send Email",
+      "config": {
+        "to": "david@coastalkey-pm.com",
+        "subject": "Master Orchestrator Authorized - All Systems Live",
+        "body": "David,\n\nMaster Orchestrator authorization confirmed at {{step1.timestamp}}.\n\nActivated:\n- Module A: Project Sentinel (Atlas Step 10)\n- Module B: Social Automation (Buffer connected)\n- Module C: Content Production Engine\n- Workflows WF-1 through WF-19\n- Nemotron production inference routing\n\nCoastal Key AI Operations are fully live.\n\nCoastal Key Property Management LLC"
+      }
+    }
+  ],
+  "status": "active",
+  "note": "This workflow is always active. It gates all other activations."
+}
