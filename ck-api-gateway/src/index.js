@@ -276,6 +276,7 @@ import { handleListForecastAgents, handleGetForecastAgent, handleForecastDashboa
 import { handlePeakTimeDashboard, handlePeakTimeOptimal, handlePeakTimeWindows, handlePeakTimeBlackouts } from './routes/peak-time.js';
 import { handleGrowthDashboard, handleGrowthCertifications, handleGrowthRecruitment, handleGrowthReferrals } from './routes/growth-platform.js';
 import { handleListSocialAgents, handleGetSocialAgent, handleSocialDashboard, handleSocialGenerate, handleSocialCampaign, handleSocialCalendar } from './routes/social-campaign.js';
+import { handleGenerateReport as handleSentinelGenerateReport, handleGenerateSummary, handleSentinelWorkforceStatus } from './routes/sentinel-report.js';
 import { jsonResponse, errorResponse, corsHeaders } from './utils/response.js';
 
 export default {
@@ -943,6 +944,17 @@ export default {
       }
       if (path === '/v1/campaign-engine/health' && method === 'GET') {
         return handleCampaignEngineHealth();
+      }
+
+      // ── Sentinel Standard Report Generator (AI Workforce Unit #1) ──
+      if (path === '/v1/sentinel/generate-report' && method === 'POST') {
+        return await handleSentinelGenerateReport(request, env, ctx);
+      }
+      if (path === '/v1/sentinel/generate-summary' && method === 'POST') {
+        return await handleGenerateSummary(request, env, ctx);
+      }
+      if (path === '/v1/sentinel/workforce-status' && method === 'GET') {
+        return handleSentinelWorkforceStatus();
       }
 
       // ── Cooperations Committee ──
