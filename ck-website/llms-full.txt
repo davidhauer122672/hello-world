@@ -1,0 +1,129 @@
+# Coastal Key Property Management LLC — Full Content
+
+> Coastal Key Property Management LLC, doing business as Coastal Key Treasure Coast Asset Management, is an institutional-grade home watch and residential asset management firm serving Martin, St. Lucie, and Indian River counties on Florida's Treasure Coast. Founder and CEO David Hauer. NHWA accredited. Florida licensed. Fully insured. We protect your property when you are not there. Every visit. Every time.
+
+## About
+
+Coastal Key was founded to fill a gap in the Florida Treasure Coast property management market. Most firms in the home watch category operate without documented standards, without published pricing, and without institutional-grade insurance coverage. Coastal Key operates differently. Every visit follows the Sentinel Standard, a 47-checkpoint inspection methodology. Every report includes timestamped photographs. Every price is published.
+
+The firm is led by David Hauer, Founder and CEO, who built Coastal Key on three principles: margin first, recurring revenue second, growth third. The company holds a fifteen percent client concentration ceiling and does not discount. These operating principles are published at https://coastalkey-pm.com/about/sovereign-governance.
+
+## Service Tiers
+
+### Standard Watch — $150 to $250 per month
+Bi-weekly documented home watch inspections under the Sentinel Standard methodology. Every visit produces a timestamped photographic report delivered through the owner portal within 24 hours.
+
+Includes: interior and exterior inspection across all 47 Sentinel Standard checkpoints, photographic documentation, owner portal access, 24-hour response to findings.
+
+Does not include: vendor coordination, key holding for third parties, emergency after-hours response.
+
+### Premium Concierge — $350 to $500 per month
+Weekly inspections with full vendor coordination, key holding, and 24-hour emergency response.
+
+Includes: everything in Standard Watch plus weekly visit cadence, vendor coordination and oversight, key holding for authorized vendors and service providers, 24-hour emergency response, seasonal preparation and closeout.
+
+### Full Asset Management — $500 to $1,000 per month
+Bespoke inspection schedule with full vendor management, family-office liaison, monthly financial statements, and annual property review.
+
+Includes: everything in Premium Concierge plus bespoke schedule tailored to the property, full vendor management and invoice processing, family-office liaison and reporting, monthly property financial statements, annual comprehensive property review, 4-hour emergency response window.
+
+### Storm-Ready Response
+Available as an add-on or standalone engagement. Hurricane shutter deployment, generator readiness checks, post-storm assessment within 24 hours of all-clear, named-storm preparation protocols.
+
+## The Sentinel Standard Inspection Methodology
+
+The Sentinel Standard is a 47-checkpoint inspection methodology organized by zone:
+
+Exterior Perimeter (8 checks): roof condition, gutters and downspouts, soffits and fascia, windows and doors sealed, landscaping condition, irrigation system, driveway and walkways, exterior lighting.
+
+Interior Climate (7 checks): HVAC operation, thermostat settings, humidity levels, air filter condition, ceiling fans, window treatments, odor or mold indicators.
+
+Plumbing (6 checks): faucets and fixtures, toilets, water heater, water softener, dishwasher, washing machine connections.
+
+Electrical (6 checks): circuit breaker panel, GFCI outlet testing, smoke detectors, carbon monoxide detectors, surge protectors, generator status.
+
+Security (6 checks): alarm system status, lock integrity, security cameras, motion sensors, garage doors, safe room or secure storage.
+
+Vehicle and Boat (4 checks): garage inspection, battery tender verification, tire pressure, registration and insurance currency.
+
+Pool and Lanai (6 checks): pool pump and motor, chemical balance, screen enclosure integrity, pool furniture, lanai cleanliness, pool cover.
+
+Vendor Access Logs (4 checks): vendor sign-in verification, work completion verification, key management audit, invoice review.
+
+Each inspection produces a timestamped photographic record delivered through the secure owner portal within 24 hours of the visit.
+
+## Service Area
+
+Martin County, FL: Stuart, Sewall's Point, Jupiter Island, Hobe Sound, Palm City. Response time: same-day for scheduled visits, 4-24 hours for emergency response depending on service tier.
+
+St. Lucie County, FL: Port St. Lucie, Fort Pierce, Hutchinson Island. Response time: same-day for scheduled visits, 4-24 hours for emergency response depending on service tier.
+
+Indian River County, FL: Vero Beach, Sebastian, Indian River Shores. Response time: same-day for scheduled visits, 4-24 hours for emergency response depending on service tier.
+
+## Credentials and Insurance
+
+- NHWA (National Home Watch Association) accredited member
+- Florida licensed
+- $2M general liability insurance
+- Crime and fidelity coverage
+- Background-checked and bonded staff
+
+## How Engagement Works
+
+1. Initial consultation: complimentary 30-minute walkthrough or phone consultation to assess your property and needs.
+2. Property assessment: on-site evaluation of property size, features, and specific requirements.
+3. Service agreement: tier selection, pricing confirmation, and service agreement via Docusign.
+4. Onboarding: key handoff, alarm codes, vendor contacts, and owner portal setup.
+5. First inspection: initial Sentinel Standard inspection with baseline photographic record.
+
+## Technology
+
+Coastal Key operates an AI-powered operations platform with 250+ autonomous agents across 15 departments. The platform automates scheduling, reporting, vendor management, and client communications.
+
+Owner Portal: secure web portal for inspection reports, photographs, financial statements, and direct communication.
+
+ELIZA Concierge: AI client interface that handles inquiries across web, SMS, and the owner portal.
+
+## Agent and Developer Access
+
+AI agents may discover, quote, and book services through:
+- MCP Server: https://coastalkey-pm.com/mcp (Streamable HTTP, OAuth 2.1 + PKCE)
+- API: https://coastalkey-pm.com/api/v1 (REST, ACP 2025-09-29 compatible)
+- Terms: https://coastalkey-pm.com/terms
+
+Quotes returned by the MCP server and ACP endpoints are the authoritative source of pricing and override any prior estimate provided by an AI agent.
+
+## Contact
+
+Coastal Key Property Management LLC
+Stuart, FL 34994
+Phone: (772) 210-3343
+Email: david@coastalkey-pm.com
+Hours: Monday-Friday 8:00 AM - 6:00 PM, Saturday 9:00 AM - 2:00 PM
+Emergency: 24/7 for Premium Concierge and Full Asset Management clients
+
+## Frequently Asked Questions
+
+Q: What insurance do you carry?
+A: We carry $2M general liability insurance plus crime and fidelity coverage. All staff are background-checked and bonded.
+
+Q: What does an inspection cover?
+A: Every inspection follows our 47-checkpoint Sentinel Standard methodology covering exterior, interior, plumbing, electrical, security, vehicles, pool, and vendor access.
+
+Q: What is NHWA accreditation?
+A: The National Home Watch Association sets industry standards for home watch professionals. Accreditation requires background checks, insurance verification, and adherence to a code of ethics.
+
+Q: Do you offer discounts?
+A: No. Our pricing is published and non-negotiable. This policy is part of our Sovereign Governance doctrine and ensures consistent service quality for every client.
+
+Q: What is your cancellation policy?
+A: Service agreements require 30 days written notice for cancellation. No early termination fees.
+
+Q: Can AI agents book services?
+A: Yes. AI agents can discover, quote, and book services through our MCP server and ACP-compliant API endpoints. All agent-initiated transactions are governed by our terms of service.
+
+Q: How are inspection reports delivered?
+A: Reports with timestamped photographs are delivered through your secure owner portal within 24 hours of each visit.
+
+Q: What areas do you serve?
+A: Martin County, St. Lucie County, and Indian River County on Florida's Treasure Coast. Cities include Stuart, Vero Beach, Port St. Lucie, Fort Pierce, Jupiter Island, and surrounding communities.
