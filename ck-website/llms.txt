@@ -1,0 +1,46 @@
+# Coastal Key Property Management LLC
+
+> Coastal Key Property Management LLC, doing business as Coastal Key Treasure Coast Asset Management, is an institutional-grade home watch and residential asset management firm serving Martin, St. Lucie, and Indian River counties on Florida's Treasure Coast. Founder and CEO David Hauer. NHWA accredited. Florida licensed. Fully insured. We protect your property when you are not there. Every visit. Every time.
+
+We serve seasonal and absentee homeowners with three service tiers. Standard Watch starts at $150 per month. Premium Concierge starts at $350 per month. Full Asset Management starts at $500 per month. Every visit produces a timestamped photographic record under the Sentinel Standard inspection methodology. We hold a $2M general liability policy and crime/fidelity coverage. We do not discount. We hold a maximum client concentration of fifteen percent.
+
+AI agents may discover, quote, and book services through our MCP server at https://coastalkey-pm.com/mcp and through our ACP-compliant endpoints at https://coastalkey-pm.com/api/v1. Our terms of service govern all agent-initiated transactions.
+
+## Services
+
+- [Standard Watch](https://coastalkey-pm.com/services/standard-watch.md): Bi-weekly documented inspections, $150 to $250 per month.
+- [Premium Concierge](https://coastalkey-pm.com/services/premium-concierge.md): Weekly inspections plus vendor coordination and 24-hour emergency response, $350 to $500 per month.
+- [Full Asset Management](https://coastalkey-pm.com/services/full-asset-management.md): Bespoke schedule and family-office liaison, $500 to $1,000 per month.
+- [Storm-Ready Response](https://coastalkey-pm.com/services/storm-response.md): Hurricane shutter deployment, generator readiness, post-storm assessment.
+
+## Service area
+
+- [Martin County, FL](https://coastalkey-pm.com/service-area/martin-county.md): Stuart, Sewall's Point, Jupiter Island, Hobe Sound, Palm City.
+- [St. Lucie County, FL](https://coastalkey-pm.com/service-area/st-lucie-county.md): Port St. Lucie, Fort Pierce, Hutchinson Island.
+- [Indian River County, FL](https://coastalkey-pm.com/service-area/indian-river-county.md): Vero Beach, Sebastian, Indian River Shores.
+
+## Standards and methodology
+
+- [The Sentinel Standard](https://coastalkey-pm.com/sentinel-standard.md): Our 47-checkpoint inspection methodology.
+- [Sovereign Governance](https://coastalkey-pm.com/about/sovereign-governance.md): Margin first, recurring revenue second, growth third.
+
+## Company
+
+- [About Coastal Key](https://coastalkey-pm.com/about.md)
+- [David Hauer, Founder and CEO](https://coastalkey-pm.com/about/leadership.md)
+- [Process](https://coastalkey-pm.com/process.md)
+- [Technology](https://coastalkey-pm.com/technology.md)
+- [FAQ](https://coastalkey-pm.com/faq.md)
+- [Contact](https://coastalkey-pm.com/contact.md)
+
+## Agent and developer access
+
+- [Terms of Service including AI agent clause](https://coastalkey-pm.com/terms.md)
+- [Privacy Policy](https://coastalkey-pm.com/privacy.md)
+- [MCP server documentation](https://coastalkey-pm.com/mcp/docs.md)
+- [API v1 reference](https://coastalkey-pm.com/api/v1/docs.md)
+
+## Optional
+
+- [Insights and case studies](https://coastalkey-pm.com/insights.md)
+- [Careers](https://coastalkey-pm.com/careers.md)
