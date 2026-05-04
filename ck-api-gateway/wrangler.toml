@@ -1,6 +1,7 @@
 name = "ck-api-gateway"
 main = "src/index-phase5.js"
 compatibility_date = "2024-12-01"
+account_id = "8e596c2b3554fface410e253c0b7d892"
 
 [vars]
 AIRTABLE_BASE_ID = "appUSnNgpDkcEOzhN"
