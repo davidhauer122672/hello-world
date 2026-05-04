@@ -1,11 +1,6 @@
-# ══════════════════════════════════════════════════════════════════════════
 # Coastal Key — Cloudflare Pages Redirects
-#
-# Subdomain consolidation to primary domain.
-# All site content served via _worker.js reverse proxy to Manus origin.
-# ══════════════════════════════════════════════════════════════════════════
 
-# ── Subdomain consolidation ──
+# Subdomain consolidation
 https://www.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
 https://app.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
 https://dashboard.coastalkey-pm.com/* https://coastalkey-pm.com/:splat      301
@@ -16,3 +11,7 @@ https://old.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
 https://staging.coastalkey-pm.com/*   https://coastalkey-pm.com/:splat      301
 https://dev.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
 https://beta.coastalkey-pm.com/*      https://coastalkey-pm.com/:splat      301
+
+# Internal ops redirect
+/ops/*  https://ops.coastalkey-pm.com/:splat  302
+/dashboard  https://ops.coastalkey-pm.com/  302
