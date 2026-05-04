@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0A1628">
+  <meta name="color-scheme" content="light">
+  <title>Schedule a Consultation | Coastal Key</title>
+  <meta name="description" content="Schedule a complimentary consultation with Coastal Key Property Management. Thirty minutes, no obligation. Treasure Coast home watch and residential asset management.">
+  <link rel="canonical" href="https://coastalkey-pm.com/schedule/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Schedule a Consultation | Coastal Key">
+  <meta property="og:description" content="Schedule a complimentary consultation with Coastal Key Property Management. Thirty minutes, no obligation.">
+  <meta property="og:url" content="https://coastalkey-pm.com/schedule/">
+  <meta property="og:image" content="https://coastalkey-pm.com/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="Coastal Key">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Schedule a Consultation | Coastal Key">
+  <meta name="twitter:description" content="Schedule a complimentary consultation with Coastal Key Property Management. Thirty minutes, no obligation.">
+  <meta name="twitter:image" content="https://coastalkey-pm.com/assets/og-card.png">
+  <link rel="stylesheet" href="/assets/coastalkey.css">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://coastalkey-pm.com/schedule/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://coastalkey-pm.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Schedule a Consultation", "item": "https://coastalkey-pm.com/schedule/" }
+      ]
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <a href="/" class="brand" aria-label="Coastal Key home">
+      <span class="brand-text">Coastal Key</span>
+    </a>
+    <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <nav id="primary-nav" class="primary" aria-label="Primary">
+      <a href="/services">Services</a>
+      <a href="/sentinel-standard">Sentinel Standard</a>
+      <a href="/service-area">Service Area</a>
+      <a href="/about">About</a>
+      <a href="/insights">Insights</a>
+      <a href="/schedule" class="cta" aria-current="page">Schedule</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li aria-current="page">Schedule a Consultation</li>
+      </ol>
+    </nav>
+
+    <section class="page-hero" aria-labelledby="hero-h1">
+      <div class="hero-copy">
+        <p class="eyebrow">Coastal Key Property Management</p>
+        <h1 id="hero-h1">Schedule a consultation.</h1>
+        <p class="lede">One conversation. Thirty minutes. No obligation.</p>
+      </div>
+    </section>
+
+    <section class="page-content" aria-labelledby="form-h2">
+      <div class="container">
+        <h2 id="form-h2" class="sr-only">Consultation request form</h2>
+        <form action="/api/v1/lead" method="POST" class="form form-narrow">
+          <div class="field">
+            <label for="sched-name">Full name <span aria-hidden="true">*</span></label>
+            <input type="text" id="sched-name" name="name" required autocomplete="name">
+          </div>
+
+          <div class="field">
+            <label for="sched-email">Email address <span aria-hidden="true">*</span></label>
+            <input type="email" id="sched-email" name="email" required autocomplete="email">
+          </div>
+
+          <div class="field">
+            <label for="sched-phone">Phone number <span aria-hidden="true">*</span></label>
+            <input type="tel" id="sched-phone" name="phone" required autocomplete="tel">
+          </div>
+
+          <div class="field">
+            <label for="sched-address">Property address</label>
+            <input type="text" id="sched-address" name="property_address" autocomplete="street-address">
+          </div>
+
+          <div class="field">
+            <label for="sched-date">Preferred date</label>
+            <input type="date" id="sched-date" name="preferred_date">
+          </div>
+
+          <div class="field">
+            <label for="sched-time">Preferred time</label>
+            <select id="sched-time" name="preferred_time">
+              <option value="">Select a time</option>
+              <option value="morning">Morning (8:00 AM -- 12:00 PM)</option>
+              <option value="afternoon">Afternoon (12:00 PM -- 4:00 PM)</option>
+              <option value="evening">Late afternoon (4:00 PM -- 6:00 PM)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="sched-notes">Notes</label>
+            <textarea id="sched-notes" name="notes" rows="4" placeholder="Anything you would like us to know before the consultation."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Request consultation</button>
+        </form>
+
+        <p class="form-note">We will confirm your consultation within one business day. You can also call us directly at <a href="tel:+17722103343">(772) 210-3343</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="cols">
+      <div>
+        <p class="brand-foot">Coastal Key Property Management LLC</p>
+        <p>Stuart, Florida</p>
+        <p><a href="tel:+17722103343">(772) 210-3343</a></p>
+        <p><a href="mailto:david@coastalkey-pm.com">david@coastalkey-pm.com</a></p>
+      </div>
+      <div>
+        <p class="col-label">Services</p>
+        <a href="/services/standard-watch">Standard Watch</a>
+        <a href="/services/premium-concierge">Premium Concierge</a>
+        <a href="/services/full-asset-management">Full Asset Management</a>
+        <a href="/services/storm-response">Storm Response</a>
+      </div>
+      <div>
+        <p class="col-label">Company</p>
+        <a href="/about">About</a>
+        <a href="/about/leadership">Leadership</a>
+        <a href="/about/sovereign-governance">Sovereign Governance</a>
+        <a href="/sentinel-standard">Sentinel Standard</a>
+        <a href="/careers">Careers</a>
+      </div>
+      <div>
+        <p class="col-label">Legal</p>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/accessibility">Accessibility</a>
+        <a href="/contact">Contact</a>
+      </div>
+    </div>
+    <p class="fineprint">&copy; 2026 Coastal Key Property Management LLC. NHWA accredited. Florida licensed and insured.</p>
+  </footer>
+
+  <script src="/assets/coastalkey.js" defer></script>
+</body>
+</html>
