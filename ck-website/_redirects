@@ -2,16 +2,22 @@
 
 # Subdomain consolidation
 https://www.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
-https://app.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
-https://dashboard.coastalkey-pm.com/* https://coastalkey-pm.com/:splat      301
-https://agents.coastalkey-pm.com/*    https://coastalkey-pm.com/:splat      301
-https://api.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
-https://admin.coastalkey-pm.com/*     https://coastalkey-pm.com/:splat      301
-https://old.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
-https://staging.coastalkey-pm.com/*   https://coastalkey-pm.com/:splat      301
-https://dev.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat      301
-https://beta.coastalkey-pm.com/*      https://coastalkey-pm.com/:splat      301
+https://app.coastalkey-pm.com/*       https://coastalkey-pm.com/portal/:splat 301
+https://dashboard.coastalkey-pm.com/* https://coastalkey-pm.com/portal/dashboard 301
+https://agents.coastalkey-pm.com/*    https://coastalkey-pm.com/portal/agents 301
+https://api.coastalkey-pm.com/*       https://coastalkey-pm.com/portal/:splat 301
+https://admin.coastalkey-pm.com/*     https://coastalkey-pm.com/portal/:splat 301
+https://old.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat       301
+https://staging.coastalkey-pm.com/*   https://coastalkey-pm.com/:splat       301
+https://dev.coastalkey-pm.com/*       https://coastalkey-pm.com/:splat       301
+https://beta.coastalkey-pm.com/*      https://coastalkey-pm.com/:splat       301
+
+# API proxy
+/v1/*                                 https://ck-api-gateway.coastalkey-pm.workers.dev/v1/:splat 200
 
 # Internal ops redirect
-/ops/*  https://ops.coastalkey-pm.com/:splat  302
-/dashboard  https://ops.coastalkey-pm.com/  302
+/ops/*                                https://ops.coastalkey-pm.com/:splat   302
+/dashboard                            /portal/dashboard                      301
+/command-center                       /portal/dashboard                      301
+/login                                /portal                                301
+/admin                                /portal                                301
