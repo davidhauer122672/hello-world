@@ -1,0 +1,6 @@
+Contact: mailto:security@coastalkey-pm.com
+Contact: mailto:david@coastalkey-pm.com
+Expires: 2027-04-28T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://coastalkey-pm.com/.well-known/security.txt
+Policy: https://coastalkey-pm.com/privacy
