@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Coastal Key — Master Orchestrator Dashboard</title>
+
+<!-- iOS Home Screen App -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CK Orchestrator">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0a0f">
+
+<!-- Web App Manifest -->
+<link rel="manifest" href="/manifest.json">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a28;--bg4:#22223a;
+  --text:#e8e8f0;--text2:#9898b0;--text3:#585870;
+  --accent:#4f8fff;--accent2:#7c5cfc;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;
+  --border:#2a2a3e;--radius:10px;--shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+a{color:var(--accent);text-decoration:none}
+
+/* ── Layout ── */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:64px;z-index:10}
+.main{padding:24px;flex:1;overflow-y:auto;background:var(--bg);max-width:1400px;margin:0 auto;width:100%}
+
+/* ── Topbar ── */
+.logo{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;letter-spacing:-0.5px}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.health-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600}
+.health-badge.healthy{background:rgba(34,197,94,0.15);color:var(--green)}
+.health-badge.degraded{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.health-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
+.health-badge.healthy .health-dot{background:var(--green)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── Section Headers ── */
+.section-title{font-size:20px;font-weight:700;margin:28px 0 16px;display:flex;align-items:center;gap:10px}
+.section-title:first-child{margin-top:0}
+.badge{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.badge-blue{background:rgba(79,143,255,0.15);color:var(--accent)}
+.badge-green{background:rgba(34,197,94,0.15);color:var(--green)}
+.badge-purple{background:rgba(124,92,252,0.15);color:var(--accent2)}
+
+/* ── Fleet Summary Cards ── */
+.fleet-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
+.fleet-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color 0.2s}
+.fleet-card:hover{border-color:var(--accent)}
+.fleet-card .label{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.fleet-card .value{font-size:32px;font-weight:800;letter-spacing:-1px}
+.fleet-card .sub{font-size:12px;color:var(--text3);margin-top:4px}
+
+/* ── Division Table ── */
+.div-table{width:100%;border-collapse:collapse;margin-bottom:24px}
+.div-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text2);padding:10px 12px;border-bottom:1px solid var(--border)}
+.div-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:14px}
+.div-table tr:hover td{background:var(--bg2)}
+.status-pill{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:600}
+.status-active{background:rgba(34,197,94,0.15);color:var(--green)}
+.status-standby{background:rgba(234,179,8,0.15);color:var(--yellow)}
+.sop-count{color:var(--accent);font-weight:600}
+
+/* ── Workflow Pipeline ── */
+.wf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.wf-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:8px}
+.wf-card .wf-id{font-size:12px;font-weight:700;color:var(--accent2)}
+.wf-card .wf-name{font-size:14px;font-weight:600}
+.wf-card .wf-trigger{font-size:11px;color:var(--text2)}
+.wf-card .wf-divs{font-size:11px;color:var(--text3)}
+
+/* ── Action Bar ── */
+.action-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.btn{padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:opacity 0.2s}
+.btn:hover{opacity:0.85}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn-danger{background:var(--red);color:#fff}
+
+/* ── Cycle Log ── */
+.cycle-log{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;max-height:300px;overflow-y:auto;font-family:'SF Mono',Monaco,Consolas,monospace;font-size:12px;line-height:1.8;color:var(--text2)}
+.cycle-log .entry{border-bottom:1px solid var(--border);padding:4px 0}
+.cycle-log .entry:last-child{border-bottom:none}
+.cycle-log .ts{color:var(--text3);margin-right:8px}
+.cycle-log .act{color:var(--green);font-weight:600}
+
+/* ── Config Panel ── */
+.config-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.config-panel label{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}
+.config-panel input{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:13px;width:300px}
+.config-panel button{background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-weight:600}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .fleet-grid{grid-template-columns:1fr 1fr}
+  .wf-grid{grid-template-columns:1fr}
+  .main{padding:16px}
+  .action-bar{flex-direction:column}
+  .config-panel{flex-direction:column;align-items:stretch}
+  .config-panel input{width:100%}
+}
+@media(max-width:480px){
+  .fleet-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ── Topbar ──────────────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-icon">CK</div>
+    Master Orchestrator
+  </div>
+  <div class="topbar-right">
+    <div class="health-badge healthy" id="healthBadge">
+      <span class="health-dot"></span>
+      <span id="healthLabel">Operational</span>
+    </div>
+    <a href="/index.html" style="font-size:13px;color:var(--text2)">Command Center</a>
+  </div>
+</header>
+
+<!-- ── Main Content ───────────────────────────────────────────── -->
+<div class="main">
+
+  <!-- Config Panel -->
+  <div class="config-panel">
+    <label>API Endpoint</label>
+    <input type="text" id="apiUrl" value="https://ck-api-gateway.david-e59.workers.dev" placeholder="Gateway URL">
+    <label>Token</label>
+    <input type="password" id="apiToken" placeholder="Bearer token">
+    <button onclick="fetchStatus()">Connect</button>
+  </div>
+
+  <!-- Fleet Summary -->
+  <div class="section-title">Fleet Overview <span class="badge badge-blue">LIVE</span></div>
+  <div class="fleet-grid" id="fleetGrid">
+    <div class="fleet-card">
+      <div class="label">Total Fleet</div>
+      <div class="value" id="totalFleet">384</div>
+      <div class="sub">Autonomous AI agents</div>
+    </div>
+    <div class="fleet-card">
+      <div class="label">Active Agents</div>
+      <div class="value" id="activeAgents">--</div>
+      <div class="sub">Currently operational</div>
+    </div>
+    <div class="fleet-card">
+      <div class="label">Readiness</div>
+      <div class="value" id="readiness">--</div>
+      <div class="sub">Operational readiness</div>
+    </div>
+    <div class="fleet-card">
+      <div class="label">Divisions</div>
+      <div class="value" id="divisionCount">12</div>
+      <div class="sub">Operational divisions</div>
+    </div>
+    <div class="fleet-card">
+      <div class="label">API Endpoints</div>
+      <div class="value" id="apiEndpoints">147</div>
+      <div class="sub">Live routes</div>
+    </div>
+    <div class="fleet-card">
+      <div class="label">Workflows</div>
+      <div class="value" id="workflowCount">8</div>
+      <div class="sub">Active pipelines</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="section-title">Orchestrator Controls <span class="badge badge-purple">SOVEREIGN</span></div>
+  <div class="action-bar">
+    <button class="btn btn-primary" onclick="launchCycle()">Launch Fleet Cycle</button>
+    <button class="btn btn-secondary" onclick="fetchStatus()">Refresh Status</button>
+    <button class="btn btn-secondary" onclick="fetchFleet()">Fleet Composition</button>
+    <button class="btn btn-secondary" onclick="fetchHealth()">Health Check</button>
+  </div>
+
+  <!-- Division Breakdown -->
+  <div class="section-title">Division Breakdown <span class="badge badge-green">ALL ACTIVE</span></div>
+  <table class="div-table">
+    <thead>
+      <tr>
+        <th>Division</th>
+        <th>Name</th>
+        <th>Agents</th>
+        <th>SOPs</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="divisionTable">
+      <tr><td colspan="6" style="color:var(--text3);text-align:center;padding:24px">Connect to API to load division data</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Workflow Pipelines -->
+  <div class="section-title">Workflow Pipelines</div>
+  <div class="wf-grid" id="wfGrid">
+    <div class="wf-card">
+      <div class="wf-id">WF-1</div>
+      <div class="wf-name">Lead Intake Pipeline</div>
+      <div class="wf-trigger">Trigger: inbound_lead</div>
+      <div class="wf-divs">SEN, MKT</div>
+    </div>
+    <div class="wf-card">
+      <div class="wf-id">WF-2</div>
+      <div class="wf-name">Content Publish Pipeline</div>
+      <div class="wf-trigger">Trigger: content_ready</div>
+      <div class="wf-divs">MKT, SCM</div>
+    </div>
+    <div class="wf-card">
+      <div class="wf-id">WF-3</div>
+      <div class="wf-name">Investor Escalation</div>
+      <div class="wf-trigger">Trigger: high_value_lead</div>
+      <div class="wf-divs">SEN, EXC, FIN</div>
+    </div>
+    <div class="wf-card">
+      <div class="wf-id">SCAA-1</div>
+      <div class="wf-name">Battle Plan Pipeline</div>
+      <div class="wf-trigger">Trigger: new_prospect</div>
+      <div class="wf-divs">SEN, INT, MKT</div>
+    </div>
+  </div>
+
+  <!-- Cycle Log -->
+  <div class="section-title">Orchestration Log</div>
+  <div class="cycle-log" id="cycleLog">
+    <div class="entry"><span class="ts">[--:--:--]</span> Awaiting connection...</div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+const API_ROUTES = {
+  status: '/v1/orchestrator/status',
+  launch: '/v1/orchestrator/launch',
+  fleet: '/v1/orchestrator/fleet',
+  health: '/v1/orchestrator/health',
+  activate: '/v1/orchestrator/division',
+};
+
+function getConfig() {
+  return {
+    url: document.getElementById('apiUrl').value.replace(/\/+$/, ''),
+    token: document.getElementById('apiToken').value,
+  };
+}
+
+function log(msg, type) {
+  const el = document.getElementById('cycleLog');
+  const ts = new Date().toLocaleTimeString();
+  const cls = type === 'action' ? 'act' : '';
+  el.innerHTML += `<div class="entry"><span class="ts">[${ts}]</span> <span class="${cls}">${msg}</span></div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+async function apiFetch(path, method, body) {
+  const { url, token } = getConfig();
+  const opts = {
+    method: method || 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+  if (token) opts.headers['Authorization'] = `Bearer ${token}`;
+  if (body) opts.body = JSON.stringify(body);
+
+  log(`${method || 'GET'} ${path}`, 'action');
+  try {
+    const res = await fetch(url + path, opts);
+    const data = await res.json();
+    if (!res.ok) {
+      log(`Error ${res.status}: ${data.error || 'Unknown error'}`);
+      return null;
+    }
+    return data;
+  } catch (err) {
+    log(`Network error: ${err.message}`);
+    return null;
+  }
+}
+
+async function fetchStatus() {
+  const data = await apiFetch(API_ROUTES.status);
+  if (!data) return;
+
+  document.getElementById('totalFleet').textContent = data.fleet?.totalUnits || 384;
+  document.getElementById('activeAgents').textContent = data.fleet?.byStatus?.active || '--';
+  document.getElementById('readiness').textContent = data.fleet?.operationalReadiness || '--';
+  document.getElementById('divisionCount').textContent = data.divisions?.length || 12;
+  document.getElementById('apiEndpoints').textContent = data.apiEndpoints || 147;
+  document.getElementById('workflowCount').textContent = data.workflows?.length || 8;
+
+  // Populate division table
+  if (data.divisions) {
+    const tbody = document.getElementById('divisionTable');
+    tbody.innerHTML = data.divisions.map(d => `
+      <tr>
+        <td><strong>${d.id}</strong></td>
+        <td>${d.name}</td>
+        <td>${d.agents}</td>
+        <td class="sop-count">${d.sops}</td>
+        <td><span class="status-pill status-active">${d.status || 'ACTIVE'}</span></td>
+        <td><button class="btn btn-secondary" style="padding:4px 12px;font-size:11px" onclick="activateDivision('${d.id}')">Activate</button></td>
+      </tr>
+    `).join('');
+  }
+
+  log(`Status loaded: ${data.fleet?.registered || 0} agents registered, ${data.fleet?.operationalReadiness || '?'} readiness`);
+}
+
+async function launchCycle() {
+  if (!confirm('Launch full fleet orchestration cycle?')) return;
+  log('Initiating fleet cycle launch...', 'action');
+  const data = await apiFetch(API_ROUTES.launch, 'POST', {});
+  if (!data) return;
+
+  log(`Cycle ${data.cycleId} launched: ${data.execution?.totalAgentsActivated || 0} agents, ${data.execution?.totalSOPsExecuted || 0} SOPs`, 'action');
+  await fetchStatus();
+}
+
+async function fetchFleet() {
+  const data = await apiFetch(API_ROUTES.fleet);
+  if (!data) return;
+  log(`Fleet composition: ${data.fleet?.totalUnits || 0} units across ${data.divisions?.length || 0} divisions`);
+}
+
+async function fetchHealth() {
+  const data = await apiFetch(API_ROUTES.health);
+  if (!data) return;
+
+  const badge = document.getElementById('healthBadge');
+  const label = document.getElementById('healthLabel');
+  badge.className = `health-badge ${data.overallHealth || 'healthy'}`;
+  label.textContent = (data.overallHealth || 'healthy').charAt(0).toUpperCase() + (data.overallHealth || 'healthy').slice(1);
+
+  log(`Health check: ${data.overallHealth} (${data.score})`);
+}
+
+async function activateDivision(code) {
+  log(`Activating division ${code}...`, 'action');
+  const data = await apiFetch(`${API_ROUTES.activate}/${code}/activate`, 'POST', {});
+  if (!data) return;
+  log(`Division ${code} activated: ${data.agentsActivated} agents, ${data.sopsExecuted} SOPs`, 'action');
+}
+
+// Auto-connect if token is cached
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('ck_api_token');
+  if (saved) {
+    document.getElementById('apiToken').value = saved;
+  }
+  // Save token on change
+  document.getElementById('apiToken').addEventListener('change', (e) => {
+    localStorage.setItem('ck_api_token', e.target.value);
+  });
+});
+</script>
+</body>
+</html>
